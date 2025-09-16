@@ -115,12 +115,21 @@ const LaborTable = ({ entries, onChange }) => {
           {entries.map((entry) => (
             <TableRow key={entry.id}>
               <TableCell>
-                <Input
+                <Select
                   value={entry.workerName}
-                  onChange={(e) => updateEntry(entry.id, 'workerName', e.target.value)}
-                  placeholder="Worker name"
-                  className="border-0 p-1"
-                />
+                  onValueChange={(value) => updateEntry(entry.id, 'workerName', value)}
+                >
+                  <SelectTrigger className="border-0 p-1 h-auto">
+                    <SelectValue placeholder="Select worker" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mockData.workers.map((worker) => (
+                      <SelectItem key={worker.id} value={worker.name}>
+                        {worker.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </TableCell>
               <TableCell>
                 <Input
