@@ -223,7 +223,7 @@ const TimeAndMaterialForm = () => {
         </div>
 
         <Card className="shadow-sm">
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {/* Project Name */}
             <div className="space-y-2">
               <Label htmlFor="projectName" className="text-sm font-medium text-gray-700 flex items-center justify-between">
