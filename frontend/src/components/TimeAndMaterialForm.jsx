@@ -161,7 +161,7 @@ const TimeAndMaterialForm = () => {
         
         // Clear form after successful submission
         setFormData({
-          projectName: savedProjects[0].name,
+          projectName: "3rd Ave",
           costCode: 'FP-Install',
           dateOfWork: new Date(),
           customerReference: '',
