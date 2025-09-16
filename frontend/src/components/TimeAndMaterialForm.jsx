@@ -369,13 +369,13 @@ const TimeAndMaterialForm = () => {
 
             {/* Add Labor Section */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="text-lg font-medium text-gray-900">Add Labor</h3>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-green-700 border-green-300 hover:bg-green-50"
+                    className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
                     onClick={() => {
                       const jesusEntry = {
                         id: Date.now(),
@@ -397,7 +397,7 @@ const TimeAndMaterialForm = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-green-700 border-green-300 hover:bg-green-50"
+                    className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
                     onClick={() => {
                       const newEntry = {
                         id: Date.now(),
