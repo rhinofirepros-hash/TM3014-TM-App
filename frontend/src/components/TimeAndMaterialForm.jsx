@@ -21,7 +21,7 @@ import { useToast } from '../hooks/use-toast';
 const TimeAndMaterialForm = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    projectName: mockData.projects[0].name,
+    projectName: "3rd Ave",
     costCode: 'FP-Install',
     dateOfWork: new Date(),
     customerReference: '',
