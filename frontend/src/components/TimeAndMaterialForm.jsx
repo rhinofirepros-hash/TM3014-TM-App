@@ -208,14 +208,6 @@ const TimeAndMaterialForm = () => {
                 entries={formData.materialEntries}
                 onChange={(entries) => handleInputChange('materialEntries', entries)}
               />
-
-              {/* Free Project Usage Notice */}
-              <div className="bg-gray-100 p-3 rounded-md">
-                <p className="text-sm text-gray-600">
-                  <strong>Free Project Usage</strong><br />
-                  0/5 free TM Tags created this month.
-                </p>
-              </div>
             </div>
 
             {/* Action Buttons */}
