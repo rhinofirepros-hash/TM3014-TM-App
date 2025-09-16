@@ -19,6 +19,7 @@ import { mockData } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
 
 const TimeAndMaterialForm = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     projectName: mockData.projects[0].name,
     costCode: 'FP-Install',
@@ -27,8 +28,12 @@ const TimeAndMaterialForm = () => {
     tmTagTitle: 'Sprinkler Rough-In - 4 Tech, 32 hrs',
     descriptionOfWork: 'Started Working on wrapping up 2nd floor core in units.',
     laborEntries: mockData.laborEntries,
-    materialEntries: []
+    materialEntries: [],
+    signature: null
   });
+  
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
