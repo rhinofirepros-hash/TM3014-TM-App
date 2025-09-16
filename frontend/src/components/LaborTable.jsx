@@ -204,32 +204,34 @@ const LaborTable = ({ entries, onChange }) => {
                   step="0.01"
                 />
               </TableCell>
-              <TableCell className="text-center font-medium">
-                {entry.totalHours.toFixed(2)}
+              <TableCell className="text-center font-medium text-xs sm:text-sm p-1">
+                <div className="bg-gray-50 rounded px-2 py-1">
+                  {entry.totalHours.toFixed(2)}
+                </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   value={entry.date}
                   onChange={(e) => updateEntry(entry.id, 'date', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-20"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <div className="flex gap-1 justify-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => removeEntry(entry.id)}
-                    className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
+                    className="h-7 w-7 p-0 text-red-600 hover:bg-red-50"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3 w-3" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 text-gray-600 hover:bg-gray-50"
+                    className="h-7 w-7 p-0 text-gray-600 hover:bg-gray-50"
                   >
-                    <MoreVertical className="h-4 w-4" />
+                    <MoreVertical className="h-3 w-3" />
                   </Button>
                 </div>
               </TableCell>
