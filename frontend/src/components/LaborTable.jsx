@@ -133,12 +133,12 @@ const LaborTable = ({ entries, onChange }) => {
         <TableBody>
           {entries.map((entry) => (
             <TableRow key={entry.id}>
-              <TableCell>
+              <TableCell className="p-1">
                 <Select
                   value={entry.workerName}
                   onValueChange={(value) => updateEntry(entry.id, 'workerName', value)}
                 >
-                  <SelectTrigger className="border-0 p-1 h-auto">
+                  <SelectTrigger className="border-0 p-2 h-8 text-xs sm:text-sm min-w-[120px]">
                     <SelectValue placeholder="Select worker" />
                   </SelectTrigger>
                   <SelectContent>
