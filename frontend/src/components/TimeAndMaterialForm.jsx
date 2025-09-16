@@ -43,18 +43,138 @@ const TimeAndMaterialForm = () => {
   };
 
   const handleSave = () => {
-    console.log('Saving form data:', formData);
-    // TODO: Implement save functionality
+    // Save to localStorage as a draft
+    const savedData = {
+      ...formData,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('tm_tag_draft', JSON.stringify(savedData));
+    
+    toast({
+      title: "Draft Saved",
+      description: "Your T&M tag has been saved as a draft.",
+    });
   };
 
-  const handlePreview = () => {
-    console.log('Previewing form data:', formData);
-    // TODO: Implement preview functionality
+  const handlePreview = async () => {
+    if (!validateForm()) return;
+    
+    setIsGeneratingPDF(true);
+    try {
+      const pdfGenerator = PDFGenerator({ formData });
+      const result = await pdfGenerator.generatePDF();
+      
+      if (result.success) {
+        toast({
+          title: "PDF Generated",
+          description: `Preview saved as ${result.filename}`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF preview.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const handleCollectSignatures = () => {
-    console.log('Collecting signatures for:', formData);
-    // TODO: Implement signature collection
+    if (!validateForm()) return;
+    setShowSignatureModal(true);
+  };
+
+  const handleSignatureSave = (signatureData) => {
+    setFormData(prev => ({
+      ...prev,
+      signature: signatureData
+    }));
+    
+    toast({
+      title: "Signature Captured",
+      description: "Foreman signature has been saved.",
+    });
+  };
+
+  const validateForm = () => {
+    if (!formData.projectName) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a project name.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    if (!formData.tmTagTitle) {
+      toast({
+        title: "Validation Error", 
+        description: "Please enter a T&M tag title.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    if (formData.laborEntries.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please add at least one labor entry.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleSubmitAndEmail = async () => {
+    if (!validateForm()) return;
+    
+    if (!formData.signature) {
+      toast({
+        title: "Signature Required",
+        description: "Please collect foreman signature before submitting.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGeneratingPDF(true);
+    try {
+      const pdfGenerator = PDFGenerator({ formData });
+      const result = await pdfGenerator.generatePDF();
+      
+      if (result.success) {
+        // TODO: Implement email functionality
+        toast({
+          title: "T&M Tag Submitted",
+          description: `PDF generated and ready to email to GC: ${result.filename}`,
+        });
+        
+        // Clear form after successful submission
+        setFormData({
+          projectName: mockData.projects[0].name,
+          costCode: 'FP-Install',
+          dateOfWork: new Date(),
+          customerReference: '',
+          tmTagTitle: '',
+          descriptionOfWork: '',
+          laborEntries: [],
+          materialEntries: [],
+          signature: null
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description: "Failed to generate and submit T&M tag.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   return (
