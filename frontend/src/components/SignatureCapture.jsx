@@ -61,25 +61,25 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
           </div>
         </div>
 
-        <DialogFooter className="flex justify-between">
+        <DialogFooter className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
           <Button
             variant="outline"
             onClick={clear}
             disabled={isEmpty}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 h-10"
           >
             <Trash2 className="w-4 h-4" />
             Clear
           </Button>
           
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={onClose} className="h-10">
               Cancel
             </Button>
             <Button 
               onClick={save}
               disabled={isEmpty}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 h-10"
             >
               Save Signature
             </Button>
