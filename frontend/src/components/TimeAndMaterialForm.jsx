@@ -175,11 +175,49 @@ const TimeAndMaterialForm = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">Add Labor</h3>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-green-700 border-green-300">
-                    Select from list
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-green-700 border-green-300 hover:bg-green-50"
+                    onClick={() => {
+                      const jesusEntry = {
+                        id: Date.now(),
+                        workerName: 'Jesus Garcia',
+                        quantity: 1,
+                        stHours: 8.00,
+                        otHours: 0,
+                        dtHours: 0,
+                        potHours: 0,
+                        totalHours: 8.00,
+                        date: new Date().toLocaleDateString()
+                      };
+                      handleInputChange('laborEntries', [...formData.laborEntries, jesusEntry]);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Jesus Garcia
                   </Button>
-                  <Button variant="outline" size="sm" className="text-green-700 border-green-300">
-                    Add empty row
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-green-700 border-green-300 hover:bg-green-50"
+                    onClick={() => {
+                      const newEntry = {
+                        id: Date.now(),
+                        workerName: '',
+                        quantity: 1,
+                        stHours: 0,
+                        otHours: 0,
+                        dtHours: 0,
+                        potHours: 0,
+                        totalHours: 0,
+                        date: new Date().toLocaleDateString()
+                      };
+                      handleInputChange('laborEntries', [...formData.laborEntries, newEntry]);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Worker
                   </Button>
                 </div>
               </div>
