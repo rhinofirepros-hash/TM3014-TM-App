@@ -226,24 +226,58 @@ const TimeAndMaterialForm = () => {
           <CardContent className="p-6 space-y-6">
             {/* Project Name */}
             <div className="space-y-2">
-              <Label htmlFor="projectName" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="projectName" className="text-sm font-medium text-gray-700 flex items-center justify-between">
                 Project Name*
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCustomProject(!isCustomProject)}
+                  className="text-xs h-6 px-2"
+                >
+                  {isCustomProject ? 'Cancel' : 'Add New'}
+                </Button>
               </Label>
-              <Select 
-                value={formData.projectName} 
-                onValueChange={(value) => handleInputChange('projectName', value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockData.projects.map((project) => (
-                    <SelectItem key={project.id} value={project.name}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              
+              {isCustomProject ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={customProjectName}
+                    onChange={(e) => setCustomProjectName(e.target.value)}
+                    placeholder="Enter new project name"
+                    className="flex-1"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSaveCustomProject();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleSaveCustomProject}
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <Select 
+                  value={formData.projectName} 
+                  onValueChange={(value) => handleInputChange('projectName', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {savedProjects.map((project) => (
+                      <SelectItem key={project.id} value={project.name}>
+                        {project.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Cost Code */}
