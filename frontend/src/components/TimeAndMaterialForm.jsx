@@ -482,7 +482,7 @@ const TimeAndMaterialForm = () => {
                   className="text-gray-600 h-10"
                   onClick={() => {
                     setFormData({
-                      projectName: savedProjects[0]?.name || 'Third Ave. Apartments',
+                      projectName: "3rd Ave",
                       costCode: 'FP-Install',
                       dateOfWork: new Date(),
                       customerReference: '',
