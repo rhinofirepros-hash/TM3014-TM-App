@@ -161,7 +161,7 @@ const TimeAndMaterialForm = () => {
         
         // Clear form after successful submission
         setFormData({
-          projectName: mockData.projects[0].name,
+          projectName: savedProjects[0].name,
           costCode: 'FP-Install',
           dateOfWork: new Date(),
           customerReference: '',
@@ -181,6 +181,35 @@ const TimeAndMaterialForm = () => {
     } finally {
       setIsGeneratingPDF(false);
     }
+  };
+
+  const handleSaveCustomProject = () => {
+    if (!customProjectName.trim()) {
+      toast({
+        title: "Project Name Required",
+        description: "Please enter a project name.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newProject = {
+      id: Date.now(),
+      name: customProjectName.trim()
+    };
+
+    const updatedProjects = [...savedProjects, newProject];
+    setSavedProjects(updatedProjects);
+    localStorage.setItem('saved_projects', JSON.stringify(updatedProjects));
+    
+    setFormData(prev => ({ ...prev, projectName: newProject.name }));
+    setCustomProjectName('');
+    setIsCustomProject(false);
+    
+    toast({
+      title: "Project Saved",
+      description: `"${newProject.name}" has been added to your project list.`,
+    });
   };
 
   return (
