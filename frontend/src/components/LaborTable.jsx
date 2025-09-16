@@ -71,42 +71,61 @@ const LaborTable = ({ entries, onChange }) => {
       <Table className="min-w-[800px]">
         <TableHeader>
           <TableRow className="bg-gray-50">
-            <TableHead className="text-sm font-medium text-gray-700 w-48">
-              Worker Name / Description*
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 min-w-[140px]">
+              <div className="flex flex-col">
+                <span>Worker Name*</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              Quantity Of Workers*
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+              <div className="flex flex-col items-center">
+                <span>Qty*</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              ST (Hrs)
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+              <div className="flex flex-col items-center">
+                <span>ST</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              OT (Hrs)
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+              <div className="flex flex-col items-center">
+                <span>OT</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              DT (Hrs)
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+              <div className="flex flex-col items-center">
+                <span>DT</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              POT (Hrs)
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+              <div className="flex flex-col items-center">
+                <span>POT</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              POT (Hrs)
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+              <div className="flex flex-col items-center">
+                <span>POT</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              Total (Hrs)
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+              <div className="flex flex-col items-center">
+                <span>Total</span>
+                <span className="text-xs text-gray-500">(Hrs)</span>
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              Date Of Work
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[90px]">
+              <div className="flex flex-col items-center">
+                <span>Date</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
               Actions
             </TableHead>
           </TableRow>
