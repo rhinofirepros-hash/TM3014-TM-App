@@ -473,11 +473,11 @@ const TimeAndMaterialForm = () => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex justify-between pt-6 border-t">
-              <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row justify-between pt-6 border-t gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   variant="outline" 
-                  className="text-gray-600"
+                  className="text-gray-600 h-10"
                   onClick={() => {
                     setFormData({
                       projectName: savedProjects[0]?.name || 'Third Ave. Apartments',
@@ -499,38 +499,41 @@ const TimeAndMaterialForm = () => {
                 <Button 
                   variant="outline" 
                   onClick={handleSave}
-                  className="text-gray-600"
+                  className="text-gray-600 h-10"
                 >
                   Save Draft
                 </Button>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   variant="outline" 
                   onClick={handlePreview}
                   disabled={isGeneratingPDF}
-                  className="text-gray-600 flex items-center gap-2"
+                  className="text-gray-600 flex items-center justify-center gap-2 h-10"
                 >
                   <Eye className="w-4 h-4" />
-                  {isGeneratingPDF ? 'Generating...' : 'Preview PDF'}
+                  <span className="hidden sm:inline">{isGeneratingPDF ? 'Generating...' : 'Preview PDF'}</span>
+                  <span className="sm:hidden">{isGeneratingPDF ? 'Generating...' : 'Preview'}</span>
                 </Button>
                 
                 {!formData.signature ? (
                   <Button 
                     onClick={handleCollectSignatures}
-                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                    className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
                   >
                     <PenTool className="w-4 h-4" />
-                    Collect Signatures
+                    <span className="hidden sm:inline">Collect Signatures</span>
+                    <span className="sm:hidden">Sign</span>
                   </Button>
                 ) : (
                   <Button 
                     onClick={handleSubmitAndEmail}
                     disabled={isGeneratingPDF}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 h-10"
                   >
                     <Download className="w-4 h-4" />
-                    {isGeneratingPDF ? 'Submitting...' : 'Submit & Email GC'}
+                    <span className="hidden sm:inline">{isGeneratingPDF ? 'Submitting...' : 'Submit & Email GC'}</span>
+                    <span className="sm:hidden">{isGeneratingPDF ? 'Submitting...' : 'Submit'}</span>
                   </Button>
                 )}
               </div>
