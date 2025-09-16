@@ -233,11 +233,25 @@ const TimeAndMaterialForm = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">Add Material</h3>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-green-700 border-green-300">
-                    Select from list
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-green-700 border-green-300">
-                    Add empty row
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-green-700 border-green-300 hover:bg-green-50"
+                    onClick={() => {
+                      const newMaterial = {
+                        id: Date.now(),
+                        materialName: '',
+                        unitOfMeasure: '',
+                        quantity: 0,
+                        unitCost: 0,
+                        total: 0,
+                        dateOfWork: new Date().toLocaleDateString()
+                      };
+                      handleInputChange('materialEntries', [...formData.materialEntries, newMaterial]);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Material
                   </Button>
                 </div>
               </div>
