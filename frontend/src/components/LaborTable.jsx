@@ -150,12 +150,12 @@ const LaborTable = ({ entries, onChange }) => {
                   </SelectContent>
                 </Select>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.quantity}
                   onChange={(e) => updateEntry(entry.id, 'quantity', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-16"
                   step="0.01"
                 />
               </TableCell>
