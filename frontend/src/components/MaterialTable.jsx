@@ -42,26 +42,34 @@ const MaterialTable = ({ entries, onChange }) => {
       <Table className="min-w-[600px]">
         <TableHeader>
           <TableRow className="bg-gray-50">
-            <TableHead className="text-sm font-medium text-gray-700">
-              Material Name*
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 min-w-[120px]">
+              <div className="flex flex-col">
+                <span>Material Name*</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              Unit Of Measure*
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+              <div className="flex flex-col items-center">
+                <span>Unit*</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              Quantity of Unit*
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+              <div className="flex flex-col items-center">
+                <span>Qty*</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
               Total
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
-              DATE OF WORK
-              <Info className="w-4 h-4 text-gray-400 inline ml-1" />
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[90px]">
+              <div className="flex flex-col items-center">
+                <span>Date</span>
+                <Info className="w-3 h-3 text-gray-400 mt-1" />
+              </div>
             </TableHead>
-            <TableHead className="text-sm font-medium text-gray-700 text-center">
+            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
               Actions
             </TableHead>
           </TableRow>
