@@ -67,8 +67,8 @@ const LaborTable = ({ entries, onChange }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
+    <div className="overflow-x-auto border rounded-lg">
+      <Table className="min-w-[800px]">
         <TableHeader>
           <TableRow className="bg-gray-50">
             <TableHead className="text-sm font-medium text-gray-700 w-48">
