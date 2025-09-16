@@ -390,10 +390,39 @@ const TimeAndMaterialForm = () => {
               />
             </div>
 
+            {/* Signature Status */}
+            {formData.signature && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                <div className="flex items-center gap-2 text-green-700">
+                  <PenTool className="w-4 h-4" />
+                  <span className="font-medium">Foreman Signature Collected</span>
+                </div>
+                <p className="text-sm text-green-600 mt-1">
+                  Ready to generate final PDF and submit to General Contractor
+                </p>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex justify-between pt-6 border-t">
               <div className="flex gap-3">
-                <Button variant="outline" className="text-gray-600">
+                <Button 
+                  variant="outline" 
+                  className="text-gray-600"
+                  onClick={() => {
+                    setFormData({
+                      projectName: mockData.projects[0].name,
+                      costCode: 'FP-Install',
+                      dateOfWork: new Date(),
+                      customerReference: '',
+                      tmTagTitle: '',
+                      descriptionOfWork: '',
+                      laborEntries: [],
+                      materialEntries: [],
+                      signature: null
+                    });
+                  }}
+                >
                   Cancel
                 </Button>
                 <Button 
@@ -401,25 +430,47 @@ const TimeAndMaterialForm = () => {
                   onClick={handleSave}
                   className="text-gray-600"
                 >
-                  Save
+                  Save Draft
                 </Button>
               </div>
               <div className="flex gap-3">
                 <Button 
                   variant="outline" 
                   onClick={handlePreview}
-                  className="text-gray-600"
+                  disabled={isGeneratingPDF}
+                  className="text-gray-600 flex items-center gap-2"
                 >
-                  Preview
+                  <Eye className="w-4 h-4" />
+                  {isGeneratingPDF ? 'Generating...' : 'Preview PDF'}
                 </Button>
-                <Button 
-                  onClick={handleCollectSignatures}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Collect Signatures
-                </Button>
+                
+                {!formData.signature ? (
+                  <Button 
+                    onClick={handleCollectSignatures}
+                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                  >
+                    <PenTool className="w-4 h-4" />
+                    Collect Signatures
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={handleSubmitAndEmail}
+                    disabled={isGeneratingPDF}
+                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    {isGeneratingPDF ? 'Submitting...' : 'Submit & Email GC'}
+                  </Button>
+                )}
               </div>
             </div>
+
+            {/* Signature Modal */}
+            <SignatureCapture
+              isOpen={showSignatureModal}
+              onClose={() => setShowSignatureModal(false)}
+              onSave={handleSignatureSave}
+            />
           </CardContent>
         </Card>
       </div>
