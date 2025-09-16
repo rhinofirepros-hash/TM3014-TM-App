@@ -8,12 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { format } from 'date-fns';
-import { CalendarIcon, Plus, Trash2, Info } from 'lucide-react';
+import { CalendarIcon, Plus, Trash2, Info, Download, Eye, PenTool } from 'lucide-react';
 import { cn } from '../lib/utils';
 import RichTextEditor from './RichTextEditor';
 import LaborTable from './LaborTable';
 import MaterialTable from './MaterialTable';
+import SignatureCapture from './SignatureCapture';
+import PDFGenerator from './PDFGenerator';
 import { mockData } from '../data/mock';
+import { useToast } from '../hooks/use-toast';
 
 const TimeAndMaterialForm = () => {
   const [formData, setFormData] = useState({
