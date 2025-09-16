@@ -34,6 +34,12 @@ const TimeAndMaterialForm = () => {
   
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isCustomProject, setIsCustomProject] = useState(false);
+  const [customProjectName, setCustomProjectName] = useState('');
+  const [savedProjects, setSavedProjects] = useState(() => {
+    const saved = localStorage.getItem('saved_projects');
+    return saved ? JSON.parse(saved) : mockData.projects;
+  });
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
