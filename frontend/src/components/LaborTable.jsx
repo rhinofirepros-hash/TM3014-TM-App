@@ -213,7 +213,8 @@ const LaborTable = ({ entries, onChange }) => {
                 <Input
                   value={entry.date}
                   onChange={(e) => updateEntry(entry.id, 'date', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-20"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm min-w-[85px]"
+                  placeholder="MM/DD/YYYY"
                 />
               </TableCell>
               <TableCell className="p-1">
