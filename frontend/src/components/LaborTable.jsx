@@ -159,55 +159,50 @@ const LaborTable = ({ entries, onChange }) => {
                   step="0.01"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.stHours}
                   onChange={(e) => updateEntry(entry.id, 'stHours', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
                   step="0.01"
                 />
-                <div className="text-xs text-gray-500 text-center mt-1">hrs</div>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.otHours}
                   onChange={(e) => updateEntry(entry.id, 'otHours', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
                   step="0.01"
                 />
-                <div className="text-xs text-gray-500 text-center mt-1">hrs</div>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.dtHours}
                   onChange={(e) => updateEntry(entry.id, 'dtHours', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
                   step="0.01"
                 />
-                <div className="text-xs text-gray-500 text-center mt-1">hrs</div>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.potHours}
                   onChange={(e) => updateEntry(entry.id, 'potHours', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
                   step="0.01"
                 />
-                <div className="text-xs text-gray-500 text-center mt-1">hrs</div>
               </TableCell>
-              <TableCell>
+              <TableCell className="p-1">
                 <Input
                   type="number"
                   value={entry.potHours}
                   onChange={(e) => updateEntry(entry.id, 'potHours', e.target.value)}
-                  className="border-0 p-1 text-center"
+                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
                   step="0.01"
                 />
-                <div className="text-xs text-gray-500 text-center mt-1">hrs</div>
               </TableCell>
               <TableCell className="text-center font-medium">
                 {entry.totalHours.toFixed(2)}
