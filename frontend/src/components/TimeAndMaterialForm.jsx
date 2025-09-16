@@ -38,7 +38,7 @@ const TimeAndMaterialForm = () => {
   const [customProjectName, setCustomProjectName] = useState('');
   const [savedProjects, setSavedProjects] = useState(() => {
     const saved = localStorage.getItem('saved_projects');
-    return saved ? JSON.parse(saved) : mockData.projects;
+    return saved ? JSON.parse(saved) : [{ id: 1, name: "3rd Ave" }];
   });
 
   const handleInputChange = (field, value) => {
