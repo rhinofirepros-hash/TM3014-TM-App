@@ -303,15 +303,17 @@ const TimeAndMaterialForm = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal min-w-[160px] h-10",
                       !formData.dateOfWork && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.dateOfWork ? format(formData.dateOfWork, "MM/dd/yyyy") : "Pick a date"}
+                    <CalendarIcon className="mr-2 h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">
+                      {formData.dateOfWork ? format(formData.dateOfWork, "MM/dd/yyyy") : "Pick a date"}
+                    </span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={formData.dateOfWork}
