@@ -1,10 +1,6 @@
 export const mockData = {
   projects: [
-    { id: 1, name: "Third Ave. Apartments" },
-    { id: 2, name: "Downtown Office Complex" },
-    { id: 3, name: "Residential Phase 2" },
-    { id: 4, name: "Commercial Plaza" },
-    { id: 5, name: "Medical Center East" }
+    { id: 1, name: "3rd Ave" }
   ],
   
   workers: [
