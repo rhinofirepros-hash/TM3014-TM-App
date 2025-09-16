@@ -480,7 +480,7 @@ const TimeAndMaterialForm = () => {
                   className="text-gray-600"
                   onClick={() => {
                     setFormData({
-                      projectName: mockData.projects[0].name,
+                      projectName: savedProjects[0]?.name || 'Third Ave. Apartments',
                       costCode: 'FP-Install',
                       dateOfWork: new Date(),
                       customerReference: '',
@@ -490,6 +490,8 @@ const TimeAndMaterialForm = () => {
                       materialEntries: [],
                       signature: null
                     });
+                    setIsCustomProject(false);
+                    setCustomProjectName('');
                   }}
                 >
                   Cancel
