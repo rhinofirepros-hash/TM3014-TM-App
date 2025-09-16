@@ -57,14 +57,6 @@ const TimeAndMaterialForm = () => {
           <h1 className="text-2xl font-semibold text-gray-900">
             Create A Time & Material Tag
           </h1>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex items-center gap-2 text-green-700 border-green-300 hover:bg-green-50"
-          >
-            <MessageCircle className="w-4 h-4" />
-            Chat with Support
-          </Button>
         </div>
 
         <Card className="shadow-sm">
