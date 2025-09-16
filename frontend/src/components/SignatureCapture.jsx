@@ -43,14 +43,14 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
             Please sign below to confirm the accuracy of this Time & Material tag:
           </div>
           
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 sm:p-4 bg-gray-50">
             <SignatureCanvas
               ref={sigCanvas}
               penColor="black"
               canvasProps={{
-                width: 600,
-                height: 200,
-                className: 'signature-canvas bg-white rounded border'
+                width: window.innerWidth < 640 ? Math.min(window.innerWidth - 80, 500) : 600,
+                height: window.innerWidth < 640 ? 150 : 200,
+                className: 'signature-canvas bg-white rounded border w-full'
               }}
               onEnd={handleCanvasChange}
             />
