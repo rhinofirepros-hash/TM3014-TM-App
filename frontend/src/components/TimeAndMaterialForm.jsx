@@ -545,16 +545,75 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Company Name */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Label className="text-sm font-medium text-gray-700 flex items-center justify-between">
                 Company Name
-                <Info className="w-4 h-4 text-gray-400" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCustomCompany(!isCustomCompany)}
+                  className="text-xs h-6 px-2"
+                >
+                  {isCustomCompany ? 'Cancel' : 'Add New'}
+                </Button>
               </Label>
-              <Input
-                value={formData.companyName}
-                onChange={(e) => handleInputChange('companyName', e.target.value)}
-                placeholder="Enter company name (e.g., ABC Construction)"
-                className="w-full"
-              />
+              
+              {isCustomCompany ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={customCompanyName}
+                    onChange={(e) => setCustomCompanyName(e.target.value)}
+                    placeholder="Enter new company name (e.g., ABC Construction)"
+                    className="flex-1"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSaveCustomCompany();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleSaveCustomCompany}
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {savedCompanies.length > 0 ? (
+                    <Select 
+                      value={formData.companyName} 
+                      onValueChange={(value) => handleInputChange('companyName', value)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a company or add new" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {savedCompanies.map((company) => (
+                          <SelectItem key={company.id} value={company.name}>
+                            {company.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={formData.companyName}
+                      onChange={(e) => handleInputChange('companyName', e.target.value)}
+                      placeholder="Enter company name (e.g., ABC Construction)"
+                      className="w-full"
+                    />
+                  )}
+                  <p className="text-xs text-gray-500">
+                    {savedCompanies.length > 0 
+                      ? `${savedCompanies.length} saved companies available`
+                      : 'Start typing to create your first company'
+                    }
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Title of T&M Tag */}
