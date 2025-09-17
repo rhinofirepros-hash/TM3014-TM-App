@@ -83,7 +83,43 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
         
         <div className="space-y-4">
           <div className="text-sm text-gray-600">
-            Please sign below to confirm the accuracy of this Time & Material tag:
+            Please enter your information and sign below to confirm the accuracy of this Time & Material tag:
+          </div>
+          
+          {/* Signer Information */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+            <div className="space-y-2">
+              <Label htmlFor="signerName" className="text-sm font-medium">
+                Full Name *
+              </Label>
+              <Input
+                id="signerName"
+                type="text"
+                placeholder="Enter your full name"
+                value={signerName}
+                onChange={(e) => setSignerName(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="signerTitle" className="text-sm font-medium">
+                Title/Position
+              </Label>
+              <Select value={signerTitle} onValueChange={setSignerTitle}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Foreman">Foreman</SelectItem>
+                  <SelectItem value="Supervisor">Supervisor</SelectItem>
+                  <SelectItem value="Project Manager">Project Manager</SelectItem>
+                  <SelectItem value="Technician">Technician</SelectItem>
+                  <SelectItem value="Apprentice">Apprentice</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 sm:p-4 bg-gray-50">
