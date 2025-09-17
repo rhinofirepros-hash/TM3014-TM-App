@@ -16,12 +16,12 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setFillColor(240, 240, 240);
       pdf.rect(15, 15, 180, 25, 'F');
       
-      // Company Header
+      // Company Header - adjusted for logo on left
       pdf.setFontSize(18);
       pdf.setFont(undefined, 'bold');
-      pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
+      pdf.text('RHINO FIRE PROTECTION', 120, 25, { align: 'center' });
       pdf.setFontSize(14);
-      pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
+      pdf.text('TIME & MATERIAL TAG', 120, 32, { align: 'center' });
       
       // Add actual Rhino Fire Protection logo
       try {
