@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Mail, Send, FileText, User, Calendar, Clock, DollarSign } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import emailService from '../services/emailService';
+import oauthEmailService from '../services/oauthEmailService';
+import EmailAuthModal from './EmailAuthModal';
 
 const EmailComposer = ({ isOpen, onClose, formData, pdfData }) => {
   const [emailData, setEmailData] = useState({
