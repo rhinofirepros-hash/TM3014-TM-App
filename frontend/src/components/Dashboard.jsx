@@ -57,8 +57,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
     if (savedProjects) {
       setProjects(JSON.parse(savedProjects));
     } else {
-      // Default project
-      setProjects([{ id: 1, name: "3rd Ave", status: "active", created: new Date().toLocaleDateString() }]);
+      // No default projects - start clean
+      setProjects([]);
     }
     
     if (savedTags) {
