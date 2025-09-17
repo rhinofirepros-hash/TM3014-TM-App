@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Separator } from './ui/separator';
+import { Mail, Shield } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 const PinLogin = ({ onLoginSuccess }) => {
