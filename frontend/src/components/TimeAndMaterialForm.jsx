@@ -285,8 +285,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         
         // Clear form after successful submission
         setFormData({
-          projectName: "3rd Ave",
-          costCode: 'FP-Install',
+          projectName: "",
+          costCode: '',
           dateOfWork: new Date(),
           companyName: '',
           tmTagTitle: '',
