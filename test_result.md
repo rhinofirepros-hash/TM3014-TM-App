@@ -161,7 +161,7 @@ frontend:
     status_history:
       - working: true
         agent: "main"
-        comment: "Updated PDFGenerator to use user's actual company logo from uploaded assets. Fixed logo URL and positioning."
+        comment: "COMPLETED: Fixed PDF generation - removed black square background, used actual Rhino logo on white background, replaced Customer with Company fields, added company name input field."
 
   - task: "EmailJS integration"
     implemented: true
