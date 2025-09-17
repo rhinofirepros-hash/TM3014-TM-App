@@ -249,6 +249,28 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     });
   };
 
+  const handleSaveWorker = (workerName) => {
+    if (!workerName.trim()) return;
+    
+    const existingWorker = savedWorkers.find(w => w.name.toLowerCase() === workerName.toLowerCase());
+    if (existingWorker) return; // Worker already exists
+    
+    const newWorker = {
+      id: Date.now(),
+      name: workerName.trim(),
+      rate: 95 // Default rate
+    };
+    
+    const updatedWorkers = [...savedWorkers, newWorker];
+    setSavedWorkers(updatedWorkers);
+    localStorage.setItem('saved_workers', JSON.stringify(updatedWorkers));
+    
+    toast({
+      title: "Worker Saved",
+      description: `"${newWorker.name}" has been added to your worker list.`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="max-w-5xl mx-auto">
