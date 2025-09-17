@@ -855,19 +855,77 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
+                  <Label className="text-sm font-medium text-gray-700 flex items-center justify-between">
                     GC Email Address*
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsCustomEmail(!isCustomEmail)}
+                      className="text-xs h-6 px-2"
+                    >
+                      {isCustomEmail ? 'Cancel' : 'Add New'}
+                    </Button>
                   </Label>
-                  <Input
-                    value={formData.gcEmail}
-                    onChange={(e) => handleInputChange('gcEmail', e.target.value)}
-                    placeholder="Enter GC email address"
-                    type="email"
-                    className="w-full"
-                  />
-                  <p className="text-xs text-gray-500">
-                    PDF will be automatically emailed to this address
-                  </p>
+                  
+                  {isCustomEmail ? (
+                    <div className="flex gap-2">
+                      <Input
+                        value={customEmail}
+                        onChange={(e) => setCustomEmail(e.target.value)}
+                        placeholder="Enter new GC email address"
+                        type="email"
+                        className="flex-1"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSaveCustomEmail();
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleSaveCustomEmail}
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {savedEmails.length > 0 ? (
+                        <Select 
+                          value={formData.gcEmail} 
+                          onValueChange={(value) => handleInputChange('gcEmail', value)}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a GC email or add new" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {savedEmails.map((email) => (
+                              <SelectItem key={email.id} value={email.email}>
+                                {email.email}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          value={formData.gcEmail}
+                          onChange={(e) => handleInputChange('gcEmail', e.target.value)}
+                          placeholder="Enter GC email address"
+                          type="email"
+                          className="w-full"
+                        />
+                      )}
+                      <p className="text-xs text-gray-500">
+                        {savedEmails.length > 0 
+                          ? `${savedEmails.length} saved emails available • PDF will be emailed to this address`
+                          : 'PDF will be automatically emailed to this address'
+                        }
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="space-y-2">
