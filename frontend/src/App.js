@@ -58,6 +58,10 @@ function App() {
     setSelectedProject(null);
   };
 
+  const handleManageWorkers = () => {
+    setCurrentView('workers');
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="App">
