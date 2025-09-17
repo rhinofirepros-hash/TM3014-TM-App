@@ -602,7 +602,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     GC Email Address*
                   </Label>
                   <Input
-                    value={formData.gcEmail || 'iacosta@nueragroup.com'}
+                    value={formData.gcEmail}
                     onChange={(e) => handleInputChange('gcEmail', e.target.value)}
                     placeholder="Enter GC email address"
                     type="email"
