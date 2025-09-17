@@ -10,6 +10,7 @@ import { useToast } from '../hooks/use-toast';
 const PinLogin = ({ onLoginSuccess }) => {
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loginMethod, setLoginMethod] = useState('pin'); // 'pin', 'gmail', 'outlook'
   const { toast } = useToast();
 
   const handleLogin = () => {
