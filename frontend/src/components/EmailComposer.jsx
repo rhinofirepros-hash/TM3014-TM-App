@@ -240,9 +240,26 @@ www.rhinofireprotection.com`
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-blue-600" />
-            Send T&M Tag to General Contractor
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Mail className="w-5 h-5 text-blue-600" />
+              Send T&M Tag to General Contractor
+            </div>
+            {(() => {
+              const currentUser = oauthEmailService.getCurrentUser();
+              return currentUser ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-green-600 capitalize">{currentUser.provider}</span>
+                  <span className="text-gray-500">({currentUser.email})</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <span className="text-yellow-600">Not connected</span>
+                </div>
+              );
+            })()}
           </DialogTitle>
         </DialogHeader>
 
