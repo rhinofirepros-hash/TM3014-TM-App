@@ -66,7 +66,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         // Fallback to red square in top left
         pdf.setDrawColor(220, 53, 69);
         pdf.setFillColor(220, 53, 69);
-        pdf.roundedRect(15, 17, 35, 20, 2, 2, 'FD');
+        pdf.roundedRect(15, 15, 40, 25, 2, 2, 'FD');
       }
       
       // Project Information Section
