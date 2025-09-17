@@ -108,40 +108,9 @@ const PinLogin = ({ onLoginSuccess }) => {
           <p className="text-gray-600">T&M Daily Tag Application</p>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* OAuth Login Options */}
-          <div className="space-y-3">
-            <div className="text-center text-sm font-medium text-gray-700 mb-4">
-              Choose your login method
-            </div>
-            
-            <Button 
-              onClick={handleGmailLogin}
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
-              variant={loginMethod === 'gmail' ? 'default' : 'outline'}
-            >
-              <Mail className="w-4 h-4" />
-              {isLoading && loginMethod === 'gmail' ? 'Connecting...' : 'Login with Gmail'}
-            </Button>
-            
-            <Button 
-              onClick={handleOutlookLogin}
-              disabled={isLoading}
-              className="w-full bg-blue-800 hover:bg-blue-900 text-white flex items-center justify-center gap-2"
-              variant={loginMethod === 'outlook' ? 'default' : 'outline'}
-            >
-              <Mail className="w-4 h-4" />
-              {isLoading && loginMethod === 'outlook' ? 'Connecting...' : 'Login with Outlook'}
-            </Button>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or use PIN</span>
-            </div>
+          {/* Direct Login Instructions */}
+          <div className="text-center mb-6">
+            <p className="text-gray-600 text-sm">Enter your PIN to access the T&M Tag system</p>
           </div>
 
           {/* PIN Login */}
