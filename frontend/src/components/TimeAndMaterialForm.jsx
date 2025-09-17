@@ -172,7 +172,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
       const result = await pdfGenerator.generatePDF();
       
       if (result.success) {
-        let successMessage = `PDF generated: ${result.filename}`;
+        // Store PDF data for email composer
+        setGeneratedPDFData(result.pdfData);
         
         // Save to T&M history
         const tmTag = {
@@ -193,28 +194,23 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         
         // Save to localStorage
         const existingHistory = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
-        existingHistory.unshift(tmTag); // Add to beginning
+        existingHistory.unshift(tmTag);
         localStorage.setItem('tm_tags_history', JSON.stringify(existingHistory));
         
-        // Handle email notification
-        if (formData.autoEmail && formData.gcEmail) {
-          // TODO: Implement actual email sending with EmailJS
-          successMessage += `\nEmail sent to: ${formData.gcEmail}`;
-          
-          // Simulate email sending for now
-          console.log('Would send email to:', formData.gcEmail);
-          console.log('PDF data:', result.pdfData);
+        // Open email composer if auto-email is enabled
+        if (formData.autoEmail) {
+          setShowEmailComposer(true);
+        } else {
+          toast({
+            title: "T&M Tag Generated",
+            description: `PDF generated: ${result.filename}`,
+          });
         }
         
         // Handle download
         if (formData.downloadPDF) {
-          successMessage += '\nPDF downloaded to your device';
+          // PDF is already downloaded by jsPDF
         }
-        
-        toast({
-          title: "T&M Tag Submitted Successfully",
-          description: successMessage,
-        });
         
         // Clear form after successful submission
         setFormData({
