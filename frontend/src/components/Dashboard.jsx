@@ -90,7 +90,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onLogout }) =>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={onManageWorkers}>
               <CardContent className="p-6 text-center">
                 <Users className="w-8 h-8 text-purple-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900">Manage Workers</h3>
