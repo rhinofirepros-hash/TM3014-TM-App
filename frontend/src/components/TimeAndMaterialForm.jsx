@@ -33,7 +33,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     materialEntries: [],
     equipmentEntries: [],
     otherEntries: [],
-    gcEmail: 'iacosta@nueragroup.com',
+    gcEmail: '',
     autoEmail: true,
     downloadPDF: true,
     signature: null
@@ -203,7 +203,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           materialEntries: [],
           equipmentEntries: [],
           otherEntries: [],
-          gcEmail: 'iacosta@nueragroup.com',
+          gcEmail: '',
           autoEmail: true,
           downloadPDF: true,
           signature: null
@@ -672,7 +672,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                       materialEntries: [],
                       equipmentEntries: [],
                       otherEntries: [],
-                      gcEmail: 'iacosta@nueragroup.com',
+                      gcEmail: '',
                       autoEmail: true,
                       downloadPDF: true,
                       signature: null
