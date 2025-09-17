@@ -25,6 +25,9 @@ const Reports = ({ onBack }) => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Clear any old mock data from localStorage
+    localStorage.removeItem('tm_tags_history');
+    localStorage.removeItem('recent_tm_tags');
     loadTMTags();
   }, []);
 
