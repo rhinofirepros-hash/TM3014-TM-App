@@ -79,46 +79,66 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       // Labor Section
       if (formData.laborEntries && formData.laborEntries.length > 0) {
         pdf.setFont(undefined, 'bold');
-        pdf.text('LABOR DETAILS:', 20, yPos);
-        yPos += 10;
+        pdf.setFontSize(11);
+        pdf.text('LABOR', 15, yPos);
+        yPos += 6;
+        
+        // Labor table with borders
+        pdf.setDrawColor(150, 150, 150);
+        pdf.setLineWidth(0.1);
         
         // Labor table headers
-        pdf.setFontSize(10);
-        pdf.text('Worker', 20, yPos);
-        pdf.text('Qty', 60, yPos);
-        pdf.text('ST Hrs', 80, yPos);
-        pdf.text('OT Hrs', 100, yPos);
-        pdf.text('DT Hrs', 120, yPos);
-        pdf.text('POT Hrs', 140, yPos);
-        pdf.text('Total Hrs', 160, yPos);
-        pdf.text('Date', 180, yPos);
+        pdf.setFontSize(8);
+        pdf.rect(15, yPos, 50, 8); // Worker name
+        pdf.rect(65, yPos, 20, 8); // Qty
+        pdf.rect(85, yPos, 20, 8); // ST
+        pdf.rect(105, yPos, 20, 8); // OT
+        pdf.rect(125, yPos, 20, 8); // DT
+        pdf.rect(145, yPos, 20, 8); // POT
+        pdf.rect(165, yPos, 20, 8); // Total
+        pdf.rect(185, yPos, 10, 8); // Date (shorter)
         
-        yPos += 5;
-        pdf.line(20, yPos, 200, yPos); // Header line
-        yPos += 5;
+        pdf.text('Worker Name', 17, yPos + 5);
+        pdf.text('Qty', 72, yPos + 5);
+        pdf.text('ST', 92, yPos + 5);
+        pdf.text('OT', 112, yPos + 5);
+        pdf.text('DT', 132, yPos + 5);
+        pdf.text('POT', 152, yPos + 5);
+        pdf.text('Total', 170, yPos + 5);
+        pdf.text('Date', 187, yPos + 5);
+        
+        yPos += 8;
         
         // Labor entries
         pdf.setFont(undefined, 'normal');
         formData.laborEntries.forEach((entry) => {
-          pdf.text(entry.workerName || '', 20, yPos);
-          pdf.text(entry.quantity?.toString() || '0', 60, yPos);
-          pdf.text(entry.stHours?.toString() || '0', 80, yPos);
-          pdf.text(entry.otHours?.toString() || '0', 100, yPos);
-          pdf.text(entry.dtHours?.toString() || '0', 120, yPos);
-          pdf.text(entry.potHours?.toString() || '0', 140, yPos);
-          pdf.text(entry.totalHours?.toString() || '0', 160, yPos);
-          pdf.text(entry.date || '', 180, yPos);
-          yPos += 5;
+          pdf.rect(15, yPos, 50, 6);
+          pdf.rect(65, yPos, 20, 6);
+          pdf.rect(85, yPos, 20, 6);
+          pdf.rect(105, yPos, 20, 6);
+          pdf.rect(125, yPos, 20, 6);
+          pdf.rect(145, yPos, 20, 6);
+          pdf.rect(165, yPos, 20, 6);
+          pdf.rect(185, yPos, 10, 6);
+          
+          pdf.text(entry.workerName || '', 17, yPos + 4);
+          pdf.text(entry.quantity?.toString() || '1', 72, yPos + 4);
+          pdf.text(entry.stHours?.toString() || '0', 92, yPos + 4);
+          pdf.text(entry.otHours?.toString() || '0', 112, yPos + 4);
+          pdf.text(entry.dtHours?.toString() || '0', 132, yPos + 4);
+          pdf.text(entry.potHours?.toString() || '0', 152, yPos + 4);
+          pdf.text(entry.totalHours?.toString() || '0', 170, yPos + 4);
+          pdf.text(entry.date?.substring(0, 8) || '', 187, yPos + 4);
+          yPos += 6;
         });
         
         // Labor totals
         const totalHours = formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0), 0);
-        pdf.line(20, yPos, 200, yPos);
-        yPos += 5;
         pdf.setFont(undefined, 'bold');
-        pdf.text('TOTAL LABOR HOURS:', 120, yPos);
-        pdf.text(totalHours.toFixed(2), 160, yPos);
-        yPos += 15;
+        pdf.rect(145, yPos, 40, 6);
+        pdf.text('TOTAL HOURS:', 147, yPos + 4);
+        pdf.text(totalHours.toFixed(2), 170, yPos + 4);
+        yPos += 12;
       }
       
       // Materials Section
