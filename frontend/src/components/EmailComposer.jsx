@@ -416,6 +416,7 @@ www.rhinofireprotection.com`
       onClose={() => setShowAuthModal(false)}
       onAuthSuccess={handleAuthSuccess}
     />
+    </>
   );
 };
 
