@@ -13,6 +13,8 @@ import { cn } from '../lib/utils';
 import RichTextEditor from './RichTextEditor';
 import LaborTable from './LaborTable';
 import MaterialTable from './MaterialTable';
+import EquipmentTable from './EquipmentTable';
+import OtherTable from './OtherTable';
 import SignatureCapture from './SignatureCapture';
 import PDFGenerator from './PDFGenerator';
 import { mockData } from '../data/mock';
