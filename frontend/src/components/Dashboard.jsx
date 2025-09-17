@@ -88,11 +88,11 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-black rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-16 flex items-center justify-center overflow-hidden">
                 <img 
-                  src="https://customer-assets.emergentagent.com/job_fieldtags/artifacts/hnf9308v_TITLEBLOCKRHINOFIRE.png" 
+                  src="https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png" 
                   alt="Rhino Fire Protection" 
-                  className="w-14 h-14 object-contain"
+                  className="w-20 h-16 object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'block';
