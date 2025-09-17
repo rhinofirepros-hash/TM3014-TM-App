@@ -181,23 +181,28 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         
         yPos += 8;
         
-        // Material entries
+        // Material entries with improved sizing
         pdf.setFont(undefined, 'normal');
         let materialTotal = 0;
         formData.materialEntries.forEach((entry) => {
-          pdf.rect(15, yPos, 60, 6);
-          pdf.rect(75, yPos, 25, 6);
-          pdf.rect(100, yPos, 25, 6);
-          pdf.rect(125, yPos, 30, 6);
-          pdf.rect(155, yPos, 30, 6);
-          pdf.rect(185, yPos, 10, 6);
+          pdf.rect(15, yPos, 55, 6);
+          pdf.rect(70, yPos, 25, 6);
+          pdf.rect(95, yPos, 20, 6);
+          pdf.rect(115, yPos, 25, 6);
+          pdf.rect(140, yPos, 25, 6);
+          pdf.rect(165, yPos, 30, 6);
           
-          pdf.text(entry.materialName || '', 17, yPos + 4);
-          pdf.text(entry.unitOfMeasure || '', 77, yPos + 4);
-          pdf.text(entry.quantity?.toString() || '0', 107, yPos + 4);
-          pdf.text(`$${entry.unitCost?.toFixed(2) || '0.00'}`, 132, yPos + 4);
-          pdf.text(`$${entry.total?.toFixed(2) || '0.00'}`, 165, yPos + 4);
-          pdf.text(entry.dateOfWork?.substring(0, 8) || '', 187, yPos + 4);
+          // Truncate long material names
+          const materialName = (entry.materialName || '').length > 18 ? 
+            (entry.materialName || '').substring(0, 18) + '...' : 
+            (entry.materialName || '');
+          
+          pdf.text(materialName, 17, yPos + 4);
+          pdf.text((entry.unitOfMeasure || '').substring(0, 8), 72, yPos + 4);
+          pdf.text(entry.quantity?.toString() || '0', 100, yPos + 4);
+          pdf.text(`$${entry.unitCost?.toFixed(2) || '0.00'}`, 120, yPos + 4);
+          pdf.text(`$${entry.total?.toFixed(2) || '0.00'}`, 147, yPos + 4);
+          pdf.text(entry.dateOfWork?.substring(0, 10) || '', 170, yPos + 4);
           materialTotal += parseFloat(entry.total) || 0;
           yPos += 6;
         });
