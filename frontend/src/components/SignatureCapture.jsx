@@ -28,9 +28,18 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
         return;
       }
       
+      if (!signerName.trim()) {
+        alert('Please enter the signer\'s name before saving.');
+        return;
+      }
+      
       const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
-      onSave(signatureData);
+      onSave(signatureData, signerName, signerTitle);
       onClose();
+      
+      // Reset form
+      setSignerName('');
+      setSignerTitle('Foreman');
     } catch (error) {
       console.error('Error saving signature:', error);
       alert('Error saving signature. Please try again.');
