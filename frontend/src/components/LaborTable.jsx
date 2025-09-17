@@ -145,11 +145,12 @@ const LaborTable = ({ entries, onChange }) => {
                     <SelectValue placeholder="Select worker" />
                   </SelectTrigger>
                   <SelectContent>
-                    {mockData.workers.map((worker) => (
+                    {savedWorkers.map((worker) => (
                       <SelectItem key={worker.id} value={worker.name}>
                         {worker.name}
                       </SelectItem>
                     ))}
+                    <SelectItem value="__custom__">+ Add New Worker</SelectItem>
                   </SelectContent>
                 </Select>
               </TableCell>
