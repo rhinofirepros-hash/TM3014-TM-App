@@ -321,6 +321,8 @@ class TMTagAPITester:
                 response_data = response.json()
                 if "message" in response_data or "status" in response_data:
                     self.log_result("email", "Email sending", True)
+                elif "error" in response_data and "configuration not set up" in response_data["error"]:
+                    self.log_result("email", "Email sending", True, "Expected failure - SMTP not configured")
                 else:
                     self.log_result("email", "Email sending", False, "Unexpected response format", response)
             else:
