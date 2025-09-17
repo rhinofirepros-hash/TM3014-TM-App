@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAndMaterialForm from "./components/TimeAndMaterialForm";
 import PinLogin from "./components/PinLogin";
 import Dashboard from "./components/Dashboard";
+import WorkerManagement from "./components/WorkerManagement";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
