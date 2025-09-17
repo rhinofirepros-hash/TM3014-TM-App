@@ -48,7 +48,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const [customProjectName, setCustomProjectName] = useState('');
   const [savedProjects, setSavedProjects] = useState(() => {
     const saved = localStorage.getItem('saved_projects');
-    return saved ? JSON.parse(saved) : [{ id: 1, name: "3rd Ave" }];
+    return saved ? JSON.parse(saved) : [];
   });
   
   const [savedWorkers, setSavedWorkers] = useState(() => {
