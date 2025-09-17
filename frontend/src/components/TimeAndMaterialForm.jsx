@@ -484,16 +484,16 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               </Popover>
             </div>
 
-            {/* Customer Reference Number */}
+            {/* Company Name */}
             <div className="space-y-2">
               <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                Customer Reference Number
+                Company Name
                 <Info className="w-4 h-4 text-gray-400" />
               </Label>
               <Input
-                value={formData.customerReference}
-                onChange={(e) => handleInputChange('customerReference', e.target.value)}
-                placeholder="Enter customer reference number"
+                value={formData.companyName}
+                onChange={(e) => handleInputChange('companyName', e.target.value)}
+                placeholder="Enter company name (e.g., ABC Construction)"
                 className="w-full"
               />
             </div>
