@@ -12,9 +12,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setLineWidth(0.5);
       pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Header section with logo space
-      pdf.setFillColor(240, 240, 240);
-      pdf.rect(15, 15, 180, 25, 'F');
+      // Header section - no background fill for clean white background
       
       // Company Header - positioned for logo on left
       pdf.setTextColor(0, 0, 0);
