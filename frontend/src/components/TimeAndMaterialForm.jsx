@@ -173,6 +173,8 @@ const TimeAndMaterialForm = () => {
           descriptionOfWork: '',
           laborEntries: [],
           materialEntries: [],
+          equipmentEntries: [],
+          otherEntries: [],
           signature: null
         });
       }
