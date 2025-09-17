@@ -29,6 +29,8 @@ const TimeAndMaterialForm = () => {
     descriptionOfWork: 'Started Working on wrapping up 2nd floor core in units.',
     laborEntries: mockData.laborEntries,
     materialEntries: [],
+    equipmentEntries: [],
+    otherEntries: [],
     signature: null
   });
   
