@@ -245,9 +245,18 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 sm:mb-6">
-          <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">
-            Create A Time & Material Tag
-          </h1>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={onBackToDashboard}
+              className="flex items-center gap-2"
+            >
+              ← Dashboard
+            </Button>
+            <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">
+              Create A Time & Material Tag
+            </h1>
+          </div>
         </div>
 
         <Card className="shadow-sm">
