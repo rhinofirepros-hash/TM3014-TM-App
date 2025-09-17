@@ -130,6 +130,17 @@ const Reports = ({ onBack }) => {
     return total;
   };
 
+  const handleViewTag = (tag) => {
+    // Show detailed view of the T&M tag
+    toast({
+      title: "T&M Tag Details",
+      description: `${tag.project} - ${tag.title} (${tag.totalHours} hrs)`,
+    });
+    
+    // You could implement a modal here to show full details
+    console.log('Viewing T&M tag:', tag);
+  };
+
   const handleExportData = () => {
     const dataStr = JSON.stringify(filteredTags, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
