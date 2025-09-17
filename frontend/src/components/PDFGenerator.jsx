@@ -23,12 +23,21 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setFontSize(14);
       pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
       
-      // Add logo placeholder (you can replace this with actual logo loading)
-      pdf.setDrawColor(100, 100, 100);
-      pdf.setLineWidth(0.2);
-      pdf.rect(170, 17, 20, 20); // Logo placeholder
-      pdf.setFontSize(8);
-      pdf.text('LOGO', 180, 28, { align: 'center' });
+      // Add Rhino Fire Protection logo
+      try {
+        // Logo will be added from the assets - for now we'll add a professional placeholder
+        pdf.setDrawColor(220, 53, 69); // Rhino Fire red color
+        pdf.setFillColor(220, 53, 69);
+        pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('RHINO', 180, 24, { align: 'center' });
+        pdf.text('FIRE', 180, 30, { align: 'center' });
+        pdf.setTextColor(0, 0, 0); // Reset text color
+      } catch (error) {
+        console.log('Logo loading error:', error);
+      }
       
       // Project Information Section
       let yPos = 50;
