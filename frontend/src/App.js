@@ -63,6 +63,10 @@ function App() {
     setCurrentView('workers');
   };
 
+  const handleViewReports = () => {
+    setCurrentView('reports');
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="App">
