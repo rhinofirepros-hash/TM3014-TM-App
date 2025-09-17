@@ -25,8 +25,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       // Add actual Rhino Fire Protection logo
       try {
-        // Use your actual Rhino Fire logo
-        const logoUrl = 'https://customer-assets.emergentagent.com/job_fieldtags/artifacts/hnf9308v_TITLEBLOCKRHINOFIRE.png';
+        // Use your actual Rhino Fire logo from the uploaded assets
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/eegap5tr_image.png';
         
         // Create image and add to PDF
         const img = new Image();
@@ -36,36 +36,30 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         await new Promise((resolve, reject) => {
           img.onload = function() {
             try {
-              // Add the actual Rhino Fire logo to top left (bigger for visibility)
-              pdf.addImage(img, 'PNG', 15, 15, 60, 30);
+              // Add the actual Rhino Fire logo to top left (properly sized)
+              pdf.addImage(img, 'PNG', 20, 18, 40, 20);
               resolve();
             } catch (imgError) {
               console.log('Logo image error:', imgError);
-              // Fallback red square with company name
-              pdf.setDrawColor(220, 53, 69);
-              pdf.setFillColor(220, 53, 69);
-              pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
-              pdf.setTextColor(255, 255, 255);
-              pdf.setFontSize(9);
-              pdf.setFont(undefined, 'bold');
-              pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
-              pdf.text('PROTECTION', 40, 31, { align: 'center' });
+              // Fallback - just center the text without red box
               pdf.setTextColor(0, 0, 0);
+              pdf.setFontSize(18);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
+              pdf.setFontSize(14);
+              pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
               resolve();
             }
           };
           img.onerror = function() {
-            console.log('Logo loading failed, using fallback');
-            // Fallback red square with company name
-            pdf.setDrawColor(220, 53, 69);
-            pdf.setFillColor(220, 53, 69);
-            pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
-            pdf.setTextColor(255, 255, 255);
-            pdf.setFontSize(9);
-            pdf.setFont(undefined, 'bold');
-            pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
-            pdf.text('PROTECTION', 40, 31, { align: 'center' });
+            console.log('Logo loading failed, using centered text');
+            // Fallback - just center the text without red box
             pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(18);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
+            pdf.setFontSize(14);
+            pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
             resolve();
           };
           img.src = logoUrl;
@@ -73,16 +67,13 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         
       } catch (error) {
         console.log('Logo loading error:', error);
-        // Fallback to company name
-        pdf.setDrawColor(220, 53, 69);
-        pdf.setFillColor(220, 53, 69);
-        pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
-        pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(9);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
-        pdf.text('PROTECTION', 40, 31, { align: 'center' });
+        // Fallback - just center the text without red box
         pdf.setTextColor(0, 0, 0);
+        pdf.setFontSize(18);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
+        pdf.setFontSize(14);
+        pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
       }
       
       // Project Information Section
