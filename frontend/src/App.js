@@ -9,7 +9,7 @@ import { Toaster } from "./components/ui/toaster";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'form'
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'form', or 'workers'
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
