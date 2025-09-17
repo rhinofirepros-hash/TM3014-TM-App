@@ -160,17 +160,21 @@ www.rhinofireprotection.com`
       return;
     }
 
+    // Check if user is authenticated with OAuth
+    if (!oauthEmailService.isAuthenticated()) {
+      setShowAuthModal(true);
+      return;
+    }
+
     setIsSending(true);
 
     try {
-      // Initialize EmailJS service
-      await emailService.initialize();
-
-      // Prepare email data for the service
+      // Prepare email data for OAuth service
       const emailPayload = {
         gcEmail: emailData.to,
         ccEmail: emailData.cc,
         projectName: formData?.projectName,
+        companyName: formData?.companyName,
         tmTagTitle: formData?.tmTagTitle,
         dateOfWork: formData?.dateOfWork ? new Date(formData.dateOfWork).toLocaleDateString() : new Date().toLocaleDateString(),
         message: emailData.message,
@@ -178,13 +182,15 @@ www.rhinofireprotection.com`
         filename: `TM_Tag_${formData?.dateOfWork ? new Date(formData.dateOfWork).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}.pdf`
       };
 
-      // Send email using the EmailJS service
-      const result = await emailService.sendTMTagEmail(emailPayload);
+      // Send email using OAuth service
+      const result = await oauthEmailService.sendTMTagEmail(emailPayload);
 
       if (result.success) {
+        const currentUser = oauthEmailService.getCurrentUser();
+        
         toast({
           title: "Email Sent Successfully",
-          description: `T&M tag sent to ${emailData.to}`,
+          description: `T&M tag sent from ${currentUser.email} to ${emailData.to}`,
         });
 
         // Log email for reports
@@ -196,7 +202,9 @@ www.rhinofireprotection.com`
           sentAt: new Date().toISOString(),
           project: formData?.projectName,
           template: emailData.template,
-          messageId: result.messageId
+          messageId: result.messageId,
+          provider: result.provider,
+          fromEmail: currentUser.email
         };
         
         const existingLogs = JSON.parse(localStorage.getItem('email_logs') || '[]');
@@ -217,6 +225,15 @@ www.rhinofireprotection.com`
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleAuthSuccess = (authResult) => {
+    setAuthenticatedUser(authResult);
+    setShowAuthModal(false);
+    // Automatically try sending email after authentication
+    setTimeout(() => {
+      handleSendEmail();
+    }, 500);
   };
 
   return (
