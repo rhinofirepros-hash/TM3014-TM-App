@@ -10,19 +10,7 @@ export const mockData = {
     { id: 4, name: "Tom Wilson", rate: 90 }
   ],
 
-  laborEntries: [
-    {
-      id: 1,
-      workerName: "Jesus Garcia",
-      quantity: 1.00,
-      stHours: 8.00,
-      otHours: 0,
-      dtHours: 0,
-      potHours: 0,
-      totalHours: 8.00,
-      date: "09/17/2025"
-    }
-  ],
+  laborEntries: [],
 
   materialEntries: [],
 
