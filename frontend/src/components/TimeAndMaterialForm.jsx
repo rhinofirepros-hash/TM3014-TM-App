@@ -412,6 +412,63 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     });
   };
 
+  const handleSaveCustomEmail = () => {
+    if (!customEmail.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter an email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(customEmail.trim())) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if email already exists
+    const existingEmail = savedEmails.find(e => 
+      e.email.toLowerCase() === customEmail.trim().toLowerCase()
+    );
+    
+    if (existingEmail) {
+      setFormData(prev => ({ ...prev, gcEmail: existingEmail.email }));
+      setCustomEmail('');
+      setIsCustomEmail(false);
+      toast({
+        title: "Email Selected",
+        description: `"${existingEmail.email}" selected from saved emails.`,
+      });
+      return;
+    }
+
+    const newEmail = {
+      id: Date.now(),
+      email: customEmail.trim().toLowerCase(),
+      name: customEmail.trim().split('@')[0] // Use part before @ as name
+    };
+
+    const updatedEmails = [...savedEmails, newEmail];
+    setSavedEmails(updatedEmails);
+    localStorage.setItem('saved_emails', JSON.stringify(updatedEmails));
+    
+    setFormData(prev => ({ ...prev, gcEmail: newEmail.email }));
+    setCustomEmail('');
+    setIsCustomEmail(false);
+    
+    toast({
+      title: "Email Saved",
+      description: `"${newEmail.email}" has been added to your email list.`,
+    });
+  };
+
   const handleSaveWorker = (workerName) => {
     if (!workerName.trim()) return;
     
