@@ -12,9 +12,47 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load saved projects and recent T&M tags from localStorage
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Try to load recent T&M tags from backend
+        const response = await fetch(`${backendUrl}/api/tm-tags?limit=5`);
+        if (response.ok) {
+          const tmTags = await response.json();
+          const recentTags = tmTags.map(tag => ({
+            id: tag.id,
+            project: tag.project_name,
+            title: tag.tm_tag_title,
+            date: new Date(tag.date_of_work).toLocaleDateString(),
+            foreman: tag.foreman_name || 'Jesus Garcia',
+            status: tag.status || 'completed',
+            totalHours: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0), 0) || 0,
+            laborCost: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0) * 95, 0) || 0,
+            materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0
+          }));
+          setRecentTags(recentTags);
+        } else {
+          console.warn('Failed to load T&M tags from backend, using localStorage fallback');
+          loadLocalStorageData();
+        }
+      } else {
+        loadLocalStorageData();
+      }
+    } catch (error) {
+      console.warn('Backend connection failed, using localStorage fallback:', error);
+      loadLocalStorageData();
+    }
+  };
+
+  const loadLocalStorageData = () => {
+    // Load saved projects and recent T&M tags from localStorage (fallback)
     const savedProjects = localStorage.getItem('saved_projects');
-    const savedTags = localStorage.getItem('recent_tm_tags');
+    const savedTags = localStorage.getItem('tm_tags_history');
     
     if (savedProjects) {
       setProjects(JSON.parse(savedProjects));
@@ -24,9 +62,10 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
     }
     
     if (savedTags) {
-      setRecentTags(JSON.parse(savedTags));
+      const tags = JSON.parse(savedTags);
+      setRecentTags(tags.slice(0, 5)); // Show only recent 5 tags
     }
-  }, []);
+  };
 
   const handleCreateNewTag = () => {
     onCreateNew();
