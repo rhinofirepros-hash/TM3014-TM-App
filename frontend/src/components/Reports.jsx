@@ -50,6 +50,7 @@ const Reports = ({ onBack }) => {
             gcEmail: tag.gc_email,
             costCode: tag.cost_code,
             description: tag.description_of_work,
+            companyName: tag.company_name || '',
             submittedAt: tag.submitted_at || tag.created_at
           }));
           setTmTags(formattedTags);
