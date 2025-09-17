@@ -84,10 +84,15 @@ function App() {
             onCreateNew={handleCreateNew}
             onOpenProject={handleOpenProject}
             onManageWorkers={handleManageWorkers}
+            onViewReports={handleViewReports}
             onLogout={handleLogout}
           />
         ) : currentView === 'workers' ? (
           <WorkerManagement 
+            onBack={handleBackToDashboard}
+          />
+        ) : currentView === 'reports' ? (
+          <Reports 
             onBack={handleBackToDashboard}
           />
         ) : (
