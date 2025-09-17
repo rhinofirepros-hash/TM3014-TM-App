@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Trash2, PenTool } from 'lucide-react';
 
