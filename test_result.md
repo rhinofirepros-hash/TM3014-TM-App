@@ -101,3 +101,111 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Fix PDF generation to use actual company logo instead of red square, implement EmailJS for cheapest email solution, complete backend-frontend integration for T&M tag persistence and email functionality. Goal is to have the app production-ready within 1 hour."
+
+backend:
+  - task: "T&M Tag API endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Backend APIs already implemented for T&M tags (POST /api/tm-tags, GET /api/tm-tags). Need to test integration with frontend."
+  
+  - task: "Worker Management API endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Backend APIs for workers (POST /api/workers, GET /api/workers) are implemented. Need to test with frontend integration."
+
+  - task: "Email API endpoint"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "SMTP email endpoint exists but will be replaced with EmailJS frontend solution for cheaper implementation."
+
+frontend:
+  - task: "PDF generation with actual logo"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/PDFGenerator.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Updated PDFGenerator to use user's actual company logo from uploaded assets. Fixed logo URL and positioning."
+
+  - task: "EmailJS integration"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/services/emailService.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created EmailJS service with mock fallback. Updated EmailComposer to use new service. Requires EmailJS credentials in .env for production."
+
+  - task: "Backend integration for T&M tags"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TimeAndMaterialForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Updated T&M form to save to backend API with localStorage fallback. Updated Dashboard and Reports to load from backend."
+
+  - task: "Backend integration for Workers"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/WorkerManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Updated WorkerManagement to save/load from backend API with localStorage fallback."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "PDF generation with actual logo"
+    - "Backend integration for T&M tags"
+    - "Backend integration for Workers"
+    - "EmailJS integration"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Completed all requested features: 1) Fixed PDF to use actual logo, 2) Implemented EmailJS service with mock fallback, 3) Integrated frontend with backend APIs for T&M tags and workers. All components now use backend APIs with localStorage fallbacks. Ready for comprehensive testing."
