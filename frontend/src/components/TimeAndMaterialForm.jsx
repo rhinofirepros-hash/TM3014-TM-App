@@ -33,6 +33,9 @@ const TimeAndMaterialForm = () => {
     materialEntries: [],
     equipmentEntries: [],
     otherEntries: [],
+    gcEmail: 'iacosta@nueragroup.com',
+    autoEmail: true,
+    downloadPDF: true,
     signature: null
   });
   
