@@ -441,37 +441,15 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     size="sm" 
                     className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
                     onClick={() => {
-                      const quickEntry = {
+                      const newEntry = {
                         id: Date.now(),
-                        workerName: savedWorkers[0]?.name || '',
+                        workerName: '',
                         quantity: 1,
                         stHours: 8.00,
                         otHours: 0,
                         dtHours: 0,
                         potHours: 0,
                         totalHours: 8.00,
-                        date: new Date().toLocaleDateString()
-                      };
-                      handleInputChange('laborEntries', [...formData.laborEntries, quickEntry]);
-                    }}
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    Quick Add Worker
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
-                    onClick={() => {
-                      const newEntry = {
-                        id: Date.now(),
-                        workerName: '',
-                        quantity: 1,
-                        stHours: 0,
-                        otHours: 0,
-                        dtHours: 0,
-                        potHours: 0,
-                        totalHours: 0,
                         date: new Date().toLocaleDateString()
                       };
                       handleInputChange('laborEntries', [...formData.laborEntries, newEntry]);
