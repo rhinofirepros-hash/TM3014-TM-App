@@ -266,7 +266,7 @@ class OAuthEmailService {
               <p><strong>Company:</strong> ${emailData.companyName}</p>
               <p><strong>T&M Tag:</strong> ${emailData.tmTagTitle}</p>
               <p><strong>Date:</strong> ${emailData.dateOfWork}</p>
-              <p><strong>Submitted by:</strong> ${this.userCredentials.name}</p>
+              <p><strong>Submitted by:</strong> ${this.userCredentials.name} (${this.userCredentials.email})</p>
             </div>
             
             <p>The attached PDF contains complete details and requires your review and approval.</p>
