@@ -25,7 +25,50 @@ const Reports = ({ onBack }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load T&M tags from localStorage
+    loadTMTags();
+  }, []);
+
+  const loadTMTags = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Try to load T&M tags from backend
+        const response = await fetch(`${backendUrl}/api/tm-tags?limit=100`);
+        if (response.ok) {
+          const tmTagsData = await response.json();
+          const formattedTags = tmTagsData.map(tag => ({
+            id: tag.id,
+            project: tag.project_name,
+            title: tag.tm_tag_title,
+            date: new Date(tag.date_of_work).toISOString().split('T')[0],
+            foreman: tag.foreman_name || 'Jesus Garcia',
+            totalHours: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0), 0) || 0,
+            laborCost: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0) * 95, 0) || 0,
+            materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0,
+            status: tag.status || 'completed',
+            gcEmail: tag.gc_email,
+            costCode: tag.cost_code,
+            description: tag.description_of_work,
+            submittedAt: tag.submitted_at || tag.created_at
+          }));
+          setTmTags(formattedTags);
+          setFilteredTags(formattedTags);
+        } else {
+          console.warn('Failed to load T&M tags from backend, using localStorage fallback');
+          loadLocalStorageData();
+        }
+      } else {
+        loadLocalStorageData();
+      }
+    } catch (error) {
+      console.warn('Backend connection failed, using localStorage fallback:', error);
+      loadLocalStorageData();
+    }
+  };
+
+  const loadLocalStorageData = () => {
+    // Load T&M tags from localStorage (fallback)
     const savedTags = localStorage.getItem('tm_tags_history');
     if (savedTags) {
       const tags = JSON.parse(savedTags);
@@ -62,7 +105,7 @@ const Reports = ({ onBack }) => {
       setTmTags(sampleTags);
       setFilteredTags(sampleTags);
     }
-  }, []);
+  };
 
   useEffect(() => {
     // Filter tags based on search term and date filter
