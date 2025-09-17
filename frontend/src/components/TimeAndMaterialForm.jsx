@@ -175,7 +175,79 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         // Store PDF data for email composer
         setGeneratedPDFData(result.pdfData);
         
-        // Save to T&M history
+        // Save to backend database
+        try {
+          const tmTagData = {
+            project_name: formData.projectName,
+            cost_code: formData.costCode,
+            date_of_work: formData.dateOfWork.toISOString(),
+            customer_reference: formData.customerReference,
+            tm_tag_title: formData.tmTagTitle,
+            description_of_work: formData.descriptionOfWork,
+            labor_entries: formData.laborEntries.map(entry => ({
+              id: entry.id.toString(),
+              worker_name: entry.workerName,
+              quantity: parseFloat(entry.quantity) || 1,
+              st_hours: parseFloat(entry.stHours) || 0,
+              ot_hours: parseFloat(entry.otHours) || 0,
+              dt_hours: parseFloat(entry.dtHours) || 0,
+              pot_hours: parseFloat(entry.potHours) || 0,
+              total_hours: parseFloat(entry.totalHours) || 0,
+              date: entry.date
+            })),
+            material_entries: formData.materialEntries.map(entry => ({
+              id: entry.id.toString(),
+              material_name: entry.materialName,
+              unit_of_measure: entry.unitOfMeasure,
+              quantity: parseFloat(entry.quantity) || 0,
+              unit_cost: parseFloat(entry.unitCost) || 0,
+              total: parseFloat(entry.total) || 0,
+              date_of_work: entry.dateOfWork
+            })),
+            equipment_entries: formData.equipmentEntries.map(entry => ({
+              id: entry.id.toString(),
+              equipment_name: entry.equipmentName,
+              pieces_of_equipment: parseInt(entry.piecesOfEquipment) || 1,
+              unit_of_measure: entry.unitOfMeasure,
+              quantity: parseFloat(entry.quantity) || 0,
+              total: parseFloat(entry.total) || 0,
+              date_of_work: entry.dateOfWork
+            })),
+            other_entries: formData.otherEntries.map(entry => ({
+              id: entry.id.toString(),
+              other_name: entry.otherName,
+              quantity_of_other: parseInt(entry.quantityOfOther) || 1,
+              unit_of_measure: entry.unitOfMeasure,
+              quantity_of_unit: parseFloat(entry.quantityOfUnit) || 0,
+              total: parseFloat(entry.total) || 0,
+              date_of_work: entry.dateOfWork
+            })),
+            gc_email: formData.gcEmail,
+            signature: formData.signature
+          };
+
+          // Save to backend API
+          const backendUrl = process.env.REACT_APP_BACKEND_URL;
+          if (backendUrl) {
+            const response = await fetch(`${backendUrl}/api/tm-tags`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(tmTagData)
+            });
+            
+            if (response.ok) {
+              console.log('T&M Tag saved to backend successfully');
+            } else {
+              console.warn('Backend save failed, using localStorage fallback');
+            }
+          }
+        } catch (backendError) {
+          console.warn('Backend save failed:', backendError);
+        }
+        
+        // Fallback: Save to localStorage (always works)
         const tmTag = {
           id: Date.now(),
           project: formData.projectName,
@@ -192,7 +264,6 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           submittedAt: new Date().toISOString()
         };
         
-        // Save to localStorage
         const existingHistory = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
         existingHistory.unshift(tmTag);
         localStorage.setItem('tm_tags_history', JSON.stringify(existingHistory));
