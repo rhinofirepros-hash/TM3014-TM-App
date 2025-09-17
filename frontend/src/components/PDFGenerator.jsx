@@ -26,7 +26,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       // Add actual Rhino Fire Protection logo
       try {
         // Load the logo image
-        const logoUrl = 'https://customer-assets.emergentagent.com/job_fieldtags/artifacts/5ywerrup_TITLEBLOCKRHINOFIRE.png';
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_fieldtags/artifacts/qeqhbpvv_image.png';
         
         // Create image element to load logo
         const img = new Image();
