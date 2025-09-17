@@ -118,26 +118,31 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         
         yPos += 8;
         
-        // Labor entries
+        // Labor entries with improved sizing
         pdf.setFont(undefined, 'normal');
         formData.laborEntries.forEach((entry) => {
-          pdf.rect(15, yPos, 50, 6);
-          pdf.rect(65, yPos, 20, 6);
-          pdf.rect(85, yPos, 20, 6);
-          pdf.rect(105, yPos, 20, 6);
-          pdf.rect(125, yPos, 20, 6);
-          pdf.rect(145, yPos, 20, 6);
-          pdf.rect(165, yPos, 20, 6);
-          pdf.rect(185, yPos, 10, 6);
+          pdf.rect(15, yPos, 60, 6);
+          pdf.rect(75, yPos, 15, 6);
+          pdf.rect(90, yPos, 15, 6);
+          pdf.rect(105, yPos, 15, 6);
+          pdf.rect(120, yPos, 15, 6);
+          pdf.rect(135, yPos, 15, 6);
+          pdf.rect(150, yPos, 20, 6);
+          pdf.rect(170, yPos, 25, 6);
           
-          pdf.text(entry.workerName || '', 17, yPos + 4);
-          pdf.text(entry.quantity?.toString() || '1', 72, yPos + 4);
-          pdf.text(entry.stHours?.toString() || '0', 92, yPos + 4);
-          pdf.text(entry.otHours?.toString() || '0', 112, yPos + 4);
-          pdf.text(entry.dtHours?.toString() || '0', 132, yPos + 4);
-          pdf.text(entry.potHours?.toString() || '0', 152, yPos + 4);
-          pdf.text(entry.totalHours?.toString() || '0', 170, yPos + 4);
-          pdf.text(entry.date?.substring(0, 8) || '', 187, yPos + 4);
+          // Truncate long names to fit
+          const workerName = (entry.workerName || '').length > 20 ? 
+            (entry.workerName || '').substring(0, 20) + '...' : 
+            (entry.workerName || '');
+          
+          pdf.text(workerName, 17, yPos + 4);
+          pdf.text(entry.quantity?.toString() || '1', 78, yPos + 4);
+          pdf.text(entry.stHours?.toString() || '0', 95, yPos + 4);
+          pdf.text(entry.otHours?.toString() || '0', 110, yPos + 4);
+          pdf.text(entry.dtHours?.toString() || '0', 125, yPos + 4);
+          pdf.text(entry.potHours?.toString() || '0', 140, yPos + 4);
+          pdf.text(entry.totalHours?.toString() || '0', 155, yPos + 4);
+          pdf.text(entry.date?.substring(0, 10) || '', 175, yPos + 4);
           yPos += 6;
         });
         
