@@ -7,36 +7,74 @@ const PDFGenerator = ({ formData, onGenerate }) => {
     try {
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      // Company Header
-      pdf.setFontSize(16);
-      pdf.setFont(undefined, 'bold');
-      pdf.text('RHINO FIRE PROTECTION', 105, 20, { align: 'center' });
-      pdf.text('TIME & MATERIAL TAG', 105, 30, { align: 'center' });
+      // Add border and professional layout
+      pdf.setDrawColor(0, 0, 0);
+      pdf.setLineWidth(0.5);
+      pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Project Information
+      // Header section with logo space
+      pdf.setFillColor(240, 240, 240);
+      pdf.rect(15, 15, 180, 25, 'F');
+      
+      // Company Header
+      pdf.setFontSize(18);
+      pdf.setFont(undefined, 'bold');
+      pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
+      pdf.setFontSize(14);
+      pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
+      
+      // Add logo placeholder (you can replace this with actual logo loading)
+      pdf.setDrawColor(100, 100, 100);
+      pdf.setLineWidth(0.2);
+      pdf.rect(170, 17, 20, 20); // Logo placeholder
+      pdf.setFontSize(8);
+      pdf.text('LOGO', 180, 28, { align: 'center' });
+      
+      // Project Information Section
+      let yPos = 50;
       pdf.setFontSize(12);
+      pdf.setFont(undefined, 'bold');
+      pdf.text('PROJECT INFORMATION', 15, yPos);
+      
+      yPos += 8;
       pdf.setFont(undefined, 'normal');
-      pdf.text(`Project: ${formData.projectName}`, 20, 50);
-      pdf.text(`Cost Code: ${formData.costCode}`, 20, 60);
-      pdf.text(`Date of Work: ${formData.dateOfWork ? formData.dateOfWork.toLocaleDateString() : ''}`, 20, 70);
-      pdf.text(`T&M Tag Title: ${formData.tmTagTitle}`, 20, 80);
+      pdf.setFontSize(10);
+      
+      // Create form-like layout
+      pdf.text('Project Name:', 15, yPos);
+      pdf.text(formData.projectName || '', 50, yPos);
+      pdf.text('Cost Code:', 120, yPos);
+      pdf.text(formData.costCode || '', 145, yPos);
+      
+      yPos += 7;
+      pdf.text('Date of Work:', 15, yPos);
+      pdf.text(formData.dateOfWork ? formData.dateOfWork.toLocaleDateString() : '', 50, yPos);
+      pdf.text('Foreman:', 120, yPos);
+      pdf.text('Jesus Garcia', 145, yPos);
+      
+      yPos += 7;
+      pdf.text('T&M Tag Title:', 15, yPos);
+      const titleText = pdf.splitTextToSize(formData.tmTagTitle || '', 110);
+      pdf.text(titleText, 50, yPos);
       
       if (formData.customerReference) {
-        pdf.text(`Customer Reference: ${formData.customerReference}`, 20, 90);
+        yPos += 7;
+        pdf.text('Customer Reference:', 15, yPos);
+        pdf.text(formData.customerReference, 65, yPos);
       }
       
       // Description of Work
-      let yPos = formData.customerReference ? 105 : 95;
+      yPos += 12;
       pdf.setFont(undefined, 'bold');
-      pdf.text('Description of Work:', 20, yPos);
+      pdf.text('DESCRIPTION OF WORK:', 15, yPos);
+      yPos += 6;
       pdf.setFont(undefined, 'normal');
       
-      // Split long descriptions into multiple lines
       const description = formData.descriptionOfWork || '';
       const splitDescription = pdf.splitTextToSize(description, 170);
-      pdf.text(splitDescription, 20, yPos + 10);
+      pdf.text(splitDescription, 15, yPos);
       
-      yPos += 10 + (splitDescription.length * 5) + 10;
+      yPos += (splitDescription.length * 4) + 10;
       
       // Labor Section
       if (formData.laborEntries && formData.laborEntries.length > 0) {
