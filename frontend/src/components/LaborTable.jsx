@@ -28,19 +28,6 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
       if (entry.id === id) {
         const updated = { ...entry, [field]: value };
         
-        // Handle custom worker selection
-        if (field === 'workerName' && value === '__custom__') {
-          const customName = prompt('Enter worker name:');
-          if (customName && customName.trim()) {
-            updated.workerName = customName.trim();
-            if (onSaveWorker) {
-              onSaveWorker(customName.trim());
-            }
-          } else {
-            updated.workerName = '';
-          }
-        }
-        
         // Recalculate total hours
         updated.totalHours = 
           (parseFloat(updated.stHours) || 0) + 
