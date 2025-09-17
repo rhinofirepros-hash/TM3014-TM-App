@@ -47,6 +47,15 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     const saved = localStorage.getItem('saved_projects');
     return saved ? JSON.parse(saved) : [{ id: 1, name: "3rd Ave" }];
   });
+  
+  const [savedWorkers, setSavedWorkers] = useState(() => {
+    const saved = localStorage.getItem('saved_workers');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, name: "Jesus Garcia", rate: 95 },
+      { id: 2, name: "Mike Rodriguez", rate: 95 },
+      { id: 3, name: "Sarah Johnson", rate: 85 }
+    ];
+  });
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
