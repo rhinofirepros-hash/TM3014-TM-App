@@ -63,16 +63,30 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
           </div>
           
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 sm:p-4 bg-gray-50">
-            <SignatureCanvas
-              ref={sigCanvas}
-              penColor="black"
-              canvasProps={{
-                width: window.innerWidth < 640 ? Math.min(window.innerWidth - 80, 500) : 600,
-                height: window.innerWidth < 640 ? 150 : 200,
-                className: 'signature-canvas bg-white rounded border w-full'
-              }}
-              onEnd={handleCanvasChange}
-            />
+            <div className="flex justify-center">
+              <SignatureCanvas
+                ref={sigCanvas}
+                penColor="black"
+                backgroundColor="white"
+                dotSize={1}
+                minWidth={1}
+                maxWidth={3}
+                throttle={16}
+                minDistance={1}
+                canvasProps={{
+                  width: canvasSize.width,
+                  height: canvasSize.height,
+                  className: 'signature-canvas bg-white rounded border touch-none',
+                  style: { 
+                    touchAction: 'none',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '4px'
+                  }
+                }}
+                onEnd={handleCanvasChange}
+                onBegin={() => setIsEmpty(false)}
+              />
+            </div>
           </div>
           
           <div className="text-xs text-gray-500">
