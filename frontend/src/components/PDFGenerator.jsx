@@ -36,8 +36,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         await new Promise((resolve, reject) => {
           img.onload = function() {
             try {
-              // Add the actual logo to top left
-              pdf.addImage(img, 'PNG', 15, 15, 50, 25);
+              // Add the actual Rhino Fire logo to top left (bigger for visibility)
+              pdf.addImage(img, 'PNG', 15, 15, 60, 30);
               resolve();
             } catch (imgError) {
               console.log('Logo image error:', imgError);
