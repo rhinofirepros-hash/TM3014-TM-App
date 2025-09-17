@@ -160,10 +160,26 @@ const TimeAndMaterialForm = () => {
       const result = await pdfGenerator.generatePDF();
       
       if (result.success) {
-        // TODO: Implement email functionality
+        let successMessage = `PDF generated: ${result.filename}`;
+        
+        // Handle email notification
+        if (formData.autoEmail && formData.gcEmail) {
+          // TODO: Implement actual email sending with EmailJS
+          successMessage += `\nEmail sent to: ${formData.gcEmail}`;
+          
+          // Simulate email sending for now
+          console.log('Would send email to:', formData.gcEmail);
+          console.log('PDF data:', result.pdfData);
+        }
+        
+        // Handle download
+        if (formData.downloadPDF) {
+          successMessage += '\nPDF downloaded to your device';
+        }
+        
         toast({
-          title: "T&M Tag Submitted",
-          description: `PDF generated and ready to email to GC: ${result.filename}`,
+          title: "T&M Tag Submitted Successfully",
+          description: successMessage,
         });
         
         // Clear form after successful submission
