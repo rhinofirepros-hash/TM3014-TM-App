@@ -49,8 +49,17 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">RF</span>
+              <div className="w-16 h-16 bg-black rounded-lg flex items-center justify-center overflow-hidden">
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_fieldtags/artifacts/hnf9308v_TITLEBLOCKRHINOFIRE.png" 
+                  alt="Rhino Fire Protection" 
+                  className="w-14 h-14 object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <span className="text-red-500 font-bold text-xl hidden">RF</span>
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Rhino Fire Protection</h1>
