@@ -12,20 +12,12 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setLineWidth(0.5);
       pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Header section - no background fill for clean white background
-      
-      // Company Header - positioned for logo on left
-      pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(18);
-      pdf.setFont(undefined, 'bold');
-      pdf.text('RHINO FIRE PROTECTION', 140, 25, { align: 'center' });
-      pdf.setFontSize(14);
-      pdf.text('TIME & MATERIAL TAG', 140, 32, { align: 'center' });
+      // Header section - clean white background
       
       // Add actual Rhino Fire Protection logo
       try {
-        // Use your actual Rhino Fire logo from the uploaded assets
-        const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/eegap5tr_image.png';
+        // Use the new TITLEBLOCKRHINOFIRE1.png logo
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
         
         // Create image and add to PDF
         const img = new Image();
