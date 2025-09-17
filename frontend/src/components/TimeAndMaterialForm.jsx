@@ -23,7 +23,7 @@ import { useToast } from '../hooks/use-toast';
 const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    projectName: "",
+    projectName: selectedProject?.name || "",
     costCode: '',
     dateOfWork: new Date(),
     customerReference: '',
