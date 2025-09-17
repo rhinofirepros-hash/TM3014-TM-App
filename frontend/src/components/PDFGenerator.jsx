@@ -366,19 +366,19 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       yPos += 25;
       
-      // Customer signature section - much larger
+      // Company representative signature section - much larger
       pdf.setFontSize(10);
-      pdf.rect(15, yPos, 90, 20); // Customer signature box (same size as foreman)
-      pdf.rect(110, yPos, 85, 20); // Customer date box
+      pdf.rect(15, yPos, 90, 20); // Company signature box (same size as foreman)
+      pdf.rect(110, yPos, 85, 20); // Company date box
       
-      pdf.text('CUSTOMER SIGNATURE:', 17, yPos + 5);
-      pdf.text('CUSTOMER DATE:', 112, yPos + 5);
+      pdf.text('COMPANY REPRESENTATIVE SIGNATURE:', 17, yPos + 5);
+      pdf.text('COMPANY DATE:', 112, yPos + 5);
       
       yPos += 25;
       
-      // Customer print name - larger
-      pdf.rect(15, yPos, 180, 15); // Full width for customer name
-      pdf.text('CUSTOMER PRINT NAME:', 17, yPos + 8);
+      // Company representative print name - larger
+      pdf.rect(15, yPos, 180, 15); // Full width for company name
+      pdf.text('COMPANY REPRESENTATIVE PRINT NAME:', 17, yPos + 8);
       
       yPos += 15;
       
