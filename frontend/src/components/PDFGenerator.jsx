@@ -146,12 +146,13 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           yPos += 6;
         });
         
-        // Labor totals
+        // Labor totals with improved sizing
         const totalHours = formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0), 0);
         pdf.setFont(undefined, 'bold');
-        pdf.rect(145, yPos, 40, 6);
-        pdf.text('TOTAL HOURS:', 147, yPos + 4);
-        pdf.text(totalHours.toFixed(2), 170, yPos + 4);
+        pdf.rect(120, yPos, 50, 6);
+        pdf.rect(170, yPos, 25, 6);
+        pdf.text('TOTAL HOURS:', 125, yPos + 4);
+        pdf.text(totalHours.toFixed(2), 175, yPos + 4);
         yPos += 12;
       }
       
