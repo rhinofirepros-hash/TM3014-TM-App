@@ -22,7 +22,44 @@ const WorkerManagement = ({ onBack }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load workers from localStorage
+    loadWorkers();
+  }, []);
+
+  const loadWorkers = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Try to load workers from backend
+        const response = await fetch(`${backendUrl}/api/workers`);
+        if (response.ok) {
+          const workersData = await response.json();
+          const formattedWorkers = workersData.map(worker => ({
+            id: worker.id,
+            name: worker.name,
+            rate: worker.rate || 95,
+            position: worker.position || '',
+            phone: worker.phone || '',
+            email: worker.email || ''
+          }));
+          setWorkers(formattedWorkers);
+          // Also update localStorage for fallback
+          localStorage.setItem('saved_workers', JSON.stringify(formattedWorkers));
+        } else {
+          console.warn('Failed to load workers from backend, using localStorage fallback');
+          loadLocalStorageData();
+        }
+      } else {
+        loadLocalStorageData();
+      }
+    } catch (error) {
+      console.warn('Backend connection failed, using localStorage fallback:', error);
+      loadLocalStorageData();
+    }
+  };
+
+  const loadLocalStorageData = () => {
+    // Load workers from localStorage (fallback)
     const savedWorkers = localStorage.getItem('saved_workers');
     if (savedWorkers) {
       setWorkers(JSON.parse(savedWorkers));
@@ -36,7 +73,7 @@ const WorkerManagement = ({ onBack }) => {
       setWorkers(defaultWorkers);
       localStorage.setItem('saved_workers', JSON.stringify(defaultWorkers));
     }
-  }, []);
+  };
 
   const saveWorkers = (updatedWorkers) => {
     setWorkers(updatedWorkers);
