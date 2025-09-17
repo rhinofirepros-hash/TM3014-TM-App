@@ -76,35 +76,9 @@ const Reports = ({ onBack }) => {
       setTmTags(tags);
       setFilteredTags(tags);
     } else {
-      // Sample data for demonstration
-      const sampleTags = [
-        {
-          id: 1,
-          project: "3rd Ave",
-          title: "Sprinkler Rough-In - 4 Tech, 32 hrs",
-          date: "2025-01-15",
-          foreman: "Jesus Garcia",
-          totalHours: 32,
-          laborCost: 3040,
-          materialCost: 150,
-          status: "completed",
-          gcEmail: "gc@project.com"
-        },
-        {
-          id: 2,
-          project: "3rd Ave",
-          title: "Fire Pump Installation",
-          date: "2025-01-14",
-          foreman: "Jesus Garcia",
-          totalHours: 16,
-          laborCost: 1520,
-          materialCost: 2500,
-          status: "completed",
-          gcEmail: "gc@project.com"
-        },
-      ];
-      setTmTags(sampleTags);
-      setFilteredTags(sampleTags);
+      // No sample data - start clean
+      setTmTags([]);
+      setFilteredTags([]);
     }
   };
 
