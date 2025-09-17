@@ -742,6 +742,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               onClose={() => setShowSignatureModal(false)}
               onSave={handleSignatureSave}
             />
+
+            {/* Email Composer Modal */}
+            <EmailComposer
+              isOpen={showEmailComposer}
+              onClose={() => setShowEmailComposer(false)}
+              formData={formData}
+              pdfData={generatedPDFData}
+            />
           </CardContent>
         </Card>
       </div>
