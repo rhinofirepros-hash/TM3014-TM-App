@@ -314,6 +314,10 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           signerName: '',
           signerTitle: 'Foreman'
         });
+        setIsCustomProject(false);
+        setCustomProjectName('');
+        setIsCustomCompany(false);
+        setCustomCompanyName('');
       }
     } catch (error) {
       toast({
