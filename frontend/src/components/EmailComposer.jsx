@@ -21,6 +21,8 @@ const EmailComposer = ({ isOpen, onClose, formData, pdfData }) => {
     template: 'professional'
   });
   const [isSending, setIsSending] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const { toast } = useToast();
