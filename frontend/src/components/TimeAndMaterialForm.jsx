@@ -913,6 +913,10 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     });
                     setIsCustomProject(false);
                     setCustomProjectName('');
+                    setIsCustomCompany(false);
+                    setCustomCompanyName('');
+                    setIsCustomProject(false);
+                    setCustomProjectName('');
                   }}
                 >
                   Cancel
