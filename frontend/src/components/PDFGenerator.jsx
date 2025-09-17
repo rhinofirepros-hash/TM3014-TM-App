@@ -102,10 +102,10 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       const titleText = pdf.splitTextToSize(formData.tmTagTitle || '', 110);
       pdf.text(titleText, 50, yPos);
       
-      if (formData.customerReference) {
+      if (formData.companyName) {
         yPos += 7;
-        pdf.text('Customer Reference:', 15, yPos);
-        pdf.text(formData.customerReference, 65, yPos);
+        pdf.text('Company Name:', 15, yPos);
+        pdf.text(formData.companyName, 65, yPos);
       }
       
       // Description of Work
