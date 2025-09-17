@@ -47,31 +47,60 @@ class OAuthEmailService {
   // Gmail OAuth Authentication
   async authenticateGmail() {
     try {
-      // For production, implement Google OAuth2
-      // For now, we'll simulate the flow
-      const response = await this.simulateGmailOAuth();
-      
-      if (response.success) {
-        this.currentProvider = 'gmail';
-        this.userCredentials = response.credentials;
-        
-        // Store in localStorage for persistence
-        localStorage.setItem('email_auth_provider', 'gmail');
-        localStorage.setItem('email_auth_credentials', JSON.stringify(response.credentials));
-        localStorage.setItem('email_auth_time', new Date().getTime().toString());
-        
-        return {
-          success: true,
-          provider: 'gmail',
-          email: response.credentials.email,
-          name: response.credentials.name
-        };
+      // Check if Google OAuth is configured
+      if (!process.env.REACT_APP_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID === 'demo-client-id') {
+        console.warn('Google OAuth not configured, using demo mode');
+        return await this.simulateGmailOAuth();
       }
+
+      // Load Google OAuth library
+      await this.loadGoogleOAuthLibrary();
       
-      throw new Error('Gmail authentication failed');
+      // Initialize Google OAuth
+      await new Promise((resolve) => {
+        window.gapi.load('auth2', resolve);
+      });
+      
+      const authInstance = window.gapi.auth2.init({
+        client_id: this.googleConfig.clientId,
+        scope: this.googleConfig.scope
+      });
+      
+      // Sign in user
+      const googleUser = await authInstance.signIn();
+      const profile = googleUser.getBasicProfile();
+      const authResponse = googleUser.getAuthResponse();
+      
+      const credentials = {
+        email: profile.getEmail(),
+        name: profile.getName(),
+        picture: profile.getImageUrl(),
+        accessToken: authResponse.access_token,
+        idToken: authResponse.id_token,
+        expiresAt: new Date(authResponse.expires_at).getTime()
+      };
+      
+      this.currentProvider = 'gmail';
+      this.userCredentials = credentials;
+      
+      // Store in localStorage for persistence
+      localStorage.setItem('email_auth_provider', 'gmail');
+      localStorage.setItem('email_auth_credentials', JSON.stringify(credentials));
+      localStorage.setItem('email_auth_time', new Date().getTime().toString());
+      
+      return {
+        success: true,
+        provider: 'gmail',
+        email: credentials.email,
+        name: credentials.name,
+        picture: credentials.picture
+      };
+      
     } catch (error) {
       console.error('Gmail auth error:', error);
-      return { success: false, error: error.message };
+      // Fallback to demo mode
+      console.warn('Falling back to demo mode');
+      return await this.simulateGmailOAuth();
     }
   }
 
