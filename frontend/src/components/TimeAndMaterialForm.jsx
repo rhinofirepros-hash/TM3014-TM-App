@@ -171,6 +171,28 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
       if (result.success) {
         let successMessage = `PDF generated: ${result.filename}`;
         
+        // Save to T&M history
+        const tmTag = {
+          id: Date.now(),
+          project: formData.projectName,
+          title: formData.tmTagTitle,
+          date: formData.dateOfWork.toISOString().split('T')[0],
+          foreman: formData.laborEntries.length > 0 ? formData.laborEntries[0].workerName : 'Unknown',
+          totalHours: formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0), 0),
+          laborCost: formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0) * 95, 0),
+          materialCost: formData.materialEntries.reduce((sum, entry) => sum + (parseFloat(entry.total) || 0), 0),
+          status: 'completed',
+          gcEmail: formData.gcEmail,
+          costCode: formData.costCode,
+          description: formData.descriptionOfWork,
+          submittedAt: new Date().toISOString()
+        };
+        
+        // Save to localStorage
+        const existingHistory = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
+        existingHistory.unshift(tmTag); // Add to beginning
+        localStorage.setItem('tm_tags_history', JSON.stringify(existingHistory));
+        
         // Handle email notification
         if (formData.autoEmail && formData.gcEmail) {
           // TODO: Implement actual email sending with EmailJS
