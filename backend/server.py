@@ -155,6 +155,121 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# T&M Tag Endpoints
+@api_router.post("/tm-tags", response_model=TMTag)
+async def create_tm_tag(tm_tag: TMTagCreate):
+    tm_tag_dict = tm_tag.dict()
+    tm_tag_obj = TMTag(**tm_tag_dict)
+    tm_tag_obj.submitted_at = datetime.utcnow()
+    
+    # Insert into database
+    result = await db.tm_tags.insert_one(tm_tag_obj.dict())
+    
+    return tm_tag_obj
+
+@api_router.get("/tm-tags", response_model=List[TMTag])
+async def get_tm_tags(skip: int = 0, limit: int = 100):
+    tm_tags = await db.tm_tags.find().skip(skip).limit(limit).to_list(limit)
+    return [TMTag(**tm_tag) for tm_tag in tm_tags]
+
+@api_router.get("/tm-tags/{tm_tag_id}", response_model=TMTag)
+async def get_tm_tag(tm_tag_id: str):
+    tm_tag = await db.tm_tags.find_one({"id": tm_tag_id})
+    if tm_tag:
+        return TMTag(**tm_tag)
+    return {"error": "T&M Tag not found"}
+
+# Worker Management Endpoints
+@api_router.post("/workers", response_model=Worker)
+async def create_worker(worker: WorkerCreate):
+    worker_dict = worker.dict()
+    worker_obj = Worker(**worker_dict)
+    
+    # Insert into database
+    result = await db.workers.insert_one(worker_obj.dict())
+    
+    return worker_obj
+
+@api_router.get("/workers", response_model=List[Worker])
+async def get_workers():
+    workers = await db.workers.find({"active": True}).to_list(1000)
+    return [Worker(**worker) for worker in workers]
+
+# Email Endpoint
+@api_router.post("/send-email")
+async def send_email(email_request: EmailRequest):
+    try:
+        # Get email configuration from environment
+        smtp_server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+        smtp_port = int(os.environ.get('SMTP_PORT', '587'))
+        smtp_username = os.environ.get('SMTP_USERNAME', '')
+        smtp_password = os.environ.get('SMTP_PASSWORD', '')
+        
+        if not smtp_username or not smtp_password:
+            return {"error": "Email configuration not set up"}
+        
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = smtp_username
+        msg['To'] = email_request.to_email
+        if email_request.cc_email:
+            msg['Cc'] = email_request.cc_email
+        msg['Subject'] = email_request.subject
+        
+        # Add body
+        msg.attach(MIMEText(email_request.message, 'plain'))
+        
+        # Add PDF attachment
+        if email_request.pdf_data:
+            # Decode base64 PDF
+            pdf_data = base64.b64decode(email_request.pdf_data.split(',')[1] if ',' in email_request.pdf_data else email_request.pdf_data)
+            
+            # Create attachment
+            pdf_attachment = MIMEBase('application', 'octet-stream')
+            pdf_attachment.set_payload(pdf_data)
+            encoders.encode_base64(pdf_attachment)
+            
+            # Generate filename
+            tm_tag = await db.tm_tags.find_one({"id": email_request.tm_tag_id})
+            date_str = tm_tag['date_of_work'][:10] if tm_tag else datetime.utcnow().strftime('%Y-%m-%d')
+            filename = f"TM_Tag_{date_str}.pdf"
+            
+            pdf_attachment.add_header(
+                'Content-Disposition',
+                f'attachment; filename= {filename}'
+            )
+            msg.attach(pdf_attachment)
+        
+        # Send email
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+        
+        recipients = [email_request.to_email]
+        if email_request.cc_email:
+            recipients.append(email_request.cc_email)
+            
+        server.sendmail(smtp_username, recipients, msg.as_string())
+        server.quit()
+        
+        # Log the email
+        email_log = {
+            "id": str(uuid.uuid4()),
+            "to_email": email_request.to_email,
+            "cc_email": email_request.cc_email,
+            "subject": email_request.subject,
+            "tm_tag_id": email_request.tm_tag_id,
+            "sent_at": datetime.utcnow(),
+            "status": "sent"
+        }
+        await db.email_logs.insert_one(email_log)
+        
+        return {"message": "Email sent successfully", "status": "sent"}
+        
+    except Exception as e:
+        logger.error(f"Email sending failed: {str(e)}")
+        return {"error": f"Failed to send email: {str(e)}"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
