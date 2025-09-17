@@ -15,14 +15,24 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   };
 
   const save = () => {
-    if (sigCanvas.current.isEmpty()) {
-      alert('Please provide a signature before saving.');
-      return;
+    try {
+      if (!sigCanvas.current) {
+        alert('Signature canvas not available. Please try again.');
+        return;
+      }
+      
+      if (sigCanvas.current.isEmpty()) {
+        alert('Please provide a signature before saving.');
+        return;
+      }
+      
+      const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+      onSave(signatureData);
+      onClose();
+    } catch (error) {
+      console.error('Error saving signature:', error);
+      alert('Error saving signature. Please try again.');
     }
-    
-    const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
-    onSave(signatureData);
-    onClose();
   };
 
   const handleCanvasChange = () => {
