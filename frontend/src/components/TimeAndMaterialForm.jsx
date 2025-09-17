@@ -358,18 +358,12 @@ const TimeAndMaterialForm = () => {
                 Customer Reference Number
                 <Info className="w-4 h-4 text-gray-400" />
               </Label>
-              <Select 
-                value={formData.customerReference} 
-                onValueChange={(value) => handleInputChange('customerReference', value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Enter or select reference number" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ref1">Reference 1</SelectItem>
-                  <SelectItem value="ref2">Reference 2</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                value={formData.customerReference}
+                onChange={(e) => handleInputChange('customerReference', e.target.value)}
+                placeholder="Enter customer reference number"
+                className="w-full"
+              />
             </div>
 
             {/* Title of T&M Tag */}
