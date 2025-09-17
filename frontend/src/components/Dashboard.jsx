@@ -127,7 +127,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
         {/* Quick Actions */}
         <div className="mb-8">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleCreateNewTag}>
               <CardContent className="p-6 text-center">
                 <Plus className="w-8 h-8 text-green-600 mx-auto mb-2" />
@@ -151,6 +151,32 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
                 <p className="text-sm text-gray-500 mt-1">Add and manage worker profiles</p>
               </CardContent>
             </Card>
+
+            {(() => {
+              const currentUser = oauthEmailService.getCurrentUser();
+              return (
+                <Card 
+                  className="cursor-pointer hover:shadow-md transition-shadow" 
+                  onClick={() => setShowEmailAuthModal(true)}
+                >
+                  <CardContent className="p-6 text-center">
+                    {currentUser ? (
+                      <>
+                        <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                        <h3 className="font-medium text-gray-900">Email Connected</h3>
+                        <p className="text-sm text-gray-500 mt-1 capitalize">{currentUser.provider} ({currentUser.email.split('@')[0]})</p>
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+                        <h3 className="font-medium text-gray-900">Connect Email</h3>
+                        <p className="text-sm text-gray-500 mt-1">Setup Gmail or Outlook for sending</p>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </div>
         </div>
 
