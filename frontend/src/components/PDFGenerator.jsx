@@ -207,11 +207,12 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           yPos += 6;
         });
         
-        // Material totals
+        // Material totals with improved sizing
         pdf.setFont(undefined, 'bold');
-        pdf.rect(125, yPos, 60, 6);
-        pdf.text('TOTAL MATERIALS:', 132, yPos + 4);
-        pdf.text(`$${materialTotal.toFixed(2)}`, 165, yPos + 4);
+        pdf.rect(115, yPos, 50, 6);
+        pdf.rect(165, yPos, 30, 6);
+        pdf.text('TOTAL MATERIALS:', 120, yPos + 4);
+        pdf.text(`$${materialTotal.toFixed(2)}`, 170, yPos + 4);
         yPos += 12;
       }
 
