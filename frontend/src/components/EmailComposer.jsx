@@ -408,6 +408,13 @@ www.rhinofireprotection.com`
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    {/* Email Authentication Modal */}
+    <EmailAuthModal
+      open={showAuthModal}
+      onClose={() => setShowAuthModal(false)}
+      onAuthSuccess={handleAuthSuccess}
+    />
   );
 };
 
