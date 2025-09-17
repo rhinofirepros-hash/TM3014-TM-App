@@ -1,16 +1,86 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAndMaterialForm from "./components/TimeAndMaterialForm";
+import PinLogin from "./components/PinLogin";
+import Dashboard from "./components/Dashboard";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'form'
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    // Check if user is already authenticated
+    const authStatus = localStorage.getItem('tm_app_authenticated');
+    const loginTime = localStorage.getItem('tm_app_login_time');
+    
+    if (authStatus === 'true' && loginTime) {
+      // Check if login is still valid (24 hours)
+      const loginTimeMs = parseInt(loginTime);
+      const now = new Date().getTime();
+      const hoursDiff = (now - loginTimeMs) / (1000 * 60 * 60);
+      
+      if (hoursDiff < 24) {
+        setIsAuthenticated(true);
+      } else {
+        // Session expired
+        localStorage.removeItem('tm_app_authenticated');
+        localStorage.removeItem('tm_app_login_time');
+      }
+    }
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentView('dashboard');
+    setSelectedProject(null);
+  };
+
+  const handleCreateNew = () => {
+    setCurrentView('form');
+    setSelectedProject(null);
+  };
+
+  const handleOpenProject = (project) => {
+    setSelectedProject(project);
+    setCurrentView('form');
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView('dashboard');
+    setSelectedProject(null);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="App">
+        <PinLogin onLoginSuccess={handleLoginSuccess} />
+        <Toaster />
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<TimeAndMaterialForm />} />
-        </Routes>
+        {currentView === 'dashboard' ? (
+          <Dashboard 
+            onCreateNew={handleCreateNew}
+            onOpenProject={handleOpenProject}
+            onLogout={handleLogout}
+          />
+        ) : (
+          <TimeAndMaterialForm 
+            selectedProject={selectedProject}
+            onBackToDashboard={handleBackToDashboard}
+          />
+        )}
       </BrowserRouter>
       <Toaster />
     </div>
