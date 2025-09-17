@@ -113,15 +113,17 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     setShowSignatureModal(true);
   };
 
-  const handleSignatureSave = (signatureData) => {
+  const handleSignatureSave = (signatureData, signerName, signerTitle) => {
     setFormData(prev => ({
       ...prev,
-      signature: signatureData
+      signature: signatureData,
+      signerName: signerName || prev.signerName,
+      signerTitle: signerTitle || prev.signerTitle
     }));
     
     toast({
       title: "Signature Captured",
-      description: "Foreman signature has been saved.",
+      description: `Signature saved for ${signerName || 'signer'}`,
     });
   };
 
