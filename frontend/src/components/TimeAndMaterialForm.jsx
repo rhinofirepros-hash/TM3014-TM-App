@@ -302,7 +302,9 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           gcEmail: '',
           autoEmail: true,
           downloadPDF: true,
-          signature: null
+          signature: null,
+          signerName: '',
+          signerTitle: 'Foreman'
         });
       }
     } catch (error) {
