@@ -163,21 +163,21 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         pdf.text('MATERIALS', 15, yPos);
         yPos += 6;
         
-        // Materials table with borders
+        // Materials table with improved borders and sizing
         pdf.setFontSize(8);
-        pdf.rect(15, yPos, 60, 8); // Material name
-        pdf.rect(75, yPos, 25, 8); // Unit
-        pdf.rect(100, yPos, 25, 8); // Qty
-        pdf.rect(125, yPos, 30, 8); // Unit Cost
-        pdf.rect(155, yPos, 30, 8); // Total
-        pdf.rect(185, yPos, 10, 8); // Date
+        pdf.rect(15, yPos, 55, 8); // Material name
+        pdf.rect(70, yPos, 25, 8); // Unit
+        pdf.rect(95, yPos, 20, 8); // Qty
+        pdf.rect(115, yPos, 25, 8); // Unit Cost
+        pdf.rect(140, yPos, 25, 8); // Total
+        pdf.rect(165, yPos, 30, 8); // Date (wider)
         
         pdf.text('Material Name', 17, yPos + 5);
-        pdf.text('Unit of Measure', 77, yPos + 5);
-        pdf.text('Quantity', 107, yPos + 5);
-        pdf.text('Unit Cost', 132, yPos + 5);
-        pdf.text('Total', 165, yPos + 5);
-        pdf.text('Date', 187, yPos + 5);
+        pdf.text('Unit', 77, yPos + 5);
+        pdf.text('Qty', 100, yPos + 5);
+        pdf.text('Unit Cost', 120, yPos + 5);
+        pdf.text('Total', 147, yPos + 5);
+        pdf.text('Date', 170, yPos + 5);
         
         yPos += 8;
         
