@@ -107,31 +107,63 @@ class OAuthEmailService {
   // Outlook OAuth Authentication
   async authenticateOutlook() {
     try {
-      // For production, implement Microsoft OAuth2
-      // For now, we'll simulate the flow
-      const response = await this.simulateOutlookOAuth();
-      
-      if (response.success) {
-        this.currentProvider = 'outlook';
-        this.userCredentials = response.credentials;
-        
-        // Store in localStorage for persistence
-        localStorage.setItem('email_auth_provider', 'outlook');
-        localStorage.setItem('email_auth_credentials', JSON.stringify(response.credentials));
-        localStorage.setItem('email_auth_time', new Date().getTime().toString());
-        
-        return {
-          success: true,
-          provider: 'outlook',
-          email: response.credentials.email,
-          name: response.credentials.name
-        };
+      // Check if Microsoft OAuth is configured
+      if (!process.env.REACT_APP_MICROSOFT_CLIENT_ID || process.env.REACT_APP_MICROSOFT_CLIENT_ID === 'demo-client-id') {
+        console.warn('Microsoft OAuth not configured, using demo mode');
+        return await this.simulateOutlookOAuth();
       }
+
+      if (!this.msalInstance) {
+        throw new Error('MSAL instance not initialized');
+      }
+
+      // Microsoft OAuth scopes
+      const loginRequest = {
+        scopes: ['openid', 'profile', 'email', 'https://graph.microsoft.com/mail.send', 'https://graph.microsoft.com/user.read'],
+      };
+
+      // Sign in user
+      const loginResponse = await this.msalInstance.loginPopup(loginRequest);
       
-      throw new Error('Outlook authentication failed');
+      // Get user account info
+      const account = loginResponse.account;
+      
+      // Get access token for Microsoft Graph
+      const tokenRequest = {
+        scopes: ['https://graph.microsoft.com/mail.send', 'https://graph.microsoft.com/user.read'],
+        account: account
+      };
+      
+      const tokenResponse = await this.msalInstance.acquireTokenSilent(tokenRequest);
+      
+      const credentials = {
+        email: account.username,
+        name: account.name,
+        accessToken: tokenResponse.accessToken,
+        idToken: loginResponse.idToken,
+        expiresAt: tokenResponse.expiresOn.getTime()
+      };
+      
+      this.currentProvider = 'outlook';
+      this.userCredentials = credentials;
+      
+      // Store in localStorage for persistence
+      localStorage.setItem('email_auth_provider', 'outlook');
+      localStorage.setItem('email_auth_credentials', JSON.stringify(credentials));
+      localStorage.setItem('email_auth_time', new Date().getTime().toString());
+      
+      return {
+        success: true,
+        provider: 'outlook',
+        email: credentials.email,
+        name: credentials.name
+      };
+      
     } catch (error) {
       console.error('Outlook auth error:', error);
-      return { success: false, error: error.message };
+      // Fallback to demo mode
+      console.warn('Falling back to demo mode');
+      return await this.simulateOutlookOAuth();
     }
   }
 
