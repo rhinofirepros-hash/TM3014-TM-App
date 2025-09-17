@@ -134,22 +134,24 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
           {entries.map((entry) => (
             <TableRow key={entry.id}>
               <TableCell className="p-1">
-                <Select
+                <Input
                   value={entry.workerName}
-                  onValueChange={(value) => updateEntry(entry.id, 'workerName', value)}
-                >
-                  <SelectTrigger className="border-0 p-2 h-8 text-xs sm:text-sm min-w-[120px]">
-                    <SelectValue placeholder="Select worker" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {savedWorkers.map((worker) => (
-                      <SelectItem key={worker.id} value={worker.name}>
-                        {worker.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="__custom__">+ Add New Worker</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => updateEntry(entry.id, 'workerName', e.target.value)}
+                  onBlur={() => {
+                    // Auto-save new worker names to the database
+                    if (entry.workerName && entry.workerName.trim() && onSaveWorker) {
+                      onSaveWorker(entry.workerName.trim());
+                    }
+                  }}
+                  placeholder="Enter worker name"
+                  className="border-0 p-2 h-8 text-xs sm:text-sm min-w-[120px]"
+                  list={`workers-${entry.id}`}
+                />
+                <datalist id={`workers-${entry.id}`}>
+                  {savedWorkers.map((worker) => (
+                    <option key={worker.id} value={worker.name} />
+                  ))}
+                </datalist>
               </TableCell>
               <TableCell className="p-1">
                 <Input
