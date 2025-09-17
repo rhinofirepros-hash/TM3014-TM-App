@@ -337,21 +337,41 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setFontSize(10);
       
       // Signature boxes like ClearStory - improved sizing
-      pdf.rect(15, yPos, 90, 20); // Foreman signature box (wider)
-      pdf.rect(110, yPos, 85, 20); // Date box
+      pdf.rect(15, yPos, 90, 25); // Foreman signature box (taller for signature)
+      pdf.rect(110, yPos, 85, 25); // Date box
       
       pdf.text('FOREMAN SIGNATURE:', 17, yPos + 5);
       pdf.text('DATE:', 112, yPos + 5);
       
       // Add signature if available
       if (formData.signature) {
-        pdf.setFontSize(8);
-        pdf.text('(Signature captured digitally)', 17, yPos + 15);
+        try {
+          // Add actual signature image
+          pdf.addImage(formData.signature, 'PNG', 17, yPos + 7, 70, 15);
+        } catch (error) {
+          console.error('Error adding signature to PDF:', error);
+          pdf.setFontSize(8);
+          pdf.text('(Digital signature captured)', 17, yPos + 15);
+        }
       }
       
       pdf.text(new Date().toLocaleDateString(), 112, yPos + 15);
       
-      yPos += 25;
+      yPos += 30;
+      
+      // Foreman print name section - add signer name if available
+      pdf.rect(15, yPos, 180, 15); // Full width for foreman name
+      pdf.text('FOREMAN PRINT NAME:', 17, yPos + 8);
+      
+      if (formData.signerName) {
+        pdf.setFont(undefined, 'normal');
+        pdf.setFontSize(9);
+        pdf.text(formData.signerName, 17, yPos + 12);
+        pdf.setFont(undefined, 'bold');
+        pdf.setFontSize(10);
+      }
+      
+      yPos += 20;
       
       // Company representative signature section - much larger
       pdf.setFontSize(10);
