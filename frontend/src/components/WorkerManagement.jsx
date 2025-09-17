@@ -64,14 +64,8 @@ const WorkerManagement = ({ onBack }) => {
     if (savedWorkers) {
       setWorkers(JSON.parse(savedWorkers));
     } else {
-      // Default workers
-      const defaultWorkers = [
-        { id: 1, name: "Jesus Garcia", rate: 95, position: "Foreman", phone: "", email: "" },
-        { id: 2, name: "Mike Rodriguez", rate: 95, position: "Technician", phone: "", email: "" },
-        { id: 3, name: "Sarah Johnson", rate: 85, position: "Apprentice", phone: "", email: "" }
-      ];
-      setWorkers(defaultWorkers);
-      localStorage.setItem('saved_workers', JSON.stringify(defaultWorkers));
+      // No default workers - start clean
+      setWorkers([]);
     }
   };
 
