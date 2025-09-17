@@ -175,6 +175,11 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
                 <p className="text-gray-600 text-sm">
                   Connect your email account to send T&M tags directly to General Contractors
                 </p>
+                {(!process.env.REACT_APP_GOOGLE_CLIENT_ID && !process.env.REACT_APP_MICROSOFT_CLIENT_ID) && (
+                  <p className="text-yellow-600 text-xs mt-2 bg-yellow-50 p-2 rounded">
+                    Demo Mode: Real OAuth credentials not configured
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
