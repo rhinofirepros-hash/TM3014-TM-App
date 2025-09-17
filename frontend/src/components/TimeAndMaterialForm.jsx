@@ -20,7 +20,7 @@ import PDFGenerator from './PDFGenerator';
 import { mockData } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
 
-const TimeAndMaterialForm = () => {
+const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     projectName: "",
