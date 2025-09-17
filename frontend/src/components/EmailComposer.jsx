@@ -198,13 +198,16 @@ www.rhinofireprotection.com`
         const existingLogs = JSON.parse(localStorage.getItem('email_logs') || '[]');
         existingLogs.unshift(emailLog);
         localStorage.setItem('email_logs', JSON.stringify(existingLogs));
-
-      onClose();
+        
+        onClose();
+      } else {
+        throw new Error(result.error || 'Failed to send email');
+      }
     } catch (error) {
       console.error('Email sending error:', error);
       toast({
         title: "Email Failed",
-        description: "Failed to send email. Please try again.",
+        description: error.message || "Failed to send email. Please try again.",
         variant: "destructive"
       });
     } finally {
