@@ -60,6 +60,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
   const [isCustomCompany, setIsCustomCompany] = useState(false);
   const [customCompanyName, setCustomCompanyName] = useState('');
+
+  const [savedEmails, setSavedEmails] = useState(() => {
+    const saved = localStorage.getItem('saved_emails');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [isCustomEmail, setIsCustomEmail] = useState(false);
+  const [customEmail, setCustomEmail] = useState('');
   
   const [savedWorkers, setSavedWorkers] = useState(() => {
     const saved = localStorage.getItem('saved_workers');
