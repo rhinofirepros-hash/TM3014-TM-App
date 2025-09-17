@@ -13,7 +13,7 @@ const PinLogin = ({ onLoginSuccess }) => {
   const [loginMethod, setLoginMethod] = useState('pin'); // 'pin', 'gmail', 'outlook'
   const { toast } = useToast();
 
-  const handleLogin = () => {
+  const handlePinLogin = () => {
     setIsLoading(true);
     
     // Simple PIN validation
@@ -21,6 +21,7 @@ const PinLogin = ({ onLoginSuccess }) => {
       if (pin === 'J777') {
         localStorage.setItem('tm_app_authenticated', 'true');
         localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
+        localStorage.setItem('tm_app_login_method', 'pin');
         onLoginSuccess();
         toast({
           title: "Login Successful",
@@ -35,6 +36,48 @@ const PinLogin = ({ onLoginSuccess }) => {
       }
       setIsLoading(false);
     }, 1000);
+  };
+
+  const handleGmailLogin = () => {
+    setIsLoading(true);
+    
+    // Simulate Gmail OAuth (in production, use Google OAuth)
+    setTimeout(() => {
+      // For demo purposes, simulate successful Gmail login
+      localStorage.setItem('tm_app_authenticated', 'true');
+      localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
+      localStorage.setItem('tm_app_login_method', 'gmail');
+      localStorage.setItem('tm_app_user_email', 'user@gmail.com');
+      localStorage.setItem('tm_app_user_name', 'Jesus Garcia');
+      
+      onLoginSuccess();
+      toast({
+        title: "Gmail Login Successful",
+        description: "Connected with Gmail account",
+      });
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  const handleOutlookLogin = () => {
+    setIsLoading(true);
+    
+    // Simulate Outlook OAuth (in production, use Microsoft Graph)
+    setTimeout(() => {
+      // For demo purposes, simulate successful Outlook login
+      localStorage.setItem('tm_app_authenticated', 'true');
+      localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
+      localStorage.setItem('tm_app_login_method', 'outlook');
+      localStorage.setItem('tm_app_user_email', 'user@outlook.com');
+      localStorage.setItem('tm_app_user_name', 'Jesus Garcia');
+      
+      onLoginSuccess();
+      toast({
+        title: "Outlook Login Successful",
+        description: "Connected with Outlook account",
+      });
+      setIsLoading(false);
+    }, 2000);
   };
 
   const handleKeyPress = (e) => {
