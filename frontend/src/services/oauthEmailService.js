@@ -7,6 +7,30 @@ class OAuthEmailService {
     this.isInitialized = false;
     this.currentProvider = null;
     this.userCredentials = null;
+    
+    // Microsoft MSAL configuration
+    this.msalConfig = {
+      auth: {
+        clientId: process.env.REACT_APP_MICROSOFT_CLIENT_ID || 'demo-client-id',
+        authority: 'https://login.microsoftonline.com/common',
+        redirectUri: window.location.origin
+      },
+      cache: {
+        cacheLocation: 'localStorage',
+        storeAuthStateInCookie: false
+      }
+    };
+    
+    // Google OAuth configuration
+    this.googleConfig = {
+      clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID || 'demo-client-id',
+      scope: 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+    };
+    
+    // Initialize MSAL instance
+    if (process.env.REACT_APP_MICROSOFT_CLIENT_ID) {
+      this.msalInstance = new PublicClientApplication(this.msalConfig);
+    }
   }
 
   async initializeEmailJS() {
