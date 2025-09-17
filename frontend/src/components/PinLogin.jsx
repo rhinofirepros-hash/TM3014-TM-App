@@ -82,7 +82,7 @@ const PinLogin = ({ onLoginSuccess }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleLogin();
+      handlePinLogin();
     }
   };
 
