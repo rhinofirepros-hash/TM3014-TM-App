@@ -349,34 +349,71 @@ class OAuthEmailService {
     localStorage.removeItem('email_auth_time');
   }
 
-  // Simulate Gmail OAuth (replace with real implementation)
+  // Load Google OAuth library
+  async loadGoogleOAuthLibrary() {
+    return new Promise((resolve, reject) => {
+      if (window.gapi) {
+        resolve();
+        return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = 'https://apis.google.com/js/api.js';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Google OAuth library'));
+      document.head.appendChild(script);
+    });
+  }
+
+  // Demo mode for Gmail OAuth (when credentials not configured)
   async simulateGmailOAuth() {
     return new Promise((resolve) => {
       setTimeout(() => {
+        // Generate realistic demo user data
+        const demoUsers = [
+          { email: 'john.smith@gmail.com', name: 'John Smith' },
+          { email: 'maria.rodriguez@gmail.com', name: 'Maria Rodriguez' },
+          { email: 'mike.johnson@gmail.com', name: 'Mike Johnson' },
+          { email: 'sarah.wilson@gmail.com', name: 'Sarah Wilson' }
+        ];
+        
+        const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
+        
         resolve({
           success: true,
           credentials: {
-            email: 'user@gmail.com',
-            name: 'Jesus Garcia',
-            accessToken: 'mock_gmail_token_' + Date.now(),
-            refreshToken: 'mock_gmail_refresh_' + Date.now()
+            ...randomUser,
+            picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(randomUser.name)}&background=dc2626&color=fff`,
+            accessToken: 'demo_gmail_token_' + Date.now(),
+            refreshToken: 'demo_gmail_refresh_' + Date.now(),
+            expiresAt: Date.now() + (3600 * 1000) // 1 hour
           }
         });
       }, 1500);
     });
   }
 
-  // Simulate Outlook OAuth (replace with real implementation)
+  // Demo mode for Outlook OAuth (when credentials not configured)
   async simulateOutlookOAuth() {
     return new Promise((resolve) => {
       setTimeout(() => {
+        // Generate realistic demo user data
+        const demoUsers = [
+          { email: 'alex.brown@hotmail.com', name: 'Alex Brown' },
+          { email: 'lisa.davis@outlook.com', name: 'Lisa Davis' },
+          { email: 'carlos.martinez@live.com', name: 'Carlos Martinez' },
+          { email: 'jennifer.taylor@outlook.com', name: 'Jennifer Taylor' }
+        ];
+        
+        const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
+        
         resolve({
           success: true,
           credentials: {
-            email: 'user@outlook.com',
-            name: 'Jesus Garcia',
-            accessToken: 'mock_outlook_token_' + Date.now(),
-            refreshToken: 'mock_outlook_refresh_' + Date.now()
+            ...randomUser,
+            accessToken: 'demo_outlook_token_' + Date.now(),
+            refreshToken: 'demo_outlook_refresh_' + Date.now(),
+            expiresAt: Date.now() + (3600 * 1000) // 1 hour
           }
         });
       }, 1500);
