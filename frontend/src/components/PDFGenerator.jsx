@@ -35,12 +35,12 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         await new Promise((resolve, reject) => {
           img.onload = function() {
             try {
-              // Add the actual Rhino Fire logo to top left (properly sized)
-              pdf.addImage(img, 'PNG', 20, 18, 40, 20);
+              // Add the actual Rhino Fire logo to top left on white background (properly sized)
+              pdf.addImage(img, 'PNG', 15, 15, 50, 25);
               resolve();
             } catch (imgError) {
               console.log('Logo image error:', imgError);
-              // Fallback - just center the text without red box
+              // Fallback - just center the text without any background
               pdf.setTextColor(0, 0, 0);
               pdf.setFontSize(18);
               pdf.setFont(undefined, 'bold');
