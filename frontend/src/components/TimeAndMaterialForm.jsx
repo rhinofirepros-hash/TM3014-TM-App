@@ -27,7 +27,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     projectName: selectedProject?.name || "",
     costCode: '',
     dateOfWork: new Date(),
-    customerReference: '',
+    companyName: '',
     tmTagTitle: '',
     descriptionOfWork: '',
     laborEntries: [],
