@@ -11,31 +11,16 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
   const addEmptyRow = () => {
     const newEntry = {
       id: Date.now(),
-      workerName: 'Jesus Garcia',
+      workerName: '',
       quantity: 1,
-      stHours: 8.00,
+      stHours: 0,
       otHours: 0,
       dtHours: 0,
       potHours: 0,
-      totalHours: 8.00,
+      totalHours: 0,
       date: new Date().toLocaleDateString()
     };
     onChange([...entries, newEntry]);
-  };
-
-  const addJesusRow = () => {
-    const jesusEntry = {
-      id: Date.now(),
-      workerName: 'Jesus Garcia',
-      quantity: 1,
-      stHours: 8.00,
-      otHours: 0,
-      dtHours: 0,
-      potHours: 0,
-      totalHours: 8.00,
-      date: new Date().toLocaleDateString()
-    };
-    onChange([...entries, jesusEntry]);
   };
 
   const updateEntry = (id, field, value) => {
