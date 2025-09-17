@@ -1,0 +1,301 @@
+// OAuth Email Service for Gmail and Outlook authentication
+import emailjs from '@emailjs/browser';
+
+class OAuthEmailService {
+  constructor() {
+    this.isInitialized = false;
+    this.currentProvider = null;
+    this.userCredentials = null;
+  }
+
+  async initializeEmailJS() {
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+      this.isInitialized = true;
+      return true;
+    }
+    console.warn('EmailJS not configured - using OAuth direct send');
+    return false;
+  }
+
+  // Gmail OAuth Authentication
+  async authenticateGmail() {
+    try {
+      // For production, implement Google OAuth2
+      // For now, we'll simulate the flow
+      const response = await this.simulateGmailOAuth();
+      
+      if (response.success) {
+        this.currentProvider = 'gmail';
+        this.userCredentials = response.credentials;
+        
+        // Store in localStorage for persistence
+        localStorage.setItem('email_auth_provider', 'gmail');
+        localStorage.setItem('email_auth_credentials', JSON.stringify(response.credentials));
+        localStorage.setItem('email_auth_time', new Date().getTime().toString());
+        
+        return {
+          success: true,
+          provider: 'gmail',
+          email: response.credentials.email,
+          name: response.credentials.name
+        };
+      }
+      
+      throw new Error('Gmail authentication failed');
+    } catch (error) {
+      console.error('Gmail auth error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Outlook OAuth Authentication
+  async authenticateOutlook() {
+    try {
+      // For production, implement Microsoft OAuth2
+      // For now, we'll simulate the flow
+      const response = await this.simulateOutlookOAuth();
+      
+      if (response.success) {
+        this.currentProvider = 'outlook';
+        this.userCredentials = response.credentials;
+        
+        // Store in localStorage for persistence
+        localStorage.setItem('email_auth_provider', 'outlook');
+        localStorage.setItem('email_auth_credentials', JSON.stringify(response.credentials));
+        localStorage.setItem('email_auth_time', new Date().getTime().toString());
+        
+        return {
+          success: true,
+          provider: 'outlook',
+          email: response.credentials.email,
+          name: response.credentials.name
+        };
+      }
+      
+      throw new Error('Outlook authentication failed');
+    } catch (error) {
+      console.error('Outlook auth error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Check if user is authenticated
+  isAuthenticated() {
+    const provider = localStorage.getItem('email_auth_provider');
+    const credentials = localStorage.getItem('email_auth_credentials');
+    const authTime = localStorage.getItem('email_auth_time');
+    
+    if (!provider || !credentials || !authTime) {
+      return false;
+    }
+    
+    // Check if authentication is still valid (24 hours)
+    const authAge = Date.now() - parseInt(authTime);
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    
+    if (authAge > maxAge) {
+      this.logout();
+      return false;
+    }
+    
+    // Restore credentials
+    this.currentProvider = provider;
+    this.userCredentials = JSON.parse(credentials);
+    
+    return true;
+  }
+
+  // Get current user info
+  getCurrentUser() {
+    if (!this.isAuthenticated()) {
+      return null;
+    }
+    
+    return {
+      provider: this.currentProvider,
+      email: this.userCredentials.email,
+      name: this.userCredentials.name
+    };
+  }
+
+  // Send T&M Tag Email
+  async sendTMTagEmail(emailData) {
+    try {
+      if (!this.isAuthenticated()) {
+        throw new Error('User not authenticated. Please login first.');
+      }
+
+      // Prepare email content
+      const emailContent = this.prepareTMTagEmail(emailData);
+
+      // Send based on provider
+      if (this.currentProvider === 'gmail') {
+        return await this.sendViaGmail(emailContent);
+      } else if (this.currentProvider === 'outlook') {
+        return await this.sendViaOutlook(emailContent);
+      } else {
+        throw new Error('Unknown email provider');
+      }
+
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  // Prepare T&M Tag Email Content
+  prepareTMTagEmail(emailData) {
+    const subject = `T&M Tag - ${emailData.projectName} - ${emailData.dateOfWork}`;
+    
+    const htmlBody = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .header { background-color: #f4f4f4; padding: 20px; text-align: center; }
+            .content { padding: 20px; }
+            .tag-details { background-color: #f9f9f9; padding: 15px; border-left: 4px solid #dc2626; margin: 20px 0; }
+            .footer { background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>Rhino Fire Protection</h2>
+            <p>Time & Material Tag</p>
+          </div>
+          
+          <div class="content">
+            <p>Dear General Contractor,</p>
+            
+            <p>Please find attached the Time & Material tag for work completed on your project.</p>
+            
+            <div class="tag-details">
+              <h3>Project Details</h3>
+              <p><strong>Project:</strong> ${emailData.projectName}</p>
+              <p><strong>Company:</strong> ${emailData.companyName}</p>
+              <p><strong>T&M Tag:</strong> ${emailData.tmTagTitle}</p>
+              <p><strong>Date:</strong> ${emailData.dateOfWork}</p>
+              <p><strong>Submitted by:</strong> ${this.userCredentials.name}</p>
+            </div>
+            
+            <p>The attached PDF contains complete details and requires your review and approval.</p>
+            
+            <p>Please contact us if you have any questions.</p>
+            
+            <p>Best regards,<br>
+            ${this.userCredentials.name}<br>
+            Rhino Fire Protection<br>
+            ${this.userCredentials.email}</p>
+          </div>
+          
+          <div class="footer">
+            <p>This is an automated T&M tag submission from Rhino Fire Protection.</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    return {
+      to: emailData.gcEmail,
+      subject: subject,
+      html: htmlBody,
+      attachments: emailData.pdfData ? [{
+        filename: emailData.filename || `TM_Tag_${emailData.dateOfWork}.pdf`,
+        content: emailData.pdfData,
+        type: 'application/pdf'
+      }] : []
+    };
+  }
+
+  // Send via Gmail (simulation for now)
+  async sendViaGmail(emailContent) {
+    // In production, this would use Gmail API
+    // For now, simulate sending
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    console.log('Gmail Email sent:', {
+      from: this.userCredentials.email,
+      to: emailContent.to,
+      subject: emailContent.subject,
+      provider: 'gmail'
+    });
+
+    return {
+      success: true,
+      provider: 'gmail',
+      messageId: 'gmail_' + Date.now(),
+      message: `Email sent via Gmail from ${this.userCredentials.email}`
+    };
+  }
+
+  // Send via Outlook (simulation for now)
+  async sendViaOutlook(emailContent) {
+    // In production, this would use Microsoft Graph API
+    // For now, simulate sending
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    console.log('Outlook Email sent:', {
+      from: this.userCredentials.email,
+      to: emailContent.to,
+      subject: emailContent.subject,
+      provider: 'outlook'
+    });
+
+    return {
+      success: true,
+      provider: 'outlook',
+      messageId: 'outlook_' + Date.now(),
+      message: `Email sent via Outlook from ${this.userCredentials.email}`
+    };
+  }
+
+  // Logout
+  logout() {
+    this.currentProvider = null;
+    this.userCredentials = null;
+    localStorage.removeItem('email_auth_provider');
+    localStorage.removeItem('email_auth_credentials');
+    localStorage.removeItem('email_auth_time');
+  }
+
+  // Simulate Gmail OAuth (replace with real implementation)
+  async simulateGmailOAuth() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          credentials: {
+            email: 'user@gmail.com',
+            name: 'Jesus Garcia',
+            accessToken: 'mock_gmail_token_' + Date.now(),
+            refreshToken: 'mock_gmail_refresh_' + Date.now()
+          }
+        });
+      }, 1500);
+    });
+  }
+
+  // Simulate Outlook OAuth (replace with real implementation)
+  async simulateOutlookOAuth() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          credentials: {
+            email: 'user@outlook.com',
+            name: 'Jesus Garcia',
+            accessToken: 'mock_outlook_token_' + Date.now(),
+            refreshToken: 'mock_outlook_refresh_' + Date.now()
+          }
+        });
+      }, 1500);
+    });
+  }
+}
+
+export default new OAuthEmailService();
