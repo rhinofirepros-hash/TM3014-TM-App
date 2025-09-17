@@ -1042,6 +1042,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     setCustomProjectName('');
                     setIsCustomCompany(false);
                     setCustomCompanyName('');
+                    setIsCustomEmail(false);
+                    setCustomEmail('');
                     setIsCustomProject(false);
                     setCustomProjectName('');
                   }}
