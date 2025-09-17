@@ -12,64 +12,54 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setLineWidth(0.5);
       pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Header section - clean white background
+      // Clean Header Section - No overlapping text
+      let headerComplete = false;
       
-      // Add actual Rhino Fire Protection logo
+      // Try to add logo
       try {
-        // Use the new TITLEBLOCKRHINOFIRE1.png logo
         const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
-        
-        // Create image and add to PDF
         const img = new Image();
         img.crossOrigin = 'anonymous';
         
-        // Add logo synchronously using a promise
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve) => {
           img.onload = function() {
             try {
-              // Add the new RHINO FIRE PROTECTION logo with proper sizing for the full logo
-              pdf.addImage(img, 'PNG', 15, 15, 80, 40);
-              // Add TIME & MATERIAL TAG text next to the logo
+              // Add logo on left side
+              pdf.addImage(img, 'PNG', 15, 15, 70, 35);
+              
+              // Add "TIME & MATERIAL TAG" text on right side only
               pdf.setTextColor(0, 0, 0);
-              pdf.setFontSize(14);
+              pdf.setFontSize(16);
               pdf.setFont(undefined, 'bold');
-              pdf.text('TIME & MATERIAL TAG', 110, 35, { align: 'left' });
-              resolve();
+              pdf.text('TIME & MATERIAL TAG', 195, 32, { align: 'right' });
+              
+              headerComplete = true;
             } catch (imgError) {
-              console.log('Logo image error:', imgError);
-              // Fallback - just center the text without any background
-              pdf.setTextColor(0, 0, 0);
-              pdf.setFontSize(18);
-              pdf.setFont(undefined, 'bold');
-              pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
-              pdf.setFontSize(14);
-              pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
-              resolve();
+              console.log('Logo rendering error:', imgError);
             }
-          };
-          img.onerror = function() {
-            console.log('Logo loading failed, using centered text');
-            // Fallback - just center the text without any background
-            pdf.setTextColor(0, 0, 0);
-            pdf.setFontSize(18);
-            pdf.setFont(undefined, 'bold');
-            pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
-            pdf.setFontSize(14);
-            pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
             resolve();
           };
+          
+          img.onerror = function() {
+            console.log('Logo loading failed');
+            resolve();
+          };
+          
           img.src = logoUrl;
         });
         
       } catch (error) {
         console.log('Logo loading error:', error);
-        // Fallback - just center the text without any background
+      }
+      
+      // Fallback if logo failed
+      if (!headerComplete) {
         pdf.setTextColor(0, 0, 0);
         pdf.setFontSize(18);
         pdf.setFont(undefined, 'bold');
         pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
         pdf.setFontSize(14);
-        pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
+        pdf.text('TIME & MATERIAL TAG', 105, 35, { align: 'center' });
       }
       
       // Project Information Section
