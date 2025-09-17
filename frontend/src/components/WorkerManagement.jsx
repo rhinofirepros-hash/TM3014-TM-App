@@ -80,7 +80,7 @@ const WorkerManagement = ({ onBack }) => {
     localStorage.setItem('saved_workers', JSON.stringify(updatedWorkers));
   };
 
-  const handleAddWorker = () => {
+  const handleAddWorker = async () => {
     if (!newWorker.name.trim()) {
       toast({
         title: "Name Required",
@@ -90,8 +90,7 @@ const WorkerManagement = ({ onBack }) => {
       return;
     }
 
-    const worker = {
-      id: Date.now(),
+    const workerData = {
       name: newWorker.name.trim(),
       rate: parseFloat(newWorker.rate) || 95,
       position: newWorker.position.trim(),
@@ -99,16 +98,50 @@ const WorkerManagement = ({ onBack }) => {
       email: newWorker.email.trim()
     };
 
-    const updatedWorkers = [...workers, worker];
-    saveWorkers(updatedWorkers);
-    
-    setNewWorker({ name: '', rate: 95, position: '', phone: '', email: '' });
-    setShowAddModal(false);
-    
-    toast({
-      title: "Worker Added",
-      description: `${worker.name} has been added to the worker database.`,
-    });
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      let savedWorker = null;
+      
+      if (backendUrl) {
+        // Try to save to backend
+        const response = await fetch(`${backendUrl}/api/workers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(workerData)
+        });
+        
+        if (response.ok) {
+          savedWorker = await response.json();
+        } else {
+          console.warn('Failed to save worker to backend, using localStorage fallback');
+          savedWorker = { id: Date.now(), ...workerData };
+        }
+      } else {
+        savedWorker = { id: Date.now(), ...workerData };
+      }
+      
+      // Update local state and localStorage (fallback)
+      const updatedWorkers = [...workers, savedWorker];
+      setWorkers(updatedWorkers);
+      localStorage.setItem('saved_workers', JSON.stringify(updatedWorkers));
+      
+      setNewWorker({ name: '', rate: 95, position: '', phone: '', email: '' });
+      setShowAddModal(false);
+      
+      toast({
+        title: "Worker Added",
+        description: `${savedWorker.name} has been added to the worker database.`,
+      });
+    } catch (error) {
+      console.error('Error adding worker:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add worker. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleEditWorker = (worker) => {
