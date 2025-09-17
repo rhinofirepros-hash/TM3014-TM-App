@@ -486,6 +486,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               <LaborTable 
                 entries={formData.laborEntries}
                 onChange={(entries) => handleInputChange('laborEntries', entries)}
+                onSaveWorker={handleSaveWorker}
               />
             </div>
 
