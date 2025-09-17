@@ -26,8 +26,26 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   };
 
   const handleCanvasChange = () => {
-    setIsEmpty(sigCanvas.current.isEmpty());
+    if (sigCanvas.current) {
+      setIsEmpty(sigCanvas.current.isEmpty());
+    }
   };
+
+  // Calculate canvas size based on container
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const isMobile = window.innerWidth < 640;
+      const maxWidth = isMobile ? Math.min(window.innerWidth - 60, 500) : 600;
+      const height = isMobile ? 120 : 200;
+      
+      setCanvasSize({ width: maxWidth, height });
+    };
+
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
+    
+    return () => window.removeEventListener('resize', updateCanvasSize);
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
