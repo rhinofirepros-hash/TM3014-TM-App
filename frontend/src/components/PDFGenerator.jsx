@@ -52,11 +52,11 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           // Fallback logo in top left
           pdf.setDrawColor(220, 53, 69);
           pdf.setFillColor(220, 53, 69);
-          pdf.roundedRect(15, 17, 35, 20, 2, 2, 'FD');
+          pdf.roundedRect(15, 15, 40, 25, 2, 2, 'FD');
           pdf.setTextColor(255, 255, 255);
-          pdf.setFontSize(10);
+          pdf.setFontSize(12);
           pdf.setFont(undefined, 'bold');
-          pdf.text('RHINO FIRE', 32, 28, { align: 'center' });
+          pdf.text('RHINO FIRE', 35, 28, { align: 'center' });
           pdf.setTextColor(0, 0, 0);
         };
         img.src = logoUrl;
