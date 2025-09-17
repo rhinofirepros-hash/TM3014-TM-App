@@ -389,24 +389,65 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       yPos += 15;
       
-      // Footer with professional styling
+      // Footer with professional styling and logo
       pdf.setDrawColor(0, 0, 0);
       pdf.setLineWidth(0.5);
       pdf.line(15, yPos, 195, yPos);
       
-      pdf.setFontSize(9);
-      pdf.setFont(undefined, 'bold');
-      pdf.text('Rhino Fire Protection T&M Tag App', 105, yPos + 7, { align: 'center' });
+      yPos += 10;
       
-      pdf.setFontSize(7);
-      pdf.setFont(undefined, 'normal');
-      pdf.text(`Generated: ${new Date().toLocaleString()}`, 15, yPos + 12);
-      pdf.text(`Email: ${formData.gcEmail || 'N/A'}`, 195, yPos + 12, { align: 'right' });
+      // Add footer logo and text
+      try {
+        const footerLogoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
+        const footerImg = new Image();
+        footerImg.crossOrigin = 'anonymous';
+        
+        await new Promise((resolve) => {
+          footerImg.onload = function() {
+            try {
+              // Add small logo in footer
+              pdf.addImage(footerImg, 'PNG', 15, yPos - 5, 25, 12);
+              
+              // Footer text next to logo
+              pdf.setTextColor(0, 0, 0);
+              pdf.setFontSize(10);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 50, yPos + 2);
+              
+            } catch (logoError) {
+              console.log('Footer logo error:', logoError);
+              // Fallback text only
+              pdf.setTextColor(0, 0, 0);
+              pdf.setFontSize(10);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 105, yPos + 2, { align: 'center' });
+            }
+            resolve();
+          };
+          
+          footerImg.onerror = function() {
+            // Fallback text only
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 105, yPos + 2, { align: 'center' });
+            resolve();
+          };
+          
+          footerImg.src = footerLogoUrl;
+        });
+        
+      } catch (error) {
+        console.log('Footer logo loading error:', error);
+        // Fallback text only
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 105, yPos + 2, { align: 'center' });
+      }
       
-      // Generate filename with date
-      const dateStr = formData.dateOfWork ? 
-        formData.dateOfWork.toISOString().split('T')[0].replace(/-/g, '') : 
-        new Date().toISOString().split('T')[0].replace(/-/g, '');
+      // Save/download
+      const dateStr = formData.dateOfWork?.toISOString().split('T')[0].replace(/-/g, '');
       const filename = `TM_Tag_${dateStr}.pdf`;
       
       // Save the PDF
