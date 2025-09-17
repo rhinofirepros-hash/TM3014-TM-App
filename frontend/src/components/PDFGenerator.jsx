@@ -63,10 +63,10 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         
       } catch (error) {
         console.log('Logo loading error:', error);
-        // Fallback to red square
+        // Fallback to red square in top left
         pdf.setDrawColor(220, 53, 69);
         pdf.setFillColor(220, 53, 69);
-        pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
+        pdf.roundedRect(15, 17, 35, 20, 2, 2, 'FD');
       }
       
       // Project Information Section
