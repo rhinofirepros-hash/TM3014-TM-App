@@ -78,7 +78,12 @@ function App() {
           <Dashboard 
             onCreateNew={handleCreateNew}
             onOpenProject={handleOpenProject}
+            onManageWorkers={handleManageWorkers}
             onLogout={handleLogout}
+          />
+        ) : currentView === 'workers' ? (
+          <WorkerManagement 
+            onBack={handleBackToDashboard}
           />
         ) : (
           <TimeAndMaterialForm 
