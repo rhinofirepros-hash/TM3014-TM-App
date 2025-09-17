@@ -85,7 +85,7 @@ class TMTag(BaseModel):
     project_name: str
     cost_code: str
     date_of_work: datetime
-    customer_reference: Optional[str] = ""
+    company_name: Optional[str] = ""
     tm_tag_title: str
     description_of_work: str
     labor_entries: List[LaborEntry] = []
