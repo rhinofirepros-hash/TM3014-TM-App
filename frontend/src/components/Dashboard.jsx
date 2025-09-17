@@ -264,19 +264,6 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
         </div>
       </div>
     </div>
-
-    {/* Email Authentication Modal */}
-    <EmailAuthModal
-      open={showEmailAuthModal}
-      onClose={() => setShowEmailAuthModal(false)}
-      onAuthSuccess={() => {
-        setShowEmailAuthModal(false);
-        toast({
-          title: "Email Connected",
-          description: "You can now send T&M tags directly from your email account",
-        });
-      }}
-    />
   );
 };
 
