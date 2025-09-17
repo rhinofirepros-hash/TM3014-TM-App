@@ -11,6 +11,7 @@ import EmailAuthModal from './EmailAuthModal';
 const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports, onLogout }) => {
   const [projects, setProjects] = useState([]);
   const [recentTags, setRecentTags] = useState([]);
+  const [showEmailAuthModal, setShowEmailAuthModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
