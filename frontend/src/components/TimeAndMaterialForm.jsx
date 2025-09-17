@@ -23,13 +23,13 @@ import { useToast } from '../hooks/use-toast';
 const TimeAndMaterialForm = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    projectName: "3rd Ave",
-    costCode: 'FP-Install',
+    projectName: "",
+    costCode: '',
     dateOfWork: new Date(),
     customerReference: '',
-    tmTagTitle: 'Sprinkler Rough-In - 4 Tech, 32 hrs',
-    descriptionOfWork: 'Started Working on wrapping up 2nd floor core in units.',
-    laborEntries: mockData.laborEntries,
+    tmTagTitle: '',
+    descriptionOfWork: '',
+    laborEntries: [],
     materialEntries: [],
     equipmentEntries: [],
     otherEntries: [],
