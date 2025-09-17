@@ -181,7 +181,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
             project_name: formData.projectName,
             cost_code: formData.costCode,
             date_of_work: formData.dateOfWork.toISOString(),
-            customer_reference: formData.customerReference,
+            company_name: formData.companyName,
             tm_tag_title: formData.tmTagTitle,
             description_of_work: formData.descriptionOfWork,
             labor_entries: formData.laborEntries.map(entry => ({
