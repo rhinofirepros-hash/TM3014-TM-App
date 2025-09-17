@@ -82,7 +82,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={onViewReports}>
               <CardContent className="p-6 text-center">
                 <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900">View Reports</h3>
