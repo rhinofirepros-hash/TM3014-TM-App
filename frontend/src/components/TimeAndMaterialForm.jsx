@@ -732,8 +732,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                   className="text-gray-600 h-10"
                   onClick={() => {
                     setFormData({
-                      projectName: "3rd Ave",
-                      costCode: 'FP-Install',
+                      projectName: "",
+                      costCode: '',
                       dateOfWork: new Date(),
                       companyName: '',
                       tmTagTitle: '',
