@@ -326,6 +326,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         setCustomProjectName('');
         setIsCustomCompany(false);
         setCustomCompanyName('');
+        setIsCustomEmail(false);
+        setCustomEmail('');
       }
     } catch (error) {
       toast({
