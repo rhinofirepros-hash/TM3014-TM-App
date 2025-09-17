@@ -90,11 +90,11 @@ const PinLogin = ({ onLoginSuccess }) => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-20 h-20 bg-black rounded-lg flex items-center justify-center overflow-hidden">
+          <div className="mx-auto w-24 h-20 flex items-center justify-center overflow-hidden">
             <img 
-              src="https://customer-assets.emergentagent.com/job_fieldtags/artifacts/hnf9308v_TITLEBLOCKRHINOFIRE.png" 
+              src="https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png" 
               alt="Rhino Fire Protection" 
-              className="w-18 h-18 object-contain"
+              className="w-24 h-20 object-contain"
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'block';
