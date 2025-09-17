@@ -463,6 +463,74 @@ const TimeAndMaterialForm = () => {
               />
             </div>
 
+            {/* Add Equipment Section */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-lg font-medium text-gray-900">Add Equipment</h3>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
+                    onClick={() => {
+                      const newEquipment = {
+                        id: Date.now(),
+                        equipmentName: '',
+                        piecesOfEquipment: 1,
+                        unitOfMeasure: '',
+                        quantity: 0,
+                        total: 0,
+                        dateOfWork: new Date().toLocaleDateString()
+                      };
+                      handleInputChange('equipmentEntries', [...formData.equipmentEntries, newEquipment]);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add empty row
+                  </Button>
+                </div>
+              </div>
+              
+              <EquipmentTable 
+                entries={formData.equipmentEntries}
+                onChange={(entries) => handleInputChange('equipmentEntries', entries)}
+              />
+            </div>
+
+            {/* Add Other Section */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-lg font-medium text-gray-900">Add Other</h3>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-green-700 border-green-300 hover:bg-green-50 h-9 px-3"
+                    onClick={() => {
+                      const newOther = {
+                        id: Date.now(),
+                        otherName: '',
+                        quantityOfOther: 1,
+                        unitOfMeasure: '',
+                        quantityOfUnit: 0,
+                        total: 0,
+                        dateOfWork: new Date().toLocaleDateString()
+                      };
+                      handleInputChange('otherEntries', [...formData.otherEntries, newOther]);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add empty row
+                  </Button>
+                </div>
+              </div>
+              
+              <OtherTable 
+                entries={formData.otherEntries}
+                onChange={(entries) => handleInputChange('otherEntries', entries)}
+              />
+            </div>
+
             {/* Signature Status */}
             {formData.signature && (
               <div className="bg-green-50 border border-green-200 rounded-md p-4">
