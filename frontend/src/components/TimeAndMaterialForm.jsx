@@ -718,13 +718,57 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
             {/* Signature Status */}
             {formData.signature && (
               <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                <div className="flex items-center gap-2 text-green-700">
-                  <PenTool className="w-4 h-4" />
-                  <span className="font-medium">Foreman Signature Collected</span>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-green-700 mb-2">
+                      <PenTool className="w-4 h-4" />
+                      <span className="font-medium">Signature Collected</span>
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      <p><strong>Name:</strong> {formData.signerName}</p>
+                      <p><strong>Title:</strong> {formData.signerTitle}</p>
+                      <p className="text-green-600 mt-1">Ready to generate final PDF and submit</p>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <div className="border border-gray-300 rounded bg-white p-2">
+                      <img 
+                        src={formData.signature} 
+                        alt="Digital Signature" 
+                        className="max-w-[120px] max-h-[60px] object-contain"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 text-center mt-1">Digital Signature</p>
+                  </div>
                 </div>
-                <p className="text-sm text-green-600 mt-1">
-                  Ready to generate final PDF and submit to General Contractor
-                </p>
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        signature: null,
+                        signerName: '',
+                        signerTitle: 'Foreman'
+                      }));
+                      toast({
+                        title: "Signature Cleared",
+                        description: "You can now collect a new signature.",
+                      });
+                    }}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Clear Signature
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCollectSignatures}
+                  >
+                    Update Signature
+                  </Button>
+                </div>
               </div>
             )}
 
