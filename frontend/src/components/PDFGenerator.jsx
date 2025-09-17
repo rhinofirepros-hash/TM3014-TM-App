@@ -144,44 +144,147 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       // Materials Section
       if (formData.materialEntries && formData.materialEntries.length > 0) {
         pdf.setFont(undefined, 'bold');
-        pdf.setFontSize(12);
-        pdf.text('MATERIALS:', 20, yPos);
-        yPos += 10;
+        pdf.setFontSize(11);
+        pdf.text('MATERIALS', 15, yPos);
+        yPos += 6;
         
-        // Materials table headers
-        pdf.setFontSize(10);
-        pdf.text('Material', 20, yPos);
-        pdf.text('Unit', 80, yPos);
-        pdf.text('Qty', 110, yPos);
-        pdf.text('Unit Cost', 130, yPos);
-        pdf.text('Total', 160, yPos);
-        pdf.text('Date', 180, yPos);
+        // Materials table with borders
+        pdf.setFontSize(8);
+        pdf.rect(15, yPos, 60, 8); // Material name
+        pdf.rect(75, yPos, 25, 8); // Unit
+        pdf.rect(100, yPos, 25, 8); // Qty
+        pdf.rect(125, yPos, 30, 8); // Unit Cost
+        pdf.rect(155, yPos, 30, 8); // Total
+        pdf.rect(185, yPos, 10, 8); // Date
         
-        yPos += 5;
-        pdf.line(20, yPos, 200, yPos);
-        yPos += 5;
+        pdf.text('Material Name', 17, yPos + 5);
+        pdf.text('Unit of Measure', 77, yPos + 5);
+        pdf.text('Quantity', 107, yPos + 5);
+        pdf.text('Unit Cost', 132, yPos + 5);
+        pdf.text('Total', 165, yPos + 5);
+        pdf.text('Date', 187, yPos + 5);
+        
+        yPos += 8;
         
         // Material entries
         pdf.setFont(undefined, 'normal');
         let materialTotal = 0;
         formData.materialEntries.forEach((entry) => {
-          pdf.text(entry.materialName || '', 20, yPos);
-          pdf.text(entry.unitOfMeasure || '', 80, yPos);
-          pdf.text(entry.quantity?.toString() || '0', 110, yPos);
-          pdf.text(`$${entry.unitCost?.toFixed(2) || '0.00'}`, 130, yPos);
-          pdf.text(`$${entry.total?.toFixed(2) || '0.00'}`, 160, yPos);
-          pdf.text(entry.dateOfWork || '', 180, yPos);
+          pdf.rect(15, yPos, 60, 6);
+          pdf.rect(75, yPos, 25, 6);
+          pdf.rect(100, yPos, 25, 6);
+          pdf.rect(125, yPos, 30, 6);
+          pdf.rect(155, yPos, 30, 6);
+          pdf.rect(185, yPos, 10, 6);
+          
+          pdf.text(entry.materialName || '', 17, yPos + 4);
+          pdf.text(entry.unitOfMeasure || '', 77, yPos + 4);
+          pdf.text(entry.quantity?.toString() || '0', 107, yPos + 4);
+          pdf.text(`$${entry.unitCost?.toFixed(2) || '0.00'}`, 132, yPos + 4);
+          pdf.text(`$${entry.total?.toFixed(2) || '0.00'}`, 165, yPos + 4);
+          pdf.text(entry.dateOfWork?.substring(0, 8) || '', 187, yPos + 4);
           materialTotal += parseFloat(entry.total) || 0;
-          yPos += 5;
+          yPos += 6;
         });
         
         // Material totals
-        pdf.line(20, yPos, 200, yPos);
-        yPos += 5;
         pdf.setFont(undefined, 'bold');
-        pdf.text('TOTAL MATERIALS:', 120, yPos);
-        pdf.text(`$${materialTotal.toFixed(2)}`, 160, yPos);
-        yPos += 15;
+        pdf.rect(125, yPos, 60, 6);
+        pdf.text('TOTAL MATERIALS:', 132, yPos + 4);
+        pdf.text(`$${materialTotal.toFixed(2)}`, 165, yPos + 4);
+        yPos += 12;
+      }
+
+      // Equipment Section
+      if (formData.equipmentEntries && formData.equipmentEntries.length > 0) {
+        pdf.setFont(undefined, 'bold');
+        pdf.setFontSize(11);
+        pdf.text('EQUIPMENT', 15, yPos);
+        yPos += 6;
+        
+        // Equipment table with borders
+        pdf.setFontSize(8);
+        pdf.rect(15, yPos, 50, 8); // Equipment name
+        pdf.rect(65, yPos, 25, 8); // Pieces
+        pdf.rect(90, yPos, 25, 8); // Unit
+        pdf.rect(115, yPos, 25, 8); // Qty
+        pdf.rect(140, yPos, 25, 8); // Total
+        pdf.rect(165, yPos, 30, 8); // Date
+        
+        pdf.text('Equipment Name', 17, yPos + 5);
+        pdf.text('Pieces', 72, yPos + 5);
+        pdf.text('Unit', 97, yPos + 5);
+        pdf.text('Quantity', 122, yPos + 5);
+        pdf.text('Total', 147, yPos + 5);
+        pdf.text('Date', 172, yPos + 5);
+        
+        yPos += 8;
+        
+        // Equipment entries
+        pdf.setFont(undefined, 'normal');
+        formData.equipmentEntries.forEach((entry) => {
+          pdf.rect(15, yPos, 50, 6);
+          pdf.rect(65, yPos, 25, 6);
+          pdf.rect(90, yPos, 25, 6);
+          pdf.rect(115, yPos, 25, 6);
+          pdf.rect(140, yPos, 25, 6);
+          pdf.rect(165, yPos, 30, 6);
+          
+          pdf.text(entry.equipmentName || '', 17, yPos + 4);
+          pdf.text(entry.piecesOfEquipment?.toString() || '0', 72, yPos + 4);
+          pdf.text(entry.unitOfMeasure || '', 97, yPos + 4);
+          pdf.text(entry.quantity?.toString() || '0', 122, yPos + 4);
+          pdf.text(entry.total?.toFixed(2) || '0.00', 147, yPos + 4);
+          pdf.text(entry.dateOfWork?.substring(0, 8) || '', 172, yPos + 4);
+          yPos += 6;
+        });
+        yPos += 6;
+      }
+
+      // Other Section
+      if (formData.otherEntries && formData.otherEntries.length > 0) {
+        pdf.setFont(undefined, 'bold');
+        pdf.setFontSize(11);
+        pdf.text('OTHER', 15, yPos);
+        yPos += 6;
+        
+        // Other table with borders
+        pdf.setFontSize(8);
+        pdf.rect(15, yPos, 50, 8); // Other name
+        pdf.rect(65, yPos, 25, 8); // Qty of Other
+        pdf.rect(90, yPos, 25, 8); // Unit
+        pdf.rect(115, yPos, 25, 8); // Qty of Unit
+        pdf.rect(140, yPos, 25, 8); // Total
+        pdf.rect(165, yPos, 30, 8); // Date
+        
+        pdf.text('Other Name', 17, yPos + 5);
+        pdf.text('Qty Other', 72, yPos + 5);
+        pdf.text('Unit', 97, yPos + 5);
+        pdf.text('Qty Unit', 122, yPos + 5);
+        pdf.text('Total', 147, yPos + 5);
+        pdf.text('Date', 172, yPos + 5);
+        
+        yPos += 8;
+        
+        // Other entries
+        pdf.setFont(undefined, 'normal');
+        formData.otherEntries.forEach((entry) => {
+          pdf.rect(15, yPos, 50, 6);
+          pdf.rect(65, yPos, 25, 6);
+          pdf.rect(90, yPos, 25, 6);
+          pdf.rect(115, yPos, 25, 6);
+          pdf.rect(140, yPos, 25, 6);
+          pdf.rect(165, yPos, 30, 6);
+          
+          pdf.text(entry.otherName || '', 17, yPos + 4);
+          pdf.text(entry.quantityOfOther?.toString() || '0', 72, yPos + 4);
+          pdf.text(entry.unitOfMeasure || '', 97, yPos + 4);
+          pdf.text(entry.quantityOfUnit?.toString() || '0', 122, yPos + 4);
+          pdf.text(entry.total?.toFixed(2) || '0.00', 147, yPos + 4);
+          pdf.text(entry.dateOfWork?.substring(0, 8) || '', 172, yPos + 4);
+          yPos += 6;
+        });
+        yPos += 6;
       }
       
       // Signature section
