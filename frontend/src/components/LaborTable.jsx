@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Trash2, MoreVertical, Info, Plus } from 'lucide-react';
 
-const LaborTable = ({ entries, onChange }) => {
+const LaborTable = ({ entries, onChange, onSaveWorker }) => {
   // Get saved workers from localStorage
   const savedWorkers = JSON.parse(localStorage.getItem('saved_workers') || '[]');
 
