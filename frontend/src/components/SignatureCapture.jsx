@@ -8,6 +8,8 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   const sigCanvas = useRef(null);
   const [isEmpty, setIsEmpty] = useState(true);
   const [canvasSize, setCanvasSize] = useState({ width: 600, height: 200 });
+  const [signerName, setSignerName] = useState('');
+  const [signerTitle, setSignerTitle] = useState('Foreman');
 
   const clear = () => {
     sigCanvas.current.clear();
