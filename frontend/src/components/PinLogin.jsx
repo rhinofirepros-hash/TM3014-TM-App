@@ -90,8 +90,17 @@ const PinLogin = ({ onLoginSuccess }) => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-20 h-20 bg-red-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-xl">RF</span>
+          <div className="mx-auto w-20 h-20 bg-black rounded-lg flex items-center justify-center overflow-hidden">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_fieldtags/artifacts/hnf9308v_TITLEBLOCKRHINOFIRE.png" 
+              alt="Rhino Fire Protection" 
+              className="w-18 h-18 object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }}
+            />
+            <span className="text-red-500 font-bold text-xl hidden">RF</span>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Rhino Fire Protection
