@@ -355,6 +355,51 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     });
   };
 
+  const handleSaveCustomCompany = () => {
+    if (!customCompanyName.trim()) {
+      toast({
+        title: "Company Name Required",
+        description: "Please enter a company name.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if company already exists
+    const existingCompany = savedCompanies.find(c => 
+      c.name.toLowerCase() === customCompanyName.trim().toLowerCase()
+    );
+    
+    if (existingCompany) {
+      setFormData(prev => ({ ...prev, companyName: existingCompany.name }));
+      setCustomCompanyName('');
+      setIsCustomCompany(false);
+      toast({
+        title: "Company Selected",
+        description: `"${existingCompany.name}" selected from saved companies.`,
+      });
+      return;
+    }
+
+    const newCompany = {
+      id: Date.now(),
+      name: customCompanyName.trim()
+    };
+
+    const updatedCompanies = [...savedCompanies, newCompany];
+    setSavedCompanies(updatedCompanies);
+    localStorage.setItem('saved_companies', JSON.stringify(updatedCompanies));
+    
+    setFormData(prev => ({ ...prev, companyName: newCompany.name }));
+    setCustomCompanyName('');
+    setIsCustomCompany(false);
+    
+    toast({
+      title: "Company Saved",
+      description: `"${newCompany.name}" has been added to your company list.`,
+    });
+  };
+
   const handleSaveWorker = (workerName) => {
     if (!workerName.trim()) return;
     
