@@ -52,7 +52,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           };
           img.onerror = function() {
             console.log('Logo loading failed, using centered text');
-            // Fallback - just center the text without red box
+            // Fallback - just center the text without any background
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(18);
             pdf.setFont(undefined, 'bold');
