@@ -41,7 +41,9 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   });
   
   const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [generatedPDFData, setGeneratedPDFData] = useState(null);
   const [isCustomProject, setIsCustomProject] = useState(false);
   const [customProjectName, setCustomProjectName] = useState('');
   const [savedProjects, setSavedProjects] = useState(() => {
