@@ -92,29 +92,29 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         pdf.text('LABOR', 15, yPos);
         yPos += 6;
         
-        // Labor table with borders
+        // Labor table with borders - improved sizing
         pdf.setDrawColor(150, 150, 150);
         pdf.setLineWidth(0.1);
         
-        // Labor table headers
+        // Labor table headers with better column widths
         pdf.setFontSize(8);
-        pdf.rect(15, yPos, 50, 8); // Worker name
-        pdf.rect(65, yPos, 20, 8); // Qty
-        pdf.rect(85, yPos, 20, 8); // ST
-        pdf.rect(105, yPos, 20, 8); // OT
-        pdf.rect(125, yPos, 20, 8); // DT
-        pdf.rect(145, yPos, 20, 8); // POT
-        pdf.rect(165, yPos, 20, 8); // Total
-        pdf.rect(185, yPos, 10, 8); // Date (shorter)
+        pdf.rect(15, yPos, 60, 8); // Worker name (wider)
+        pdf.rect(75, yPos, 15, 8); // Qty
+        pdf.rect(90, yPos, 15, 8); // ST
+        pdf.rect(105, yPos, 15, 8); // OT
+        pdf.rect(120, yPos, 15, 8); // DT
+        pdf.rect(135, yPos, 15, 8); // POT
+        pdf.rect(150, yPos, 20, 8); // Total (wider)
+        pdf.rect(170, yPos, 25, 8); // Date (wider)
         
         pdf.text('Worker Name', 17, yPos + 5);
-        pdf.text('Qty', 72, yPos + 5);
-        pdf.text('ST', 92, yPos + 5);
-        pdf.text('OT', 112, yPos + 5);
-        pdf.text('DT', 132, yPos + 5);
-        pdf.text('POT', 152, yPos + 5);
-        pdf.text('Total', 170, yPos + 5);
-        pdf.text('Date', 187, yPos + 5);
+        pdf.text('Qty', 78, yPos + 5);
+        pdf.text('ST', 95, yPos + 5);
+        pdf.text('OT', 110, yPos + 5);
+        pdf.text('DT', 125, yPos + 5);
+        pdf.text('POT', 140, yPos + 5);
+        pdf.text('Total', 155, yPos + 5);
+        pdf.text('Date', 175, yPos + 5);
         
         yPos += 8;
         
