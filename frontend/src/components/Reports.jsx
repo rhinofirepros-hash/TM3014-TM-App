@@ -294,7 +294,11 @@ const Reports = ({ onBack }) => {
                 </TableHeader>
                 <TableBody>
                   {filteredTags.map((tag) => (
-                    <TableRow key={tag.id}>
+                    <TableRow 
+                      key={tag.id} 
+                      className="cursor-pointer hover:bg-gray-50"
+                      onClick={() => handleViewTag(tag)}
+                    >
                       <TableCell>{new Date(tag.date).toLocaleDateString()}</TableCell>
                       <TableCell className="font-medium">{tag.project}</TableCell>
                       <TableCell>{tag.title}</TableCell>
