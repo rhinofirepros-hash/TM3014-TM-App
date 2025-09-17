@@ -159,44 +159,45 @@ www.rhinofireprotection.com`
     setIsSending(true);
 
     try {
-      // Initialize EmailJS (you'll need to set up EmailJS service)
-      const templateParams = {
-        to_email: emailData.to,
-        cc_email: emailData.cc,
-        from_name: userName,
-        from_email: userEmail,
-        subject: emailData.subject,
+      // Initialize EmailJS service
+      await emailService.initialize();
+
+      // Prepare email data for the service
+      const emailPayload = {
+        gcEmail: emailData.to,
+        ccEmail: emailData.cc,
+        projectName: formData?.projectName,
+        tmTagTitle: formData?.tmTagTitle,
+        dateOfWork: formData?.dateOfWork ? new Date(formData.dateOfWork).toLocaleDateString() : new Date().toLocaleDateString(),
         message: emailData.message,
-        pdf_attachment: pdfData, // Base64 PDF data
-        project_name: formData?.projectName,
-        date: formData?.dateOfWork ? new Date(formData.dateOfWork).toLocaleDateString() : new Date().toLocaleDateString()
+        pdfData: pdfData, // Base64 PDF data
+        filename: `TM_Tag_${formData?.dateOfWork ? new Date(formData.dateOfWork).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}.pdf`
       };
 
-      // For demo purposes, simulate email sending
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In production, use:
-      // await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams, 'YOUR_PUBLIC_KEY');
+      // Send email using the EmailJS service
+      const result = await emailService.sendTMTagEmail(emailPayload);
 
-      toast({
-        title: "Email Sent Successfully",
-        description: `T&M tag sent to ${emailData.to}`,
-      });
+      if (result.success) {
+        toast({
+          title: "Email Sent Successfully",
+          description: `T&M tag sent to ${emailData.to}`,
+        });
 
-      // Log email for reports
-      const emailLog = {
-        id: Date.now(),
-        to: emailData.to,
-        cc: emailData.cc,
-        subject: emailData.subject,
-        sentAt: new Date().toISOString(),
-        project: formData?.projectName,
-        template: emailData.template
-      };
-      
-      const existingLogs = JSON.parse(localStorage.getItem('email_logs') || '[]');
-      existingLogs.unshift(emailLog);
-      localStorage.setItem('email_logs', JSON.stringify(existingLogs));
+        // Log email for reports
+        const emailLog = {
+          id: Date.now(),
+          to: emailData.to,
+          cc: emailData.cc,
+          subject: emailData.subject,
+          sentAt: new Date().toISOString(),
+          project: formData?.projectName,
+          template: emailData.template,
+          messageId: result.messageId
+        };
+        
+        const existingLogs = JSON.parse(localStorage.getItem('email_logs') || '[]');
+        existingLogs.unshift(emailLog);
+        localStorage.setItem('email_logs', JSON.stringify(existingLogs));
 
       onClose();
     } catch (error) {
