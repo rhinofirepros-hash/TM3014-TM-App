@@ -535,6 +535,55 @@ const TimeAndMaterialForm = () => {
               />
             </div>
 
+            {/* GC Email and Delivery Options */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-gray-900">General Contractor Delivery</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">
+                    GC Email Address*
+                  </Label>
+                  <Input
+                    value={formData.gcEmail || 'iacosta@nueragroup.com'}
+                    onChange={(e) => handleInputChange('gcEmail', e.target.value)}
+                    placeholder="Enter GC email address"
+                    type="email"
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500">
+                    PDF will be automatically emailed to this address
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">
+                    Delivery Options
+                  </Label>
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.autoEmail !== false}
+                        onChange={(e) => handleInputChange('autoEmail', e.target.checked)}
+                        className="rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">Auto-email to GC</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.downloadPDF !== false}
+                        onChange={(e) => handleInputChange('downloadPDF', e.target.checked)}
+                        className="rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">Download PDF copy</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Signature Status */}
             {formData.signature && (
               <div className="bg-green-50 border border-green-200 rounded-md p-4">
