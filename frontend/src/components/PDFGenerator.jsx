@@ -23,20 +23,51 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setFontSize(14);
       pdf.text('TIME & MATERIAL TAG', 105, 32, { align: 'center' });
       
-      // Add Rhino Fire Protection logo
+      // Add actual Rhino Fire Protection logo
       try {
-        // Logo will be added from the assets - for now we'll add a professional placeholder
-        pdf.setDrawColor(220, 53, 69); // Rhino Fire red color
-        pdf.setFillColor(220, 53, 69);
-        pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
-        pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('RHINO', 180, 24, { align: 'center' });
-        pdf.text('FIRE', 180, 30, { align: 'center' });
-        pdf.setTextColor(0, 0, 0); // Reset text color
+        // Load the logo image
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_fieldtags/artifacts/5ywerrup_TITLEBLOCKRHINOFIRE.png';
+        
+        // Create image element to load logo
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          try {
+            pdf.addImage(img, 'PNG', 170, 17, 20, 20);
+          } catch (imgError) {
+            console.log('Logo image error:', imgError);
+            // Fallback to red square
+            pdf.setDrawColor(220, 53, 69);
+            pdf.setFillColor(220, 53, 69);
+            pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(8);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('RHINO', 180, 24, { align: 'center' });
+            pdf.text('FIRE', 180, 30, { align: 'center' });
+            pdf.setTextColor(0, 0, 0);
+          }
+        };
+        img.onerror = function() {
+          // Fallback logo
+          pdf.setDrawColor(220, 53, 69);
+          pdf.setFillColor(220, 53, 69);
+          pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
+          pdf.setTextColor(255, 255, 255);
+          pdf.setFontSize(8);
+          pdf.setFont(undefined, 'bold');
+          pdf.text('RHINO', 180, 24, { align: 'center' });
+          pdf.text('FIRE', 180, 30, { align: 'center' });
+          pdf.setTextColor(0, 0, 0);
+        };
+        img.src = logoUrl;
+        
       } catch (error) {
         console.log('Logo loading error:', error);
+        // Fallback to red square
+        pdf.setDrawColor(220, 53, 69);
+        pdf.setFillColor(220, 53, 69);
+        pdf.roundedRect(170, 17, 20, 20, 2, 2, 'FD');
       }
       
       // Project Information Section
