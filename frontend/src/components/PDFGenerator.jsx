@@ -25,20 +25,51 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       // Add actual Rhino Fire Protection logo
       try {
-        // Embed logo directly - simplified approach
-        const logoUrl = '/logo.png'; // We'll add this to public folder
+        // Use your actual logo URL
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_fieldtags/artifacts/teb47lsp_TITLEBLOCKRHINOFIRE.png';
         
-        // For now, add a professional placeholder that will show the company name
-        pdf.setDrawColor(220, 53, 69);
-        pdf.setFillColor(220, 53, 69);
-        pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
+        // Create image and add to PDF
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
         
-        pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(9);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
-        pdf.text('PROTECTION', 40, 31, { align: 'center' });
-        pdf.setTextColor(0, 0, 0);
+        // Add logo synchronously using a promise
+        await new Promise((resolve, reject) => {
+          img.onload = function() {
+            try {
+              // Add the actual logo to top left
+              pdf.addImage(img, 'PNG', 15, 15, 50, 25);
+              resolve();
+            } catch (imgError) {
+              console.log('Logo image error:', imgError);
+              // Fallback red square with company name
+              pdf.setDrawColor(220, 53, 69);
+              pdf.setFillColor(220, 53, 69);
+              pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
+              pdf.setTextColor(255, 255, 255);
+              pdf.setFontSize(9);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
+              pdf.text('PROTECTION', 40, 31, { align: 'center' });
+              pdf.setTextColor(0, 0, 0);
+              resolve();
+            }
+          };
+          img.onerror = function() {
+            console.log('Logo loading failed, using fallback');
+            // Fallback red square with company name
+            pdf.setDrawColor(220, 53, 69);
+            pdf.setFillColor(220, 53, 69);
+            pdf.roundedRect(15, 15, 50, 25, 3, 3, 'FD');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('RHINO FIRE', 40, 24, { align: 'center' });
+            pdf.text('PROTECTION', 40, 31, { align: 'center' });
+            pdf.setTextColor(0, 0, 0);
+            resolve();
+          };
+          img.src = logoUrl;
+        });
         
       } catch (error) {
         console.log('Logo loading error:', error);
