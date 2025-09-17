@@ -313,8 +313,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setFont(undefined, 'bold');
       pdf.setFontSize(10);
       
-      // Signature boxes like ClearStory
-      pdf.rect(15, yPos, 85, 20); // Foreman signature box
+      // Signature boxes like ClearStory - improved sizing
+      pdf.rect(15, yPos, 90, 20); // Foreman signature box (wider)
       pdf.rect(110, yPos, 85, 20); // Date box
       
       pdf.text('FOREMAN SIGNATURE:', 17, yPos + 5);
@@ -330,15 +330,19 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       yPos += 25;
       
-      // Additional fields like ClearStory
-      pdf.setFontSize(9);
-      pdf.rect(15, yPos, 60, 8);
-      pdf.rect(85, yPos, 60, 8);
-      pdf.rect(155, yPos, 40, 8);
+      // Customer signature section - much larger
+      pdf.setFontSize(10);
+      pdf.rect(15, yPos, 90, 20); // Customer signature box (same size as foreman)
+      pdf.rect(110, yPos, 85, 20); // Customer date box
       
-      pdf.text('Customer Approval:', 17, yPos + 5);
-      pdf.text('Customer Print Name:', 87, yPos + 5);
-      pdf.text('Date:', 157, yPos + 5);
+      pdf.text('CUSTOMER SIGNATURE:', 17, yPos + 5);
+      pdf.text('CUSTOMER DATE:', 112, yPos + 5);
+      
+      yPos += 25;
+      
+      // Customer print name - larger
+      pdf.rect(15, yPos, 180, 15); // Full width for customer name
+      pdf.text('CUSTOMER PRINT NAME:', 17, yPos + 8);
       
       yPos += 15;
       
