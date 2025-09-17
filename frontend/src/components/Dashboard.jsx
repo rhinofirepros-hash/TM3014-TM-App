@@ -6,7 +6,7 @@ import { Badge } from './ui/badge';
 import { Plus, FileText, Calendar, DollarSign, Users, LogOut } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
-const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onLogout }) => {
+const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports, onLogout }) => {
   const [projects, setProjects] = useState([]);
   const [recentTags, setRecentTags] = useState([]);
   const { toast } = useToast();
