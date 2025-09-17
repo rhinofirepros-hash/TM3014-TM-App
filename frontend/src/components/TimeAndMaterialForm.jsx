@@ -288,7 +288,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           projectName: "3rd Ave",
           costCode: 'FP-Install',
           dateOfWork: new Date(),
-          customerReference: '',
+          companyName: '',
           tmTagTitle: '',
           descriptionOfWork: '',
           laborEntries: [],
