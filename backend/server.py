@@ -41,6 +41,103 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# T&M Tag Models
+class LaborEntry(BaseModel):
+    id: str
+    worker_name: str
+    quantity: float
+    st_hours: float
+    ot_hours: float
+    dt_hours: float
+    pot_hours: float
+    total_hours: float
+    date: str
+
+class MaterialEntry(BaseModel):
+    id: str
+    material_name: str
+    unit_of_measure: str
+    quantity: float
+    unit_cost: Optional[float] = 0
+    total: float
+    date_of_work: str
+
+class EquipmentEntry(BaseModel):
+    id: str
+    equipment_name: str
+    pieces_of_equipment: int
+    unit_of_measure: str
+    quantity: float
+    total: float
+    date_of_work: str
+
+class OtherEntry(BaseModel):
+    id: str
+    other_name: str
+    quantity_of_other: int
+    unit_of_measure: str
+    quantity_of_unit: float
+    total: float
+    date_of_work: str
+
+class TMTag(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_name: str
+    cost_code: str
+    date_of_work: datetime
+    customer_reference: Optional[str] = ""
+    tm_tag_title: str
+    description_of_work: str
+    labor_entries: List[LaborEntry] = []
+    material_entries: List[MaterialEntry] = []
+    equipment_entries: List[EquipmentEntry] = []
+    other_entries: List[OtherEntry] = []
+    gc_email: str
+    signature: Optional[str] = None
+    foreman_name: str = "Jesus Garcia"
+    status: str = "completed"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    submitted_at: Optional[datetime] = None
+
+class TMTagCreate(BaseModel):
+    project_name: str
+    cost_code: str
+    date_of_work: datetime
+    customer_reference: Optional[str] = ""
+    tm_tag_title: str
+    description_of_work: str
+    labor_entries: List[LaborEntry] = []
+    material_entries: List[MaterialEntry] = []
+    equipment_entries: List[EquipmentEntry] = []
+    other_entries: List[OtherEntry] = []
+    gc_email: str
+    signature: Optional[str] = None
+
+class EmailRequest(BaseModel):
+    to_email: str
+    cc_email: Optional[str] = ""
+    subject: str
+    message: str
+    pdf_data: str  # base64 encoded PDF
+    tm_tag_id: str
+
+class Worker(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    rate: float = 95.0
+    position: Optional[str] = ""
+    phone: Optional[str] = ""
+    email: Optional[str] = ""
+    active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class WorkerCreate(BaseModel):
+    name: str
+    rate: Optional[float] = 95.0
+    position: Optional[str] = ""
+    phone: Optional[str] = ""
+    email: Optional[str] = ""
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
