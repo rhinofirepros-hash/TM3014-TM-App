@@ -7,6 +7,7 @@ import { Trash2, PenTool } from 'lucide-react';
 const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   const sigCanvas = useRef(null);
   const [isEmpty, setIsEmpty] = useState(true);
+  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 200 });
 
   const clear = () => {
     sigCanvas.current.clear();
