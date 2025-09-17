@@ -1,5 +1,6 @@
 // OAuth Email Service for Gmail and Outlook authentication
 import emailjs from '@emailjs/browser';
+import { PublicClientApplication } from '@azure/msal-browser';
 
 class OAuthEmailService {
   constructor() {
