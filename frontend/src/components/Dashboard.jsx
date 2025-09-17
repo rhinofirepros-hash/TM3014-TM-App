@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { Plus, FileText, Calendar, DollarSign, Users, LogOut } from 'lucide-react';
+import { Plus, FileText, Calendar, DollarSign, Users, LogOut, Mail, CheckCircle } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import oauthEmailService from '../services/oauthEmailService';
+import EmailAuthModal from './EmailAuthModal';
 
 const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports, onLogout }) => {
   const [projects, setProjects] = useState([]);
