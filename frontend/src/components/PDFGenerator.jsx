@@ -27,8 +27,13 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         await new Promise((resolve, reject) => {
           img.onload = function() {
             try {
-              // Add the actual Rhino Fire logo to top left on white background (properly sized)
-              pdf.addImage(img, 'PNG', 15, 15, 50, 25);
+              // Add the new RHINO FIRE PROTECTION logo with proper sizing for the full logo
+              pdf.addImage(img, 'PNG', 15, 15, 80, 40);
+              // Add TIME & MATERIAL TAG text next to the logo
+              pdf.setTextColor(0, 0, 0);
+              pdf.setFontSize(14);
+              pdf.setFont(undefined, 'bold');
+              pdf.text('TIME & MATERIAL TAG', 110, 35, { align: 'left' });
               resolve();
             } catch (imgError) {
               console.log('Logo image error:', imgError);
