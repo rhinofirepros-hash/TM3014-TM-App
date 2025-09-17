@@ -33,8 +33,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         img.crossOrigin = 'anonymous';
         img.onload = function() {
           try {
-            // Place logo in top left corner - adjust positioning to match your image
-            pdf.addImage(img, 'PNG', 15, 15, 40, 25);
+            // Place logo in top left corner - using your actual logo
+            pdf.addImage(img, 'PNG', 15, 15, 50, 25);
           } catch (imgError) {
             console.log('Logo image error:', imgError);
             // Fallback to red square in top left
