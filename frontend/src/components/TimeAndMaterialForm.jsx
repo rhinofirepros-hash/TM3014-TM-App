@@ -712,15 +712,26 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     <span className="sm:hidden">Sign</span>
                   </Button>
                 ) : (
-                  <Button 
-                    onClick={handleSubmitAndEmail}
-                    disabled={isGeneratingPDF}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 h-10"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span className="hidden sm:inline">{isGeneratingPDF ? 'Submitting...' : 'Submit & Email GC'}</span>
-                    <span className="sm:hidden">{isGeneratingPDF ? 'Submitting...' : 'Submit'}</span>
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button 
+                      onClick={() => setShowEmailComposer(true)}
+                      disabled={isGeneratingPDF || !generatedPDFData}
+                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 h-10"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span className="hidden sm:inline">Email GC</span>
+                      <span className="sm:hidden">Email</span>
+                    </Button>
+                    <Button 
+                      onClick={handleSubmitAndEmail}
+                      disabled={isGeneratingPDF}
+                      className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="hidden sm:inline">{isGeneratingPDF ? 'Generating...' : 'Generate PDF'}</span>
+                      <span className="sm:hidden">{isGeneratingPDF ? 'Generating...' : 'PDF'}</span>
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
