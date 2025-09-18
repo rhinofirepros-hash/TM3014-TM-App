@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import WorkerManagement from "./components/WorkerManagement";
 import Reports from "./components/Reports";
 import ProjectManagement from "./components/ProjectManagement";
+import EmployeeManagement from "./components/EmployeeManagement";
 import { Toaster } from "./components/ui/toaster";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
