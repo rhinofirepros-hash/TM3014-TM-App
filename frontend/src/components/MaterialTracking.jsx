@@ -385,7 +385,7 @@ const MaterialTracking = ({ project, onBack }) => {
                 </SelectContent>
               </Select>
 
-              {(filterCategory || filterVendor) && (
+              {(filterCategory && filterCategory !== 'all') || (filterVendor && filterVendor !== 'all') && (
                 <Button 
                   variant="outline" 
                   size="sm"
