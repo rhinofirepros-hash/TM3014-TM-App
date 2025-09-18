@@ -13,7 +13,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://project-tracker-102.preview.emergentagent.com/api"
+BACKEND_URL = "https://rhino-tm-tracker.preview.emergentagent.com/api"
 
 class TMTagAPITester:
     def __init__(self):
@@ -1631,7 +1631,7 @@ class TMTagAPITester:
             response = self.session.options(
                 f"{self.base_url}/tm-tags",
                 headers={
-                    "Origin": "https://project-tracker-102.preview.emergentagent.com",
+                    "Origin": "https://rhino-tm-tracker.preview.emergentagent.com",
                     "Access-Control-Request-Method": "POST",
                     "Access-Control-Request-Headers": "Content-Type"
                 }

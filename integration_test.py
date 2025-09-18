@@ -11,7 +11,7 @@ import uuid
 import sys
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://project-tracker-102.preview.emergentagent.com/api"
+BACKEND_URL = "https://rhino-tm-tracker.preview.emergentagent.com/api"
 
 class IntegrationTester:
     def __init__(self):
