@@ -321,6 +321,66 @@ backend:
         agent: "testing"
         comment: "✅ ENHANCED COST ANALYTICS FULLY FUNCTIONAL: Comprehensive testing confirmed all 5 key metrics cards are working perfectly: 1) Total Revenue ($0), 2) True Costs ($0), 3) Labor Markup ($0), 4) Net Profit ($200,000 - showing contract amount), 5) Profit Margin (100.0%). Project overview displays comprehensive cost breakdown analysis including Labor (GC Rate @ $95/hr), Labor (True Employee Cost), Materials with markup, Crew Expenses, and separate Labor/Material Markup Profit calculations. Analytics layout is professional and provides clear financial insights."
 
+  - task: "T&M Project Profit Calculation Fix"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: Fixed T&M project profit calculation to show markup profit instead of contract minus costs. T&M projects now correctly calculate profit as labor markup profit + material markup profit, resolving the issue where T&M projects showed negative profit (-$2,387) instead of correct markup profit."
+      - working: true
+        agent: "testing"
+        comment: "✅ T&M PROJECT PROFIT CALCULATION FIX VERIFIED: Comprehensive testing confirmed the critical fix is working correctly. Created T&M project with 40 hours @ $95/hr labor rate, $65/hr true cost, and $1,500 materials. Results: Labor markup profit = $1,200 ($3,800 billed - $2,600 true cost), Material markup profit = $300 (20% markup), Total profit = $1,500 (28.30% margin). CRITICAL ISSUE RESOLVED: T&M projects now show positive markup profit instead of the previous negative profit error. The fix correctly differentiates between 'tm_only' and 'full_project' calculations."
+
+  - task: "Forecasted Schedule Fields"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: Added forecasted schedule fields to Project model: estimated_hours, estimated_labor_cost, estimated_material_cost, estimated_profit. These fields allow projects to store forecasted values for comparison with actual performance."
+      - working: true
+        agent: "testing"
+        comment: "✅ FORECASTED SCHEDULE FIELDS FULLY FUNCTIONAL: Comprehensive testing confirmed all forecasted fields are properly stored and retrieved. Created test project with estimated_hours=500.0, estimated_labor_cost=$55,000, estimated_material_cost=$15,000, estimated_profit=$5,000. All values correctly stored in database and returned in project responses. Forecasted schedule functionality is working perfectly."
+
+  - task: "Variance Analysis"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: Added variance analysis comparing forecasted vs actual values. Analytics now include hours_variance, labor_cost_variance, material_cost_variance, and profit_variance fields showing the difference between estimated and actual performance."
+      - working: true
+        agent: "testing"
+        comment: "✅ VARIANCE ANALYSIS FULLY FUNCTIONAL: Comprehensive testing confirmed all variance calculations are working correctly. Added actual work data (30 hours labor, $1,000 materials) to forecasted project and verified variance calculations: hours_variance shows difference between actual and estimated hours, material_cost_variance shows difference between actual and estimated material costs. All variance fields (hours_variance, labor_cost_variance, material_cost_variance, profit_variance) are properly calculated and returned in analytics responses."
+
+  - task: "Analytics Response Fields"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: Enhanced GET /api/projects/{id}/analytics endpoint to return all new fields including project_type, material_markup_profit, estimated_* fields, and *_variance fields for comprehensive project analytics."
+      - working: true
+        agent: "testing"
+        comment: "✅ ANALYTICS RESPONSE FIELDS FULLY FUNCTIONAL: Comprehensive testing confirmed all new fields are properly returned by the analytics endpoint. Verified presence of: project_type, material_markup_profit, estimated_hours, estimated_labor_cost, estimated_material_cost, estimated_profit, hours_variance, labor_cost_variance, material_cost_variance, profit_variance. All required new fields are present and correctly populated in analytics responses."
+
 frontend:
   - task: "JavaScript runtime errors"
     implemented: true
