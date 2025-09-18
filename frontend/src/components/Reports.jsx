@@ -540,20 +540,20 @@ const Reports = ({ onBack }) => {
       </div>
     </div>
 
-    {/* T&M Tag Details Modal - Large Version */}
+    {/* T&M Tag Details Modal - Responsive Version */}
     <Dialog open={showTagModal} onOpenChange={setShowTagModal}>
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="border-b pb-4">
-          <DialogTitle className="flex items-center justify-between text-xl">
+      <DialogContent className={`sm:max-w-[900px] max-w-[95vw] max-h-[90vh] overflow-y-auto ${themeClasses.modal}`}>
+        <DialogHeader className={`border-b pb-4 ${isDarkMode ? 'border-white/20' : 'border-gray-200/50'}`}>
+          <DialogTitle className={`flex items-center justify-between text-xl ${themeClasses.text.primary}`}>
             <div className="flex items-center gap-3">
-              <FileText className="w-6 h-6 text-blue-600" />
+              <FileText className={`w-6 h-6 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
               <span>T&M Tag Review</span>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowTagModal(false)}
-              className="h-8 w-8 p-0"
+              className={`h-8 w-8 p-0 ${themeClasses.button.ghost}`}
             >
               <X className="h-5 w-5" />
             </Button>
