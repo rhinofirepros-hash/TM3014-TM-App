@@ -177,12 +177,12 @@ const Reports = ({ onBack }) => {
       const updatedTags = tmTags.filter(tag => tag.id !== tagToDelete.id);
       setTmTags(updatedTags);
       setFilteredTags(updatedTags.filter(tag => {
-        const matchesSearch = tag.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            tag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            tag.foreman.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = filterStatus === 'all' || tag.status === filterStatus;
-        const matchesProject = filterProject === 'all' || tag.project === filterProject;
-        return matchesSearch && matchesStatus && matchesProject;
+        const matchesSearch = !searchTerm || (
+          tag.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          tag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          tag.foreman.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        return matchesSearch;
       }));
       
       // Update localStorage as fallback
