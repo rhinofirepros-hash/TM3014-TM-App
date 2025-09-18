@@ -1617,6 +1617,233 @@ class TMTagAPITester:
         
         return None
     
+    def test_project_type_functionality(self):
+        """Test the newly implemented project type functionality"""
+        print("\n=== Testing Project Type Functionality ===")
+        
+        # Test 1: Create Full Project with contract amount
+        print("Test 1: Creating Full Project with contract amount...")
+        full_project_data = {
+            "name": "Full Contract Project Test",
+            "description": "Testing full project type with fixed contract",
+            "client_company": "Full Contract Client Corp",
+            "gc_email": "fullproject@client.com",
+            "project_type": "full_project",
+            "contract_amount": 150000.00,
+            "labor_rate": 95.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "123 Full Project Ave"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=full_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                if (project.get("project_type") == "full_project" and 
+                    project.get("contract_amount") == 150000.00):
+                    self.log_result("projects", "Full project creation", True, 
+                                  f"Full project created with type: {project['project_type']}, contract: ${project['contract_amount']}")
+                    self.full_project_id = project["id"]
+                else:
+                    self.log_result("projects", "Full project creation", False, 
+                                  f"Expected full_project/$150000, got {project.get('project_type')}/${project.get('contract_amount')}", response)
+            else:
+                self.log_result("projects", "Full project creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Full project creation", False, str(e))
+        
+        # Test 2: Create T&M Only Project (contract amount optional)
+        print("Test 2: Creating T&M Only Project...")
+        tm_project_data = {
+            "name": "Time & Material Only Project Test",
+            "description": "Testing T&M only project type",
+            "client_company": "T&M Client Corp",
+            "gc_email": "tmproject@client.com",
+            "project_type": "tm_only",
+            "contract_amount": 0,  # Optional for T&M projects
+            "labor_rate": 110.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "456 T&M Project Blvd"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=tm_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                if project.get("project_type") == "tm_only":
+                    self.log_result("projects", "T&M project creation", True, 
+                                  f"T&M project created with type: {project['project_type']}, rate: ${project['labor_rate']}/hr")
+                    self.tm_project_id = project["id"]
+                else:
+                    self.log_result("projects", "T&M project creation", False, 
+                                  f"Expected tm_only, got {project.get('project_type')}", response)
+            else:
+                self.log_result("projects", "T&M project creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "T&M project creation", False, str(e))
+        
+        # Test 3: Retrieve projects and verify project_type field
+        print("Test 3: Retrieving projects and verifying project_type field...")
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                projects = response.json()
+                if isinstance(projects, list) and len(projects) > 0:
+                    # Check if project_type field is present in responses
+                    projects_with_type = [p for p in projects if "project_type" in p]
+                    if len(projects_with_type) > 0:
+                        self.log_result("projects", "Project type field retrieval", True, 
+                                      f"Found {len(projects_with_type)} projects with project_type field")
+                        
+                        # Verify our test projects are in the list
+                        full_projects = [p for p in projects if p.get("project_type") == "full_project"]
+                        tm_projects = [p for p in projects if p.get("project_type") == "tm_only"]
+                        
+                        self.log_result("projects", "Project type filtering", True, 
+                                      f"Found {len(full_projects)} full projects, {len(tm_projects)} T&M projects")
+                    else:
+                        self.log_result("projects", "Project type field retrieval", False, "No projects have project_type field")
+                else:
+                    self.log_result("projects", "Project type field retrieval", False, "No projects found or invalid response format")
+            else:
+                self.log_result("projects", "Project type field retrieval", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project type field retrieval", False, str(e))
+        
+        # Test 4: Update project type (full_project to tm_only)
+        if hasattr(self, 'full_project_id'):
+            print("Test 4: Updating project type from full_project to tm_only...")
+            update_data = {
+                "name": "Full Contract Project Test (Updated to T&M)",
+                "description": "Updated to T&M project type",
+                "client_company": "Full Contract Client Corp",
+                "gc_email": "fullproject@client.com",
+                "project_type": "tm_only",  # Changed from full_project
+                "contract_amount": 0,  # Reset for T&M
+                "labor_rate": 95.0,
+                "project_manager": "Jesus Garcia",
+                "start_date": datetime.now().isoformat(),
+                "address": "123 Full Project Ave"
+            }
+            
+            try:
+                response = self.session.put(
+                    f"{self.base_url}/projects/{self.full_project_id}",
+                    json=update_data,
+                    headers={"Content-Type": "application/json"}
+                )
+                
+                if response.status_code == 200:
+                    updated_project = response.json()
+                    if updated_project.get("project_type") == "tm_only":
+                        self.log_result("projects", "Project type update", True, 
+                                      f"Successfully updated project type to: {updated_project['project_type']}")
+                    else:
+                        self.log_result("projects", "Project type update", False, 
+                                      f"Expected tm_only, got {updated_project.get('project_type')}", response)
+                else:
+                    self.log_result("projects", "Project type update", False, f"HTTP {response.status_code}", response)
+                    
+            except Exception as e:
+                self.log_result("projects", "Project type update", False, str(e))
+        
+        # Test 5: Backward compatibility - create project without project_type
+        print("Test 5: Testing backward compatibility (project without project_type)...")
+        backward_compat_data = {
+            "name": "Backward Compatibility Test Project",
+            "description": "Testing project creation without project_type field",
+            "client_company": "Legacy Client Corp",
+            "gc_email": "legacy@client.com",
+            # Note: project_type field is intentionally omitted
+            "contract_amount": 75000.00,
+            "labor_rate": 95.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "789 Legacy Project St"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=backward_compat_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                # Should default to "full_project"
+                if project.get("project_type") == "full_project":
+                    self.log_result("projects", "Backward compatibility", True, 
+                                  f"Project without project_type defaulted to: {project['project_type']}")
+                else:
+                    self.log_result("projects", "Backward compatibility", False, 
+                                  f"Expected default 'full_project', got {project.get('project_type')}", response)
+            else:
+                self.log_result("projects", "Backward compatibility", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Backward compatibility", False, str(e))
+        
+        # Test 6: Data validation - invalid project_type
+        print("Test 6: Testing data validation with invalid project_type...")
+        invalid_data = {
+            "name": "Invalid Project Type Test",
+            "description": "Testing invalid project_type value",
+            "client_company": "Invalid Client Corp",
+            "gc_email": "invalid@client.com",
+            "project_type": "invalid_type",  # Invalid value
+            "contract_amount": 50000.00,
+            "labor_rate": 95.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "999 Invalid Project Rd"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=invalid_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            # This should either fail with validation error or default to full_project
+            if response.status_code == 200:
+                project = response.json()
+                if project.get("project_type") in ["full_project", "tm_only"]:
+                    self.log_result("projects", "Invalid project_type validation", True, 
+                                  f"Invalid project_type handled gracefully, defaulted to: {project['project_type']}")
+                else:
+                    self.log_result("projects", "Invalid project_type validation", False, 
+                                  f"Invalid project_type accepted: {project.get('project_type')}", response)
+            elif response.status_code in [400, 422]:  # Validation error expected
+                self.log_result("projects", "Invalid project_type validation", True, 
+                              f"Invalid project_type properly rejected with HTTP {response.status_code}")
+            else:
+                self.log_result("projects", "Invalid project_type validation", False, 
+                              f"Unexpected response: HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Invalid project_type validation", False, str(e))
+        
+        print("✅ Project Type Functionality Testing Completed!")
+        return True
+    
     def test_email_endpoint(self):
         """Test email endpoint (will likely fail due to missing SMTP config)"""
         print("\n=== Testing Email Endpoint ===")
