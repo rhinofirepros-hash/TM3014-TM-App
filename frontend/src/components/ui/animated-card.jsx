@@ -60,7 +60,6 @@ const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...prop
     </div>
   );
 });
-});
 
 AnimatedCard.displayName = "AnimatedCard";
 
