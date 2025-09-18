@@ -742,16 +742,24 @@ const Reports = ({ onBack }) => {
             {/* Additional Details */}
             {(selectedTag.equipmentCost || selectedTag.otherCost) && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900">Additional Costs</h3>
+                <h3 className={`font-semibold ${themeClasses.text.primary}`}>Additional Costs</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {selectedTag.equipmentCost && (
-                    <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                    <div className={`text-center p-4 rounded-lg border ${
+                      isDarkMode 
+                        ? 'bg-orange-900/30 border-orange-500/30' 
+                        : 'bg-orange-50 border-orange-200'
+                    }`}>
                       <div className="text-2xl font-bold text-orange-600">${selectedTag.equipmentCost.toLocaleString()}</div>
                       <div className="text-sm text-orange-700">Equipment</div>
                     </div>
                   )}
                   {selectedTag.otherCost && (
-                    <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div className={`text-center p-4 rounded-lg border ${
+                      isDarkMode 
+                        ? 'bg-yellow-900/30 border-yellow-500/30' 
+                        : 'bg-yellow-50 border-yellow-200'
+                    }`}>
                       <div className="text-2xl font-bold text-yellow-600">${selectedTag.otherCost.toLocaleString()}</div>
                       <div className="text-sm text-yellow-700">Other</div>
                     </div>
