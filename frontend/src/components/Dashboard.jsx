@@ -199,8 +199,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`${isDarkMode ? 'text-white hover:bg-white/20' : 'text-gray-700 hover:bg-black/10'}`}
+                onClick={toggleTheme}
+                className={themeClasses.button.ghost}
               >
                 {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </Button>
