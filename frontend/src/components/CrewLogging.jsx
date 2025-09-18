@@ -556,6 +556,7 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
                                 <Button
                                   variant="outline"
                                   size="sm"
+                                  onClick={() => handleEditLog(log)}
                                   className={themeClasses.button.secondary}
                                 >
                                   <Edit className="w-4 h-4" />
@@ -563,6 +564,7 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
                                 <Button
                                   variant="outline"
                                   size="sm"
+                                  onClick={() => handleDeleteLog(log.id)}
                                   className="text-red-600 hover:bg-red-50"
                                 >
                                   <Trash2 className="w-4 h-4" />
