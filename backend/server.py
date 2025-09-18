@@ -1153,16 +1153,26 @@ async def get_project_analytics(project_id: str):
         # Get project details
         project = await db.projects.find_one({"id": project_id})
         contract_amount = project.get("contract_amount", 0) if project else 0
+        project_type = project.get("project_type", "full_project") if project else "full_project"
         
         # Get material purchases for project
         materials = await db.materials.find({"project_id": project_id}).to_list(1000)
         total_material_cost = sum(float(material.get("total_cost", 0)) for material in materials)
         
-        # Calculate profit using true costs
+        # Calculate profit based on project type
         total_project_cost = final_true_cost + total_material_cost + total_other_cost
         labor_markup_profit = final_gc_billing - final_true_cost  # Labor markup profit
-        total_profit = contract_amount - total_project_cost
-        profit_margin = (total_profit / contract_amount * 100) if contract_amount > 0 else 0
+        material_markup_profit = total_material_cost * 0.2  # Assume 20% markup on materials
+        
+        if project_type == "tm_only":
+            # For T&M projects, profit is the markup profit
+            total_profit = labor_markup_profit + material_markup_profit
+            total_revenue = final_gc_billing + total_material_cost + total_other_cost
+            profit_margin = (total_profit / total_revenue * 100) if total_revenue > 0 else 0
+        else:
+            # For full projects, profit is contract amount minus true costs
+            total_profit = contract_amount - total_project_cost
+            profit_margin = (total_profit / contract_amount * 100) if contract_amount > 0 else 0
         
         return {
             "project_id": project_id,
