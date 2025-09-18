@@ -446,10 +446,10 @@ const Reports = ({ onBack }) => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Cost</p>
-                  <p className="text-2xl font-bold text-gray-900">${stats.totalCost.toLocaleString()}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Cost</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${stats.totalCost.toLocaleString()}</p>
                 </div>
-                <BarChart3 className="w-8 h-8 text-red-600" />
+                <BarChart3 className={`w-8 h-8 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`} />
               </div>
             </CardContent>
           </Card>
