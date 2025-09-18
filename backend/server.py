@@ -202,6 +202,13 @@ async def get_workers():
     workers = await db.workers.find({"active": True}).to_list(1000)
     return [Worker(**worker) for worker in workers]
 
+@api_router.delete("/workers/{worker_id}")
+async def delete_worker(worker_id: str):
+    result = await db.workers.delete_one({"id": worker_id})
+    if result.deleted_count == 1:
+        return {"message": "Worker deleted successfully", "id": worker_id}
+    return {"error": "Worker not found"}
+
 # Email Endpoint
 @api_router.post("/send-email")
 async def send_email(email_request: EmailRequest):
