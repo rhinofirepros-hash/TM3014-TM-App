@@ -847,25 +847,31 @@ const CrewManagement = ({ onBack }) => {
             {/* Pay Information */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Base Pay ($/hour)*</Label>
+                <Label className={themeClasses.text.primary}>Hourly Rate ($/hour)*</Label>
                 <Input
                   type="number"
                   step="0.01"
-                  value={editCrewMember.base_pay || ''}
-                  onChange={(e) => handleEditInputChange('base_pay', e.target.value)}
+                  value={editCrewMember.hourly_rate || ''}
+                  onChange={(e) => handleEditInputChange('hourly_rate', e.target.value)}
                   className={themeClasses.input}
                 />
+                <p className={`text-xs ${themeClasses.text.secondary}`}>
+                  True cost including benefits, taxes, insurance
+                </p>
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Burden Cost ($/hour)*</Label>
+                <Label className={themeClasses.text.primary}>GC Billing Rate ($/hour)*</Label>
                 <Input
                   type="number"
                   step="0.01"
-                  value={editCrewMember.burden_cost || ''}
-                  onChange={(e) => handleEditInputChange('burden_cost', e.target.value)}
+                  value={editCrewMember.gc_billing_rate || ''}
+                  onChange={(e) => handleEditInputChange('gc_billing_rate', e.target.value)}
                   className={themeClasses.input}
                 />
+                <p className={`text-xs ${themeClasses.text.secondary}`}>
+                  Rate billed to General Contractor
+                </p>
               </div>
             </div>
 
