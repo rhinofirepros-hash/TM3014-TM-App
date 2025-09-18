@@ -412,6 +412,26 @@ async def delete_tm_tag(tm_tag_id: str):
         return {"message": "T&M Tag deleted successfully", "id": tm_tag_id}
     return {"error": "T&M Tag not found"}
 
+@api_router.put("/tm-tags/{tm_tag_id}")
+async def update_tm_tag(tm_tag_id: str, update_data: dict):
+    """Update T&M tag with new data"""
+    try:
+        # Add updated timestamp
+        update_data["updated_at"] = datetime.utcnow()
+        
+        result = await db.tm_tags.update_one(
+            {"id": tm_tag_id},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 1:
+            updated_tag = await db.tm_tags.find_one({"id": tm_tag_id})
+            return TMTag(**updated_tag)
+        return {"error": "T&M Tag not found"}
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 # Worker Management Endpoints
 @api_router.post("/workers", response_model=Worker)
 async def create_worker(worker: WorkerCreate):
