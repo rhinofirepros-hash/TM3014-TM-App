@@ -887,6 +887,119 @@ async def approve_tm_ticket(ticket_id: str, approver: str):
         return TMTicket(**updated_ticket)
     return {"error": "T&M ticket not found"}
 
+# Project Analytics with Consolidated Data
+@api_router.get("/projects/{project_id}/analytics")
+async def get_project_analytics(project_id: str):
+    """Get comprehensive project analytics including crew logs and T&M data"""
+    try:
+        # Get all T&M tags for project
+        tm_tags = await db.tm_tags.find({"project_id": project_id}).to_list(1000)
+        
+        # Get all crew logs for project
+        crew_logs = await db.crew_logs.find({"project_id": project_id}).to_list(1000)
+        
+        # Consolidate analytics
+        total_hours = 0
+        total_labor_cost = 0
+        total_material_cost = 0
+        total_other_cost = 0
+        unique_crew_members = set()
+        work_days = set()
+        
+        # Process T&M tags
+        for tag in tm_tags:
+            for labor_entry in tag.get("labor_entries", []):
+                total_hours += float(labor_entry.get("total_hours", 0))
+                total_labor_cost += float(labor_entry.get("total_hours", 0)) * 95  # Default rate
+                unique_crew_members.add(labor_entry.get("worker_name"))
+            
+            for material_entry in tag.get("material_entries", []):
+                total_material_cost += float(material_entry.get("total", 0))
+                
+            for other_entry in tag.get("other_entries", []):
+                total_other_cost += float(other_entry.get("total", 0))
+                
+            work_days.add(tag.get("date_of_work", "").split("T")[0])
+        
+        # Process crew logs (for any additional data not in T&M)
+        for log in crew_logs:
+            if not log.get("synced_to_tm"):  # Only count unsynced logs to avoid double counting
+                for crew_member in log.get("crew_members", []):
+                    additional_hours = float(crew_member.get("total_hours", 0))
+                    total_hours += additional_hours
+                    total_labor_cost += additional_hours * 95
+                    unique_crew_members.add(crew_member.get("name"))
+                
+                work_days.add(log.get("date", "").split("T")[0])
+        
+        return {
+            "project_id": project_id,
+            "total_hours": total_hours,
+            "total_labor_cost": total_labor_cost,
+            "total_material_cost": total_material_cost,
+            "total_other_cost": total_other_cost,
+            "total_cost": total_labor_cost + total_material_cost + total_other_cost,
+            "unique_crew_members": len(unique_crew_members),
+            "work_days": len(work_days),
+            "crew_members_list": list(unique_crew_members),
+            "tm_tags_count": len(tm_tags),
+            "crew_logs_count": len(crew_logs)
+        }
+        
+    except Exception as e:
+        return {"error": str(e)}
+
+# Endpoint to get daily crew data for auto-population
+@api_router.get("/daily-crew-data")
+async def get_daily_crew_data(project_id: str, date: str):
+    """Get existing crew data for a specific project and date for auto-population"""
+    try:
+        # Check crew logs first
+        crew_log = await db.crew_logs.find_one({
+            "project_id": project_id,
+            "date": {"$regex": date}
+        })
+        
+        if crew_log:
+            return {
+                "source": "crew_log",
+                "data": crew_log,
+                "crew_members": crew_log.get("crew_members", []),
+                "work_description": crew_log.get("work_description", "")
+            }
+        
+        # Check T&M tags
+        tm_tag = await db.tm_tags.find_one({
+            "project_id": project_id,
+            "date_of_work": {"$regex": date}
+        })
+        
+        if tm_tag:
+            # Convert labor entries to crew member format
+            crew_members = []
+            for labor_entry in tm_tag.get("labor_entries", []):
+                crew_member = {
+                    "name": labor_entry.get("worker_name"),
+                    "st_hours": labor_entry.get("st_hours", 0),
+                    "ot_hours": labor_entry.get("ot_hours", 0),
+                    "dt_hours": labor_entry.get("dt_hours", 0),
+                    "pot_hours": labor_entry.get("pot_hours", 0),
+                    "total_hours": labor_entry.get("total_hours", 0)
+                }
+                crew_members.append(crew_member)
+            
+            return {
+                "source": "tm_tag",
+                "data": tm_tag,
+                "crew_members": crew_members,
+                "work_description": tm_tag.get("description_of_work", "")
+            }
+        
+        return {"source": None, "data": None, "crew_members": [], "work_description": ""}
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 # AI Email Parsing Endpoint (will be called by n8n or direct integration)
 @api_router.post("/ai/parse-email")
 async def parse_email_content(
