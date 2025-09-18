@@ -39,6 +39,7 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
   const [selectedLog, setSelectedLog] = useState(null);
   const [editingLog, setEditingLog] = useState(null);
   const [filterDate, setFilterDate] = useState('');
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
   const [newLog, setNewLog] = useState({
     date: new Date(),
     crew_members: [],
