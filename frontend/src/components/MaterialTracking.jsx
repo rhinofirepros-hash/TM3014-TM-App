@@ -376,7 +376,7 @@ const MaterialTracking = ({ project, onBack }) => {
                   <SelectValue placeholder="All Vendors" />
                 </SelectTrigger>
                 <SelectContent className={themeClasses.modal}>
-                  <SelectItem value="">All Vendors</SelectItem>
+                  <SelectItem value="all">All Vendors</SelectItem>
                   {getUniqueVendors().map((vendor) => (
                     <SelectItem key={vendor} value={vendor}>
                       {vendor}
