@@ -32,8 +32,10 @@ import ProjectOverview from './ProjectOverview';
 const ProjectManagement = ({ onBack, onViewReports }) => {
   const [projects, setProjects] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showProjectOverview, setShowProjectOverview] = useState(false);
+  const [editProject, setEditProject] = useState({});
   const [newProject, setNewProject] = useState({
     name: '',
     description: '',
