@@ -12,6 +12,7 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
   const [authProvider, setAuthProvider] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const { toast } = useToast();
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     // Check if user is already authenticated
