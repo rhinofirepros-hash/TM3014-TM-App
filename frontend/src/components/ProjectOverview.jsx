@@ -83,7 +83,15 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
 
   const handleBackToOverview = () => {
     setCurrentView('overview');
-    loadProjectAnalytics(); // Refresh analytics when returning
+    // Always refresh analytics when returning to overview
+    setTimeout(() => {
+      loadProjectAnalytics();
+    }, 500); // Small delay to ensure backend sync is complete
+  };
+
+  // Function to refresh analytics (can be called from child components)
+  const refreshProjectData = () => {
+    loadProjectAnalytics();
   };
 
   // Render different views based on currentView
