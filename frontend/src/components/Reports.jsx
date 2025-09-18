@@ -336,6 +336,128 @@ const Reports = ({ onBack }) => {
         </Card>
       </div>
     </div>
+
+    {/* T&M Tag Details Modal */}
+    <Dialog open={showTagModal} onOpenChange={setShowTagModal}>
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center justify-between">
+            <span>T&M Tag Details</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTagModal(false)}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogTitle>
+        </DialogHeader>
+
+        {selectedTag && (
+          <div className="space-y-6">
+            {/* Header Information */}
+            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Project</Label>
+                <p className="font-semibold">{selectedTag.project}</p>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Date</Label>
+                <p>{new Date(selectedTag.date).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Foreman</Label>
+                <p>{selectedTag.foreman}</p>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Status</Label>
+                <Badge variant={selectedTag.status === 'completed' ? 'default' : 'secondary'}>
+                  {selectedTag.status}
+                </Badge>
+              </div>
+            </div>
+
+            {/* T&M Tag Title */}
+            <div>
+              <Label className="text-sm font-medium text-gray-600">T&M Tag Title</Label>
+              <p className="font-semibold text-lg">{selectedTag.title}</p>
+            </div>
+
+            {/* Company Information */}
+            {selectedTag.companyName && (
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Company</Label>
+                <p>{selectedTag.companyName}</p>
+              </div>
+            )}
+
+            {/* Summary Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-3 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{selectedTag.totalHours}</div>
+                <div className="text-sm text-blue-600">Total Hours</div>
+              </div>
+              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">${selectedTag.laborCost?.toLocaleString() || 0}</div>
+                <div className="text-sm text-green-600">Labor Cost</div>
+              </div>
+              <div className="text-center p-3 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">${selectedTag.materialCost?.toLocaleString() || 0}</div>
+                <div className="text-sm text-purple-600">Material Cost</div>
+              </div>
+            </div>
+
+            {/* Description */}
+            {selectedTag.description && (
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Description of Work</Label>
+                <p className="mt-1 p-3 bg-gray-50 rounded-lg">{selectedTag.description}</p>
+              </div>
+            )}
+
+            {/* Contact Information */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-sm font-medium text-gray-600">GC Email</Label>
+                <p>{selectedTag.gcEmail || 'Not provided'}</p>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-gray-600">Cost Code</Label>
+                <p>{selectedTag.costCode || 'Not provided'}</p>
+              </div>
+            </div>
+
+            {/* Submission Info */}
+            {selectedTag.submittedAt && (
+              <div className="pt-4 border-t">
+                <Label className="text-sm font-medium text-gray-600">Submitted</Label>
+                <p className="text-sm text-gray-500">
+                  {new Date(selectedTag.submittedAt).toLocaleString()}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setShowTagModal(false)}>
+            Close
+          </Button>
+          <Button 
+            onClick={() => {
+              toast({
+                title: "Export Feature",
+                description: "PDF regeneration coming soon!",
+              });
+            }}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export PDF
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
