@@ -625,6 +625,19 @@ async def update_crew_log(log_id: str, crew_log_data: dict):
     except Exception as e:
         return {"error": str(e)}
 
+@api_router.delete("/crew-logs/{log_id}")
+async def delete_crew_log(log_id: str):
+    """Delete crew log"""
+    try:
+        result = await db.crew_logs.delete_one({"id": log_id})
+        
+        if result.deleted_count == 1:
+            return {"message": "Crew log deleted successfully"}
+        return {"error": "Crew log not found"}
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 async def sync_crew_log_to_tm(crew_log):
     """Sync crew log data to T&M tags"""
     try:
