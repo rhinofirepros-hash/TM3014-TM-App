@@ -259,8 +259,8 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
           )}
         </div>
 
-        <DialogFooter className="border-t pt-4">
-          <div className="text-xs text-gray-500 text-center w-full">
+        <DialogFooter className={`border-t pt-4 ${isDarkMode ? 'border-white/20' : 'border-gray-200'}`}>
+          <div className={`text-xs text-center w-full ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Your email credentials are stored securely and used only for sending T&M tags
           </div>
         </DialogFooter>
