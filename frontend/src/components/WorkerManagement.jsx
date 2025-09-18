@@ -333,7 +333,7 @@ const WorkerManagement = ({ onBack }) => {
         }`}>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle className={themeClasses.text.primary}>Worker Database</CardTitle>
+              <CardTitle className={isDarkMode ? 'text-white' : 'text-gray-900'}>Worker Database</CardTitle>
               <Button 
                 onClick={() => setShowAddModal(true)}
                 className={`${themeClasses.button.primary} ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'}`}
