@@ -14,7 +14,8 @@ import {
   Download,
   Search,
   Filter,
-  BarChart3
+  BarChart3,
+  X
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
