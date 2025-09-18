@@ -84,6 +84,58 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     ];
   });
 
+  // Load available projects when component mounts
+  React.useEffect(() => {
+    loadAvailableProjects();
+  }, []);
+
+  const loadAvailableProjects = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (backendUrl) {
+        const response = await fetch(`${backendUrl}/api/projects`);
+        if (response.ok) {
+          const projects = await response.json();
+          setAvailableProjects(projects);
+          
+          // If a project was pre-selected, find its full data
+          if (selectedProject?.id) {
+            const fullProject = projects.find(p => p.id === selectedProject.id);
+            if (fullProject) {
+              setSelectedProjectData(fullProject);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load projects:', error);
+    }
+  };
+
+  const handleProjectChange = (projectId) => {
+    const project = availableProjects.find(p => p.id === projectId);
+    if (project) {
+      setSelectedProjectData(project);
+      setFormData(prev => ({
+        ...prev,
+        projectId: project.id,
+        projectName: project.name,
+        companyName: project.client_company || '',
+        gcEmail: project.gc_email || ''
+      }));
+    } else if (projectId === 'custom') {
+      setSelectedProjectData(null);
+      setFormData(prev => ({
+        ...prev,
+        projectId: null,
+        projectName: '',
+        companyName: '',
+        gcEmail: ''
+      }));
+      setIsCustomProject(true);
+    }
+  };
+
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
