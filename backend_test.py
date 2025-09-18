@@ -436,13 +436,14 @@ class TMTagAPITester:
         return None
     
     def create_realistic_project_data(self):
-        """Create realistic project data for testing"""
+        """Create realistic project data for testing - WITH CUSTOM LABOR RATE"""
         return {
             "name": "Downtown Office Complex - Phase 2",
             "description": "Complete electrical installation for 15-story office building including power distribution, lighting systems, and emergency backup systems.",
             "client_company": "Metropolitan Development Corp",
             "gc_email": "project.manager@metrodev.com",
             "contract_amount": 485000.00,
+            "labor_rate": 120.0,  # Custom labor rate for this client (not fixed $95/hr)
             "project_manager": "Jesus Garcia",
             "start_date": (datetime.now() - timedelta(days=30)).isoformat(),
             "estimated_completion": (datetime.now() + timedelta(days=90)).isoformat(),
