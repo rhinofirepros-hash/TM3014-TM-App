@@ -498,17 +498,45 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
             </div>
 
+            {/* Project Type */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Project Type*</Label>
+              <Select value={newProject.project_type} onValueChange={(value) => handleInputChange('project_type', value)}>
+                <SelectTrigger className={themeClasses.input}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={themeClasses.modal}>
+                  <SelectItem value="full_project">Full Project (Fixed Contract)</SelectItem>
+                  <SelectItem value="tm_only">Time & Material Only</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className={`text-xs ${themeClasses.text.secondary}`}>
+                {newProject.project_type === 'full_project' 
+                  ? 'Fixed contract with defined scope and budget'
+                  : 'Open-ended T&M work - profit calculated from labor and material markup'
+                }
+              </p>
+            </div>
+
             {/* Contract Amount and Labor Rate */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Contract Amount ($)*</Label>
+                <Label className={themeClasses.text.primary}>
+                  Contract Amount ($){newProject.project_type === 'full_project' ? '*' : ''}
+                </Label>
                 <Input
                   type="number"
                   value={newProject.contract_amount}
                   onChange={(e) => handleInputChange('contract_amount', e.target.value)}
                   className={themeClasses.input}
-                  placeholder="150000"
+                  placeholder={newProject.project_type === 'full_project' ? '150000' : 'Optional - for reference only'}
+                  disabled={newProject.project_type === 'tm_only'}
                 />
+                {newProject.project_type === 'tm_only' && (
+                  <p className={`text-xs ${themeClasses.text.secondary}`}>
+                    Not required for T&M projects - profit calculated from hourly rates
+                  </p>
+                )}
               </div>
               
               <div className="space-y-2">
