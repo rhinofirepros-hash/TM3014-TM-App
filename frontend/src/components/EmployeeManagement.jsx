@@ -744,28 +744,15 @@ const EmployeeManagement = ({ onBack }) => {
             </div>
 
             {/* Pay Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Base Pay ($/hour)*</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={editEmployee.base_pay || ''}
-                  onChange={(e) => handleEditInputChange('base_pay', e.target.value)}
-                  className={themeClasses.input}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Burden Cost ($/hour)*</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={editEmployee.burden_cost || ''}
-                  onChange={(e) => handleEditInputChange('burden_cost', e.target.value)}
-                  className={themeClasses.input}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Hourly Rate ($/hour)*</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={editEmployee.hourly_rate || ''}
+                onChange={(e) => handleEditInputChange('hourly_rate', e.target.value)}
+                className={themeClasses.input}
+              />
             </div>
 
             {/* Contact Information */}
