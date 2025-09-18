@@ -7,7 +7,7 @@ import requests
 import json
 
 # Test data persistence by retrieving stored data
-backend_url = 'https://rhino-tm-tracker.preview.emergentagent.com/api'
+backend_url = 'https://firepro-tracker.preview.emergentagent.com/api'
 
 print('=== Verifying Data Persistence ===')
 
