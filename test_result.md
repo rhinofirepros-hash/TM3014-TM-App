@@ -539,10 +539,13 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Project type functionality backend testing completed successfully"
+    - "T&M Analytics and Forecasted Schedule testing completed successfully"
+    - "All T&M project profit calculation fixes verified and working"
+    - "Forecasted schedule functionality fully operational"
+    - "Variance analysis working correctly"
   stuck_tasks: []
   test_all: false
-  test_priority: "backend_project_type_testing_completed"
+  test_priority: "tm_analytics_forecasted_schedule_testing_completed"
 
 agent_communication:
   - agent: "main"
