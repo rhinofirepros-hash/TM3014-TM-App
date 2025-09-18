@@ -164,7 +164,10 @@ const ProjectManagement = ({ onBack }) => {
         }}
         onAddCrewLog={() => {}} // TODO: Implement crew logging
         onAddMaterial={() => {}} // TODO: Implement material tracking
-        onViewTMTags={() => {}} // TODO: Implement T&M tag filtering
+        onViewTMTags={() => {
+          // Navigate back to reports filtered by this project
+          onBack(); // Go back to project management first
+        }}
       />
     );
   }
