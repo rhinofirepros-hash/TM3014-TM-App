@@ -27,7 +27,7 @@ import EmployeeManagement from './EmployeeManagement';
 import FinancialTabs from './FinancialTabs';
 
 const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
-  const [currentView, setCurrentView] = useState('overview'); // overview, crew, materials, employees
+  const [currentView, setCurrentView] = useState('overview'); // overview, crew, materials, employees, financial
   const [projectStats, setProjectStats] = useState({
     totalHoursLogged: 0,
     totalLaborCost: 0,
