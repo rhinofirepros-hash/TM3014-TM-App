@@ -693,13 +693,6 @@ const EmployeeManagement = ({ onBack }) => {
                 </div>
               </div>
             )}
-                  <span className={`text-sm ${themeClasses.text.secondary}`}>Total Cost per Hour:</span>
-                  <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
-                    ${(parseFloat(newEmployee.base_pay || 0) + parseFloat(newEmployee.burden_cost || 0)).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
 
           <DialogFooter>
