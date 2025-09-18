@@ -357,9 +357,13 @@ const Reports = ({ onBack }) => {
 
   return (
     <>
-    <div className={`min-h-screen transition-all duration-300 ${themeClasses.background}`}>
+    <div className={`min-h-screen transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
       {/* Header */}
-      <div className={themeClasses.header}>
+      <div className={`${isDarkMode ? 'backdrop-blur-xl bg-white/10 border-b border-white/20' : 'backdrop-blur-xl bg-white/30 border-b border-white/40'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
