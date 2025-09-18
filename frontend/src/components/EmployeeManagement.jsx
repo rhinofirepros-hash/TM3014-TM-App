@@ -237,8 +237,7 @@ const EmployeeManagement = ({ onBack }) => {
     setSelectedEmployee(employee);
     setEditEmployee({
       name: employee.name,
-      base_pay: employee.base_pay.toString(),
-      burden_cost: employee.burden_cost.toString(),
+      hourly_rate: employee.hourly_rate?.toString() || '40',
       position: employee.position,
       hire_date: employee.hire_date,
       phone: employee.phone || '',
