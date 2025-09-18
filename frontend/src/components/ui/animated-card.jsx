@@ -15,8 +15,8 @@ const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...prop
         }
       },
       {
-        threshold: 0.1,
-        rootMargin: '50px'
+        threshold: 0.2, // Trigger when 20% visible
+        rootMargin: '100px 0px -50px 0px' // Start animation earlier, more graceful
       }
     );
 
