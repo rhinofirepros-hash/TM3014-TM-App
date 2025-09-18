@@ -539,13 +539,13 @@ frontend:
 
 test_plan:
   current_focus:
-    - "T&M Analytics and Forecasted Schedule testing completed successfully"
-    - "All T&M project profit calculation fixes verified and working"
-    - "Forecasted schedule functionality fully operational"
-    - "Variance analysis working correctly"
+    - "Unified backend migration completed successfully"
+    - "Frontend integration testing with new unified schema"
+    - "Validate current frontend functionality with migrated data"
+    - "Identify components needing updates for new forecasting features"
   stuck_tasks: []
-  test_all: false
-  test_priority: "tm_analytics_forecasted_schedule_testing_completed"
+  test_all: true
+  test_priority: "frontend_unified_schema_integration_testing"
 
 agent_communication:
   - agent: "main"
