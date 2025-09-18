@@ -760,12 +760,24 @@ const CrewManagement = ({ onBack }) => {
             </div>
 
             {/* Cost Summary */}
-            {newCrewMember.base_pay && newCrewMember.burden_cost && (
+            {newCrewMember.hourly_rate && newCrewMember.gc_billing_rate && (
               <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-white/10' : 'bg-blue-50'} border`}>
-                <div className="flex justify-between items-center">
-                  <span className={`text-sm ${themeClasses.text.secondary}`}>Total Cost per Hour:</span>
-                  <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
-                    ${(parseFloat(newCrewMember.base_pay || 0) + parseFloat(newCrewMember.burden_cost || 0)).toFixed(2)}
+                <div className="flex justify-between items-center mb-2">
+                  <span className={`text-sm ${themeClasses.text.secondary}`}>Employee Cost:</span>
+                  <span className={`font-semibold ${themeClasses.text.primary}`}>
+                    ${(parseFloat(newCrewMember.hourly_rate || 0)).toFixed(2)}/hr
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className={`text-sm ${themeClasses.text.secondary}`}>GC Billing Rate:</span>
+                  <span className={`font-semibold ${themeClasses.text.primary}`}>
+                    ${(parseFloat(newCrewMember.gc_billing_rate || 0)).toFixed(2)}/hr
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-t pt-2">
+                  <span className={`text-sm font-semibold ${themeClasses.text.secondary}`}>Profit per Hour:</span>
+                  <span className={`font-bold text-lg text-green-600`}>
+                    ${(parseFloat(newCrewMember.gc_billing_rate || 0) - parseFloat(newCrewMember.hourly_rate || 0)).toFixed(2)}
                   </span>
                 </div>
               </div>
