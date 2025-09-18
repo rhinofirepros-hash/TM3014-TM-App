@@ -716,8 +716,65 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
             </div>
 
-            {/* Contract Amount and Manager */}
+            {/* Project Type */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Project Type*</Label>
+              <Select value={editProject.project_type || 'full_project'} onValueChange={(value) => handleEditInputChange('project_type', value)}>
+                <SelectTrigger className={themeClasses.input}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={themeClasses.modal}>
+                  <SelectItem value="full_project">Full Project (Fixed Contract)</SelectItem>
+                  <SelectItem value="tm_only">Time & Material Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Contract Amount and Labor Rate */}
             <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>
+                  Contract Amount ($){(editProject.project_type || 'full_project') === 'full_project' ? '*' : ''}
+                </Label>
+                <Input
+                  type="number"
+                  value={editProject.contract_amount || ''}
+                  onChange={(e) => handleEditInputChange('contract_amount', e.target.value)}
+                  className={themeClasses.input}
+                  disabled={(editProject.project_type || 'full_project') === 'tm_only'}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Labor Rate ($/hr)*</Label>
+                <Input
+                  type="number"
+                  value={editProject.labor_rate || '95'}
+                  onChange={(e) => handleEditInputChange('labor_rate', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+            </div>
+
+            {/* Project Manager */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Project Manager*</Label>
+              <Select value={editProject.project_manager || ''} onValueChange={(value) => handleEditInputChange('project_manager', value)}>
+                <SelectTrigger className={themeClasses.input}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={themeClasses.modal}>
+                  {projectManagers.map((manager) => (
+                    <SelectItem key={manager} value={manager}>
+                      {manager}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Old section to be removed */}
+            <div className="grid grid-cols-2 gap-4" style={{display: 'none'}}>
               <div className="space-y-2">
                 <Label className={themeClasses.text.primary}>Contract Amount ($)*</Label>
                 <Input
