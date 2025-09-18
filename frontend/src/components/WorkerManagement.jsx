@@ -266,23 +266,23 @@ const WorkerManagement = ({ onBack }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className={`${themeClasses.card} ${themeClasses.cardHover}`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Workers</p>
-                  <p className="text-2xl font-bold text-gray-900">{workers.length}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Workers</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{workers.length}</p>
                 </div>
-                <Users className="w-8 h-8 text-blue-600" />
+                <Users className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={`${themeClasses.card} ${themeClasses.cardHover}`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Average Rate</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Average Rate</p>
                   <p className="text-2xl font-bold text-gray-900">
                     ${workers.length > 0 ? (workers.reduce((sum, w) => sum + w.rate, 0) / workers.length).toFixed(0) : '0'}
                   </p>
