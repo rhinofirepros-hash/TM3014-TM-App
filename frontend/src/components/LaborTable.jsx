@@ -228,14 +228,20 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                     variant="ghost"
                     size="sm"
                     onClick={() => removeEntry(entry.id)}
-                    className="h-7 w-7 p-0 text-red-600 hover:bg-red-50"
+                    className={`h-7 w-7 p-0 text-red-600 ${
+                      isDarkMode ? 'hover:bg-red-900/20' : 'hover:bg-red-50'
+                    }`}
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 text-gray-600 hover:bg-gray-50"
+                    className={`h-7 w-7 p-0 ${
+                      isDarkMode 
+                        ? 'text-white/70 hover:bg-white/20' 
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                   >
                     <MoreVertical className="h-3 w-3" />
                   </Button>
