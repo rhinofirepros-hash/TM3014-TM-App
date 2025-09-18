@@ -257,6 +257,11 @@ class Project(BaseModel):
     start_date: datetime
     estimated_completion: Optional[datetime] = None
     actual_completion: Optional[datetime] = None
+    # Forecasted schedule fields
+    estimated_hours: Optional[float] = 0  # Forecasted total hours
+    estimated_labor_cost: Optional[float] = 0  # Forecasted labor cost
+    estimated_material_cost: Optional[float] = 0  # Forecasted material cost
+    estimated_profit: Optional[float] = 0  # Expected profit
     address: Optional[str] = ""
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
