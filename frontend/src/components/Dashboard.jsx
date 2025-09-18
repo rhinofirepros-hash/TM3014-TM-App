@@ -226,12 +226,12 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         {/* Stats Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Projects */}
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={0} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
           }`}>
-            <CardContent className="p-6">
+            <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -241,16 +241,16 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 </div>
                 <Building className={`w-8 h-8 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
-            </CardContent>
-          </Card>
+            </AnimatedCardContent>
+          </AnimatedCard>
 
           {/* Total Hours */}
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={100} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
           }`}>
-            <CardContent className="p-6">
+            <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -262,8 +262,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 </div>
                 <Clock className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
               </div>
-            </CardContent>
-          </Card>
+            </AnimatedCardContent>
+          </AnimatedCard>
 
           {/* Total Revenue */}
           <Card className={`backdrop-blur-md border-0 shadow-xl ${
