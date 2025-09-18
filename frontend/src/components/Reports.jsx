@@ -145,6 +145,55 @@ const Reports = ({ onBack }) => {
     return total;
   };
 
+  const convertTagToPDFFormat = (tag) => {
+    // Convert the tag data from Reports format to PDFGenerator expected format
+    return {
+      projectName: tag.project,
+      costCode: tag.costCode || '',
+      dateOfWork: new Date(tag.date),
+      companyName: tag.companyName || '',
+      tmTagTitle: tag.title,
+      descriptionOfWork: tag.description || '',
+      laborEntries: [],
+      materialEntries: [],
+      equipmentEntries: [],
+      otherEntries: [],
+      gcEmail: tag.gcEmail,
+      signature: '', // No signature data available in reports view
+      signerName: '',
+      signerTitle: '',
+      foremanName: tag.foreman
+    };
+  };
+
+  const handleGeneratePDF = async (tag) => {
+    try {
+      const formData = convertTagToPDFFormat(tag);
+      const pdfGenerator = PDFGenerator({ formData });
+      const result = await pdfGenerator.generatePDF();
+      
+      if (result.success) {
+        toast({
+          title: "PDF Generated",
+          description: `T&M tag PDF saved as ${result.filename}`,
+        });
+      } else {
+        toast({
+          title: "PDF Generation Failed",
+          description: result.error || "Failed to generate PDF",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "An error occurred while generating the PDF",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleViewTag = (tag) => {
     setSelectedTag(tag);
     setShowTagModal(true);
