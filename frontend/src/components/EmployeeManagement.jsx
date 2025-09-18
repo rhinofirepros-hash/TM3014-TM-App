@@ -256,10 +256,6 @@ const EmployeeManagement = ({ onBack }) => {
     return colors[status] || colors.active;
   };
 
-  const getTotalCostPerHour = (employee) => {
-    return (employee.base_pay || 0) + (employee.burden_cost || 0);
-  };
-
   const getUniquePositions = () => {
     return [...new Set(employees.map(emp => emp.position).filter(Boolean))];
   };
@@ -275,10 +271,10 @@ const EmployeeManagement = ({ onBack }) => {
   });
 
   const totalEmployees = filteredEmployees.length;
-  const averageBasePay = filteredEmployees.length > 0 
-    ? filteredEmployees.reduce((sum, emp) => sum + (emp.base_pay || 0), 0) / filteredEmployees.length
+  const averageHourlyRate = filteredEmployees.length > 0 
+    ? filteredEmployees.reduce((sum, emp) => sum + (emp.hourly_rate || 0), 0) / filteredEmployees.length
     : 0;
-  const totalPayrollCost = filteredEmployees.reduce((sum, emp) => sum + getTotalCostPerHour(emp), 0);
+  const totalPayrollCost = filteredEmployees.reduce((sum, emp) => sum + (emp.hourly_rate || 0), 0);
 
   return (
     <>
