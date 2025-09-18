@@ -239,23 +239,23 @@ const WorkerManagement = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen transition-all duration-300 ${themeClasses.background}`}>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className={themeClasses.header}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+              <Button variant="outline" onClick={onBack} className={`flex items-center gap-2 ${themeClasses.button.secondary}`}>
                 <ArrowLeft className="w-4 h-4" />
                 Back to Dashboard
               </Button>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-purple-600' : 'bg-purple-600'}`}>
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-900">Worker Management</h1>
-                  <p className="text-sm text-gray-500">Manage your team database</p>
+                  <h1 className={`text-xl font-semibold ${themeClasses.text.primary}`}>Worker Management</h1>
+                  <p className={`text-sm ${themeClasses.text.secondary}`}>Manage your team database</p>
                 </div>
               </div>
             </div>
