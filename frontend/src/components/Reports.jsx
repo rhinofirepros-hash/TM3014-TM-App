@@ -478,7 +478,7 @@ const Reports = ({ onBack }) => {
                     placeholder="Search by project, title, or foreman..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className={`pl-10 ${themeClasses.input}`}
                   />
                 </div>
               </div>
