@@ -266,12 +266,12 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </AnimatedCard>
 
           {/* Total Revenue */}
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={200} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
           }`}>
-            <CardContent className="p-6">
+            <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -283,16 +283,16 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 </div>
                 <DollarSign className={`w-8 h-8 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
               </div>
-            </CardContent>
-          </Card>
+            </AnimatedCardContent>
+          </AnimatedCard>
 
           {/* T&M Tags */}
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={300} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
           }`}>
-            <CardContent className="p-6">
+            <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -304,8 +304,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 </div>
                 <FileText className={`w-8 h-8 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
               </div>
-            </CardContent>
-          </Card>
+            </AnimatedCardContent>
+          </AnimatedCard>
         </div>
 
         {/* Quick Actions */}
