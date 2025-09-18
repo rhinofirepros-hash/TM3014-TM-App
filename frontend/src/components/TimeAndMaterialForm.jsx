@@ -673,7 +673,11 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   };
 
   return (
-    <div className={`min-h-screen p-2 sm:p-4 transition-all duration-300 ${themeClasses.background}`}>
+    <div className={`min-h-screen p-2 sm:p-4 transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 sm:mb-6">
