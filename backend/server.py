@@ -131,6 +131,117 @@ class Worker(BaseModel):
     active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+# Project Management Models
+class Project(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: Optional[str] = ""
+    client_company: str
+    gc_email: str
+    contract_amount: Optional[float] = 0
+    project_manager: str = "Jesus Garcia"
+    status: str = "active"  # active, completed, on_hold, cancelled
+    start_date: datetime
+    estimated_completion: Optional[datetime] = None
+    actual_completion: Optional[datetime] = None
+    address: Optional[str] = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ProjectCreate(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    client_company: str
+    gc_email: str
+    contract_amount: Optional[float] = 0
+    project_manager: Optional[str] = "Jesus Garcia"
+    start_date: datetime
+    estimated_completion: Optional[datetime] = None
+    address: Optional[str] = ""
+
+class Employee(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    base_pay: float  # Base hourly rate
+    burden_cost: float  # Additional costs (benefits, taxes, etc.)
+    position: str
+    hire_date: datetime
+    status: str = "active"  # active, inactive, terminated
+    phone: Optional[str] = ""
+    email: Optional[str] = ""
+    emergency_contact: Optional[str] = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class EmployeeCreate(BaseModel):
+    name: str
+    base_pay: float
+    burden_cost: float
+    position: str
+    hire_date: datetime
+    phone: Optional[str] = ""
+    email: Optional[str] = ""
+    emergency_contact: Optional[str] = ""
+
+class CrewLog(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    project_name: str
+    date: datetime
+    crew_members: List[str]  # List of employee names/IDs
+    work_description: str
+    hours_worked: float
+    per_diem: Optional[float] = 0
+    hotel_cost: Optional[float] = 0
+    gas_expense: Optional[float] = 0
+    other_expenses: Optional[float] = 0
+    expense_notes: Optional[str] = ""
+    weather_conditions: Optional[str] = ""
+    logged_by: str = "Jesus Garcia"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CrewLogCreate(BaseModel):
+    project_id: str
+    project_name: str
+    date: datetime
+    crew_members: List[str]
+    work_description: str
+    hours_worked: float
+    per_diem: Optional[float] = 0
+    hotel_cost: Optional[float] = 0
+    gas_expense: Optional[float] = 0
+    other_expenses: Optional[float] = 0
+    expense_notes: Optional[str] = ""
+    weather_conditions: Optional[str] = ""
+
+class MaterialPurchase(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    project_name: str
+    purchase_date: datetime
+    vendor: str
+    material_name: str
+    quantity: float
+    unit_cost: float
+    total_cost: float
+    invoice_number: Optional[str] = ""
+    receipt_image: Optional[str] = ""  # Base64 encoded image
+    category: str = "general"  # pipe, fittings, equipment, etc.
+    purchased_by: str = "Jesus Garcia"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class MaterialPurchaseCreate(BaseModel):
+    project_id: str
+    project_name: str
+    purchase_date: datetime
+    vendor: str
+    material_name: str
+    quantity: float
+    unit_cost: float
+    total_cost: float
+    invoice_number: Optional[str] = ""
+    receipt_image: Optional[str] = ""
+    category: Optional[str] = "general"
+
 class WorkerCreate(BaseModel):
     name: str
     rate: Optional[float] = 95.0
