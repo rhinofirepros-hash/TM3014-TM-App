@@ -500,21 +500,41 @@ const Reports = ({ onBack }) => {
           </div>
         )}
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setShowTagModal(false)}>
-            Close
-          </Button>
-          <Button 
-            onClick={() => {
-              toast({
-                title: "Export Feature",
-                description: "PDF regeneration coming soon!",
-              });
-            }}
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Export PDF
-          </Button>
+        <DialogFooter className="border-t pt-4 mt-6">
+          <div className="flex justify-between w-full">
+            <Button variant="outline" size="lg" onClick={() => setShowTagModal(false)}>
+              <X className="w-4 h-4 mr-2" />
+              Close
+            </Button>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  toast({
+                    title: "Edit Feature",
+                    description: "T&M tag editing coming soon!",
+                  });
+                }}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Edit Tag
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => {
+                  toast({
+                    title: "Export Feature",
+                    description: "PDF regeneration coming soon!",
+                  });
+                }}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export PDF
+              </Button>
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
