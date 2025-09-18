@@ -160,6 +160,7 @@ const Reports = ({ onBack }) => {
   const stats = getTotalStats();
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
