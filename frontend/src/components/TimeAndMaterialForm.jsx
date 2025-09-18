@@ -1207,7 +1207,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   variant="outline" 
-                  className="text-gray-600 h-10"
+                  className={`h-10 ${themeClasses.button.secondary}`}
                   onClick={() => {
                     setFormData({
                       projectName: "",
@@ -1242,7 +1242,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                 <Button 
                   variant="outline" 
                   onClick={handleSave}
-                  className="text-gray-600 h-10"
+                  className={`h-10 ${themeClasses.button.secondary}`}
                 >
                   Save Draft
                 </Button>
@@ -1252,7 +1252,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                   variant="outline" 
                   onClick={handlePreview}
                   disabled={isGeneratingPDF}
-                  className="text-gray-600 flex items-center justify-center gap-2 h-10"
+                  className={`flex items-center justify-center gap-2 h-10 ${themeClasses.button.secondary}`}
                 >
                   <Eye className="w-4 h-4" />
                   <span className="hidden sm:inline">{isGeneratingPDF ? 'Generating...' : 'Preview PDF'}</span>
@@ -1262,7 +1262,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                 {!formData.signature ? (
                   <Button 
                     onClick={handleCollectSignatures}
-                    className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
+                    className={`${themeClasses.button.secondary} flex items-center justify-center gap-2 h-10`}
                   >
                     <PenTool className="w-4 h-4" />
                     <span className="hidden sm:inline">Collect Signatures</span>
@@ -1273,7 +1273,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     <Button 
                       onClick={handleSubmitForm}
                       disabled={isGeneratingPDF}
-                      className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
+                      className={`${themeClasses.button.primary} flex items-center justify-center gap-2 h-10`}
                     >
                       <FileText className="w-4 h-4" />
                       <span className="hidden sm:inline">{isGeneratingPDF ? 'Submitting...' : 'Submit T&M Tag'}</span>
@@ -1282,7 +1282,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     <Button 
                       onClick={() => setShowEmailComposer(true)}
                       disabled={isGeneratingPDF || !generatedPDFData}
-                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 h-10"
+                      className={`${themeClasses.button.secondary} flex items-center justify-center gap-2 h-10`}
                     >
                       <Mail className="w-4 h-4" />
                       <span className="hidden sm:inline">Email GC</span>
@@ -1291,7 +1291,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     <Button 
                       onClick={handleSubmitAndEmail}
                       disabled={isGeneratingPDF}
-                      className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2 h-10"
+                      className={`${themeClasses.button.primary} flex items-center justify-center gap-2 h-10`}
                     >
                       <Download className="w-4 h-4" />
                       <span className="hidden sm:inline">{isGeneratingPDF ? 'Generating...' : 'Generate PDF'}</span>
