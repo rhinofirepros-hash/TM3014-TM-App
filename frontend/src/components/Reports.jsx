@@ -276,6 +276,51 @@ const Reports = ({ onBack }) => {
     });
   };
 
+  const handleExportAllPDFs = async () => {
+    if (filteredTags.length === 0) {
+      toast({
+        title: "No Data to Export",
+        description: "There are no T&M tags to export.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Generating PDFs",
+      description: `Starting bulk export of ${filteredTags.length} T&M tag PDFs...`,
+    });
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const tag of filteredTags) {
+      try {
+        const formData = convertTagToPDFFormat(tag);
+        const pdfGenerator = PDFGenerator({ formData });
+        const result = await pdfGenerator.generatePDF();
+        
+        if (result.success) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+        
+        // Small delay to prevent overwhelming the browser
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (error) {
+        console.error('Error generating PDF for tag:', tag.id, error);
+        errorCount++;
+      }
+    }
+
+    toast({
+      title: "Bulk Export Complete",
+      description: `Successfully generated ${successCount} PDFs. ${errorCount > 0 ? `${errorCount} failed.` : ''}`,
+      variant: errorCount > 0 ? "destructive" : "default"
+    });
+  };
+
   const stats = getTotalStats();
 
   return (
