@@ -242,42 +242,107 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
           </div>
         </div>
 
-        {/* Projects Overview */}
+        {/* Projects Overview with Analytics */}
         <div className="mb-8">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Active Projects</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.map((project) => (
-              <Card key={project.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-base">{project.name}</CardTitle>
-                    <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
-                      {project.status}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      <span>Created: {project.created}</span>
+          {projectAnalytics.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center text-gray-500">
+                <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p>No project data available</p>
+                <p className="text-sm mt-1">Create your first T&M tag to see project analytics</p>
+                <Button className="mt-4" onClick={handleCreateNewTag}>
+                  Create First T&M Tag
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projectAnalytics.map((project) => (
+                <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-base font-semibold text-gray-900">{project.name}</CardTitle>
+                      <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
+                        {project.status}
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4" />
-                      <span>T&M Tags: {project.tagCount || 0}</span>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    {/* Project Statistics */}
+                    <div className="space-y-3 mb-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">T&M Tags:</span>
+                        <span className="font-semibold text-blue-600">{project.tagCount}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Total Hours:</span>
+                        <span className="font-semibold text-green-600">{project.totalHours.toFixed(1)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Total Cost:</span>
+                        <span className="font-semibold text-purple-600">${project.totalCost.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Last Activity:</span>
+                        <span className="text-sm text-gray-500">{project.lastActivity}</span>
+                      </div>
                     </div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    className="w-full mt-4"
-                    onClick={() => onOpenProject(project)}
-                  >
-                    Create T&M Tag
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+
+                    {/* Mini Cost Breakdown Chart */}
+                    <div className="mb-4">
+                      <div className="text-xs text-gray-600 mb-2">Cost Breakdown</div>
+                      <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-green-500" 
+                          style={{ 
+                            width: `${project.totalCost > 0 ? (project.laborCost / project.totalCost) * 100 : 0}%` 
+                          }}
+                          title={`Labor: $${project.laborCost.toLocaleString()}`}
+                        ></div>
+                        <div 
+                          className="bg-blue-500" 
+                          style={{ 
+                            width: `${project.totalCost > 0 ? (project.materialCost / project.totalCost) * 100 : 0}%` 
+                          }}
+                          title={`Materials: $${project.materialCost.toLocaleString()}`}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>Labor: ${project.laborCost.toLocaleString()}</span>
+                        <span>Materials: ${project.materialCost.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Recent Tags Preview */}
+                    {project.tags && project.tags.length > 0 && (
+                      <div className="mb-4">
+                        <div className="text-xs text-gray-600 mb-2">Recent Tags</div>
+                        <div className="space-y-1">
+                          {project.tags.slice(0, 2).map((tag, index) => (
+                            <div key={index} className="text-xs bg-gray-50 p-2 rounded">
+                              <div className="font-medium truncate">{tag.tm_tag_title}</div>
+                              <div className="text-gray-500">
+                                {new Date(tag.date_of_work).toLocaleDateString()}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <Button 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => onOpenProject(project)}
+                    >
+                      Create T&M Tag
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Recent Activity */}
