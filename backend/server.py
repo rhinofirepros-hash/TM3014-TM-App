@@ -530,39 +530,166 @@ async def delete_employee(employee_id: str):
         return {"message": "Employee deleted successfully", "id": employee_id}
     return {"error": "Employee not found"}
 
-# Crew Log Endpoints
-@api_router.post("/crew-logs", response_model=CrewLog)
-async def create_crew_log(crew_log: CrewLogCreate):
-    crew_log_dict = crew_log.dict()
-    crew_log_obj = CrewLog(**crew_log_dict)
-    
-    # Insert into database
-    result = await db.crew_logs.insert_one(crew_log_obj.dict())
-    
-    return crew_log_obj
+# Crew Logging Endpoints with T&M Integration
+@api_router.post("/crew-logs")
+async def create_crew_log(crew_log_data: dict):
+    """Create crew log and automatically sync with T&M data"""
+    try:
+        # Create crew log entry
+        crew_log = {
+            "id": str(uuid.uuid4()),
+            "project_id": crew_log_data.get("project_id"),
+            "date": crew_log_data.get("date"),
+            "crew_members": crew_log_data.get("crew_members", []),
+            "work_description": crew_log_data.get("work_description", ""),
+            "weather_conditions": crew_log_data.get("weather_conditions", "clear"),
+            "expenses": crew_log_data.get("expenses", {}),
+            "created_at": datetime.utcnow(),
+            "synced_to_tm": False
+        }
+        
+        # Insert crew log
+        await db.crew_logs.insert_one(crew_log)
+        
+        # Auto-sync to T&M if project has active T&M tag for same date
+        await sync_crew_log_to_tm(crew_log)
+        
+        return {"message": "Crew log created successfully", "id": crew_log["id"]}
+        
+    except Exception as e:
+        return {"error": str(e)}
 
-@api_router.get("/crew-logs", response_model=List[CrewLog])
-async def get_crew_logs(project_id: Optional[str] = None, skip: int = 0, limit: int = 100):
+@api_router.get("/crew-logs")
+async def get_crew_logs(project_id: Optional[str] = None, date: Optional[str] = None):
+    """Get crew logs with optional filtering"""
     query = {}
     if project_id:
         query["project_id"] = project_id
-    
-    crew_logs = await db.crew_logs.find(query).skip(skip).limit(limit).to_list(limit)
-    return [CrewLog(**crew_log) for crew_log in crew_logs]
+    if date:
+        query["date"] = date
+        
+    crew_logs = await db.crew_logs.find(query).to_list(1000)
+    return crew_logs
 
-@api_router.get("/crew-logs/{log_id}")
-async def get_crew_log(log_id: str):
-    crew_log = await db.crew_logs.find_one({"id": log_id})
-    if crew_log:
-        return CrewLog(**crew_log)
-    return {"error": "Crew log not found"}
+@api_router.put("/crew-logs/{log_id}")
+async def update_crew_log(log_id: str, crew_log_data: dict):
+    """Update crew log and sync changes to T&M if linked"""
+    try:
+        crew_log_data["updated_at"] = datetime.utcnow()
+        
+        result = await db.crew_logs.update_one(
+            {"id": log_id},
+            {"$set": crew_log_data}
+        )
+        
+        if result.modified_count == 1:
+            # Re-sync to T&M tags
+            updated_log = await db.crew_logs.find_one({"id": log_id})
+            await sync_crew_log_to_tm(updated_log)
+            
+            return {"message": "Crew log updated successfully"}
+        return {"error": "Crew log not found"}
+        
+    except Exception as e:
+        return {"error": str(e)}
 
-@api_router.delete("/crew-logs/{log_id}")
-async def delete_crew_log(log_id: str):
-    result = await db.crew_logs.delete_one({"id": log_id})
-    if result.deleted_count == 1:
-        return {"message": "Crew log deleted successfully", "id": log_id}
-    return {"error": "Crew log not found"}
+async def sync_crew_log_to_tm(crew_log):
+    """Sync crew log data to T&M tags"""
+    try:
+        project_id = crew_log.get("project_id")
+        log_date = crew_log.get("date")
+        
+        if not project_id or not log_date:
+            return
+            
+        # Check if T&M tag exists for same project and date
+        tm_tag = await db.tm_tags.find_one({
+            "project_id": project_id,
+            "date_of_work": {"$regex": log_date.split("T")[0]}  # Match date part
+        })
+        
+        if tm_tag:
+            # Update existing T&M tag with crew log data
+            labor_entries = []
+            for crew_member in crew_log.get("crew_members", []):
+                labor_entry = {
+                    "id": str(uuid.uuid4()),
+                    "worker_name": crew_member.get("name"),
+                    "quantity": 1,
+                    "st_hours": float(crew_member.get("st_hours", 0)),
+                    "ot_hours": float(crew_member.get("ot_hours", 0)),
+                    "dt_hours": float(crew_member.get("dt_hours", 0)),
+                    "pot_hours": float(crew_member.get("pot_hours", 0)),
+                    "total_hours": float(crew_member.get("total_hours", 0)),
+                    "date": log_date
+                }
+                labor_entries.append(labor_entry)
+            
+            # Update T&M tag with crew data
+            await db.tm_tags.update_one(
+                {"id": tm_tag["id"]},
+                {"$set": {
+                    "labor_entries": labor_entries,
+                    "description_of_work": crew_log.get("work_description", tm_tag.get("description_of_work", "")),
+                    "crew_log_synced": True
+                }}
+            )
+            
+            # Mark crew log as synced
+            await db.crew_logs.update_one(
+                {"id": crew_log["id"]},
+                {"$set": {"synced_to_tm": True, "tm_tag_id": tm_tag["id"]}}
+            )
+            
+    except Exception as e:
+        print(f"Error syncing crew log to T&M: {e}")
+
+async def sync_tm_to_crew_log(tm_tag):
+    """Sync T&M tag labor data to crew logs"""
+    try:
+        project_id = tm_tag.get("project_id")
+        work_date = tm_tag.get("date_of_work")
+        
+        if not project_id or not work_date:
+            return
+            
+        # Check if crew log exists for same project and date
+        crew_log = await db.crew_logs.find_one({
+            "project_id": project_id,
+            "date": {"$regex": work_date.split("T")[0]}  # Match date part
+        })
+        
+        if not crew_log:
+            # Create new crew log from T&M data
+            crew_members = []
+            for labor_entry in tm_tag.get("labor_entries", []):
+                crew_member = {
+                    "name": labor_entry.get("worker_name"),
+                    "st_hours": labor_entry.get("st_hours", 0),
+                    "ot_hours": labor_entry.get("ot_hours", 0),
+                    "dt_hours": labor_entry.get("dt_hours", 0),
+                    "pot_hours": labor_entry.get("pot_hours", 0),
+                    "total_hours": labor_entry.get("total_hours", 0)
+                }
+                crew_members.append(crew_member)
+            
+            new_crew_log = {
+                "id": str(uuid.uuid4()),
+                "project_id": project_id,
+                "date": work_date,
+                "crew_members": crew_members,
+                "work_description": tm_tag.get("description_of_work", ""),
+                "weather_conditions": "clear",
+                "expenses": {},
+                "created_at": datetime.utcnow(),
+                "synced_from_tm": True,
+                "tm_tag_id": tm_tag["id"]
+            }
+            
+            await db.crew_logs.insert_one(new_crew_log)
+            
+    except Exception as e:
+        print(f"Error syncing T&M to crew log: {e}")
 
 # Material Purchase Endpoints
 @api_router.post("/materials", response_model=MaterialPurchase)
