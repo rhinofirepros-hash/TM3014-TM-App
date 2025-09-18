@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix PDF generation to use actual company logo instead of red square, implement EmailJS for cheapest email solution, complete backend-frontend integration for T&M tag persistence and email functionality. Goal is to have the app production-ready within 1 hour."
+user_problem_statement: "Comprehensive testing and polishing of the Time & Material Daily Tag App with Project Management System. Recent major updates include: 1) Project-specific labor rates instead of fixed $95/hr, 2) Updated employee schema from base_pay/burden_cost to single hourly_rate for true cost calculations, 3) Bidirectional sync between crew logs and T&M tags, 4) Fixed edit functionality for both T&M tags and crew logs, 5) Enhanced cost analytics showing true costs vs billed amounts with labor markup profit. Need thorough testing of all workflows and any UI/UX polish needed."
 
 backend:
   - task: "T&M Tag API endpoints"
