@@ -174,7 +174,149 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     return true;
   };
 
-  const handleSubmitAndEmail = async () => {
+  const handleSubmitForm = async () => {
+    if (!validateForm()) return;
+    
+    if (!formData.signature) {
+      toast({
+        title: "Signature Required",
+        description: "Please collect foreman signature before submitting.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGeneratingPDF(true);
+    try {
+      // Save to backend database
+      try {
+        const tmTagData = {
+          project_name: formData.projectName,
+          cost_code: formData.costCode,
+          date_of_work: formData.dateOfWork.toISOString(),
+          company_name: formData.companyName,
+          tm_tag_title: formData.tmTagTitle,
+          description_of_work: formData.descriptionOfWork,
+          labor_entries: formData.laborEntries.map(entry => ({
+            id: entry.id.toString(),
+            worker_name: entry.workerName,
+            quantity: parseFloat(entry.quantity) || 1,
+            st_hours: parseFloat(entry.stHours) || 0,
+            ot_hours: parseFloat(entry.otHours) || 0,
+            dt_hours: parseFloat(entry.dtHours) || 0,
+            pot_hours: parseFloat(entry.potHours) || 0,
+            total_hours: parseFloat(entry.totalHours) || 0,
+            date: entry.date
+          })),
+          material_entries: formData.materialEntries.map(entry => ({
+            id: entry.id.toString(),
+            material_name: entry.materialName,
+            unit_of_measure: entry.unitOfMeasure,
+            quantity: parseFloat(entry.quantity) || 0,
+            unit_cost: parseFloat(entry.unitCost) || 0,
+            total: parseFloat(entry.total) || 0,
+            date_of_work: entry.dateOfWork
+          })),
+          equipment_entries: formData.equipmentEntries.map(entry => ({
+            id: entry.id.toString(),
+            equipment_name: entry.equipmentName,
+            pieces_of_equipment: parseInt(entry.piecesOfEquipment) || 1,
+            unit_of_measure: entry.unitOfMeasure,
+            quantity: parseFloat(entry.quantity) || 0,
+            total: parseFloat(entry.total) || 0,
+            date_of_work: entry.dateOfWork
+          })),
+          other_entries: formData.otherEntries.map(entry => ({
+            id: entry.id.toString(),
+            other_name: entry.otherName,
+            quantity_of_other: parseInt(entry.quantityOfOther) || 1,
+            unit_of_measure: entry.unitOfMeasure,
+            quantity_of_unit: parseFloat(entry.quantityOfUnit) || 0,
+            total: parseFloat(entry.total) || 0,
+            date_of_work: entry.dateOfWork
+          })),
+          gc_email: formData.gcEmail,
+          signature: formData.signature,
+          foreman_name: formData.signerName || 'Jesus Garcia',
+          submitted_at: new Date().toISOString()
+        };
+
+        // Save to backend API
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        if (backendUrl) {
+          const response = await fetch(`${backendUrl}/api/tm-tags`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tmTagData)
+          });
+          
+          if (response.ok) {
+            console.log('✅ T&M Tag saved to backend successfully');
+            toast({
+              title: "T&M Tag Submitted",
+              description: "Your T&M tag has been saved successfully to the database.",
+            });
+          } else {
+            console.warn('Backend save failed, using localStorage fallback');
+            toast({
+              title: "Warning",
+              description: "Backend save failed, but tag was saved locally.",
+              variant: "destructive"
+            });
+          }
+        }
+      } catch (backendError) {
+        console.warn('Backend save failed:', backendError);
+        toast({
+          title: "Warning", 
+          description: "Backend connection failed, but tag was saved locally.",
+          variant: "destructive"
+        });
+      }
+      
+      // Also save to localStorage as backup
+      const tmTag = {
+        id: Date.now(),
+        project: formData.projectName,
+        title: formData.tmTagTitle,
+        date: formData.dateOfWork.toISOString().split('T')[0],
+        foreman: formData.signerName || 'Jesus Garcia',
+        totalHours: formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0), 0),
+        laborCost: formData.laborEntries.reduce((sum, entry) => sum + (parseFloat(entry.totalHours) || 0) * 95, 0),
+        materialCost: formData.materialEntries.reduce((sum, entry) => sum + (parseFloat(entry.total) || 0), 0),
+        status: 'completed',
+        gcEmail: formData.gcEmail,
+        costCode: formData.costCode,
+        description: formData.descriptionOfWork,
+        submittedAt: new Date().toISOString()
+      };
+      
+      const existingHistory = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
+      existingHistory.unshift(tmTag);
+      localStorage.setItem('tm_tags_history', JSON.stringify(existingHistory));
+      
+      // Clear the draft after successful submission
+      localStorage.removeItem('tm_tag_draft');
+      
+      // Reset form and go back to dashboard
+      resetForm();
+      if (onBackToDashboard) {
+        onBackToDashboard();
+      }
+      
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast({
+        title: "Submission Failed",
+        description: "An error occurred while submitting the T&M tag.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
     if (!validateForm()) return;
     
     if (!formData.signature) {
