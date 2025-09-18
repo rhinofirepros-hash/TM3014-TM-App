@@ -88,7 +88,7 @@ const MaterialTable = ({ entries, onChange }) => {
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+              <TableCell colSpan={6} className={`text-center py-8 ${themeClasses.text.secondary}`}>
                 No materials added yet. Click "Add empty row" to get started.
               </TableCell>
             </TableRow>
@@ -100,7 +100,7 @@ const MaterialTable = ({ entries, onChange }) => {
                     value={entry.materialName}
                     onChange={(e) => updateEntry(entry.id, 'materialName', e.target.value)}
                     placeholder="Material name"
-                    className="border-0 p-1"
+                    className={`border-0 p-1 ${themeClasses.input}`}
                   />
                 </TableCell>
                 <TableCell>
@@ -108,7 +108,7 @@ const MaterialTable = ({ entries, onChange }) => {
                     value={entry.unitOfMeasure}
                     onChange={(e) => updateEntry(entry.id, 'unitOfMeasure', e.target.value)}
                     placeholder="Unit"
-                    className="border-0 p-1 text-center"
+                    className={`border-0 p-1 text-center ${themeClasses.input}`}
                   />
                 </TableCell>
                 <TableCell>
@@ -116,18 +116,18 @@ const MaterialTable = ({ entries, onChange }) => {
                     type="number"
                     value={entry.quantity}
                     onChange={(e) => updateEntry(entry.id, 'quantity', e.target.value)}
-                    className="border-0 p-1 text-center"
+                    className={`border-0 p-1 text-center ${themeClasses.input}`}
                     step="0.01"
                   />
                 </TableCell>
-                <TableCell className="text-center font-medium">
+                <TableCell className={`text-center font-medium ${themeClasses.text.primary}`}>
                   ${entry.total.toFixed(2)}
                 </TableCell>
                 <TableCell>
                   <Input
                     value={entry.dateOfWork}
                     onChange={(e) => updateEntry(entry.id, 'dateOfWork', e.target.value)}
-                    className="border-0 p-1 text-center"
+                    className={`border-0 p-1 text-center ${themeClasses.input}`}
                   />
                 </TableCell>
                 <TableCell>
@@ -136,14 +136,20 @@ const MaterialTable = ({ entries, onChange }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeEntry(entry.id)}
-                      className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
+                      className={`h-8 w-8 p-0 text-red-600 ${
+                        isDarkMode ? 'hover:bg-red-900/20' : 'hover:bg-red-50'
+                      }`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0 text-gray-600 hover:bg-gray-50"
+                      className={`h-8 w-8 p-0 ${
+                        isDarkMode 
+                          ? 'text-white/70 hover:bg-white/20' 
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
                     >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
