@@ -433,24 +433,24 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
 
                     {/* Mini Cost Breakdown Chart */}
                     <div className="mb-4">
-                      <div className="text-xs text-gray-600 mb-2">Cost Breakdown</div>
-                      <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className={`text-xs mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Cost Breakdown</div>
+                      <div className={`flex h-2 rounded-full overflow-hidden ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                         <div 
-                          className="bg-green-500" 
+                          className={isDarkMode ? 'bg-green-400' : 'bg-green-500'}
                           style={{ 
                             width: `${project.totalCost > 0 ? (project.laborCost / project.totalCost) * 100 : 0}%` 
                           }}
                           title={`Labor: $${project.laborCost.toLocaleString()}`}
                         ></div>
                         <div 
-                          className="bg-blue-500" 
+                          className={isDarkMode ? 'bg-blue-400' : 'bg-blue-500'}
                           style={{ 
                             width: `${project.totalCost > 0 ? (project.materialCost / project.totalCost) * 100 : 0}%` 
                           }}
                           title={`Materials: $${project.materialCost.toLocaleString()}`}
                         ></div>
                       </div>
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <div className={`flex justify-between text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         <span>Labor: ${project.laborCost.toLocaleString()}</span>
                         <span>Materials: ${project.materialCost.toLocaleString()}</span>
                       </div>
