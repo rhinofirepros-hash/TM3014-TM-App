@@ -574,18 +574,25 @@ async def get_company_forecast(weeks: int = 12):
     """Calculate company-wide forecast"""
     try:
         projects = await get_projects()
-        project_ids = [p.id for p in projects if p.status == ProjectStatus.ACTIVE]
+        active_projects = [p for p in projects if p.status == ProjectStatus.ACTIVE]
+        project_ids = [p.id for p in active_projects]
         
         current_date = datetime.utcnow()
         total_inflow = 0
         total_outflow = 0
+        successful_forecasts = 0
         
         # Aggregate from all project forecasts
         for project_id in project_ids:
-            project_forecast = await get_weekly_forecast(project_id, 1)  # Just this week
-            if project_forecast:
-                total_inflow += project_forecast[0].inflow
-                total_outflow += project_forecast[0].outflow
+            try:
+                project_forecast = await get_weekly_forecast(project_id, 1)  # Just this week
+                if project_forecast:
+                    total_inflow += project_forecast[0].inflow
+                    total_outflow += project_forecast[0].outflow
+                    successful_forecasts += 1
+            except Exception as e:
+                logger.warning(f"Skipping forecast for project {project_id}: {e}")
+                continue  # Skip projects with forecast errors
         
         net = total_inflow - total_outflow
         
@@ -595,7 +602,7 @@ async def get_company_forecast(weeks: int = 12):
             totalOutflow=total_outflow,
             net=net,
             projects=project_ids,
-            rollupNarrative=f"Company-wide: ${total_inflow:,.2f} expected inflow, ${total_outflow:,.2f} outflow, net ${net:,.2f}"
+            rollupNarrative=f"Company-wide: ${total_inflow:,.2f} expected inflow, ${total_outflow:,.2f} outflow, net ${net:,.2f} (based on {successful_forecasts} projects)"
         )
         
         return company_forecast
