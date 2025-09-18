@@ -20,6 +20,7 @@ import PDFGenerator from './PDFGenerator';
 import EmailComposer from './EmailComposer';
 import { mockData } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 
 const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const { toast } = useToast();
