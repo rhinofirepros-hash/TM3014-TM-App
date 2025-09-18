@@ -233,15 +233,18 @@ backend:
 
   - task: "Employee schema restructuring"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/backend/server.py, /app/frontend/src/components/EmployeeManagement.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "MAJOR SCHEMA CHANGE: Updated Employee model from base_pay/burden_cost structure to single hourly_rate field representing true employee cost. Updated EmployeeManagement.jsx to use new schema with single hourly rate input. Updated all cost calculations to use actual employee hourly rates instead of estimated 70% of billed rate. This provides accurate profit margins: True Cost (employee hourly_rate) vs Billed Amount (project labor_rate)."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL SCHEMA MIGRATION ISSUE: Employee schema restructuring is incomplete. Backend validation error: 'Field required [type=missing, input_value={'_id': ObjectId...}, input_type=dict] for hourly_rate field'. Existing employees in database still have old schema (base_pay/burden_cost) but new Employee model expects hourly_rate field. This causes 500 Internal Server Error when accessing /api/employees endpoint, preventing employee management functionality. Database migration needed to convert existing employee records to new schema."
 
   - task: "Bidirectional crew log and T&M sync"
     implemented: true
