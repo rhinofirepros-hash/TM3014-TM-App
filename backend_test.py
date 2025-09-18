@@ -585,12 +585,12 @@ class TMTagAPITester:
         return False
     
     def create_realistic_employee_data(self):
-        """Create realistic employee data for testing"""
+        """Create realistic employee data for testing - NEW SCHEMA with hourly_rate"""
         return [
             {
                 "name": "Carlos Martinez",
-                "base_pay": 28.50,
-                "burden_cost": 12.75,
+                "hourly_rate": 45.00,  # True employee cost
+                "gc_billing_rate": 95.0,  # Rate billed to GC
                 "position": "Journeyman Electrician",
                 "hire_date": (datetime.now() - timedelta(days=365)).isoformat(),
                 "phone": "(555) 987-6543",
@@ -599,8 +599,8 @@ class TMTagAPITester:
             },
             {
                 "name": "Jennifer Thompson",
-                "base_pay": 32.00,
-                "burden_cost": 14.50,
+                "hourly_rate": 52.00,  # True employee cost
+                "gc_billing_rate": 95.0,  # Rate billed to GC
                 "position": "Senior Electrician",
                 "hire_date": (datetime.now() - timedelta(days=730)).isoformat(),
                 "phone": "(555) 876-5432",
@@ -609,8 +609,8 @@ class TMTagAPITester:
             },
             {
                 "name": "Michael Rodriguez",
-                "base_pay": 38.75,
-                "burden_cost": 17.25,
+                "hourly_rate": 65.00,  # True employee cost
+                "gc_billing_rate": 95.0,  # Rate billed to GC
                 "position": "Master Electrician",
                 "hire_date": (datetime.now() - timedelta(days=1095)).isoformat(),
                 "phone": "(555) 765-4321",
