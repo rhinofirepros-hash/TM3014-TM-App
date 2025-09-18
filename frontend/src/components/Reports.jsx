@@ -572,7 +572,7 @@ const Reports = ({ onBack }) => {
                 Close
               </Button>
               <Button 
-                variant="destructive"
+                variant="outline"
                 size="lg"
                 onClick={() => setShowDeleteDialog(true)}
                 className="text-red-600 border-red-600 hover:bg-red-50"
