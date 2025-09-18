@@ -373,16 +373,16 @@ const Reports = ({ onBack }) => {
                 </div>
                 <div>
                   <h1 className={`text-xl font-semibold ${themeClasses.text.primary}`}>T&M Reports</h1>
-                  <p className="text-sm text-gray-500">View and analyze T&M tag history</p>
+                  <p className={`text-sm ${themeClasses.text.secondary}`}>View and analyze T&M tag history</p>
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleExportData} variant="outline" className="flex items-center gap-2">
+              <Button onClick={handleExportData} variant="outline" className={`flex items-center gap-2 ${themeClasses.button.secondary}`}>
                 <Download className="w-4 h-4" />
                 Export JSON
               </Button>
-              <Button onClick={handleExportAllPDFs} className="flex items-center gap-2">
+              <Button onClick={handleExportAllPDFs} className={`flex items-center gap-2 ${themeClasses.button.primary}`}>
                 <FileText className="w-4 h-4" />
                 Export All PDFs
               </Button>
