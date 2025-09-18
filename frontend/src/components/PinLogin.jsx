@@ -81,13 +81,13 @@ const PinLogin = ({ onLoginSuccess }) => {
         <CardContent className="space-y-6">
           {/* Direct Login Instructions */}
           <div className="text-center mb-6">
-            <p className="text-gray-600 text-sm">Enter your PIN to access the T&M Tag system</p>
+            <p className={`text-sm ${themeClasses.text.secondary}`}>Enter your PIN to access the T&M Tag system</p>
           </div>
 
           {/* PIN Login */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="pin" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Label htmlFor="pin" className={`text-sm font-medium ${themeClasses.text.primary} flex items-center gap-2`}>
                 <Shield className="w-4 h-4" />
                 Enter PIN Code
               </Label>
@@ -98,7 +98,7 @@ const PinLogin = ({ onLoginSuccess }) => {
                 onChange={(e) => setPin(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Enter your PIN"
-                className="text-center text-lg tracking-widest"
+                className={`text-center text-lg tracking-widest ${themeClasses.input}`}
                 maxLength={4}
                 disabled={isLoading}
               />
@@ -107,13 +107,13 @@ const PinLogin = ({ onLoginSuccess }) => {
             <Button 
               onClick={handlePinLogin}
               disabled={!pin || isLoading}
-              className="w-full bg-red-600 hover:bg-red-700 text-white"
+              className={`w-full ${themeClasses.button.primary}`}
             >
               {isLoading && loginMethod === 'pin' ? 'Verifying...' : 'Access with PIN'}
             </Button>
           </div>
           
-          <div className="text-center text-xs text-gray-500">
+          <div className={`text-center text-xs ${themeClasses.text.secondary}`}>
             Contact supervisor if you need access
           </div>
         </CardContent>
