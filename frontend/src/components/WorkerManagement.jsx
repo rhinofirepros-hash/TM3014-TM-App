@@ -349,18 +349,19 @@ const WorkerManagement = ({ onBack }) => {
                   </TableHeader>
                   <TableBody>
                   {workers.map((worker) => (
-                    <TableRow key={worker.id}>
-                      <TableCell className="font-medium">{worker.name}</TableCell>
-                      <TableCell>{worker.position || '-'}</TableCell>
-                      <TableCell>${worker.rate}/hr</TableCell>
-                      <TableCell>{worker.phone || '-'}</TableCell>
-                      <TableCell>{worker.email || '-'}</TableCell>
+                    <TableRow key={worker.id} className={isDarkMode ? 'border-white/10 hover:bg-white/5' : 'border-gray-200/30 hover:bg-white/50'}>
+                      <TableCell className={`font-medium ${themeClasses.text.primary}`}>{worker.name}</TableCell>
+                      <TableCell className={themeClasses.text.secondary}>{worker.position || '-'}</TableCell>
+                      <TableCell className={themeClasses.text.primary}>${worker.rate}/hr</TableCell>
+                      <TableCell className={themeClasses.text.secondary}>{worker.phone || '-'}</TableCell>
+                      <TableCell className={themeClasses.text.secondary}>{worker.email || '-'}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleEditWorker(worker)}
+                            className={themeClasses.button.secondary}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -368,6 +369,7 @@ const WorkerManagement = ({ onBack }) => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeleteWorker(worker.id)}
+                            className={`${themeClasses.button.secondary} hover:bg-red-500/20 hover:border-red-500/50`}
                             className="text-red-600 hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4" />
