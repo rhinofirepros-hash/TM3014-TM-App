@@ -773,35 +773,6 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </Select>
             </div>
 
-            {/* Old section to be removed */}
-            <div className="grid grid-cols-2 gap-4" style={{display: 'none'}}>
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Contract Amount ($)*</Label>
-                <Input
-                  type="number"
-                  value={editProject.contract_amount || ''}
-                  onChange={(e) => handleEditInputChange('contract_amount', e.target.value)}
-                  className={themeClasses.input}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Project Manager*</Label>
-                <Select value={editProject.project_manager || ''} onValueChange={(value) => handleEditInputChange('project_manager', value)}>
-                  <SelectTrigger className={themeClasses.input}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className={themeClasses.modal}>
-                    {projectManagers.map((manager) => (
-                      <SelectItem key={manager} value={manager}>
-                        {manager}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
             {/* Description */}
             <div className="space-y-2">
               <Label className={themeClasses.text.primary}>Description</Label>
