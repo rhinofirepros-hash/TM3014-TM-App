@@ -1,0 +1,17 @@
+{
+  "name": "tm-migration",
+  "version": "1.0.0",
+  "description": "Migration script for T&M Daily Tag App to Unified Schema",
+  "main": "migrate.js",
+  "scripts": {
+    "migrate": "node migrate.js",
+    "dry-run": "node migrate.js --dry-run",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "mongodb": "^6.0.0",
+    "minimist": "^1.2.8"
+  },
+  "author": "Rhino Fire Protection",
+  "license": "MIT"
+}
