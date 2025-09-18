@@ -142,7 +142,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                     }
                   }}
                   placeholder="Enter worker name"
-                  className="border-0 p-2 h-8 text-xs sm:text-sm min-w-[120px]"
+                  className={`border-0 p-2 h-8 text-xs sm:text-sm min-w-[120px] ${themeClasses.input}`}
                   list={`workers-${entry.id}`}
                 />
                 <datalist id={`workers-${entry.id}`}>
