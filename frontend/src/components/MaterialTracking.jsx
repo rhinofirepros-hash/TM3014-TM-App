@@ -362,7 +362,7 @@ const MaterialTracking = ({ project, onBack }) => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent className={themeClasses.modal}>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {materialCategories.map((category) => (
                     <SelectItem key={category.value} value={category.value}>
                       {category.label}
