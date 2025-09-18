@@ -82,6 +82,7 @@ class OtherEntry(BaseModel):
 
 class TMTag(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: Optional[str] = None  # Link to project
     project_name: str
     cost_code: str
     date_of_work: datetime
