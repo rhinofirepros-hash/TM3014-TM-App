@@ -505,6 +505,5 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
     </div>
   );
 };
-};
 
 export default ProjectOverview;
