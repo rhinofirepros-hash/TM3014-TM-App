@@ -29,7 +29,7 @@ import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
 import ProjectOverview from './ProjectOverview';
 
-const ProjectManagement = ({ onBack }) => {
+const ProjectManagement = ({ onBack, onViewReports }) => {
   const [projects, setProjects] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
