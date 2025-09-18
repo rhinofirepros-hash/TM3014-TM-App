@@ -3,7 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { Plus, FileText, Calendar, DollarSign, Users, LogOut, Mail, CheckCircle } from 'lucide-react';
+import { 
+  Plus, 
+  FileText, 
+  Calendar, 
+  DollarSign, 
+  Users, 
+  LogOut, 
+  Mail, 
+  CheckCircle,
+  BarChart3,
+  TrendingUp,
+  Clock,
+  Building,
+  ArrowRight,
+  Sun,
+  Moon
+} from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import oauthEmailService from '../services/oauthEmailService';
 import EmailAuthModal from './EmailAuthModal';
@@ -13,6 +29,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
   const [recentTags, setRecentTags] = useState([]);
   const [projectAnalytics, setProjectAnalytics] = useState([]);
   const [showEmailAuthModal, setShowEmailAuthModal] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
