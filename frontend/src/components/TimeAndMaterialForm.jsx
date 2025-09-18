@@ -689,7 +689,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
             >
               ← Dashboard
             </Button>
-            <h1 className={`text-lg sm:text-2xl font-semibold ${themeClasses.text.primary}`}>
+            <h1 className={`text-lg sm:text-2xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Create A Time & Material Tag
             </h1>
           </div>
