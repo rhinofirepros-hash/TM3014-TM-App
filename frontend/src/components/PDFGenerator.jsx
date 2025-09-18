@@ -13,7 +13,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setLineWidth(0.5);
       pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Clean Header Section - No overlapping text
+      // Clean Header Section - Logo in top right corner
       let headerComplete = false;
       
       // Try to add logo
@@ -22,35 +22,44 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            console.log('Logo loading timeout');
+            reject(new Error('Logo loading timeout'));
+          }, 5000); // 5 second timeout
+          
           img.onload = function() {
+            clearTimeout(timeout);
             try {
-              // Add logo on left side
-              pdf.addImage(img, 'PNG', 15, 15, 70, 35);
+              // Add logo in TOP RIGHT CORNER as requested
+              pdf.addImage(img, 'PNG', 125, 15, 70, 35); // Moved to right side (x=125 instead of x=15)
               
-              // Add "TIME & MATERIAL TAG" text on right side only
+              // Add "TIME & MATERIAL TAG" text on left side
               pdf.setTextColor(0, 0, 0);
               pdf.setFontSize(16);
               pdf.setFont(undefined, 'bold');
-              pdf.text('TIME & MATERIAL TAG', 195, 32, { align: 'right' });
+              pdf.text('TIME & MATERIAL TAG', 15, 32);
               
+              console.log('✅ Logo successfully added to PDF header (top right)');
               headerComplete = true;
             } catch (imgError) {
-              console.log('Logo rendering error:', imgError);
+              console.error('Logo rendering error:', imgError);
             }
             resolve();
           };
           
-          img.onerror = function() {
-            console.log('Logo loading failed');
-            resolve();
+          img.onerror = function(error) {
+            clearTimeout(timeout);
+            console.error('Logo loading failed:', error);
+            reject(error);
           };
           
+          console.log('Loading logo from:', logoUrl);
           img.src = logoUrl;
         });
         
       } catch (error) {
-        console.log('Logo loading error:', error);
+        console.error('Logo loading error:', error);
       }
       
       // Fallback if logo failed
