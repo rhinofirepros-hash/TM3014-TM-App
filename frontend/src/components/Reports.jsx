@@ -613,6 +613,74 @@ const Reports = ({ onBack }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    {/* Delete Confirmation Dialog */}
+    <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-red-600">
+            <X className="w-5 h-5" />
+            Delete T&M Tag
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="py-4">
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 font-medium">⚠️ This action cannot be undone!</p>
+          </div>
+          
+          {selectedTag && (
+            <div className="space-y-3">
+              <p className="text-gray-700">
+                Are you sure you want to permanently delete this T&M tag?
+              </p>
+              
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="font-semibold text-gray-900">{selectedTag.title}</p>
+                <p className="text-sm text-gray-600">
+                  Project: {selectedTag.project} • Date: {new Date(selectedTag.date).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Total Cost: ${((selectedTag.laborCost || 0) + (selectedTag.materialCost || 0)).toLocaleString()}
+                </p>
+              </div>
+              
+              <p className="text-sm text-gray-600">
+                This will remove the T&M tag from all reports and cannot be recovered.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button 
+            variant="outline" 
+            onClick={() => setShowDeleteDialog(false)}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="destructive" 
+            onClick={() => selectedTag && handleDeleteTag(selectedTag)}
+            disabled={isDeleting}
+            className="bg-red-600 hover:bg-red-700"
+          >
+            {isDeleting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Deleting...
+              </>
+            ) : (
+              <>
+                <X className="w-4 h-4 mr-2" />
+                Delete Permanently
+              </>
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
