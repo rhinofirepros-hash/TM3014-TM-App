@@ -378,6 +378,7 @@ async def get_status_checks():
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 # T&M Tag Endpoints
+# Enhanced T&M Tag Creation with Crew Log Sync
 @api_router.post("/tm-tags", response_model=TMTag)
 async def create_tm_tag(tm_tag: TMTagCreate):
     tm_tag_dict = tm_tag.dict()
@@ -386,6 +387,9 @@ async def create_tm_tag(tm_tag: TMTagCreate):
     
     # Insert into database
     result = await db.tm_tags.insert_one(tm_tag_obj.dict())
+    
+    # Sync to crew logs
+    await sync_tm_to_crew_log(tm_tag_obj.dict())
     
     return tm_tag_obj
 
