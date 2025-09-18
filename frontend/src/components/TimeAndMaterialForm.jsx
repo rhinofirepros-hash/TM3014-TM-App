@@ -26,19 +26,22 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const { toast } = useToast();
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
+  const [availableProjects, setAvailableProjects] = useState([]);
+  const [selectedProjectData, setSelectedProjectData] = useState(null);
   const [formData, setFormData] = useState({
     projectName: selectedProject?.name || "",
+    projectId: selectedProject?.id || null,
     costCode: '',
     dateOfWork: new Date(),
-    companyName: '',
+    companyName: selectedProject?.client_company || '',
     tmTagTitle: '',
     descriptionOfWork: '',
     laborEntries: [],
     materialEntries: [],
     equipmentEntries: [],
     otherEntries: [],
-    gcEmail: '',
-    autoEmail: false, // Changed from true to false
+    gcEmail: selectedProject?.gc_email || '',
+    autoEmail: false,
     downloadPDF: true,
     signature: null,
     signerName: '',
