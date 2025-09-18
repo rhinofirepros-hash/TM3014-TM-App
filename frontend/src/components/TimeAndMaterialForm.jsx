@@ -673,7 +673,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
+    <div className={`min-h-screen p-2 sm:p-4 transition-all duration-300 ${themeClasses.background}`}>
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -681,17 +681,17 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
             <Button 
               variant="outline" 
               onClick={onBackToDashboard}
-              className="flex items-center gap-2"
+              className={`flex items-center gap-2 ${themeClasses.button.secondary}`}
             >
               ← Dashboard
             </Button>
-            <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">
+            <h1 className={`text-lg sm:text-2xl font-semibold ${themeClasses.text.primary}`}>
               Create A Time & Material Tag
             </h1>
           </div>
         </div>
 
-        <Card className="shadow-sm">
+        <Card className={`shadow-xl ${themeClasses.card}`}>
           <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {/* Project Name */}
             <div className="space-y-2">
