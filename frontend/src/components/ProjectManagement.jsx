@@ -410,9 +410,21 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                   <CardContent className="pt-0">
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className={themeClasses.text.secondary}>Contract Value:</span>
+                        <span className={themeClasses.text.secondary}>Type:</span>
+                        <Badge className={project.project_type === 'tm_only' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}>
+                          {project.project_type === 'tm_only' ? 'T&M Only' : 'Full Project'}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex justify-between text-sm">
+                        <span className={themeClasses.text.secondary}>
+                          {project.project_type === 'tm_only' ? 'Estimate:' : 'Contract Value:'}
+                        </span>
                         <span className={`font-semibold ${themeClasses.text.primary}`}>
-                          ${project.contract_amount?.toLocaleString() || '0'}
+                          {project.project_type === 'tm_only' && !project.contract_amount 
+                            ? 'T&M Based' 
+                            : `$${project.contract_amount?.toLocaleString() || '0'}`
+                          }
                         </span>
                       </div>
                       
