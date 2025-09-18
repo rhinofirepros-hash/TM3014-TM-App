@@ -596,87 +596,211 @@ async def delete_material(material_id: str):
         return {"message": "Material purchase deleted successfully", "id": material_id}
     return {"error": "Material purchase not found"}
 
-# Project Analytics Endpoints
-@api_router.get("/projects/{project_id}/analytics")
-async def get_project_analytics(project_id: str):
+# Enhanced AI Super Tracking Endpoints
+
+# Phase Management
+@api_router.post("/phases", response_model=Phase)
+async def create_phase(phase: PhaseCreate):
+    phase_dict = phase.dict()
+    phase_obj = Phase(**phase_dict)
+    result = await db.phases.insert_one(phase_obj.dict())
+    return phase_obj
+
+@api_router.get("/phases", response_model=List[Phase])
+async def get_phases(project_id: Optional[str] = None):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    phases = await db.phases.find(query).to_list(1000)
+    return [Phase(**phase) for phase in phases]
+
+@api_router.delete("/phases/{phase_id}")
+async def delete_phase(phase_id: str):
+    result = await db.phases.delete_one({"id": phase_id})
+    if result.deleted_count == 1:
+        return {"message": "Phase deleted successfully", "id": phase_id}
+    return {"error": "Phase not found"}
+
+# Task Management
+@api_router.post("/tasks", response_model=Task)
+async def create_task(task: TaskCreate):
+    task_dict = task.dict()
+    task_obj = Task(**task_dict)
+    result = await db.tasks.insert_one(task_obj.dict())
+    return task_obj
+
+@api_router.get("/tasks", response_model=List[Task])
+async def get_tasks(project_id: Optional[str] = None, phase_id: Optional[str] = None, assigned_to: Optional[str] = None):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    if phase_id:
+        query["phase_id"] = phase_id
+    if assigned_to:
+        query["assigned_to"] = assigned_to
+    tasks = await db.tasks.find(query).to_list(1000)
+    return [Task(**task) for task in tasks]
+
+@api_router.put("/tasks/{task_id}")
+async def update_task(task_id: str, task_update: TaskCreate):
+    update_dict = task_update.dict()
+    update_dict["updated_at"] = datetime.utcnow()
+    result = await db.tasks.update_one({"id": task_id}, {"$set": update_dict})
+    if result.modified_count == 1:
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+    return {"error": "Task not found"}
+
+@api_router.delete("/tasks/{task_id}")
+async def delete_task(task_id: str):
+    result = await db.tasks.delete_one({"id": task_id})
+    if result.deleted_count == 1:
+        return {"message": "Task deleted successfully", "id": task_id}
+    return {"error": "Task not found"}
+
+# Project Updates (AI-Parsed Content)
+@api_router.post("/project-updates", response_model=ProjectUpdate)
+async def create_project_update(update: ProjectUpdateCreate):
+    update_dict = update.dict()
+    update_obj = ProjectUpdate(**update_dict)
+    result = await db.project_updates.insert_one(update_obj.dict())
+    return update_obj
+
+@api_router.get("/project-updates", response_model=List[ProjectUpdate])
+async def get_project_updates(
+    project_id: Optional[str] = None, 
+    update_type: Optional[str] = None,
+    requires_review: Optional[bool] = None,
+    skip: int = 0, 
+    limit: int = 100
+):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    if update_type:
+        query["update_type"] = update_type
+    if requires_review is not None:
+        query["requires_review"] = requires_review
+    
+    updates = await db.project_updates.find(query).skip(skip).limit(limit).sort("created_at", -1).to_list(limit)
+    return [ProjectUpdate(**update) for update in updates]
+
+@api_router.put("/project-updates/{update_id}/review")
+async def review_project_update(update_id: str, reviewer: str, approved: bool = True):
+    update_data = {
+        "requires_review": False,
+        "reviewed_at": datetime.utcnow(),
+        "reviewed_by": reviewer
+    }
+    
+    result = await db.project_updates.update_one({"id": update_id}, {"$set": update_data})
+    if result.modified_count == 1:
+        updated_update = await db.project_updates.find_one({"id": update_id})
+        return ProjectUpdate(**updated_update)
+    return {"error": "Project update not found"}
+
+@api_router.delete("/project-updates/{update_id}")
+async def delete_project_update(update_id: str):
+    result = await db.project_updates.delete_one({"id": update_id})
+    if result.deleted_count == 1:
+        return {"message": "Project update deleted successfully", "id": update_id}
+    return {"error": "Project update not found"}
+
+# T&M Tickets (Enhanced)
+@api_router.post("/tm-tickets", response_model=TMTicket)
+async def create_tm_ticket(ticket: TMTicketCreate):
+    ticket_dict = ticket.dict()
+    # Auto-calculate cost if not provided
+    if not ticket_dict.get('cost') and ticket_dict.get('hours') and ticket_dict.get('rate'):
+        ticket_dict['cost'] = ticket_dict['hours'] * ticket_dict['rate']
+    
+    ticket_obj = TMTicket(**ticket_dict)
+    result = await db.tm_tickets.insert_one(ticket_obj.dict())
+    return ticket_obj
+
+@api_router.get("/tm-tickets", response_model=List[TMTicket])
+async def get_tm_tickets(
+    project_id: Optional[str] = None,
+    task_id: Optional[str] = None,
+    employee_name: Optional[str] = None,
+    approved: Optional[bool] = None,
+    skip: int = 0,
+    limit: int = 100
+):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    if task_id:
+        query["task_id"] = task_id
+    if employee_name:
+        query["employee_name"] = employee_name
+    if approved is not None:
+        query["approved"] = approved
+    
+    tickets = await db.tm_tickets.find(query).skip(skip).limit(limit).sort("created_at", -1).to_list(limit)
+    return [TMTicket(**ticket) for ticket in tickets]
+
+@api_router.put("/tm-tickets/{ticket_id}/approve")
+async def approve_tm_ticket(ticket_id: str, approver: str):
+    update_data = {
+        "approved": True,
+        "approved_by": approver,
+        "approved_at": datetime.utcnow()
+    }
+    
+    result = await db.tm_tickets.update_one({"id": ticket_id}, {"$set": update_data})
+    if result.modified_count == 1:
+        updated_ticket = await db.tm_tickets.find_one({"id": ticket_id})
+        return TMTicket(**updated_ticket)
+    return {"error": "T&M ticket not found"}
+
+# AI Email Parsing Endpoint (will be called by n8n or direct integration)
+@api_router.post("/ai/parse-email")
+async def parse_email_content(
+    email_subject: str,
+    email_body: str,
+    sender_email: str,
+    email_id: Optional[str] = None,
+    project_hint: Optional[str] = None
+):
+    """
+    AI-powered email parsing endpoint
+    This will be called by n8n workflows or direct email integration
+    """
     try:
-        # Get project details
-        project = await db.projects.find_one({"id": project_id})
-        if not project:
-            return {"error": "Project not found"}
+        # This is where we'll integrate with LLM for parsing
+        # For now, return a placeholder structure
         
-        # Get T&M tags for this project
-        tm_tags = await db.tm_tags.find({"project_name": project["name"]}).to_list(1000)
+        parsed_data = {
+            "project_id": project_hint or "unknown",
+            "update_type": "communication",
+            "title": email_subject,
+            "summary": f"Email from {sender_email}: {email_subject}",
+            "full_content": email_body,
+            "ai_confidence": 0.8,
+            "requires_review": True,
+            "tags": ["email", "communication"],
+            "extracted_data": {
+                "sender": sender_email,
+                "subject": email_subject,
+                "detected_project": project_hint or "unknown"
+            }
+        }
         
-        # Get crew logs for this project
-        crew_logs = await db.crew_logs.find({"project_id": project_id}).to_list(1000)
-        
-        # Get materials for this project
-        materials = await db.materials.find({"project_id": project_id}).to_list(1000)
-        
-        # Get employees for cost calculations
-        employees = await db.employees.find({"status": "active"}).to_list(1000)
-        
-        # Calculate analytics
-        total_hours = sum(
-            sum(entry.get("total_hours", 0) for entry in tag.get("labor_entries", []))
-            for tag in tm_tags
-        )
-        
-        total_labor_cost_gc = total_hours * 95  # GC rate
-        
-        total_material_cost = sum(material.get("total_cost", 0) for material in materials)
-        
-        total_crew_expenses = sum(
-            log.get("per_diem", 0) + log.get("hotel_cost", 0) + 
-            log.get("gas_expense", 0) + log.get("other_expenses", 0)
-            for log in crew_logs
-        )
-        
-        # Calculate true employee costs
-        employee_dict = {emp["name"]: emp for emp in employees}
-        true_employee_cost = 0
-        
-        for tag in tm_tags:
-            for entry in tag.get("labor_entries", []):
-                worker_name = entry.get("worker_name", "")
-                hours = entry.get("total_hours", 0)
-                
-                if worker_name in employee_dict:
-                    emp = employee_dict[worker_name]
-                    true_cost_per_hour = emp.get("base_pay", 50) + emp.get("burden_cost", 20)
-                    true_employee_cost += hours * true_cost_per_hour
-                else:
-                    # Default cost if employee not found
-                    true_employee_cost += hours * 70
-        
-        # Calculate profit
-        total_revenue = total_labor_cost_gc + (total_material_cost * 1.2)  # 20% material markup assumed
-        total_costs = true_employee_cost + total_material_cost + total_crew_expenses
-        profit = total_revenue - total_costs
-        profit_margin = (profit / total_revenue * 100) if total_revenue > 0 else 0
+        # Create project update from parsed email
+        update = ProjectUpdateCreate(**parsed_data)
+        result = await create_project_update(update)
         
         return {
-            "project_id": project_id,
-            "project_name": project["name"],
-            "total_hours": total_hours,
-            "total_labor_cost_gc": total_labor_cost_gc,
-            "total_material_cost": total_material_cost,
-            "total_crew_expenses": total_crew_expenses,
-            "true_employee_cost": true_employee_cost,
-            "total_revenue": total_revenue,
-            "total_costs": total_costs,
-            "profit": profit,
-            "profit_margin": profit_margin,
-            "contract_amount": project.get("contract_amount", 0),
-            "tm_tag_count": len(tm_tags),
-            "crew_log_count": len(crew_logs),
-            "material_purchase_count": len(materials)
+            "success": True,
+            "message": "Email parsed and project update created",
+            "update_id": result.id,
+            "requires_review": result.requires_review
         }
         
     except Exception as e:
-        logger.error(f"Error calculating project analytics: {str(e)}")
-        return {"error": f"Failed to calculate analytics: {str(e)}"}
+        logger.error(f"Error parsing email: {str(e)}")
+        return {"success": False, "error": str(e)}
 
 # Email Endpoint
 @api_router.post("/send-email")
