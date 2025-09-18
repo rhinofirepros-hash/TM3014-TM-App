@@ -703,14 +703,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {/* Project Name */}
             <div className="space-y-2">
-              <Label htmlFor="projectName" className="text-sm font-medium text-gray-700 flex items-center justify-between">
+              <Label htmlFor="projectName" className={`text-sm font-medium ${themeClasses.text.primary} flex items-center justify-between`}>
                 Project Name*
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setIsCustomProject(!isCustomProject)}
-                  className="text-xs h-6 px-2"
+                  className={`text-xs h-6 px-2 ${themeClasses.button.secondary}`}
                 >
                   {isCustomProject ? 'Cancel' : 'Add New'}
                 </Button>
