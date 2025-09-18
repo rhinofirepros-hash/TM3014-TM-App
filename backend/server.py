@@ -266,6 +266,7 @@ class ProjectCreate(BaseModel):
     description: Optional[str] = ""
     client_company: str
     gc_email: str
+    project_type: Optional[str] = "full_project"  # full_project or tm_only
     contract_amount: Optional[float] = 0
     labor_rate: Optional[float] = 95.0  # Default to $95/hr, but customizable
     project_manager: Optional[str] = "Jesus Garcia"
