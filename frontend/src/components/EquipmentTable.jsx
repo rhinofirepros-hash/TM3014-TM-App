@@ -3,8 +3,12 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Trash2, MoreVertical, Info } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const EquipmentTable = ({ entries, onChange }) => {
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+
   const updateEntry = (id, field, value) => {
     const updatedEntries = entries.map(entry => {
       if (entry.id === id) {
@@ -25,44 +29,52 @@ const EquipmentTable = ({ entries, onChange }) => {
   };
 
   return (
-    <div className="overflow-x-auto border rounded-lg">
+    <div className={`overflow-x-auto border rounded-lg ${
+      isDarkMode 
+        ? 'border-white/20 bg-white/5' 
+        : 'border-gray-300 bg-white/80'
+    }`}>
       <Table className="min-w-[700px]">
         <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 min-w-[140px]">
+          <TableRow className={`${
+            isDarkMode 
+              ? 'bg-white/10 border-white/20' 
+              : 'bg-gray-50/80 border-gray-200'
+          }`}>
+            <TableHead className={`text-xs sm:text-sm font-medium min-w-[140px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col">
                 <span>Equipment Name*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[100px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[100px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Pieces of Equipment*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Unit of Measure*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Quantity*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               Total
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[90px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[90px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Date</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               Actions
             </TableHead>
           </TableRow>
@@ -70,7 +82,7 @@ const EquipmentTable = ({ entries, onChange }) => {
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+              <TableCell colSpan={7} className={`text-center py-8 ${themeClasses.text.secondary}`}>
                 No equipment added yet. Click "Add empty row" to get started.
               </TableCell>
             </TableRow>
@@ -82,7 +94,7 @@ const EquipmentTable = ({ entries, onChange }) => {
                     value={entry.equipmentName}
                     onChange={(e) => updateEntry(entry.id, 'equipmentName', e.target.value)}
                     placeholder="Equipment name"
-                    className="border-0 p-2 h-8 text-xs sm:text-sm"
+                    className={`border-0 p-2 h-8 text-xs sm:text-sm ${themeClasses.input}`}
                   />
                 </TableCell>
                 <TableCell className="p-1">
@@ -90,7 +102,7 @@ const EquipmentTable = ({ entries, onChange }) => {
                     type="number"
                     value={entry.piecesOfEquipment}
                     onChange={(e) => updateEntry(entry.id, 'piecesOfEquipment', e.target.value)}
-                    className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-20"
+                    className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-20 ${themeClasses.input}`}
                     step="1"
                   />
                 </TableCell>
@@ -99,7 +111,7 @@ const EquipmentTable = ({ entries, onChange }) => {
                     value={entry.unitOfMeasure}
                     onChange={(e) => updateEntry(entry.id, 'unitOfMeasure', e.target.value)}
                     placeholder="Unit"
-                    className="border-0 p-2 text-center h-8 text-xs sm:text-sm"
+                    className={`border-0 p-2 text-center h-8 text-xs sm:text-sm ${themeClasses.input}`}
                   />
                 </TableCell>
                 <TableCell className="p-1">
@@ -107,12 +119,16 @@ const EquipmentTable = ({ entries, onChange }) => {
                     type="number"
                     value={entry.quantity}
                     onChange={(e) => updateEntry(entry.id, 'quantity', e.target.value)}
-                    className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-16"
+                    className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-16 ${themeClasses.input}`}
                     step="0.01"
                   />
                 </TableCell>
-                <TableCell className="text-center font-medium text-xs sm:text-sm p-1">
-                  <div className="bg-gray-50 rounded px-2 py-1">
+                <TableCell className={`text-center font-medium text-xs sm:text-sm p-1 ${themeClasses.text.primary}`}>
+                  <div className={`rounded px-2 py-1 ${
+                    isDarkMode 
+                      ? 'bg-white/10 border border-white/20' 
+                      : 'bg-gray-50 border border-gray-200'
+                  }`}>
                     {entry.total.toFixed(2)}
                   </div>
                 </TableCell>
@@ -120,7 +136,7 @@ const EquipmentTable = ({ entries, onChange }) => {
                   <Input
                     value={entry.dateOfWork}
                     onChange={(e) => updateEntry(entry.id, 'dateOfWork', e.target.value)}
-                    className="border-0 p-2 text-center h-8 text-xs sm:text-sm min-w-[85px]"
+                    className={`border-0 p-2 text-center h-8 text-xs sm:text-sm min-w-[85px] ${themeClasses.input}`}
                     placeholder="MM/DD/YYYY"
                   />
                 </TableCell>
@@ -130,14 +146,20 @@ const EquipmentTable = ({ entries, onChange }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeEntry(entry.id)}
-                      className="h-7 w-7 p-0 text-red-600 hover:bg-red-50"
+                      className={`h-7 w-7 p-0 text-red-600 ${
+                        isDarkMode ? 'hover:bg-red-900/20' : 'hover:bg-red-50'
+                      }`}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 w-7 p-0 text-gray-600 hover:bg-gray-50"
+                      className={`h-7 w-7 p-0 ${
+                        isDarkMode 
+                          ? 'text-white/70 hover:bg-white/20' 
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
                     >
                       <MoreVertical className="h-3 w-3" />
                     </Button>
