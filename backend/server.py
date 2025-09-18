@@ -710,6 +710,29 @@ async def delete_crew_log(log_id: str):
     except Exception as e:
         return {"error": str(e)}
 
+@api_router.post("/crew-logs/{log_id}/sync")
+async def manual_sync_crew_log(log_id: str):
+    """Manually sync a crew log to T&M tag"""
+    try:
+        # Get the crew log
+        crew_log = await db.crew_logs.find_one({"id": log_id})
+        if not crew_log:
+            raise HTTPException(status_code=404, detail="Crew log not found")
+        
+        # Attempt to sync
+        await sync_crew_log_to_tm(crew_log)
+        
+        # Check if sync was successful
+        updated_log = await db.crew_logs.find_one({"id": log_id})
+        if updated_log and updated_log.get("synced_to_tm"):
+            return {"message": "Crew log synced successfully", "tm_tag_id": updated_log.get("tm_tag_id")}
+        else:
+            return {"error": "Sync failed - please check if project exists and crew log has valid data"}
+        
+    except Exception as e:
+        logger.error(f"Manual sync error for log {log_id}: {e}")
+        return {"error": str(e)}
+
 async def sync_crew_log_to_tm(crew_log):
     """Sync crew log data to T&M tags - create if doesn't exist"""
     try:
