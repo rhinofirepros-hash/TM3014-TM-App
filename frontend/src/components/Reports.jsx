@@ -398,19 +398,27 @@ const Reports = ({ onBack }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className={`${themeClasses.card} shadow-xl`}>
+          <Card className={`${
+            isDarkMode 
+              ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+              : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+          } shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total T&M Tags</p>
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{filteredTags.length}</p>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total T&M Tags</p>
+                  <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{filteredTags.length}</p>
                 </div>
                 <FileText className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
               </div>
             </CardContent>
           </Card>
           
-          <Card className={`${themeClasses.card} shadow-xl`}>
+          <Card className={`${
+            isDarkMode 
+              ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+              : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+          } shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
