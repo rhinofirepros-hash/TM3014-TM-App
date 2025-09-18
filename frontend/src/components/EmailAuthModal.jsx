@@ -119,9 +119,13 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={`sm:max-w-[425px] ${
+        isDarkMode 
+          ? 'bg-slate-900/95 backdrop-blur-xl border-white/20 shadow-2xl text-white' 
+          : 'bg-white/95 backdrop-blur-xl border-gray-200/50 shadow-2xl text-gray-900'
+      }`}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <DialogTitle className={`text-xl font-bold flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
             <Mail className="w-6 h-6 text-red-600" />
             Email Authentication
           </DialogTitle>
