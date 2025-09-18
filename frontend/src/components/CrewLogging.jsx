@@ -158,7 +158,109 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
   };
 
   // Auto-populate from existing T&M or crew data
-  const handleAutoPopulate = async (selectedDate) => {
+  const handleEditLog = (log) => {
+    setEditingLog({
+      id: log.id,
+      date: new Date(log.date),
+      crew_members: log.crew_members || [],
+      work_description: log.work_description || '',
+      weather_conditions: log.weather_conditions || 'clear'
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateLog = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl) {
+        toast({
+          title: "Backend Error",
+          description: "Backend URL not configured",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const logData = {
+        date: editingLog.date.toISOString(),
+        crew_members: editingLog.crew_members.map(member => ({
+          ...member,
+          st_hours: parseFloat(member.st_hours) || 0,
+          ot_hours: parseFloat(member.ot_hours) || 0,
+          dt_hours: parseFloat(member.dt_hours) || 0,
+          pot_hours: parseFloat(member.pot_hours) || 0,
+          total_hours: parseFloat(member.total_hours) || 0
+        })),
+        work_description: editingLog.work_description,
+        weather_conditions: editingLog.weather_conditions
+      };
+
+      const response = await fetch(`${backendUrl}/api/crew-logs/${editingLog.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(logData)
+      });
+
+      if (response.ok) {
+        await loadCrewLogs(); // Reload logs
+        setShowEditModal(false);
+        setEditingLog(null);
+        
+        // Notify parent component to refresh analytics
+        if (onDataUpdate) {
+          onDataUpdate();
+        }
+        
+        toast({
+          title: "Crew Log Updated",
+          description: "Changes have been saved successfully.",
+        });
+      } else {
+        throw new Error('Failed to update crew log');
+      }
+    } catch (error) {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update crew log. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteLog = async (logId) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl) return;
+
+      const response = await fetch(`${backendUrl}/api/crew-logs/${logId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        await loadCrewLogs(); // Reload logs
+        
+        // Notify parent component to refresh analytics
+        if (onDataUpdate) {
+          onDataUpdate();
+        }
+        
+        toast({
+          title: "Crew Log Deleted",
+          description: "Crew log has been deleted successfully.",
+        });
+      } else {
+        throw new Error('Failed to delete crew log');
+      }
+    } catch (error) {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete crew log. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       if (!backendUrl || !project?.id) return;
