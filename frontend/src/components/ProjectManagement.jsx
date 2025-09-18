@@ -240,7 +240,12 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       project_manager: 'Jesus Garcia',
       start_date: new Date(),
       estimated_completion: null,
-      address: ''
+      address: '',
+      // Reset forecasted schedule fields
+      estimated_hours: '',
+      estimated_labor_cost: '',
+      estimated_material_cost: '',
+      estimated_profit: ''
     });
   };
 
