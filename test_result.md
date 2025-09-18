@@ -171,11 +171,11 @@ backend:
 frontend:
   - task: "PDF generation with actual logo"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/frontend/src/components/PDFGenerator.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
@@ -183,6 +183,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: PDF generation working perfectly! Logo displays correctly with no black background issues. Tested complete workflow: form filling → PDF preview → final PDF generation. Logo source confirmed as https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png. No console errors during PDF generation. Company name field properly integrated into PDF output."
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: User requested logo position change from TOP LEFT to TOP RIGHT corner. Updated PDFGenerator.jsx to position logo at coordinates (125, 15) instead of (15, 15). Added both 'Preview PDF' and 'Download PDF' buttons in Reports modal. Need to verify logo positioning and new button functionality."
 
   - task: "EmailJS integration"
     implemented: true
