@@ -156,7 +156,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.quantity}
                   onChange={(e) => updateEntry(entry.id, 'quantity', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-16"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-16 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
@@ -165,7 +165,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.stHours}
                   onChange={(e) => updateEntry(entry.id, 'stHours', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-14 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
@@ -174,7 +174,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.otHours}
                   onChange={(e) => updateEntry(entry.id, 'otHours', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-14 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
@@ -183,7 +183,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.dtHours}
                   onChange={(e) => updateEntry(entry.id, 'dtHours', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-14 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
@@ -192,7 +192,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.potHours}
                   onChange={(e) => updateEntry(entry.id, 'potHours', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-14 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
@@ -201,12 +201,16 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   type="number"
                   value={entry.potHours}
                   onChange={(e) => updateEntry(entry.id, 'potHours', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm w-14"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm w-14 ${themeClasses.input}`}
                   step="0.01"
                 />
               </TableCell>
               <TableCell className="text-center font-medium text-xs sm:text-sm p-1">
-                <div className="bg-gray-50 rounded px-2 py-1">
+                <div className={`rounded px-2 py-1 ${
+                  isDarkMode 
+                    ? 'bg-white/10 border border-white/20' 
+                    : 'bg-gray-50 border border-gray-200'
+                }`}>
                   {entry.totalHours.toFixed(2)}
                 </div>
               </TableCell>
@@ -214,7 +218,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                 <Input
                   value={entry.date}
                   onChange={(e) => updateEntry(entry.id, 'date', e.target.value)}
-                  className="border-0 p-2 text-center h-8 text-xs sm:text-sm min-w-[85px]"
+                  className={`border-0 p-2 text-center h-8 text-xs sm:text-sm min-w-[85px] ${themeClasses.input}`}
                   placeholder="MM/DD/YYYY"
                 />
               </TableCell>
