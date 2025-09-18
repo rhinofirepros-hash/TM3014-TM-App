@@ -624,15 +624,19 @@ const Reports = ({ onBack }) => {
             {/* T&M Tag Title & Description */}
             <div className="space-y-4">
               <div>
-                <Label className="text-base font-semibold text-gray-700">T&M Tag Title</Label>
-                <p className="text-xl font-bold text-gray-900 mt-1">{selectedTag.title}</p>
+                <Label className={`text-base font-semibold ${themeClasses.text.secondary}`}>T&M Tag Title</Label>
+                <p className={`text-xl font-bold mt-1 ${themeClasses.text.primary}`}>{selectedTag.title}</p>
               </div>
 
               {selectedTag.description && (
                 <div>
-                  <Label className="text-base font-semibold text-gray-700">Description of Work</Label>
-                  <div className="mt-2 p-4 bg-gray-50 rounded-lg border">
-                    <p className="text-gray-800 leading-relaxed">{selectedTag.description}</p>
+                  <Label className={`text-base font-semibold ${themeClasses.text.secondary}`}>Description of Work</Label>
+                  <div className={`mt-2 p-4 rounded-lg border ${
+                    isDarkMode 
+                      ? 'bg-white/5 border-white/20' 
+                      : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <p className={`leading-relaxed ${themeClasses.text.primary}`}>{selectedTag.description}</p>
                   </div>
                 </div>
               )}
