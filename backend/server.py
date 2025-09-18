@@ -320,6 +320,255 @@ async def delete_worker(worker_id: str):
         return {"message": "Worker deleted successfully", "id": worker_id}
     return {"error": "Worker not found"}
 
+# Project Management Endpoints
+@api_router.post("/projects", response_model=Project)
+async def create_project(project: ProjectCreate):
+    project_dict = project.dict()
+    project_obj = Project(**project_dict)
+    
+    # Insert into database
+    result = await db.projects.insert_one(project_obj.dict())
+    
+    return project_obj
+
+@api_router.get("/projects", response_model=List[Project])
+async def get_projects(status: Optional[str] = None):
+    query = {}
+    if status:
+        query["status"] = status
+    
+    projects = await db.projects.find(query).to_list(1000)
+    return [Project(**project) for project in projects]
+
+@api_router.get("/projects/{project_id}")
+async def get_project(project_id: str):
+    project = await db.projects.find_one({"id": project_id})
+    if project:
+        return Project(**project)
+    return {"error": "Project not found"}
+
+@api_router.put("/projects/{project_id}")
+async def update_project(project_id: str, project_update: ProjectCreate):
+    update_dict = project_update.dict()
+    update_dict["updated_at"] = datetime.utcnow()
+    
+    result = await db.projects.update_one(
+        {"id": project_id}, 
+        {"$set": update_dict}
+    )
+    
+    if result.modified_count == 1:
+        updated_project = await db.projects.find_one({"id": project_id})
+        return Project(**updated_project)
+    return {"error": "Project not found"}
+
+@api_router.delete("/projects/{project_id}")
+async def delete_project(project_id: str):
+    result = await db.projects.delete_one({"id": project_id})
+    if result.deleted_count == 1:
+        return {"message": "Project deleted successfully", "id": project_id}
+    return {"error": "Project not found"}
+
+# Employee Management Endpoints
+@api_router.post("/employees", response_model=Employee)
+async def create_employee(employee: EmployeeCreate):
+    employee_dict = employee.dict()
+    employee_obj = Employee(**employee_dict)
+    
+    # Insert into database
+    result = await db.employees.insert_one(employee_obj.dict())
+    
+    return employee_obj
+
+@api_router.get("/employees", response_model=List[Employee])
+async def get_employees(status: Optional[str] = None):
+    query = {}
+    if status:
+        query["status"] = status
+    else:
+        query["status"] = "active"  # Default to active employees
+    
+    employees = await db.employees.find(query).to_list(1000)
+    return [Employee(**employee) for employee in employees]
+
+@api_router.get("/employees/{employee_id}")
+async def get_employee(employee_id: str):
+    employee = await db.employees.find_one({"id": employee_id})
+    if employee:
+        return Employee(**employee)
+    return {"error": "Employee not found"}
+
+@api_router.put("/employees/{employee_id}")
+async def update_employee(employee_id: str, employee_update: EmployeeCreate):
+    update_dict = employee_update.dict()
+    
+    result = await db.employees.update_one(
+        {"id": employee_id}, 
+        {"$set": update_dict}
+    )
+    
+    if result.modified_count == 1:
+        updated_employee = await db.employees.find_one({"id": employee_id})
+        return Employee(**updated_employee)
+    return {"error": "Employee not found"}
+
+@api_router.delete("/employees/{employee_id}")
+async def delete_employee(employee_id: str):
+    result = await db.employees.delete_one({"id": employee_id})
+    if result.deleted_count == 1:
+        return {"message": "Employee deleted successfully", "id": employee_id}
+    return {"error": "Employee not found"}
+
+# Crew Log Endpoints
+@api_router.post("/crew-logs", response_model=CrewLog)
+async def create_crew_log(crew_log: CrewLogCreate):
+    crew_log_dict = crew_log.dict()
+    crew_log_obj = CrewLog(**crew_log_dict)
+    
+    # Insert into database
+    result = await db.crew_logs.insert_one(crew_log_obj.dict())
+    
+    return crew_log_obj
+
+@api_router.get("/crew-logs", response_model=List[CrewLog])
+async def get_crew_logs(project_id: Optional[str] = None, skip: int = 0, limit: int = 100):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    
+    crew_logs = await db.crew_logs.find(query).skip(skip).limit(limit).to_list(limit)
+    return [CrewLog(**crew_log) for crew_log in crew_logs]
+
+@api_router.get("/crew-logs/{log_id}")
+async def get_crew_log(log_id: str):
+    crew_log = await db.crew_logs.find_one({"id": log_id})
+    if crew_log:
+        return CrewLog(**crew_log)
+    return {"error": "Crew log not found"}
+
+@api_router.delete("/crew-logs/{log_id}")
+async def delete_crew_log(log_id: str):
+    result = await db.crew_logs.delete_one({"id": log_id})
+    if result.deleted_count == 1:
+        return {"message": "Crew log deleted successfully", "id": log_id}
+    return {"error": "Crew log not found"}
+
+# Material Purchase Endpoints
+@api_router.post("/materials", response_model=MaterialPurchase)
+async def create_material_purchase(material: MaterialPurchaseCreate):
+    material_dict = material.dict()
+    material_obj = MaterialPurchase(**material_dict)
+    
+    # Insert into database
+    result = await db.materials.insert_one(material_obj.dict())
+    
+    return material_obj
+
+@api_router.get("/materials", response_model=List[MaterialPurchase])
+async def get_materials(project_id: Optional[str] = None, skip: int = 0, limit: int = 100):
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    
+    materials = await db.materials.find(query).skip(skip).limit(limit).to_list(limit)
+    return [MaterialPurchase(**material) for material in materials]
+
+@api_router.get("/materials/{material_id}")
+async def get_material(material_id: str):
+    material = await db.materials.find_one({"id": material_id})
+    if material:
+        return MaterialPurchase(**material)
+    return {"error": "Material purchase not found"}
+
+@api_router.delete("/materials/{material_id}")
+async def delete_material(material_id: str):
+    result = await db.materials.delete_one({"id": material_id})
+    if result.deleted_count == 1:
+        return {"message": "Material purchase deleted successfully", "id": material_id}
+    return {"error": "Material purchase not found"}
+
+# Project Analytics Endpoints
+@api_router.get("/projects/{project_id}/analytics")
+async def get_project_analytics(project_id: str):
+    try:
+        # Get project details
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            return {"error": "Project not found"}
+        
+        # Get T&M tags for this project
+        tm_tags = await db.tm_tags.find({"project_name": project["name"]}).to_list(1000)
+        
+        # Get crew logs for this project
+        crew_logs = await db.crew_logs.find({"project_id": project_id}).to_list(1000)
+        
+        # Get materials for this project
+        materials = await db.materials.find({"project_id": project_id}).to_list(1000)
+        
+        # Get employees for cost calculations
+        employees = await db.employees.find({"status": "active"}).to_list(1000)
+        
+        # Calculate analytics
+        total_hours = sum(
+            sum(entry.get("total_hours", 0) for entry in tag.get("labor_entries", []))
+            for tag in tm_tags
+        )
+        
+        total_labor_cost_gc = total_hours * 95  # GC rate
+        
+        total_material_cost = sum(material.get("total_cost", 0) for material in materials)
+        
+        total_crew_expenses = sum(
+            log.get("per_diem", 0) + log.get("hotel_cost", 0) + 
+            log.get("gas_expense", 0) + log.get("other_expenses", 0)
+            for log in crew_logs
+        )
+        
+        # Calculate true employee costs
+        employee_dict = {emp["name"]: emp for emp in employees}
+        true_employee_cost = 0
+        
+        for tag in tm_tags:
+            for entry in tag.get("labor_entries", []):
+                worker_name = entry.get("worker_name", "")
+                hours = entry.get("total_hours", 0)
+                
+                if worker_name in employee_dict:
+                    emp = employee_dict[worker_name]
+                    true_cost_per_hour = emp.get("base_pay", 50) + emp.get("burden_cost", 20)
+                    true_employee_cost += hours * true_cost_per_hour
+                else:
+                    # Default cost if employee not found
+                    true_employee_cost += hours * 70
+        
+        # Calculate profit
+        total_revenue = total_labor_cost_gc + (total_material_cost * 1.2)  # 20% material markup assumed
+        total_costs = true_employee_cost + total_material_cost + total_crew_expenses
+        profit = total_revenue - total_costs
+        profit_margin = (profit / total_revenue * 100) if total_revenue > 0 else 0
+        
+        return {
+            "project_id": project_id,
+            "project_name": project["name"],
+            "total_hours": total_hours,
+            "total_labor_cost_gc": total_labor_cost_gc,
+            "total_material_cost": total_material_cost,
+            "total_crew_expenses": total_crew_expenses,
+            "true_employee_cost": true_employee_cost,
+            "total_revenue": total_revenue,
+            "total_costs": total_costs,
+            "profit": profit,
+            "profit_margin": profit_margin,
+            "contract_amount": project.get("contract_amount", 0),
+            "tm_tag_count": len(tm_tags),
+            "crew_log_count": len(crew_logs),
+            "material_purchase_count": len(materials)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating project analytics: {str(e)}")
+        return {"error": f"Failed to calculate analytics: {str(e)}"}
+
 # Email Endpoint
 @api_router.post("/send-email")
 async def send_email(email_request: EmailRequest):
