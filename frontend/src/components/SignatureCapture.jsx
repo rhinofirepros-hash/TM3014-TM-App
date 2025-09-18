@@ -6,6 +6,7 @@ import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Trash2, PenTool } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   const sigCanvas = useRef(null);
@@ -13,6 +14,9 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
   const [canvasSize, setCanvasSize] = useState({ width: 600, height: 200 });
   const [signerName, setSignerName] = useState('');
   const [signerTitle, setSignerTitle] = useState('Foreman');
+  
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
 
   const clear = () => {
     sigCanvas.current.clear();
@@ -73,23 +77,25 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <DialogContent className={`max-w-2xl mx-4 max-h-[90vh] overflow-y-auto ${themeClasses.modal}`}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
             <PenTool className="w-5 h-5" />
             Foreman Signature
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
-          <div className="text-sm text-gray-600">
+          <div className={`text-sm ${themeClasses.text.secondary}`}>
             Please enter your information and sign below to confirm the accuracy of this Time & Material tag:
           </div>
           
           {/* Signer Information */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-lg ${
+            isDarkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+          }`}>
             <div className="space-y-2">
-              <Label htmlFor="signerName" className="text-sm font-medium">
+              <Label htmlFor="signerName" className={`text-sm font-medium ${themeClasses.text.primary}`}>
                 Full Name *
               </Label>
               <Input
@@ -98,19 +104,19 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
                 placeholder="Enter your full name"
                 value={signerName}
                 onChange={(e) => setSignerName(e.target.value)}
-                className="w-full"
+                className={`w-full ${themeClasses.input}`}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="signerTitle" className="text-sm font-medium">
+              <Label htmlFor="signerTitle" className={`text-sm font-medium ${themeClasses.text.primary}`}>
                 Title/Position
               </Label>
               <Select value={signerTitle} onValueChange={setSignerTitle}>
-                <SelectTrigger>
+                <SelectTrigger className={themeClasses.input}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={themeClasses.modal}>
                   <SelectItem value="Foreman">Foreman</SelectItem>
                   <SelectItem value="Supervisor">Supervisor</SelectItem>
                   <SelectItem value="Project Manager">Project Manager</SelectItem>
@@ -122,12 +128,16 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
             </div>
           </div>
           
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 sm:p-4 bg-gray-50">
+          <div className={`border-2 border-dashed rounded-lg p-2 sm:p-4 ${
+            isDarkMode 
+              ? 'border-white/20 bg-white/5' 
+              : 'border-gray-300 bg-gray-50'
+          }`}>
             <div className="flex justify-center">
               <SignatureCanvas
                 ref={sigCanvas}
-                penColor="black"
-                backgroundColor="white"
+                penColor={isDarkMode ? "white" : "black"}
+                backgroundColor={isDarkMode ? "#1f2937" : "white"}
                 dotSize={1}
                 minWidth={1}
                 maxWidth={3}
@@ -136,10 +146,11 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
                 canvasProps={{
                   width: canvasSize.width,
                   height: canvasSize.height,
-                  className: 'signature-canvas bg-white rounded border touch-none',
+                  className: `signature-canvas rounded border touch-none ${
+                    isDarkMode ? 'bg-gray-800 border-white/20' : 'bg-white border-gray-300'
+                  }`,
                   style: { 
                     touchAction: 'none',
-                    border: '1px solid #e5e7eb',
                     borderRadius: '4px'
                   }
                 }}
@@ -149,7 +160,7 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
             </div>
           </div>
           
-          <div className="text-xs text-gray-500">
+          <div className={`text-xs ${themeClasses.text.secondary}`}>
             Sign above using your mouse, trackpad, or touch screen
           </div>
         </div>
@@ -159,20 +170,24 @@ const SignatureCapture = ({ isOpen, onClose, onSave }) => {
             variant="outline"
             onClick={clear}
             disabled={isEmpty}
-            className="flex items-center justify-center gap-2 h-10"
+            className={`flex items-center justify-center gap-2 h-10 ${themeClasses.button.secondary}`}
           >
             <Trash2 className="w-4 h-4" />
             Clear
           </Button>
           
           <div className="flex flex-col sm:flex-row gap-2">
-            <Button variant="outline" onClick={onClose} className="h-10">
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              className={`h-10 ${themeClasses.button.secondary}`}
+            >
               Cancel
             </Button>
             <Button 
               onClick={save}
               disabled={isEmpty}
-              className="bg-green-600 hover:bg-green-700 h-10"
+              className={`h-10 ${themeClasses.button.primary}`}
             >
               Save Signature
             </Button>
