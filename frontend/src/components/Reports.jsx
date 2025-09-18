@@ -138,14 +138,8 @@ const Reports = ({ onBack }) => {
   };
 
   const handleViewTag = (tag) => {
-    // Show detailed view of the T&M tag
-    toast({
-      title: "T&M Tag Details",
-      description: `${tag.project} - ${tag.title} (${tag.totalHours} hrs)`,
-    });
-    
-    // You could implement a modal here to show full details
-    console.log('Viewing T&M tag:', tag);
+    setSelectedTag(tag);
+    setShowTagModal(true);
   };
 
   const handleExportData = () => {
