@@ -310,13 +310,13 @@ const WorkerManagement = ({ onBack }) => {
         </div>
 
         {/* Workers Table */}
-        <Card>
+        <Card className={`${themeClasses.card} ${themeClasses.cardHover}`}>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Worker Database</CardTitle>
+              <CardTitle className={themeClasses.text.primary}>Worker Database</CardTitle>
               <Button 
                 onClick={() => setShowAddModal(true)}
-                className="bg-green-600 hover:bg-green-700"
+                className={`${themeClasses.button.primary} ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'}`}
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Worker
@@ -326,8 +326,8 @@ const WorkerManagement = ({ onBack }) => {
           <CardContent>
             {workers.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No workers yet</h3>
+                <Users className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
+                <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>No workers yet</h3>
                 <p className="text-gray-500 mb-4">Add your first worker to get started</p>
                 <Button onClick={() => setShowAddModal(true)}>
                   <Plus className="w-4 h-4 mr-2" />
