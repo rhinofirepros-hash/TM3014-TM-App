@@ -561,17 +561,17 @@ const Reports = ({ onBack }) => {
         </DialogHeader>
 
         {selectedTag && (
-          <div className="space-y-6 py-4">
+          <div className="space-y-4 sm:space-y-6 py-4">
             {/* Main Header Card */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className={`p-4 sm:p-6 rounded-lg border ${isDarkMode ? 'bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-white/20' : 'bg-gradient-to-r from-blue-50/80 to-purple-50/80 border-gray-200/50'}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <div>
-                  <Label className="text-sm font-medium text-gray-600">Project Name</Label>
-                  <p className="font-bold text-lg text-gray-900">{selectedTag.project}</p>
+                  <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Project Name</Label>
+                  <p className={`font-bold text-base sm:text-lg ${themeClasses.text.primary}`}>{selectedTag.project}</p>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-600">Date of Work</Label>
-                  <p className="font-semibold text-gray-800">{new Date(selectedTag.date).toLocaleDateString('en-US', { 
+                  <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Date of Work</Label>
+                  <p className={`font-semibold text-sm sm:text-base ${themeClasses.text.primary}`}>{new Date(selectedTag.date).toLocaleDateString('en-US', { 
                     weekday: 'long', 
                     year: 'numeric', 
                     month: 'long', 
