@@ -441,12 +441,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          toast({
-                            title: "Edit Feature",
-                            description: "Edit functionality coming soon!",
-                          });
-                        }}
+                        onClick={() => openEditModal(project)}
                         className={themeClasses.button.secondary}
                       >
                         <Edit className="w-4 h-4" />
