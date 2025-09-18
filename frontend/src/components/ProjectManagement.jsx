@@ -684,6 +684,71 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                 </Popover>
               </div>
             </div>
+
+            {/* Forecasted Schedule (for better profit planning) */}
+            <div className="space-y-4">
+              <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-white/10' : 'bg-blue-50'} border`}>
+                <h4 className={`font-medium text-sm mb-2 ${themeClasses.text.primary}`}>
+                  📊 Forecasted Schedule & Budget (Optional)
+                </h4>
+                <p className={`text-xs ${themeClasses.text.secondary} mb-3`}>
+                  Set expectations for better profit tracking and variance analysis
+                </p>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className={`text-xs ${themeClasses.text.primary}`}>Est. Total Hours</Label>
+                    <Input
+                      type="number"
+                      value={newProject.estimated_hours}
+                      onChange={(e) => handleInputChange('estimated_hours', e.target.value)}
+                      className={`${themeClasses.input} h-8 text-sm`}
+                      placeholder="120"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className={`text-xs ${themeClasses.text.primary}`}>Est. Labor Revenue</Label>
+                    <Input
+                      type="number"
+                      value={newProject.estimated_labor_cost}
+                      onChange={(e) => handleInputChange('estimated_labor_cost', e.target.value)}
+                      className={`${themeClasses.input} h-8 text-sm`}
+                      placeholder="11400"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className={`text-xs ${themeClasses.text.primary}`}>Est. Material Cost</Label>
+                    <Input
+                      type="number"
+                      value={newProject.estimated_material_cost}
+                      onChange={(e) => handleInputChange('estimated_material_cost', e.target.value)}
+                      className={`${themeClasses.input} h-8 text-sm`}
+                      placeholder="5000"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className={`text-xs ${themeClasses.text.primary}`}>Est. Total Profit</Label>
+                    <Input
+                      type="number"
+                      value={newProject.estimated_profit}
+                      onChange={(e) => handleInputChange('estimated_profit', e.target.value)}
+                      className={`${themeClasses.input} h-8 text-sm`}
+                      placeholder="8000"
+                    />
+                  </div>
+                </div>
+                
+                {/* Auto-calculate button */}
+                {newProject.estimated_hours && newProject.labor_rate && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    Auto-calc: {newProject.estimated_hours} hrs × ${newProject.labor_rate}/hr = ${(parseFloat(newProject.estimated_hours || 0) * parseFloat(newProject.labor_rate || 0)).toLocaleString()} labor revenue
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <DialogFooter>
