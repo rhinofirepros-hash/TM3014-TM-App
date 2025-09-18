@@ -78,33 +78,35 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        {currentView === 'dashboard' ? (
-          <Dashboard 
-            onCreateNew={handleCreateNew}
-            onOpenProject={handleOpenProject}
-            onManageWorkers={handleManageWorkers}
-            onViewReports={handleViewReports}
-            onLogout={handleLogout}
-          />
-        ) : currentView === 'workers' ? (
-          <WorkerManagement 
-            onBack={handleBackToDashboard}
-          />
-        ) : currentView === 'reports' ? (
-          <Reports 
-            onBack={handleBackToDashboard}
-          />
-        ) : (
-          <TimeAndMaterialForm 
-            selectedProject={selectedProject}
-            onBackToDashboard={handleBackToDashboard}
-          />
-        )}
-      </BrowserRouter>
-      <Toaster />
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <BrowserRouter>
+          {currentView === 'dashboard' ? (
+            <Dashboard 
+              onCreateNew={handleCreateNew}
+              onOpenProject={handleOpenProject}
+              onManageWorkers={handleManageWorkers}
+              onViewReports={handleViewReports}
+              onLogout={handleLogout}
+            />
+          ) : currentView === 'workers' ? (
+            <WorkerManagement 
+              onBack={handleBackToDashboard}
+            />
+          ) : currentView === 'reports' ? (
+            <Reports 
+              onBack={handleBackToDashboard}
+            />
+          ) : (
+            <TimeAndMaterialForm 
+              selectedProject={selectedProject}
+              onBackToDashboard={handleBackToDashboard}
+            />
+          )}
+        </BrowserRouter>
+        <Toaster />
+      </div>
+    </ThemeProvider>
   );
 }
 
