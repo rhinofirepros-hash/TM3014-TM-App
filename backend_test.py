@@ -2478,6 +2478,41 @@ class TMTagAPITester:
         except Exception as e:
             self.log_result("general", "Error handling - 404", False, str(e))
     
+    def run_tm_analytics_tests(self):
+        """Run T&M analytics and forecasted schedule tests specifically"""
+        print("🚀 Starting T&M Analytics and Forecasted Schedule Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # Test basic connectivity first
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Aborting tests.")
+            return self.generate_report()
+        
+        print("\n" + "=" * 60)
+        print("📊 TESTING T&M PROJECT ANALYTICS & FORECASTED SCHEDULE")
+        print("=" * 60)
+        
+        # Test 1: T&M Project Analytics - should show markup profit correctly
+        self.test_tm_project_analytics()
+        
+        # Test 2: Full Project Analytics - should calculate profit as contract minus costs
+        self.test_full_project_analytics()
+        
+        # Test 3: Forecasted Schedule Creation - test creating projects with forecasted values
+        self.test_forecasted_schedule_creation()
+        
+        # Test 4: Analytics Response Fields - verify GET /api/projects/{id}/analytics returns new fields
+        self.test_analytics_response_fields()
+        
+        # Test 5: Variance Analysis - test comparison between forecasted vs actual values
+        self.test_variance_analysis()
+        
+        # Test 6: Enhanced Cost Analytics (existing test)
+        self.test_enhanced_cost_analytics()
+        
+        return self.generate_report()
+
     def run_all_tests(self):
         """Run all backend API tests"""
         print("🚀 Starting Backend API Tests for TM3014 T&M Daily Tag App + Project Management System")
