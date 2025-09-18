@@ -377,7 +377,8 @@ const WorkerManagement = ({ onBack }) => {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
