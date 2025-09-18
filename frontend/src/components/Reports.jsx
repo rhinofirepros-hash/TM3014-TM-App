@@ -763,9 +763,28 @@ const Reports = ({ onBack }) => {
                         ${(tag.laborCost + tag.materialCost).toLocaleString()}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={tag.status === 'completed' ? 'default' : 'secondary'}>
-                          {tag.status}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={tag.status === 'completed' || tag.status === 'submitted' ? 'default' : 
+                                        tag.status === 'pending_review' ? 'secondary' : 'secondary'}>
+                            {tag.status === 'pending_review' ? 'Pending Review' : 
+                             tag.status === 'submitted' ? 'Submitted' :
+                             tag.status === 'completed' ? 'Completed' : tag.status}
+                          </Badge>
+                          {tag.status === 'pending_review' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleApprovalRequest(tag);
+                              }}
+                              className="text-green-600 border-green-600 hover:bg-green-50"
+                            >
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Approve
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="text-sm text-gray-600">{tag.gcEmail}</TableCell>
                     </TableRow>
