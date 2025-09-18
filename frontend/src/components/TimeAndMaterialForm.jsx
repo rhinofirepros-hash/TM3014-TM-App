@@ -695,7 +695,11 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
           </div>
         </div>
 
-        <Card className={`shadow-xl ${themeClasses.card}`}>
+        <Card className={`shadow-xl ${
+          isDarkMode 
+            ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+            : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+        }`}>
           <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {/* Project Name */}
             <div className="space-y-2">
