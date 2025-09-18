@@ -466,15 +466,12 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 105, yPos + 2, { align: 'center' });
       }
       
-      // Save/download with more robust method
+      // Save/download with single method to prevent duplicates
       const dateStr = formData.dateOfWork?.toISOString().split('T')[0].replace(/-/g, '');
       const filename = `TM_Tag_${dateStr}.pdf`;
       
       try {
-        // Method 1: Try the standard jsPDF save method
-        pdf.save(filename);
-        
-        // Method 2: Also create blob URL as backup/additional download method
+        // Use blob URL method for reliable download
         const pdfBlob = pdf.output('blob');
         const blobUrl = URL.createObjectURL(pdfBlob);
         
@@ -492,6 +489,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           URL.revokeObjectURL(blobUrl);
         }, 1000);
         
+        console.log(`✅ PDF download initiated: ${filename}`);
+        
       } catch (downloadError) {
         console.error('Download error:', downloadError);
         
@@ -508,7 +507,6 @@ const PDFGenerator = ({ formData, onGenerate }) => {
             </html>
           `);
         } else {
-          // If popup is blocked, provide download link
           alert('Please allow popups to view the PDF, or check your downloads folder for the file.');
         }
       }
