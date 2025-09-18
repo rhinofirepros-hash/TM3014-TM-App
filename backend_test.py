@@ -2635,7 +2635,10 @@ class TMTagAPITester:
 
 if __name__ == "__main__":
     tester = TMTagAPITester()
-    results = tester.run_all_tests()
+    
+    # Run T&M analytics and forecasted schedule tests specifically
+    print("Running T&M Analytics and Forecasted Schedule Tests...")
+    results = tester.run_tm_analytics_tests()
     
     # Exit with error code if tests failed
     if results["failed"] > 0:
