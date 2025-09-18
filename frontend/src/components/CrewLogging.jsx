@@ -261,6 +261,9 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
       });
     }
   };
+
+  // Auto-populate from existing T&M or crew data
+  const handleAutoPopulate = async (selectedDate) => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       if (!backendUrl || !project?.id) return;
