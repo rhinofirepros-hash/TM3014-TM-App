@@ -1044,7 +1044,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                  <Label className={`text-sm font-medium ${themeClasses.text.primary} flex items-center justify-between`}>
                     GC Email Address*
                     <Button
                       type="button"
