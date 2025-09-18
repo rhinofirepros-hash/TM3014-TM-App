@@ -770,10 +770,10 @@ const Reports = ({ onBack }) => {
           </div>
         )}
 
-        <DialogFooter className="border-t pt-4 mt-6">
+        <DialogFooter className={`border-t pt-4 mt-6 ${isDarkMode ? 'border-white/20' : 'border-gray-200'}`}>
           <div className="flex justify-between w-full">
             <div className="flex gap-3">
-              <Button variant="outline" size="lg" onClick={() => setShowTagModal(false)}>
+              <Button variant="outline" size="lg" onClick={() => setShowTagModal(false)} className={themeClasses.button.secondary}>
                 <X className="w-4 h-4 mr-2" />
                 Close
               </Button>
@@ -781,7 +781,7 @@ const Reports = ({ onBack }) => {
                 variant="outline"
                 size="lg"
                 onClick={() => setShowDeleteDialog(true)}
-                className="text-red-600 border-red-600 hover:bg-red-50"
+                className={`text-red-600 border-red-600 hover:bg-red-50 ${isDarkMode ? 'hover:bg-red-900/20' : 'hover:bg-red-50'}`}
               >
                 <X className="w-4 h-4 mr-2" />
                 Delete Tag
@@ -797,6 +797,7 @@ const Reports = ({ onBack }) => {
                     description: "T&M tag editing coming soon!",
                   });
                 }}
+                className={themeClasses.button.secondary}
               >
                 <FileText className="w-4 h-4 mr-2" />
                 Edit Tag
@@ -805,7 +806,7 @@ const Reports = ({ onBack }) => {
                 variant="outline"
                 size="lg"
                 onClick={() => selectedTag && handleGeneratePDF(selectedTag, true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className={`${themeClasses.button.primary}`}
               >
                 <FileText className="w-4 h-4 mr-2" />
                 Preview PDF
@@ -813,7 +814,7 @@ const Reports = ({ onBack }) => {
               <Button 
                 size="lg"
                 onClick={() => selectedTag && handleGeneratePDF(selectedTag, false)}
-                className="bg-red-600 hover:bg-red-700"
+                className={`${themeClasses.button.primary}`}
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
