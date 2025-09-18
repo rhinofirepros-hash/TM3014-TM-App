@@ -536,7 +536,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                       <div className={`flex items-center space-x-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" />
-                          {tag.workers} workers
+                          {tag.crew} crew
                         </span>
                         <span className="flex items-center gap-1">
                           <DollarSign className="w-4 h-4" />
