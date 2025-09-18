@@ -241,21 +241,6 @@ test_plan:
   test_all: false
   test_priority: "completed"
 
-  - task: "Delete T&M Tag functionality"
-    implemented: true
-    working: true
-    file: "/app/frontend/src/components/Reports.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: false
-        agent: "user"
-        comment: "User reports: 'there is no way to delete t&m projects' and clicking on T&M tag rows in reports table doesn't work - nothing happens when clicked."
-      - working: true
-        agent: "testing"
-        comment: "✅ COMPREHENSIVE TESTING COMPLETED - BOTH USER ISSUES RESOLVED: 1) T&M tag rows ARE clickable and successfully open the detailed modal when clicked. 2) Delete functionality EXISTS and works perfectly. Tested complete workflow: Login with PIN J777 → Navigate to Reports → Click T&M tag row → Modal opens with full details → Delete Tag button present in footer → Click Delete Tag → Confirmation dialog appears with 'This action cannot be undone!' warning → Both Cancel and Delete Permanently buttons work correctly. All functionality is working as designed. User may have experienced a temporary issue or browser cache problem."
-
 agent_communication:
   - agent: "main"
     message: "COMPLETED ALL REQUESTED FIXES: 1) Fixed PDF header - removed black square, added actual Rhino logo on white background, 2) Added company name field to replace customer reference, 3) Updated backend model and frontend integration, 4) EmailJS implemented with mock fallback, 5) All backend-frontend integrations working. Backend testing passed 100%. Ready for final frontend testing if needed."
