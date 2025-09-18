@@ -486,7 +486,7 @@ const Reports = ({ onBack }) => {
                 <select
                   value={dateFilter}
                   onChange={(e) => setDateFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className={`px-3 py-2 border rounded-md text-sm ${themeClasses.input}`}
                 >
                   <option value="all">All Time</option>
                   <option value="today">Today</option>
