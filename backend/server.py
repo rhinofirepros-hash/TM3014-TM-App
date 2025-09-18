@@ -1165,9 +1165,10 @@ async def get_project_analytics(project_id: str):
         contract_amount = project.get("contract_amount", 0) if project else 0
         project_type = project.get("project_type", "full_project") if project else "full_project"
         
-        # Get material purchases for project
+        # Get material purchases for project and add to T&M tag materials
         materials = await db.materials.find({"project_id": project_id}).to_list(1000)
-        total_material_cost = sum(float(material.get("total_cost", 0)) for material in materials)
+        material_purchases_cost = sum(float(material.get("total_cost", 0)) for material in materials)
+        total_material_cost += material_purchases_cost  # Add to existing T&M tag materials
         
         # Calculate profit based on project type
         total_project_cost = final_true_cost + total_material_cost + total_other_cost
