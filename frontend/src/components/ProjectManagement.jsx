@@ -41,6 +41,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     description: '',
     client_company: '',
     gc_email: '',
+    project_type: 'full_project',
     contract_amount: '',
     labor_rate: '95',  // Default to $95/hr but customizable
     project_manager: 'Jesus Garcia',
