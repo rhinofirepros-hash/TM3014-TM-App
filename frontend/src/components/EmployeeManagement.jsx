@@ -416,7 +416,7 @@ const EmployeeManagement = ({ onBack }) => {
                   <SelectValue placeholder="All Positions" />
                 </SelectTrigger>
                 <SelectContent className={themeClasses.modal}>
-                  <SelectItem value="">All Positions</SelectItem>
+                  <SelectItem value="all">All Positions</SelectItem>
                   {getUniquePositions().map((position) => (
                     <SelectItem key={position} value={position}>
                       {position}
