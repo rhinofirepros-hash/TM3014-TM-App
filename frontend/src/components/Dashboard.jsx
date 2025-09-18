@@ -167,40 +167,142 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    <div className={`min-h-screen transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900' 
+        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100'
+    }`}>
+      {/* Header with Theme Toggle */}
+      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="w-20 h-16 flex items-center justify-center overflow-hidden">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png" 
-                  alt="Rhino Fire Protection" 
-                  className="w-20 h-16 object-contain"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                />
-                <span className="text-red-500 font-bold text-xl hidden">RF</span>
-              </div>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
+                alt="Rhino Fire Protection" 
+                className="h-10 w-auto"
+              />
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Rhino Fire Protection</h1>
-                <p className="text-sm text-gray-500">T&M Daily Tag Dashboard</p>
+                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  T&M Dashboard
+                </h1>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Welcome back, Jesus Garcia
+                </p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={handleLogout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+            
+            <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`${isDarkMode ? 'text-white hover:bg-white/20' : 'text-gray-700 hover:bg-black/10'}`}
+              >
+                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </Button>
+              
+              {/* Logout Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className={`${isDarkMode ? 'text-white hover:bg-white/20' : 'text-gray-700 hover:bg-black/10'}`}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Total Projects */}
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Active Projects
+                  </p>
+                  <p className="text-3xl font-bold">{projectAnalytics.length}</p>
+                </div>
+                <Building className={`w-8 h-8 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Hours */}
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Total Hours
+                  </p>
+                  <p className="text-3xl font-bold">
+                    {projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
+                  </p>
+                </div>
+                <Clock className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Revenue */}
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Total Revenue
+                  </p>
+                  <p className="text-3xl font-bold">
+                    ${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}
+                  </p>
+                </div>
+                <DollarSign className={`w-8 h-8 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* T&M Tags */}
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    T&M Tags
+                  </p>
+                  <p className="text-3xl font-bold">
+                    {projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
+                  </p>
+                </div>
+                <FileText className={`w-8 h-8 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Actions */}
