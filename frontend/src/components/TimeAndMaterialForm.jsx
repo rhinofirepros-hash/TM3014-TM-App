@@ -861,7 +861,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                       value={formData.companyName}
                       onChange={(e) => handleInputChange('companyName', e.target.value)}
                       placeholder="Enter company name (e.g., ABC Construction)"
-                      className="w-full"
+                      className={`w-full ${themeClasses.input}`}
                     />
                   )}
                   <p className="text-xs text-gray-500">
