@@ -919,7 +919,12 @@ async def get_project_analytics(project_id: str):
             for other_entry in tag.get("other_entries", []):
                 total_other_cost += float(other_entry.get("total", 0))
                 
-            work_days.add(tag.get("date_of_work", "").split("T")[0])
+            # Handle date properly - check if it's already a string or datetime object
+            work_date = tag.get("date_of_work", "")
+            if hasattr(work_date, 'strftime'):  # It's a datetime object
+                work_days.add(work_date.strftime('%Y-%m-%d'))
+            elif isinstance(work_date, str) and work_date:
+                work_days.add(work_date.split("T")[0])
         
         # Process crew logs - count ALL crew logs for comprehensive analytics
         crew_log_hours = 0
@@ -932,7 +937,12 @@ async def get_project_analytics(project_id: str):
                 crew_log_cost += member_hours * 95
                 unique_crew_members.add(crew_member.get("name"))
             
-            work_days.add(log.get("date", "").split("T")[0])
+            # Handle date properly - check if it's already a string or datetime object
+            log_date = log.get("date", "")
+            if hasattr(log_date, 'strftime'):  # It's a datetime object
+                work_days.add(log_date.strftime('%Y-%m-%d'))
+            elif isinstance(log_date, str) and log_date:
+                work_days.add(log_date.split("T")[0])
         
         # Use the higher of T&M or crew log data to avoid underestimating
         total_hours = max(total_hours, crew_log_hours)
