@@ -163,10 +163,14 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
     const savedTags = localStorage.getItem('tm_tags_history');
     
     if (savedProjects) {
-      setProjects(JSON.parse(savedProjects));
+      const projectsData = JSON.parse(savedProjects);
+      setProjects(projectsData);
+      setActualProjects(projectsData); // Also set actual projects for localStorage fallback
+      console.log('Loaded projects from localStorage:', projectsData.length, 'projects');
     } else {
       // No default projects - start clean
       setProjects([]);
+      setActualProjects([]);
     }
     
     if (savedTags) {
