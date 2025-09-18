@@ -566,12 +566,12 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Frontend integration testing with unified schema completed successfully"
-    - "Core T&M functionality validated with migrated data"
-    - "Enhanced schema features identified for future frontend updates"
+    - "New enhanced features testing completed successfully"
+    - "Sortable Crew Log Display verified and functional"
+    - "T&M Tag Approval Workflow verified and functional"
   stuck_tasks: []
   test_all: true
-  test_priority: "comprehensive_unified_integration_testing_completed"
+  test_priority: "enhanced_features_testing_completed"
 
 agent_communication:
   - agent: "main"
