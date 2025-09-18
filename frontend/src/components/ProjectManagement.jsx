@@ -226,6 +226,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       client_company: '',
       gc_email: '',
       contract_amount: '',
+      labor_rate: '95',  // Reset to default
       project_manager: 'Jesus Garcia',
       start_date: new Date(),
       estimated_completion: null,
