@@ -179,6 +179,13 @@ async def get_tm_tag(tm_tag_id: str):
         return TMTag(**tm_tag)
     return {"error": "T&M Tag not found"}
 
+@api_router.delete("/tm-tags/{tm_tag_id}")
+async def delete_tm_tag(tm_tag_id: str):
+    result = await db.tm_tags.delete_one({"id": tm_tag_id})
+    if result.deleted_count == 1:
+        return {"message": "T&M Tag deleted successfully", "id": tm_tag_id}
+    return {"error": "T&M Tag not found"}
+
 # Worker Management Endpoints
 @api_router.post("/workers", response_model=Worker)
 async def create_worker(worker: WorkerCreate):
