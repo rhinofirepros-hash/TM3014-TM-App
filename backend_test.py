@@ -1585,7 +1585,7 @@ class TMTagAPITester:
         print(f"\n=== Testing Project Analytics: {project_id} ===")
         
         try:
-            response = self.session.get(f"{self.base_url}/analytics/{project_id}")
+            response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
             
             if response.status_code == 200:
                 analytics = response.json()
