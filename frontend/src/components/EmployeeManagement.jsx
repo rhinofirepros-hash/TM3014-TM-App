@@ -681,9 +681,18 @@ const EmployeeManagement = ({ onBack }) => {
             </div>
 
             {/* Cost Summary */}
-            {newEmployee.base_pay && newEmployee.burden_cost && (
+            {newEmployee.hourly_rate && (
               <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-white/10' : 'bg-blue-50'} border`}>
                 <div className="flex justify-between items-center">
+                  <span className={`text-sm font-medium ${themeClasses.text.secondary}`}>
+                    True Hourly Cost:
+                  </span>
+                  <span className={`text-lg font-bold ${themeClasses.text.primary}`}>
+                    ${parseFloat(newEmployee.hourly_rate || 0).toFixed(2)}/hr
+                  </span>
+                </div>
+              </div>
+            )}
                   <span className={`text-sm ${themeClasses.text.secondary}`}>Total Cost per Hour:</span>
                   <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
                     ${(parseFloat(newEmployee.base_pay || 0) + parseFloat(newEmployee.burden_cost || 0)).toFixed(2)}
