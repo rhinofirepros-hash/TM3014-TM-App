@@ -31,7 +31,7 @@ import {
 import { useTheme } from '../contexts/ThemeContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const FinancialTabs = ({ projectId, onBack }) => {
+const FinancialTabs = ({ project, onBack }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
@@ -42,18 +42,27 @@ const FinancialTabs = ({ projectId, onBack }) => {
   const [profitabilityData, setProfitabilityData] = useState([]);
   
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('invoices');
+
+  const projectId = project?.id;
 
   useEffect(() => {
     if (projectId) {
       loadFinancialData();
+    } else {
+      setLoading(false);
+      setError('No project ID available');
     }
   }, [projectId]);
 
   const loadFinancialData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      console.log('Loading financial data for project:', projectId);
+      console.log('Backend URL:', backendUrl);
       
       // Load all financial data in parallel
       const [invoicesRes, payablesRes, cashflowRes, profitabilityRes] = await Promise.all([
@@ -63,28 +72,48 @@ const FinancialTabs = ({ projectId, onBack }) => {
         fetch(`${backendUrl}/api/profitability/${projectId}`)
       ]);
 
+      console.log('API Responses:', {
+        invoices: invoicesRes.status,
+        payables: payablesRes.status,
+        cashflow: cashflowRes.status,
+        profitability: profitabilityRes.status
+      });
+
       if (invoicesRes.ok) {
         const invoicesData = await invoicesRes.json();
+        console.log('Invoices data:', invoicesData);
         setInvoices(invoicesData);
+      } else {
+        console.error('Invoices API error:', invoicesRes.status, await invoicesRes.text());
       }
       
       if (payablesRes.ok) {
         const payablesData = await payablesRes.json();
+        console.log('Payables data:', payablesData);
         setPayables(payablesData);
+      } else {
+        console.error('Payables API error:', payablesRes.status, await payablesRes.text());
       }
       
       if (cashflowRes.ok) {
         const cashflowResData = await cashflowRes.json();
+        console.log('Cashflow data:', cashflowResData);
         setCashflowData(cashflowResData);
+      } else {
+        console.error('Cashflow API error:', cashflowRes.status, await cashflowRes.text());
       }
       
       if (profitabilityRes.ok) {
         const profitabilityResData = await profitabilityRes.json();
+        console.log('Profitability data:', profitabilityResData);
         setProfitabilityData(profitabilityResData);
+      } else {
+        console.error('Profitability API error:', profitabilityRes.status, await profitabilityRes.text());
       }
       
     } catch (error) {
       console.error('Error loading financial data:', error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
