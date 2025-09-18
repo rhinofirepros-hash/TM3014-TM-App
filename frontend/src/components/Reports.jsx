@@ -510,9 +510,9 @@ const Reports = ({ onBack }) => {
           <CardContent>
             {filteredTags.length === 0 ? (
               <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No T&M tags found</h3>
-                <p className="text-gray-500 mb-4">
+                <FileText className={`w-12 h-12 mx-auto mb-4 ${themeClasses.text.muted}`} />
+                <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>No T&M tags found</h3>
+                <p className={`mb-4 ${themeClasses.text.secondary}`}>
                   {searchTerm || dateFilter !== 'all' 
                     ? 'Try adjusting your search filters'
                     : 'Create your first T&M tag to see reports here'
