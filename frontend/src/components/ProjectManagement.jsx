@@ -159,6 +159,64 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     }
   };
 
+  const handleEditProject = async () => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl || !selectedProject) return;
+
+      const projectData = {
+        ...editProject,
+        contract_amount: parseFloat(editProject.contract_amount) || 0,
+        start_date: editProject.start_date,
+        estimated_completion: editProject.estimated_completion
+      };
+
+      const response = await fetch(`${backendUrl}/api/projects/${selectedProject.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(projectData)
+      });
+
+      if (response.ok) {
+        const updatedProject = await response.json();
+        setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+        setShowEditModal(false);
+        setSelectedProject(null);
+        
+        toast({
+          title: "Project Updated",
+          description: `${updatedProject.name} has been updated successfully.`,
+        });
+      } else {
+        throw new Error('Failed to update project');
+      }
+    } catch (error) {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update project. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditModal = (project) => {
+    setSelectedProject(project);
+    setEditProject({
+      name: project.name,
+      description: project.description || '',
+      client_company: project.client_company,
+      gc_email: project.gc_email || '',
+      contract_amount: project.contract_amount.toString(),
+      project_manager: project.project_manager,
+      start_date: project.start_date,
+      estimated_completion: project.estimated_completion,
+      address: project.address || ''
+    });
+    setShowEditModal(true);
+  };
+
   const resetNewProject = () => {
     setNewProject({
       name: '',
