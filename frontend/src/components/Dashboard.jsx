@@ -312,53 +312,69 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         <div className="mb-8">
           <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`} onClick={handleCreateNewTag}>
-              <CardContent className="p-6 text-center">
+            <AnimatedCard 
+              delay={0}
+              className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white hover:bg-white/20' 
+                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
+              }`} 
+              onClick={handleCreateNewTag}
+            >
+              <AnimatedCardContent className="p-6 text-center">
                 <Plus className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
                 <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create New T&M Tag</h3>
                 <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Start a new time & material tag</p>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
             
-            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`} onClick={onViewReports}>
-              <CardContent className="p-6 text-center">
+            <AnimatedCard 
+              delay={100}
+              className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white hover:bg-white/20' 
+                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
+              }`} 
+              onClick={onViewReports}
+            >
+              <AnimatedCardContent className="p-6 text-center">
                 <FileText className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
                 <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>View Reports</h3>
                 <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>View T&M tag history and reports</p>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
             
-            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`} onClick={onManageCrew}>
-              <CardContent className="p-6 text-center">
+            <AnimatedCard 
+              delay={200}
+              className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white hover:bg-white/20' 
+                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
+              }`} 
+              onClick={onManageCrew}
+            >
+              <AnimatedCardContent className="p-6 text-center">
                 <Users className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                 <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Crew</h3>
                 <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage crew member profiles</p>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
 
-            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`} onClick={onManageProjects}>
-              <CardContent className="p-6 text-center">
+            <AnimatedCard 
+              delay={300}
+              className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white hover:bg-white/20' 
+                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
+              }`} 
+              onClick={onManageProjects}
+            >
+              <AnimatedCardContent className="p-6 text-center">
                 <Building className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
                 <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Projects</h3>
                 <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Create and track project profitability</p>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
 
             {(() => {
               const currentUser = oauthEmailService.getCurrentUser();
