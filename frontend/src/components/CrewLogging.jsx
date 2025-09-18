@@ -791,6 +791,257 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Crew Log Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className={`max-w-4xl max-h-[90vh] overflow-y-auto ${themeClasses.modal}`}>
+          <DialogHeader>
+            <DialogTitle className={themeClasses.text.primary}>
+              Edit Crew Activity Log
+            </DialogTitle>
+          </DialogHeader>
+          
+          {editingLog && (
+            <div className="space-y-6">
+              {/* Date Selection */}
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        `w-full justify-start text-left font-normal ${themeClasses.button.secondary}`,
+                        !editingLog.date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {editingLog.date ? format(editingLog.date, "MM/dd/yyyy") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className={`w-auto p-0 ${themeClasses.modal}`} align="start">
+                    <Calendar
+                      mode="single"
+                      selected={editingLog.date}
+                      onSelect={(date) => setEditingLog(prev => ({ ...prev, date }))}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Work Description */}
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Work Description</Label>
+                <Textarea
+                  value={editingLog.work_description}
+                  onChange={(e) => setEditingLog(prev => ({ ...prev, work_description: e.target.value }))}
+                  className={themeClasses.input}
+                  placeholder="Describe the work performed..."
+                  rows={3}
+                />
+              </div>
+
+              {/* Weather Conditions */}
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Weather Conditions</Label>
+                <Select value={editingLog.weather_conditions} onValueChange={(value) => setEditingLog(prev => ({ ...prev, weather_conditions: value }))}>
+                  <SelectTrigger className={themeClasses.input}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className={themeClasses.modal}>
+                    {weatherOptions.map((weather) => (
+                      <SelectItem key={weather.value} value={weather.value}>
+                        <div className="flex items-center gap-2">
+                          <weather.icon className="w-4 h-4" />
+                          {weather.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Crew Members */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <Label className={themeClasses.text.primary}>Crew Members</Label>
+                  <Button
+                    type="button"
+                    onClick={() => setEditingLog(prev => ({
+                      ...prev,
+                      crew_members: [...prev.crew_members, {
+                        id: Date.now(),
+                        name: '',
+                        st_hours: 0,
+                        ot_hours: 0,
+                        dt_hours: 0,
+                        pot_hours: 0,
+                        total_hours: 0
+                      }]
+                    }))}
+                    size="sm"
+                    className={themeClasses.button.primary}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Member
+                  </Button>
+                </div>
+
+                {editingLog.crew_members.map((member, index) => (
+                  <Card key={member.id || index} className={themeClasses.card}>
+                    <CardContent className="p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div className="md:col-span-2">
+                          <Label className={`text-sm ${themeClasses.text.primary}`}>Name</Label>
+                          <Select 
+                            value={member.name} 
+                            onValueChange={(value) => {
+                              const updatedMembers = [...editingLog.crew_members];
+                              updatedMembers[index] = { ...updatedMembers[index], name: value };
+                              setEditingLog(prev => ({ ...prev, crew_members: updatedMembers }));
+                            }}
+                          >
+                            <SelectTrigger className={themeClasses.input}>
+                              <SelectValue placeholder="Select employee" />
+                            </SelectTrigger>
+                            <SelectContent className={themeClasses.modal}>
+                              {employees.map((employee) => (
+                                <SelectItem key={employee.id} value={employee.name}>
+                                  {employee.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label className={`text-sm ${themeClasses.text.primary}`}>ST Hours</Label>
+                          <Input
+                            type="number"
+                            step="0.5"
+                            value={member.st_hours || ''}
+                            onChange={(e) => {
+                              const updatedMembers = [...editingLog.crew_members];
+                              updatedMembers[index] = { 
+                                ...updatedMembers[index], 
+                                st_hours: e.target.value,
+                                total_hours: 
+                                  (parseFloat(e.target.value) || 0) +
+                                  (parseFloat(updatedMembers[index].ot_hours) || 0) +
+                                  (parseFloat(updatedMembers[index].dt_hours) || 0) +
+                                  (parseFloat(updatedMembers[index].pot_hours) || 0)
+                              };
+                              setEditingLog(prev => ({ ...prev, crew_members: updatedMembers }));
+                            }}
+                            className={themeClasses.input}
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label className={`text-sm ${themeClasses.text.primary}`}>OT Hours</Label>
+                          <Input
+                            type="number"
+                            step="0.5"
+                            value={member.ot_hours || ''}
+                            onChange={(e) => {
+                              const updatedMembers = [...editingLog.crew_members];
+                              updatedMembers[index] = { 
+                                ...updatedMembers[index], 
+                                ot_hours: e.target.value,
+                                total_hours: 
+                                  (parseFloat(updatedMembers[index].st_hours) || 0) +
+                                  (parseFloat(e.target.value) || 0) +
+                                  (parseFloat(updatedMembers[index].dt_hours) || 0) +
+                                  (parseFloat(updatedMembers[index].pot_hours) || 0)
+                              };
+                              setEditingLog(prev => ({ ...prev, crew_members: updatedMembers }));
+                            }}
+                            className={themeClasses.input}
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label className={`text-sm ${themeClasses.text.primary}`}>DT Hours</Label>
+                          <Input
+                            type="number"
+                            step="0.5"
+                            value={member.dt_hours || ''}
+                            onChange={(e) => {
+                              const updatedMembers = [...editingLog.crew_members];
+                              updatedMembers[index] = { 
+                                ...updatedMembers[index], 
+                                dt_hours: e.target.value,
+                                total_hours: 
+                                  (parseFloat(updatedMembers[index].st_hours) || 0) +
+                                  (parseFloat(updatedMembers[index].ot_hours) || 0) +
+                                  (parseFloat(e.target.value) || 0) +
+                                  (parseFloat(updatedMembers[index].pot_hours) || 0)
+                              };
+                              setEditingLog(prev => ({ ...prev, crew_members: updatedMembers }));
+                            }}
+                            className={themeClasses.input}
+                          />
+                        </div>
+                        
+                        <div className="flex items-end">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const updatedMembers = editingLog.crew_members.filter((_, i) => i !== index);
+                              setEditingLog(prev => ({ ...prev, crew_members: updatedMembers }));
+                            }}
+                            className="text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-2 text-sm text-right">
+                        <span className={themeClasses.text.secondary}>
+                          Total Hours: <span className="font-semibold">{member.total_hours || 0}</span>
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {editingLog.crew_members.length === 0 && (
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                    <Users className={`w-12 h-12 mx-auto mb-2 ${themeClasses.text.muted}`} />
+                    <p className={themeClasses.text.secondary}>
+                      No crew members added yet. Click "Add Member" to start.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowEditModal(false);
+                setEditingLog(null);
+              }}
+              className={themeClasses.button.secondary}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleUpdateLog}
+              disabled={!editingLog || editingLog.crew_members.length === 0}
+              className={themeClasses.button.primary}
+            >
+              Update Log & Sync with T&M
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
