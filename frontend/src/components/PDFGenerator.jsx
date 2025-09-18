@@ -428,17 +428,33 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       yPos += 10;
       
-      // Add footer logo and text
+      // Add footer logo and text with improved loading
       try {
-        const footerLogoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
+        const footerLogoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuqy_TITLEBLOCKRHINOFIRE1.png';
+        
+        // Use the same canvas approach for consistency
+        const footerCanvas = document.createElement('canvas');
+        const footerCtx = footerCanvas.getContext('2d');
         const footerImg = new Image();
         footerImg.crossOrigin = 'anonymous';
         
         await new Promise((resolve) => {
+          const footerTimeout = setTimeout(() => {
+            console.log('⚠️ Footer logo loading timeout, using fallback');
+            resolve();
+          }, 5000);
+          
           footerImg.onload = function() {
+            clearTimeout(footerTimeout);
             try {
+              // Draw to canvas and convert to base64
+              footerCanvas.width = footerImg.width;
+              footerCanvas.height = footerImg.height;
+              footerCtx.drawImage(footerImg, 0, 0);
+              const footerBase64 = footerCanvas.toDataURL('image/png');
+              
               // Add small logo in footer
-              pdf.addImage(footerImg, 'PNG', 15, yPos - 5, 25, 12);
+              pdf.addImage(footerBase64, 'PNG', 15, yPos - 5, 25, 12);
               
               // Footer text next to logo
               pdf.setTextColor(0, 0, 0);
@@ -446,8 +462,9 @@ const PDFGenerator = ({ formData, onGenerate }) => {
               pdf.setFont(undefined, 'bold');
               pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 50, yPos + 2);
               
+              console.log('✅ Footer logo added successfully');
             } catch (logoError) {
-              console.log('Footer logo error:', logoError);
+              console.log('❌ Footer logo error:', logoError);
               // Fallback text only
               pdf.setTextColor(0, 0, 0);
               pdf.setFontSize(10);
@@ -458,6 +475,8 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           };
           
           footerImg.onerror = function() {
+            clearTimeout(footerTimeout);
+            console.log('❌ Footer logo loading failed, using fallback text');
             // Fallback text only
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(10);
@@ -470,7 +489,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         });
         
       } catch (error) {
-        console.log('Footer logo loading error:', error);
+        console.log('❌ Footer logo loading error:', error);
         // Fallback text only
         pdf.setTextColor(0, 0, 0);
         pdf.setFontSize(10);
