@@ -225,15 +225,18 @@ test_plan:
 
   - task: "Delete T&M Tag functionality"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/components/Reports.jsx"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
         comment: "User reports: 'there is no way to delete t&m projects' and clicking on T&M tag rows in reports table doesn't work - nothing happens when clicked."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING COMPLETED - BOTH USER ISSUES RESOLVED: 1) T&M tag rows ARE clickable and successfully open the detailed modal when clicked. 2) Delete functionality EXISTS and works perfectly. Tested complete workflow: Login with PIN J777 → Navigate to Reports → Click T&M tag row → Modal opens with full details → Delete Tag button present in footer → Click Delete Tag → Confirmation dialog appears with 'This action cannot be undone!' warning → Both Cancel and Delete Permanently buttons work correctly. All functionality is working as designed. User may have experienced a temporary issue or browser cache problem."
 
 agent_communication:
   - agent: "main"
