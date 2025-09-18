@@ -24,6 +24,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import CrewLogging from './CrewLogging';
 import MaterialTracking from './MaterialTracking';
 import EmployeeManagement from './EmployeeManagement';
+import FinancialTabs from './FinancialTabs';
 
 const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
   const [currentView, setCurrentView] = useState('overview'); // overview, crew, materials, employees
