@@ -702,8 +702,8 @@ class TMTagAPITester:
         
         update_data = {
             "name": "Carlos Martinez (Updated)",
-            "base_pay": 30.00,
-            "burden_cost": 13.50,
+            "hourly_rate": 48.00,  # Updated true employee cost
+            "gc_billing_rate": 95.0,
             "position": "Senior Journeyman Electrician",
             "hire_date": (datetime.now() - timedelta(days=365)).isoformat(),
             "phone": "(555) 987-6543",
