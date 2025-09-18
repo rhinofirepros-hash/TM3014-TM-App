@@ -772,7 +772,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Date of Work Performed */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700">
+              <Label className={`text-sm font-medium ${themeClasses.text.primary}`}>
                 Date Of Work Performed*
               </Label>
               <Popover>
@@ -780,7 +780,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal min-w-[160px] h-10",
+                      `w-full justify-start text-left font-normal min-w-[160px] h-10 ${themeClasses.button.secondary}`,
                       !formData.dateOfWork && "text-muted-foreground"
                     )}
                   >
@@ -790,7 +790,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     </span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className={`w-auto p-0 ${themeClasses.modal}`} align="start">
                   <Calendar
                     mode="single"
                     selected={formData.dateOfWork}
