@@ -464,7 +464,11 @@ const Reports = ({ onBack }) => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
+        <Card className={`${
+          isDarkMode 
+            ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+            : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+        } mb-6`}>
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
