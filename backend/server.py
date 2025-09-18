@@ -947,12 +947,30 @@ async def get_project_analytics(project_id: str):
         unique_crew_members = set()
         work_days = set()
         
+        # Get employee data for accurate cost calculations
+        employees = await db.employees.find({"status": "active"}).to_list(1000)
+        employee_rates = {emp["name"]: emp.get("hourly_rate", 40) for emp in employees}  # Default to $40
+        employee_gc_rates = {emp["name"]: emp.get("gc_billing_rate", 95) for emp in employees}  # Default to $95
+        
         # Process T&M tags
+        total_true_cost = 0  # True employee cost
+        total_gc_billing = 0  # Amount billed to GC
+        
         for tag in tm_tags:
             for labor_entry in tag.get("labor_entries", []):
-                total_hours += float(labor_entry.get("total_hours", 0))
-                total_labor_cost += float(labor_entry.get("total_hours", 0)) * 95  # Default rate
-                unique_crew_members.add(labor_entry.get("worker_name"))
+                hours = float(labor_entry.get("total_hours", 0))
+                worker_name = labor_entry.get("worker_name", "")
+                
+                total_hours += hours
+                
+                # Calculate true cost using employee's hourly rate
+                hourly_rate = employee_rates.get(worker_name, 40)  # Default $40
+                gc_rate = employee_gc_rates.get(worker_name, 95)   # Default $95
+                
+                total_true_cost += hours * hourly_rate
+                total_gc_billing += hours * gc_rate
+                
+                unique_crew_members.add(worker_name)
             
             for material_entry in tag.get("material_entries", []):
                 total_material_cost += float(material_entry.get("total", 0))
@@ -969,7 +987,8 @@ async def get_project_analytics(project_id: str):
         
         # Process crew logs - count ALL crew logs for comprehensive analytics
         crew_log_hours = 0
-        crew_log_cost = 0
+        crew_log_true_cost = 0
+        crew_log_gc_billing = 0
         
         for log in crew_logs:
             crew_members = log.get("crew_members", [])
@@ -980,14 +999,24 @@ async def get_project_analytics(project_id: str):
                     if isinstance(crew_member, dict):
                         # New format with detailed hours
                         member_hours = float(crew_member.get("total_hours", 0))
+                        worker_name = crew_member.get("name", "Unknown")
+                        
+                        hourly_rate = employee_rates.get(worker_name, 40)  # Default $40
+                        gc_rate = employee_gc_rates.get(worker_name, 95)   # Default $95
+                        
                         crew_log_hours += member_hours
-                        crew_log_cost += member_hours * 95
-                        unique_crew_members.add(crew_member.get("name", "Unknown"))
+                        crew_log_true_cost += member_hours * hourly_rate
+                        crew_log_gc_billing += member_hours * gc_rate
+                        unique_crew_members.add(worker_name)
                     elif isinstance(crew_member, str):
                         # Old format - just names, use hours_worked from log level
                         log_hours = float(log.get("hours_worked", 0)) / len(crew_members) if crew_members else 0
+                        hourly_rate = employee_rates.get(crew_member, 40)  # Default $40
+                        gc_rate = employee_gc_rates.get(crew_member, 95)   # Default $95
+                        
                         crew_log_hours += log_hours
-                        crew_log_cost += log_hours * 95
+                        crew_log_true_cost += log_hours * hourly_rate
+                        crew_log_gc_billing += log_hours * gc_rate
                         unique_crew_members.add(crew_member)
             
             # Handle date properly - check if it's already a string or datetime object
@@ -997,9 +1026,10 @@ async def get_project_analytics(project_id: str):
             elif isinstance(log_date, str) and log_date:
                 work_days.add(log_date.split("T")[0])
         
-        # Use the higher of T&M or crew log data to avoid underestimating
+        # Use the higher values to avoid underestimating
         total_hours = max(total_hours, crew_log_hours)
-        total_labor_cost = max(total_labor_cost, crew_log_cost)
+        final_true_cost = max(total_true_cost, crew_log_true_cost)
+        final_gc_billing = max(total_gc_billing, crew_log_gc_billing)
         
         # Get project details
         project = await db.projects.find_one({"id": project_id})
