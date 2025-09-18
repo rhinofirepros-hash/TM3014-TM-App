@@ -185,15 +185,47 @@ const WorkerManagement = ({ onBack }) => {
     });
   };
 
-  const handleDeleteWorker = (workerId) => {
+  const handleDeleteWorker = async (workerId) => {
     if (window.confirm('Are you sure you want to delete this worker?')) {
-      const updatedWorkers = workers.filter(worker => worker.id !== workerId);
-      saveWorkers(updatedWorkers);
-      
-      toast({
-        title: "Worker Deleted",
-        description: "Worker has been removed from the database.",
-      });
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        
+        // Try to delete from backend first
+        if (backendUrl) {
+          try {
+            const response = await fetch(`${backendUrl}/api/workers/${workerId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            });
+            
+            if (!response.ok) {
+              console.warn('Failed to delete from backend, continuing with local deletion');
+            }
+          } catch (backendError) {
+            console.warn('Backend deletion failed, continuing with local deletion:', backendError);
+          }
+        }
+        
+        // Remove from local state and localStorage
+        const updatedWorkers = workers.filter(worker => worker.id !== workerId);
+        setWorkers(updatedWorkers);
+        localStorage.setItem('saved_workers', JSON.stringify(updatedWorkers));
+        
+        toast({
+          title: "Worker Deleted",
+          description: "Worker has been removed from the database.",
+        });
+        
+      } catch (error) {
+        console.error('Error deleting worker:', error);
+        toast({
+          title: "Delete Failed",
+          description: "Failed to delete worker. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
