@@ -533,6 +533,28 @@ const FinancialTabs = ({ project, onBack }) => {
         <div className={`text-center ${themeClasses.text.secondary}`}>
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
           Loading financial data...
+          {projectId && (
+            <p className="text-xs mt-2">Project ID: {projectId}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className={`text-center ${themeClasses.text.secondary}`}>
+          <AlertCircle className="w-12 h-12 mx-auto mb-2 text-red-500" />
+          <p className="text-red-600">Error loading financial data: {error}</p>
+          <p className="text-xs mt-2">Project ID: {projectId || 'Not available'}</p>
+          <Button 
+            onClick={loadFinancialData} 
+            variant="outline" 
+            className="mt-4"
+          >
+            Retry
+          </Button>
         </div>
       </div>
     );
