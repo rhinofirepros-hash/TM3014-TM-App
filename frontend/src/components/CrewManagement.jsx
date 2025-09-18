@@ -555,13 +555,13 @@ const CrewManagement = ({ onBack }) => {
                             {member.position}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
-                            ${member.base_pay.toFixed(2)}
+                            ${(member.hourly_rate || 0).toFixed(2)}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
-                            ${member.burden_cost.toFixed(2)}
+                            ${(member.gc_billing_rate || 95).toFixed(2)}
                           </TableCell>
                           <TableCell className={`font-semibold ${themeClasses.text.primary}`}>
-                            ${getTotalCostPerHour(member).toFixed(2)}
+                            ${((member.gc_billing_rate || 95) - (member.hourly_rate || 0)).toFixed(2)}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
                             {format(new Date(member.hire_date), 'MM/dd/yyyy')}
