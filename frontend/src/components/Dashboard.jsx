@@ -459,12 +459,12 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
                     {/* Recent Tags Preview */}
                     {project.tags && project.tags.length > 0 && (
                       <div className="mb-4">
-                        <div className="text-xs text-gray-600 mb-2">Recent Tags</div>
+                        <div className={`text-xs mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Recent Tags</div>
                         <div className="space-y-1">
                           {project.tags.slice(0, 2).map((tag, index) => (
-                            <div key={index} className="text-xs bg-gray-50 p-2 rounded">
-                              <div className="font-medium truncate">{tag.tm_tag_title}</div>
-                              <div className="text-gray-500">
+                            <div key={index} className={`text-xs p-2 rounded ${isDarkMode ? 'bg-white/10' : 'bg-gray-50'}`}>
+                              <div className={`font-medium truncate ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{tag.tm_tag_title}</div>
+                              <div className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
                                 {new Date(tag.date_of_work).toLocaleDateString()}
                               </div>
                             </div>
