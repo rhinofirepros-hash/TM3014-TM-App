@@ -505,7 +505,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Button 
             onClick={onViewTMTags} 
             className={`${themeClasses.button.primary} h-12`}
