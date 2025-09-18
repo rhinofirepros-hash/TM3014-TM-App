@@ -1184,13 +1184,21 @@ async def get_project_analytics(project_id: str):
             total_profit = contract_amount - total_project_cost
             profit_margin = (total_profit / contract_amount * 100) if contract_amount > 0 else 0
         
+        # Get forecasted values for comparison
+        estimated_hours = project.get("estimated_hours", 0) if project else 0
+        estimated_labor_cost = project.get("estimated_labor_cost", 0) if project else 0
+        estimated_material_cost = project.get("estimated_material_cost", 0) if project else 0
+        estimated_profit = project.get("estimated_profit", 0) if project else 0
+        
         return {
             "project_id": project_id,
+            "project_type": project_type,
             "total_hours": total_hours,
             "total_labor_cost": final_gc_billing,  # Amount billed to GC
             "total_labor_cost_gc": final_gc_billing,
             "true_employee_cost": final_true_cost,  # Actual cost of labor
             "labor_markup_profit": labor_markup_profit,  # Profit from labor markup
+            "material_markup_profit": material_markup_profit,  # Profit from material markup
             "total_material_cost": total_material_cost,
             "total_other_cost": total_other_cost,
             "total_cost": final_gc_billing + total_material_cost + total_other_cost,
@@ -1198,6 +1206,16 @@ async def get_project_analytics(project_id: str):
             "total_crew_expenses": total_other_cost,
             "profit": total_profit,
             "profit_margin": profit_margin,
+            # Forecasted vs Actual comparisons
+            "estimated_hours": estimated_hours,
+            "estimated_labor_cost": estimated_labor_cost,
+            "estimated_material_cost": estimated_material_cost,
+            "estimated_profit": estimated_profit,
+            "hours_variance": total_hours - estimated_hours if estimated_hours > 0 else 0,
+            "labor_cost_variance": final_gc_billing - estimated_labor_cost if estimated_labor_cost > 0 else 0,
+            "material_cost_variance": total_material_cost - estimated_material_cost if estimated_material_cost > 0 else 0,
+            "profit_variance": total_profit - estimated_profit if estimated_profit != 0 else 0,
+            # Other metrics
             "unique_crew_members": len(unique_crew_members),
             "work_days": len(work_days),
             "crew_members_list": list(unique_crew_members),
