@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Mail, LogOut, CheckCircle } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 import oauthEmailService from '../services/oauthEmailService';
 
 const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
