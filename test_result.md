@@ -261,7 +261,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "PDF generation with actual logo"
+    - "T&M Form Submit Button Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
