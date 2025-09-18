@@ -1006,7 +1006,555 @@ class TMTagAPITester:
         
         return False
     
-    def test_project_analytics(self, project_id):
+    def test_project_specific_labor_rates(self):
+        """Test project-specific labor rates functionality"""
+        print("\n=== Testing Project-Specific Labor Rates ===")
+        
+        # Test 1: Create project with custom labor rate
+        project_data = {
+            "name": "Premium Client Project",
+            "description": "High-end client with premium rates",
+            "client_company": "Premium Corp",
+            "gc_email": "premium@client.com",
+            "contract_amount": 250000.00,
+            "labor_rate": 150.0,  # Premium rate instead of default $95
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "Premium Location"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                if project.get("labor_rate") == 150.0:
+                    self.log_result("projects", "Custom labor rate creation", True, f"Project created with ${project['labor_rate']}/hr rate")
+                    self.premium_project_id = project["id"]
+                    return project
+                else:
+                    self.log_result("projects", "Custom labor rate creation", False, f"Expected $150/hr, got ${project.get('labor_rate', 'None')}/hr", response)
+            else:
+                self.log_result("projects", "Custom labor rate creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Custom labor rate creation", False, str(e))
+        
+        return None
+    
+    def test_employee_schema_restructuring(self):
+        """Test new employee schema with single hourly_rate field"""
+        print("\n=== Testing Employee Schema Restructuring ===")
+        
+        # Test creating employee with new schema
+        employee_data = {
+            "name": "Test Employee Schema",
+            "hourly_rate": 55.0,  # Single field for true cost
+            "gc_billing_rate": 95.0,
+            "position": "Test Electrician",
+            "hire_date": datetime.now().isoformat(),
+            "phone": "(555) 123-4567",
+            "email": "test.schema@company.com"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/employees",
+                json=employee_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                employee = response.json()
+                # Verify new schema fields are present
+                if "hourly_rate" in employee and "gc_billing_rate" in employee:
+                    # Verify old schema fields are NOT present
+                    if "base_pay" not in employee and "burden_cost" not in employee:
+                        self.log_result("employees", "New schema structure", True, f"Employee created with hourly_rate: ${employee['hourly_rate']}")
+                        self.test_employee_id = employee["id"]
+                        return employee
+                    else:
+                        self.log_result("employees", "New schema structure", False, "Old schema fields still present", response)
+                else:
+                    self.log_result("employees", "New schema structure", False, "Missing new schema fields", response)
+            else:
+                self.log_result("employees", "New schema structure", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("employees", "New schema structure", False, str(e))
+        
+        return None
+    
+    def test_bidirectional_sync(self):
+        """Test bidirectional sync between crew logs and T&M tags"""
+        print("\n=== Testing Bidirectional Sync ===")
+        
+        # First ensure we have a project
+        if not hasattr(self, 'created_project_id'):
+            project = self.test_project_creation()
+            if not project:
+                self.log_result("crew_logs", "Bidirectional sync setup", False, "Could not create project for sync test")
+                return False
+        
+        project_id = self.created_project_id
+        project_name = self.created_project_name
+        work_date = datetime.now().isoformat()
+        
+        # Test 1: Create crew log and verify T&M tag is auto-generated
+        print("Test 1: Crew Log → T&M Tag sync")
+        crew_log_data = {
+            "project_id": project_id,
+            "date": work_date,
+            "crew_members": [
+                {
+                    "name": "Carlos Martinez",
+                    "st_hours": 8.0,
+                    "ot_hours": 2.0,
+                    "dt_hours": 0.0,
+                    "pot_hours": 0.0,
+                    "total_hours": 10.0
+                }
+            ],
+            "work_description": "Sync test - crew log to T&M",
+            "weather_conditions": "clear"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/crew-logs",
+                json=crew_log_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                crew_log = response.json()
+                crew_log_id = crew_log.get("id")
+                
+                # Wait a moment for sync to complete
+                import time
+                time.sleep(2)
+                
+                # Check if T&M tag was auto-created
+                tm_tags_response = self.session.get(f"{self.base_url}/tm-tags")
+                if tm_tags_response.status_code == 200:
+                    tm_tags = tm_tags_response.json()
+                    # Look for auto-generated T&M tag with matching project and date
+                    auto_tm_tag = None
+                    for tag in tm_tags:
+                        if (tag.get("project_id") == project_id and 
+                            "Auto-generated from Crew Log" in tag.get("tm_tag_title", "")):
+                            auto_tm_tag = tag
+                            break
+                    
+                    if auto_tm_tag:
+                        self.log_result("crew_logs", "Crew log → T&M sync", True, f"T&M tag auto-created: {auto_tm_tag['id']}")
+                        self.sync_tm_tag_id = auto_tm_tag["id"]
+                    else:
+                        self.log_result("crew_logs", "Crew log → T&M sync", False, "No auto-generated T&M tag found")
+                else:
+                    self.log_result("crew_logs", "Crew log → T&M sync", False, "Could not retrieve T&M tags for verification")
+            else:
+                self.log_result("crew_logs", "Crew log → T&M sync", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Crew log → T&M sync", False, str(e))
+        
+        # Test 2: Create T&M tag and verify crew log is auto-generated
+        print("Test 2: T&M Tag → Crew Log sync")
+        tm_tag_data = {
+            "project_id": project_id,
+            "project_name": project_name,
+            "cost_code": "SYNC-TEST-001",
+            "date_of_work": (datetime.now() + timedelta(hours=1)).isoformat(),  # Slightly different time
+            "tm_tag_title": "Sync test - T&M to crew log",
+            "description_of_work": "Testing bidirectional sync from T&M to crew log",
+            "labor_entries": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "worker_name": "Jennifer Thompson",
+                    "quantity": 1,
+                    "st_hours": 6.0,
+                    "ot_hours": 1.0,
+                    "dt_hours": 0.0,
+                    "pot_hours": 0.0,
+                    "total_hours": 7.0,
+                    "date": datetime.now().strftime("%Y-%m-%d")
+                }
+            ],
+            "material_entries": [],
+            "equipment_entries": [],
+            "other_entries": [],
+            "gc_email": "sync@test.com"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/tm-tags",
+                json=tm_tag_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                tm_tag = response.json()
+                tm_tag_id = tm_tag.get("id")
+                
+                # Wait a moment for sync to complete
+                time.sleep(2)
+                
+                # Check if crew log was auto-created
+                crew_logs_response = self.session.get(f"{self.base_url}/crew-logs")
+                if crew_logs_response.status_code == 200:
+                    crew_logs = crew_logs_response.json()
+                    # Look for auto-generated crew log with matching project
+                    auto_crew_log = None
+                    for log in crew_logs:
+                        if (log.get("project_id") == project_id and 
+                            log.get("synced_from_tm") == True):
+                            auto_crew_log = log
+                            break
+                    
+                    if auto_crew_log:
+                        self.log_result("tm_tags", "T&M → Crew log sync", True, f"Crew log auto-created: {auto_crew_log['id']}")
+                    else:
+                        self.log_result("tm_tags", "T&M → Crew log sync", False, "No auto-generated crew log found")
+                else:
+                    self.log_result("tm_tags", "T&M → Crew log sync", False, "Could not retrieve crew logs for verification")
+            else:
+                self.log_result("tm_tags", "T&M → Crew log sync", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("tm_tags", "T&M → Crew log sync", False, str(e))
+        
+        return True
+    
+    def test_tm_tag_edit_functionality(self):
+        """Test T&M tag edit functionality via PUT endpoint"""
+        print("\n=== Testing T&M Tag Edit Functionality ===")
+        
+        # First create a T&M tag to edit
+        tm_tag_data = self.create_realistic_tm_tag_data()
+        
+        try:
+            # Create the tag
+            response = self.session.post(
+                f"{self.base_url}/tm-tags",
+                json=tm_tag_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code != 200:
+                self.log_result("tm_tags", "Edit functionality setup", False, "Could not create T&M tag for edit test", response)
+                return False
+            
+            created_tag = response.json()
+            tag_id = created_tag["id"]
+            
+            # Test editing the tag
+            edit_data = {
+                "tm_tag_title": "EDITED - Electrical Installation - Floor 3",
+                "cost_code": "EDITED-CC-2024-0156",
+                "company_name": "EDITED Company Name",
+                "description_of_work": "EDITED - Updated work description with new details",
+                "gc_email": "edited.email@client.com"
+            }
+            
+            edit_response = self.session.put(
+                f"{self.base_url}/tm-tags/{tag_id}",
+                json=edit_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if edit_response.status_code == 200:
+                updated_tag = edit_response.json()
+                
+                # Verify the edits were applied
+                edits_applied = True
+                for field, expected_value in edit_data.items():
+                    if updated_tag.get(field) != expected_value:
+                        edits_applied = False
+                        break
+                
+                if edits_applied:
+                    self.log_result("tm_tags", "Edit functionality", True, f"T&M tag {tag_id} successfully edited")
+                    
+                    # Verify the tag can still be retrieved with edits
+                    get_response = self.session.get(f"{self.base_url}/tm-tags/{tag_id}")
+                    if get_response.status_code == 200:
+                        retrieved_tag = get_response.json()
+                        if retrieved_tag.get("tm_tag_title") == edit_data["tm_tag_title"]:
+                            self.log_result("tm_tags", "Edit persistence", True, "Edits persisted correctly")
+                        else:
+                            self.log_result("tm_tags", "Edit persistence", False, "Edits not persisted")
+                    else:
+                        self.log_result("tm_tags", "Edit persistence", False, "Could not retrieve edited tag")
+                else:
+                    self.log_result("tm_tags", "Edit functionality", False, "Edits not applied correctly", edit_response)
+            else:
+                self.log_result("tm_tags", "Edit functionality", False, f"HTTP {edit_response.status_code}", edit_response)
+                
+        except Exception as e:
+            self.log_result("tm_tags", "Edit functionality", False, str(e))
+        
+        return True
+    
+    def test_crew_log_edit_functionality(self):
+        """Test crew log edit functionality via PUT endpoint"""
+        print("\n=== Testing Crew Log Edit Functionality ===")
+        
+        # First ensure we have a project
+        if not hasattr(self, 'created_project_id'):
+            project = self.test_project_creation()
+            if not project:
+                self.log_result("crew_logs", "Edit functionality setup", False, "Could not create project for edit test")
+                return False
+        
+        project_id = self.created_project_id
+        project_name = self.created_project_name
+        
+        # Create a crew log to edit
+        crew_log_data = {
+            "project_id": project_id,
+            "date": datetime.now().isoformat(),
+            "crew_members": [
+                {
+                    "name": "Original Worker",
+                    "st_hours": 8.0,
+                    "ot_hours": 0.0,
+                    "dt_hours": 0.0,
+                    "pot_hours": 0.0,
+                    "total_hours": 8.0
+                }
+            ],
+            "work_description": "Original work description",
+            "weather_conditions": "clear"
+        }
+        
+        try:
+            # Create the crew log
+            response = self.session.post(
+                f"{self.base_url}/crew-logs",
+                json=crew_log_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code != 200:
+                self.log_result("crew_logs", "Edit functionality setup", False, "Could not create crew log for edit test", response)
+                return False
+            
+            created_log = response.json()
+            log_id = created_log["id"]
+            
+            # Test editing the crew log
+            edit_data = {
+                "work_description": "EDITED - Updated work description with new details",
+                "weather_conditions": "EDITED - Partly cloudy, 75°F",
+                "crew_members": [
+                    {
+                        "name": "EDITED Worker Name",
+                        "st_hours": 6.0,
+                        "ot_hours": 2.0,
+                        "dt_hours": 1.0,
+                        "pot_hours": 0.0,
+                        "total_hours": 9.0
+                    }
+                ]
+            }
+            
+            edit_response = self.session.put(
+                f"{self.base_url}/crew-logs/{log_id}",
+                json=edit_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if edit_response.status_code == 200:
+                # Verify the edit was successful by retrieving the updated log
+                get_response = self.session.get(f"{self.base_url}/crew-logs")
+                if get_response.status_code == 200:
+                    crew_logs = get_response.json()
+                    updated_log = None
+                    for log in crew_logs:
+                        if log.get("id") == log_id:
+                            updated_log = log
+                            break
+                    
+                    if updated_log:
+                        if (updated_log.get("work_description") == edit_data["work_description"] and
+                            updated_log.get("weather_conditions") == edit_data["weather_conditions"]):
+                            self.log_result("crew_logs", "Edit functionality", True, f"Crew log {log_id} successfully edited")
+                        else:
+                            self.log_result("crew_logs", "Edit functionality", False, "Edits not applied correctly")
+                    else:
+                        self.log_result("crew_logs", "Edit functionality", False, "Could not find updated crew log")
+                else:
+                    self.log_result("crew_logs", "Edit functionality", False, "Could not retrieve crew logs for verification")
+            else:
+                self.log_result("crew_logs", "Edit functionality", False, f"HTTP {edit_response.status_code}", edit_response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Edit functionality", False, str(e))
+        
+        return True
+    
+    def test_enhanced_cost_analytics(self):
+        """Test enhanced cost analytics with new fields"""
+        print("\n=== Testing Enhanced Cost Analytics ===")
+        
+        # First ensure we have a project with custom labor rate
+        if not hasattr(self, 'premium_project_id'):
+            premium_project = self.test_project_specific_labor_rates()
+            if not premium_project:
+                self.log_result("analytics", "Enhanced analytics setup", False, "Could not create premium project for analytics test")
+                return False
+        
+        project_id = self.premium_project_id
+        
+        # Create some test data for analytics
+        # 1. Create employees with known rates
+        employee_data = {
+            "name": "Analytics Test Employee",
+            "hourly_rate": 50.0,  # True cost
+            "gc_billing_rate": 95.0,
+            "position": "Test Electrician",
+            "hire_date": datetime.now().isoformat()
+        }
+        
+        emp_response = self.session.post(f"{self.base_url}/employees", json=employee_data, headers={"Content-Type": "application/json"})
+        
+        # 2. Create T&M tag with labor entries
+        tm_tag_data = {
+            "project_id": project_id,
+            "project_name": "Premium Client Project",
+            "cost_code": "ANALYTICS-TEST",
+            "date_of_work": datetime.now().isoformat(),
+            "tm_tag_title": "Analytics Test Tag",
+            "description_of_work": "Testing enhanced analytics calculations",
+            "labor_entries": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "worker_name": "Analytics Test Employee",
+                    "quantity": 1,
+                    "st_hours": 8.0,
+                    "ot_hours": 2.0,
+                    "dt_hours": 0.0,
+                    "pot_hours": 0.0,
+                    "total_hours": 10.0,
+                    "date": datetime.now().strftime("%Y-%m-%d")
+                }
+            ],
+            "material_entries": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "material_name": "Test Material",
+                    "unit_of_measure": "each",
+                    "quantity": 5.0,
+                    "unit_cost": 20.0,
+                    "total": 100.0,
+                    "date_of_work": datetime.now().strftime("%Y-%m-%d")
+                }
+            ],
+            "equipment_entries": [],
+            "other_entries": [],
+            "gc_email": "analytics@test.com"
+        }
+        
+        tm_response = self.session.post(f"{self.base_url}/tm-tags", json=tm_tag_data, headers={"Content-Type": "application/json"})
+        
+        # Wait for data to be processed
+        import time
+        time.sleep(2)
+        
+        # Test the enhanced analytics endpoint
+        try:
+            response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
+            
+            if response.status_code == 200:
+                analytics = response.json()
+                
+                # Check for new enhanced fields
+                required_new_fields = [
+                    "labor_markup_profit",  # Difference between billed and true labor cost
+                    "true_employee_cost",   # Actual employee hourly rates
+                    "total_labor_cost_gc"   # Amount billed to GC using project rate
+                ]
+                
+                missing_fields = [field for field in required_new_fields if field not in analytics]
+                
+                if not missing_fields:
+                    # Verify calculations are using project-specific rates
+                    project_labor_rate = 150.0  # Premium project rate
+                    true_employee_cost = analytics.get("true_employee_cost", 0)
+                    total_labor_cost_gc = analytics.get("total_labor_cost_gc", 0)
+                    labor_markup_profit = analytics.get("labor_markup_profit", 0)
+                    
+                    # Expected calculations:
+                    # True cost: 10 hours * $50/hr = $500
+                    # Billed amount: 10 hours * $150/hr = $1500 (project-specific rate)
+                    # Labor markup profit: $1500 - $500 = $1000
+                    
+                    expected_true_cost = 10.0 * 50.0  # 10 hours * $50/hr
+                    expected_billed = 10.0 * 150.0    # 10 hours * $150/hr (project rate)
+                    expected_markup = expected_billed - expected_true_cost
+                    
+                    calculations_correct = (
+                        abs(true_employee_cost - expected_true_cost) < 1.0 and
+                        abs(total_labor_cost_gc - expected_billed) < 1.0 and
+                        abs(labor_markup_profit - expected_markup) < 1.0
+                    )
+                    
+                    if calculations_correct:
+                        self.log_result("analytics", "Enhanced cost analytics", True, 
+                                      f"Analytics calculated correctly: True cost=${true_employee_cost}, Billed=${total_labor_cost_gc}, Markup profit=${labor_markup_profit}")
+                    else:
+                        self.log_result("analytics", "Enhanced cost analytics", False, 
+                                      f"Calculation mismatch: Expected true=${expected_true_cost}, billed=${expected_billed}, markup=${expected_markup}")
+                else:
+                    self.log_result("analytics", "Enhanced cost analytics", False, f"Missing enhanced fields: {missing_fields}", response)
+            else:
+                self.log_result("analytics", "Enhanced cost analytics", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Enhanced cost analytics", False, str(e))
+        
+        return True
+    
+    def test_daily_crew_data_endpoint(self):
+        """Test the daily crew data endpoint for auto-population"""
+        print("\n=== Testing Daily Crew Data Endpoint ===")
+        
+        if not hasattr(self, 'created_project_id'):
+            project = self.test_project_creation()
+            if not project:
+                self.log_result("crew_logs", "Daily crew data setup", False, "Could not create project for daily crew data test")
+                return False
+        
+        project_id = self.created_project_id
+        test_date = datetime.now().strftime("%Y-%m-%d")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/daily-crew-data?project_id={project_id}&date={test_date}")
+            
+            if response.status_code == 200:
+                crew_data = response.json()
+                
+                # Verify response structure
+                required_fields = ["source", "data", "crew_members", "work_description"]
+                missing_fields = [field for field in required_fields if field not in crew_data]
+                
+                if not missing_fields:
+                    self.log_result("crew_logs", "Daily crew data endpoint", True, f"Endpoint returned data source: {crew_data.get('source', 'None')}")
+                else:
+                    self.log_result("crew_logs", "Daily crew data endpoint", False, f"Missing fields: {missing_fields}", response)
+            else:
+                self.log_result("crew_logs", "Daily crew data endpoint", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Daily crew data endpoint", False, str(e))
+        
+        return True
         """Test project analytics endpoint"""
         print(f"\n=== Testing Project Analytics: {project_id} ===")
         
