@@ -24,6 +24,8 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
   const { toast } = useToast();
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const [formData, setFormData] = useState({
     projectName: selectedProject?.name || "",
     costCode: '',
