@@ -864,7 +864,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                       className={`w-full ${themeClasses.input}`}
                     />
                   )}
-                  <p className="text-xs text-gray-500">
+                  <p className={`text-xs ${themeClasses.text.muted}`}>
                     {savedCompanies.length > 0 
                       ? `${savedCompanies.length} saved companies available`
                       : 'Start typing to create your first company'
