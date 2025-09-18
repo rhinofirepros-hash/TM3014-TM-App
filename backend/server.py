@@ -1706,6 +1706,9 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc)}
 
+# Include the router in the main app (MUST be after all endpoints are defined)
+app.include_router(api_router)
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
