@@ -38,8 +38,8 @@ const CrewManagement = ({ onBack }) => {
   const [positionFilter, setPositionFilter] = useState('');
   const [newCrewMember, setNewCrewMember] = useState({
     name: '',
-    base_pay: '',
-    burden_cost: '',
+    hourly_rate: '',
+    gc_billing_rate: '95.0',
     position: '',
     hire_date: new Date(),
     phone: '',
