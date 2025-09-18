@@ -90,6 +90,7 @@ function App() {
               onOpenProject={handleOpenProject}
               onManageWorkers={handleManageWorkers}
               onViewReports={handleViewReports}
+              onManageProjects={() => setCurrentView('projects')}
               onLogout={handleLogout}
             />
           ) : currentView === 'workers' ? (
