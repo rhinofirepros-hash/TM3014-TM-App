@@ -25,7 +25,9 @@ import {
   Cloud,
   Filter,
   RefreshCw,
-  Zap
+  Zap,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
