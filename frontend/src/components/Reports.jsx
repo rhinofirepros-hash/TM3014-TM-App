@@ -341,16 +341,19 @@ const Reports = ({ onBack }) => {
     {/* T&M Tag Details Modal - Large Version */}
     <Dialog open={showTagModal} onOpenChange={setShowTagModal}>
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>T&M Tag Details</span>
+        <DialogHeader className="border-b pb-4">
+          <DialogTitle className="flex items-center justify-between text-xl">
+            <div className="flex items-center gap-3">
+              <FileText className="w-6 h-6 text-blue-600" />
+              <span>T&M Tag Review</span>
+            </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowTagModal(false)}
-              className="h-6 w-6 p-0"
+              className="h-8 w-8 p-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </Button>
           </DialogTitle>
         </DialogHeader>
