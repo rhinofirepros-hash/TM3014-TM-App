@@ -268,7 +268,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
               <div className="flex justify-between items-center">
                 <span className={`text-sm ${themeClasses.text.secondary}`}>Total Hours:</span>
                 <span className={`font-semibold ${themeClasses.text.primary}`}>
-                  {projectStats.totalHoursLogged.toFixed(1)}
+                  {(projectStats.totalHoursLogged || 0).toFixed(1)}
                 </span>
               </div>
               <div className="flex justify-between items-center mt-1">
