@@ -328,6 +328,11 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         setCustomCompanyName('');
         setIsCustomEmail(false);
         setCustomEmail('');
+        
+        // Redirect back to dashboard after successful submission
+        setTimeout(() => {
+          onBackToDashboard();
+        }, 2000); // Give user time to see success message
       }
     } catch (error) {
       toast({
