@@ -30,7 +30,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
   const [recentTags, setRecentTags] = useState([]);
   const [projectAnalytics, setProjectAnalytics] = useState([]);
   const [showEmailAuthModal, setShowEmailAuthModal] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { isDarkMode, toggleTheme, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
   useEffect(() => {
