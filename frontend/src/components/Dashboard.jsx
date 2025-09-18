@@ -60,6 +60,9 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
           setProjects(projectsData);
+          setActualProjects(projectsData); // Store actual projects separately
+          console.log('Loaded projects from backend:', projectsData.length, 'projects');
+          console.log('Active projects:', projectsData.filter(p => p.status === 'active').length);
         }
 
         // Load T&M tags for recent tags and analytics
