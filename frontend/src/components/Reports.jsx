@@ -566,10 +566,21 @@ const Reports = ({ onBack }) => {
 
         <DialogFooter className="border-t pt-4 mt-6">
           <div className="flex justify-between w-full">
-            <Button variant="outline" size="lg" onClick={() => setShowTagModal(false)}>
-              <X className="w-4 h-4 mr-2" />
-              Close
-            </Button>
+            <div className="flex gap-3">
+              <Button variant="outline" size="lg" onClick={() => setShowTagModal(false)}>
+                <X className="w-4 h-4 mr-2" />
+                Close
+              </Button>
+              <Button 
+                variant="destructive"
+                size="lg"
+                onClick={() => setShowDeleteDialog(true)}
+                className="text-red-600 border-red-600 hover:bg-red-50"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Delete Tag
+              </Button>
+            </div>
             <div className="flex gap-3">
               <Button 
                 variant="outline"
