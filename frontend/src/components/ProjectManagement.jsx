@@ -101,6 +101,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       const projectData = {
         ...newProject,
         contract_amount: parseFloat(newProject.contract_amount) || 0,
+        labor_rate: parseFloat(newProject.labor_rate) || 95,
         start_date: newProject.start_date.toISOString(),
         estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null
       };
