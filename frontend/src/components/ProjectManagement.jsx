@@ -109,7 +109,12 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
         contract_amount: parseFloat(newProject.contract_amount) || 0,
         labor_rate: parseFloat(newProject.labor_rate) || 95,
         start_date: newProject.start_date.toISOString(),
-        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null
+        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null,
+        // Include forecasted schedule fields
+        estimated_hours: parseFloat(newProject.estimated_hours) || 0,
+        estimated_labor_cost: parseFloat(newProject.estimated_labor_cost) || 0,
+        estimated_material_cost: parseFloat(newProject.estimated_material_cost) || 0,
+        estimated_profit: parseFloat(newProject.estimated_profit) || 0
       };
 
       const response = await fetch(`${backendUrl}/api/projects`, {
