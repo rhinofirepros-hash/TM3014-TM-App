@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
