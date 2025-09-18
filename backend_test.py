@@ -1139,9 +1139,9 @@ class TMTagAPITester:
     
     def run_all_tests(self):
         """Run all backend API tests"""
-        print("🚀 Starting Backend API Tests for TM3014 T&M Daily Tag App")
+        print("🚀 Starting Backend API Tests for TM3014 T&M Daily Tag App + Project Management System")
         print(f"Backend URL: {self.base_url}")
-        print("=" * 60)
+        print("=" * 80)
         
         # Test basic connectivity first
         if not self.test_basic_connectivity():
@@ -1161,6 +1161,54 @@ class TMTagAPITester:
         # Test Worker APIs
         self.test_worker_creation()
         self.test_worker_retrieval()
+        
+        # Test NEW Project Management System APIs
+        print("\n" + "=" * 50)
+        print("🏗️  TESTING PROJECT MANAGEMENT SYSTEM ENDPOINTS")
+        print("=" * 50)
+        
+        # Test Project APIs
+        created_project = self.test_project_creation()
+        self.test_project_retrieval()
+        
+        if created_project and "id" in created_project:
+            project_id = created_project["id"]
+            self.test_project_by_id(project_id)
+            self.test_project_update(project_id)
+            
+            # Test Employee APIs
+            created_employees = self.test_employee_creation()
+            self.test_employee_retrieval()
+            
+            if created_employees:
+                employee_id = created_employees[0]["id"]
+                self.test_employee_by_id(employee_id)
+                self.test_employee_update(employee_id)
+                self.test_employee_deletion(employee_id)
+            
+            # Test Crew Log APIs
+            created_crew_log = self.test_crew_log_creation()
+            self.test_crew_log_retrieval()
+            
+            if created_crew_log and "id" in created_crew_log:
+                log_id = created_crew_log["id"]
+                self.test_crew_log_by_id(log_id)
+                self.test_crew_log_deletion(log_id)
+            
+            # Test Material Purchase APIs
+            created_materials = self.test_material_creation()
+            self.test_material_retrieval()
+            
+            if created_materials:
+                material_id = created_materials[0]["id"]
+                self.test_material_by_id(material_id)
+                self.test_material_deletion(material_id)
+            
+            # Test Project Analytics API
+            self.test_project_analytics(project_id)
+            
+            # Clean up - delete the test project last
+            self.test_project_deletion(project_id)
         
         # Test Email API
         self.test_email_endpoint()
