@@ -238,6 +238,13 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     }));
   };
 
+  const handleEditInputChange = (field, value) => {
+    setEditProject(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const openProjectOverview = (project) => {
     setSelectedProject(project);
     setShowProjectOverview(true);
