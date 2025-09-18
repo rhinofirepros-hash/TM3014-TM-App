@@ -939,11 +939,23 @@ async def get_project_analytics(project_id: str):
         crew_log_cost = 0
         
         for log in crew_logs:
-            for crew_member in log.get("crew_members", []):
-                member_hours = float(crew_member.get("total_hours", 0))
-                crew_log_hours += member_hours
-                crew_log_cost += member_hours * 95
-                unique_crew_members.add(crew_member.get("name"))
+            crew_members = log.get("crew_members", [])
+            
+            # Handle different crew member formats
+            if isinstance(crew_members, list):
+                for crew_member in crew_members:
+                    if isinstance(crew_member, dict):
+                        # New format with detailed hours
+                        member_hours = float(crew_member.get("total_hours", 0))
+                        crew_log_hours += member_hours
+                        crew_log_cost += member_hours * 95
+                        unique_crew_members.add(crew_member.get("name", "Unknown"))
+                    elif isinstance(crew_member, str):
+                        # Old format - just names, use hours_worked from log level
+                        log_hours = float(log.get("hours_worked", 0)) / len(crew_members) if crew_members else 0
+                        crew_log_hours += log_hours
+                        crew_log_cost += log_hours * 95
+                        unique_crew_members.add(crew_member)
             
             # Handle date properly - check if it's already a string or datetime object
             log_date = log.get("date", "")
