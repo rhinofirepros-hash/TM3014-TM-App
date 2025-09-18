@@ -602,33 +602,19 @@ const EmployeeManagement = ({ onBack }) => {
             </div>
 
             {/* Pay Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Base Pay ($/hour)*</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={newEmployee.base_pay}
-                  onChange={(e) => handleInputChange('base_pay', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="28.50"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Burden Cost ($/hour)*</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={newEmployee.burden_cost}
-                  onChange={(e) => handleInputChange('burden_cost', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="12.75"
-                />
-                <p className={`text-xs ${themeClasses.text.secondary}`}>
-                  Benefits, taxes, insurance, etc.
-                </p>
-              </div>
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Hourly Rate ($/hour)*</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={newEmployee.hourly_rate}
+                onChange={(e) => handleInputChange('hourly_rate', e.target.value)}
+                className={themeClasses.input}
+                placeholder="40.00"
+              />
+              <p className={`text-xs ${themeClasses.text.secondary}`}>
+                True hourly cost (not burdened rate)
+              </p>
             </div>
 
             {/* Hire Date */}
