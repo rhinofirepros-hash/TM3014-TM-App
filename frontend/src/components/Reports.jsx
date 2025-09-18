@@ -499,9 +499,13 @@ const Reports = ({ onBack }) => {
         </Card>
 
         {/* T&M Tags Table */}
-        <Card>
+        <Card className={`${
+          isDarkMode 
+            ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+            : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+        }`}>
           <CardHeader>
-            <CardTitle>T&M Tag History</CardTitle>
+            <CardTitle className={isDarkMode ? 'text-white' : 'text-gray-900'}>T&M Tag History</CardTitle>
           </CardHeader>
           <CardContent>
             {filteredTags.length === 0 ? (
