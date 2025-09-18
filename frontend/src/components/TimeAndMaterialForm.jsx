@@ -876,14 +876,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Title of T&M Tag */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Label className={`text-sm font-medium ${themeClasses.text.primary} flex items-center gap-1`}>
                 Title Of T&M Tag*
-                <Info className="w-4 h-4 text-gray-400" />
+                <Info className={`w-4 h-4 ${themeClasses.text.muted}`} />
               </Label>
               <Input
                 value={formData.tmTagTitle}
                 onChange={(e) => handleInputChange('tmTagTitle', e.target.value)}
-                className="w-full"
+                className={`w-full ${themeClasses.input}`}
               />
             </div>
 
