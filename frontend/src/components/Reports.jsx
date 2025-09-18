@@ -459,6 +459,7 @@ const Reports = ({ onBack }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 
