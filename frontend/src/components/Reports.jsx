@@ -22,7 +22,8 @@ import {
   Building,
   Mail,
   Clock,
-  User
+  User,
+  CheckCircle
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useTheme } from '../contexts/ThemeContext';
