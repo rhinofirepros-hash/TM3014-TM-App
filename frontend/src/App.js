@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import WorkerManagement from "./components/WorkerManagement";
 import Reports from "./components/Reports";
 import { Toaster } from "./components/ui/toaster";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
