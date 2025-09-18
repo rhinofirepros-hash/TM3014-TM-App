@@ -251,26 +251,30 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
           ))}
           
           {/* Totals Row */}
-          <TableRow className="bg-gray-50 font-medium">
-            <TableCell colSpan={2} className="text-right">
+          <TableRow className={`font-medium ${
+            isDarkMode 
+              ? 'bg-white/10 border-white/20' 
+              : 'bg-gray-50/80 border-gray-200'
+          }`}>
+            <TableCell colSpan={2} className={`text-right ${themeClasses.text.primary}`}>
               Total Labor Hours:
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getColumnTotal('stHours')}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getColumnTotal('otHours')}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getColumnTotal('dtHours')}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getColumnTotal('potHours')}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getColumnTotal('potHours')}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className={`text-center ${themeClasses.text.primary}`}>
               {getTotalHours()}
             </TableCell>
             <TableCell colSpan={2}></TableCell>
