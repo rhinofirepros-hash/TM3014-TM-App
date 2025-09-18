@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TimeAndMaterialForm from "./components/TimeAndMaterialForm";
 import PinLogin from "./components/PinLogin";
 import Dashboard from "./components/Dashboard";
-import WorkerManagement from "./components/WorkerManagement";
+import WorkerManagement from "./components/WorkerManagement"; // Keep existing for crew data
+import CrewManagement from "./components/WorkerManagement"; // Alias for consistency
 import Reports from "./components/Reports";
 import ProjectManagement from "./components/ProjectManagement";
 import EmployeeManagement from "./components/EmployeeManagement";
