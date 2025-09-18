@@ -172,7 +172,7 @@ async def get_tm_tags(skip: int = 0, limit: int = 100):
     tm_tags = await db.tm_tags.find().skip(skip).limit(limit).to_list(limit)
     return [TMTag(**tm_tag) for tm_tag in tm_tags]
 
-@api_router.get("/tm-tags/{tm_tag_id}", response_model=TMTag)
+@api_router.get("/tm-tags/{tm_tag_id}")
 async def get_tm_tag(tm_tag_id: str):
     tm_tag = await db.tm_tags.find_one({"id": tm_tag_id})
     if tm_tag:
