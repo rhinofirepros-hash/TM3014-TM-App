@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for TM3014 T&M Daily Tag App
-Tests all backend endpoints with realistic data
+Unified Backend API Testing for Enhanced T&M Management System
+Tests the new unified schema with forecasting capabilities
 """
 
 import requests
