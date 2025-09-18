@@ -530,6 +530,14 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
             Track Materials
           </Button>
           
+          <Button
+            onClick={() => setCurrentView('financial')}
+            className={`${themeClasses.button.primary} flex items-center gap-2 h-12`}
+          >
+            <DollarSign className="w-4 h-4" />
+            Financial Management
+          </Button>
+          
           <Button 
             onClick={() => handleNavigation('employees')} 
             className={`${themeClasses.button.secondary} h-12`}
