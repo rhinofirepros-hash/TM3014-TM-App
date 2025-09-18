@@ -20,6 +20,8 @@ const WorkerManagement = ({ onBack }) => {
     phone: '',
     email: ''
   });
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
   useEffect(() => {
