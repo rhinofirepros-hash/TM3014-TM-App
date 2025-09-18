@@ -135,24 +135,36 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
           {currentUser ? (
             // Already authenticated
             <div className="space-y-4">
-              <div className="flex items-center justify-center p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className={`flex items-center justify-center p-4 rounded-lg border ${
+                isDarkMode 
+                  ? 'bg-green-900/30 border-green-500/30' 
+                  : 'bg-green-50 border-green-200'
+              }`}>
                 <CheckCircle className="w-8 h-8 text-green-600 mr-3" />
                 <div className="text-center">
-                  <p className="text-green-800 font-medium">Connected Successfully!</p>
-                  <p className="text-green-600 text-sm">{currentUser.email}</p>
+                  <p className={`font-medium ${isDarkMode ? 'text-green-400' : 'text-green-800'}`}>Connected Successfully!</p>
+                  <p className={`text-sm ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>{currentUser.email}</p>
                 </div>
               </div>
 
               <div className="flex items-center justify-center gap-2">
-                <Badge variant="secondary" className="capitalize">
+                <Badge variant="secondary" className={`capitalize ${
+                  isDarkMode 
+                    ? 'bg-white/20 text-white border-white/30' 
+                    : 'bg-gray-100 text-gray-800 border-gray-200'
+                }`}>
                   {currentUser.provider}
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="outline" className={
+                  isDarkMode 
+                    ? 'border-white/30 text-white' 
+                    : 'border-gray-300 text-gray-700'
+                }>
                   {currentUser.name}
                 </Badge>
               </div>
 
-              <p className="text-sm text-gray-600 text-center">
+              <p className={`text-sm text-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 You can now send T&M tag emails directly from your {currentUser.provider} account.
               </p>
 
@@ -160,7 +172,11 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
                 <Button
                   onClick={handleLogout}
                   variant="outline"
-                  className="flex-1"
+                  className={`flex-1 ${
+                    isDarkMode 
+                      ? 'border-white/30 text-white hover:bg-white/10' 
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
                   disabled={isLoading}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
@@ -168,7 +184,7 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
                 </Button>
                 <Button
                   onClick={handleClose}
-                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
                 >
                   Continue
                 </Button>
