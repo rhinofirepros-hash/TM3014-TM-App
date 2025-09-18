@@ -6,6 +6,7 @@ import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
+import PDFGenerator from './PDFGenerator';
 import { 
   ArrowLeft, 
   FileText, 
