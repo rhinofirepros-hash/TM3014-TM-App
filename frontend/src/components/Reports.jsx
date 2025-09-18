@@ -1224,6 +1224,104 @@ const Reports = ({ onBack }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    
+    {/* T&M Tag Approval Modal */}
+    <Dialog open={showApprovalModal} onOpenChange={setShowApprovalModal}>
+      <DialogContent className={`sm:max-w-[500px] ${themeClasses.modal}`}>
+        <DialogHeader>
+          <DialogTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            Approve T&M Tag
+          </DialogTitle>
+        </DialogHeader>
+        
+        {pendingApprovalTag && (
+          <div className="space-y-4 py-4">
+            <div className={`p-4 rounded-lg border ${
+              isDarkMode 
+                ? 'bg-green-900/30 border-green-500/30' 
+                : 'bg-green-50 border-green-200'
+            }`}>
+              <p className="text-green-800 font-medium">✓ Ready for Approval</p>
+              <p className="text-green-700 text-sm mt-1">
+                This T&M tag was automatically generated from crew log activity and is ready for review and approval.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <div className={`p-4 rounded-lg ${
+                isDarkMode 
+                  ? 'bg-white/5 border-white/20' 
+                  : 'bg-gray-50 border-gray-200'
+              }`}>
+                <h4 className={`font-semibold mb-2 ${themeClasses.text.primary}`}>T&M Tag Details:</h4>
+                <div className="space-y-2 text-sm">
+                  <p className={themeClasses.text.primary}>
+                    <span className="font-medium">Project:</span> {pendingApprovalTag.project}
+                  </p>
+                  <p className={themeClasses.text.primary}>
+                    <span className="font-medium">Title:</span> {pendingApprovalTag.title}
+                  </p>
+                  <p className={themeClasses.text.primary}>
+                    <span className="font-medium">Date:</span> {new Date(pendingApprovalTag.date).toLocaleDateString()}
+                  </p>
+                  <p className={themeClasses.text.primary}>
+                    <span className="font-medium">Total Hours:</span> {pendingApprovalTag.totalHours} hrs
+                  </p>
+                  <p className={themeClasses.text.primary}>
+                    <span className="font-medium">Total Cost:</span> ${((pendingApprovalTag.laborCost || 0) + (pendingApprovalTag.materialCost || 0)).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              
+              <div className={`p-3 rounded-lg ${
+                isDarkMode 
+                  ? 'bg-blue-900/30 border-blue-500/30' 
+                  : 'bg-blue-50 border-blue-200'
+              }`}>
+                <p className={`text-sm ${themeClasses.text.secondary}`}>
+                  <strong>What happens when you approve:</strong><br />
+                  • T&M tag status will change from "Pending Review" to "Submitted"<br />
+                  • Tag will be registered in the system and ready for PDF generation<br />
+                  • Crew log sync status will be updated to "Approved"
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowApprovalModal(false);
+              setPendingApprovalTag(null);
+            }}
+            disabled={isSaving}
+            className={themeClasses.button.secondary}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleApproveTag}
+            disabled={isSaving}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            {isSaving ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Approving...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Approve & Register
+              </>
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
