@@ -34,7 +34,10 @@ const Reports = ({ onBack }) => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTag, setEditingTag] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   const { toast } = useToast();
