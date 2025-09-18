@@ -1006,6 +1006,108 @@ const Reports = ({ onBack }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    {/* Edit T&M Tag Modal */}
+    <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+      <DialogContent className={`sm:max-w-[600px] ${themeClasses.modal}`}>
+        <DialogHeader>
+          <DialogTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
+            <FileText className="w-5 h-5" />
+            Edit T&M Tag
+          </DialogTitle>
+        </DialogHeader>
+        
+        {editingTag && (
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>T&M Tag Title*</Label>
+                <Input
+                  value={editingTag.title}
+                  onChange={(e) => setEditingTag(prev => ({ ...prev, title: e.target.value }))}
+                  className={themeClasses.input}
+                  placeholder="Enter T&M tag title"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Cost Code</Label>
+                <Input
+                  value={editingTag.costCode}
+                  onChange={(e) => setEditingTag(prev => ({ ...prev, costCode: e.target.value }))}
+                  className={themeClasses.input}
+                  placeholder="Enter cost code"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Company Name</Label>
+                <Input
+                  value={editingTag.companyName}
+                  onChange={(e) => setEditingTag(prev => ({ ...prev, companyName: e.target.value }))}
+                  className={themeClasses.input}
+                  placeholder="Enter company name"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Foreman</Label>
+                <Input
+                  value={editingTag.foreman}
+                  onChange={(e) => setEditingTag(prev => ({ ...prev, foreman: e.target.value }))}
+                  className={themeClasses.input}
+                  placeholder="Enter foreman name"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>GC Email</Label>
+              <Input
+                type="email"
+                value={editingTag.gcEmail}
+                onChange={(e) => setEditingTag(prev => ({ ...prev, gcEmail: e.target.value }))}
+                className={themeClasses.input}
+                placeholder="gc@company.com"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Description of Work</Label>
+              <Textarea
+                value={editingTag.description}
+                onChange={(e) => setEditingTag(prev => ({ ...prev, description: e.target.value }))}
+                className={themeClasses.input}
+                placeholder="Describe the work performed..."
+                rows={4}
+              />
+            </div>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowEditModal(false);
+              setEditingTag(null);
+            }}
+            className={themeClasses.button.secondary}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveEdit}
+            disabled={isSaving || !editingTag?.title}
+            className={themeClasses.button.primary}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
