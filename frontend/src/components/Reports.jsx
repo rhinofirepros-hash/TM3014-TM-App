@@ -394,24 +394,24 @@ const Reports = ({ onBack }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className={`${themeClasses.card} shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total T&M Tags</p>
-                  <p className="text-2xl font-bold text-gray-900">{filteredTags.length}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total T&M Tags</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{filteredTags.length}</p>
                 </div>
-                <FileText className="w-8 h-8 text-blue-600" />
+                <FileText className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={`${themeClasses.card} shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Hours</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.hours}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Hours</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{stats.hours}</p>
                 </div>
                 <Users className="w-8 h-8 text-green-600" />
               </div>
