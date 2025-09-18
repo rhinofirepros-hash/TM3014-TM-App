@@ -1260,6 +1260,15 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                 ) : (
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button 
+                      onClick={handleSubmitForm}
+                      disabled={isGeneratingPDF}
+                      className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="hidden sm:inline">{isGeneratingPDF ? 'Submitting...' : 'Submit T&M Tag'}</span>
+                      <span className="sm:hidden">{isGeneratingPDF ? 'Submitting...' : 'Submit'}</span>
+                    </Button>
+                    <Button 
                       onClick={() => setShowEmailComposer(true)}
                       disabled={isGeneratingPDF || !generatedPDFData}
                       className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 h-10"
@@ -1271,7 +1280,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     <Button 
                       onClick={handleSubmitAndEmail}
                       disabled={isGeneratingPDF}
-                      className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 h-10"
+                      className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2 h-10"
                     >
                       <Download className="w-4 h-4" />
                       <span className="hidden sm:inline">{isGeneratingPDF ? 'Generating...' : 'Generate PDF'}</span>
