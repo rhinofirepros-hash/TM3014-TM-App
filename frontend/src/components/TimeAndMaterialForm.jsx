@@ -249,6 +249,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
       // Save to backend database
       try {
         const tmTagData = {
+          project_id: formData.projectId, // Link to project
           project_name: formData.projectName,
           cost_code: formData.costCode,
           date_of_work: formData.dateOfWork.toISOString(),
