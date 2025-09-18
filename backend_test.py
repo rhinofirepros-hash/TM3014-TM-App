@@ -719,7 +719,7 @@ class TMTagAPITester:
             
             if response.status_code == 200:
                 response_data = response.json()
-                if response_data.get("base_pay") == update_data["base_pay"]:
+                if response_data.get("hourly_rate") == update_data["hourly_rate"]:
                     self.log_result("employees", "Employee update", True)
                     return response_data
                 else:
