@@ -101,6 +101,10 @@ function App() {
             <Reports 
               onBack={handleBackToDashboard}
             />
+          ) : currentView === 'projects' ? (
+            <ProjectManagement 
+              onBack={handleBackToDashboard}
+            />
           ) : (
             <TimeAndMaterialForm 
               selectedProject={selectedProject}
