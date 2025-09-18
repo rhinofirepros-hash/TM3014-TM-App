@@ -329,8 +329,8 @@ const CrewManagement = ({ onBack }) => {
     const matchesSearch = !searchTerm || 
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.position.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = !statusFilter || member.status === statusFilter;
-    const matchesPosition = !positionFilter || member.position === positionFilter;
+    const matchesStatus = statusFilter === '' || statusFilter === 'all' || member.status === statusFilter;
+    const matchesPosition = positionFilter === '' || positionFilter === 'all' || member.position === positionFilter;
     
     return matchesSearch && matchesStatus && matchesPosition;
   });
