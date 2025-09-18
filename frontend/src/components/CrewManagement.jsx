@@ -75,8 +75,9 @@ const CrewManagement = ({ onBack }) => {
       if (backendUrl) {
         // Load from employees endpoint (for cost data)
         const employeesResponse = await fetch(`${backendUrl}/api/employees`);
+        let employeesData = [];
         if (employeesResponse.ok) {
-          const employeesData = await employeesResponse.json();
+          employeesData = await employeesResponse.json();
           setCrewMembers(employeesData);
         }
 
