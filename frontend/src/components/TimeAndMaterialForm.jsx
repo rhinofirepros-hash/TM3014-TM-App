@@ -1129,7 +1129,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                         onChange={(e) => handleInputChange('autoEmail', e.target.checked)}
                         className="rounded border-gray-300"
                       />
-                      <span className="text-sm text-gray-700">Auto-email to GC</span>
+                      <span className={`text-sm ${themeClasses.text.primary}`}>Auto-email to GC</span>
                     </label>
                     <label className="flex items-center space-x-2">
                       <input 
