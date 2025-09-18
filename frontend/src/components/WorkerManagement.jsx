@@ -283,25 +283,25 @@ const WorkerManagement = ({ onBack }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Average Rate</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
                     ${workers.length > 0 ? (workers.reduce((sum, w) => sum + w.rate, 0) / workers.length).toFixed(0) : '0'}
                   </p>
                 </div>
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-green-500' : 'bg-green-600'}`}>
                   <span className="text-white font-bold text-sm">$</span>
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={`${themeClasses.card} ${themeClasses.cardHover}`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Workers</p>
-                  <p className="text-2xl font-bold text-gray-900">{workers.length}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Workers</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{workers.length}</p>
                 </div>
-                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-purple-500' : 'bg-purple-600'}`}>
                   <Users className="w-4 h-4 text-white" />
                 </div>
               </div>
