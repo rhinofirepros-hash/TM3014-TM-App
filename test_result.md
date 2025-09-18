@@ -581,12 +581,11 @@ frontend:
 
 test_plan:
   current_focus:
-    - "New enhanced features testing completed successfully"
-    - "Sortable Crew Log Display verified and functional"
-    - "T&M Tag Approval Workflow verified and functional"
+    - "Financial Management System API endpoints testing completed successfully"
+    - "All financial endpoints (invoices, payables, cashflow, profitability) fully operational"
   stuck_tasks: []
   test_all: true
-  test_priority: "enhanced_features_testing_completed"
+  test_priority: "financial_management_testing_completed"
 
 agent_communication:
   - agent: "main"
