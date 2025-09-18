@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Plus, Edit, Trash2, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 
 const WorkerManagement = ({ onBack }) => {
   const [workers, setWorkers] = useState([]);
