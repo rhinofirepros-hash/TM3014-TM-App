@@ -21,6 +21,7 @@ import {
   Moon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 import oauthEmailService from '../services/oauthEmailService';
 import EmailAuthModal from './EmailAuthModal';
 
