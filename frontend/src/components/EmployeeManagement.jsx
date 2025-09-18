@@ -715,7 +715,7 @@ const EmployeeManagement = ({ onBack }) => {
             </Button>
             <Button 
               onClick={handleCreateEmployee}
-              disabled={!newEmployee.name || !newEmployee.position || !newEmployee.base_pay || !newEmployee.burden_cost}
+              disabled={!newEmployee.name || !newEmployee.position || !newEmployee.hourly_rate}
               className={themeClasses.button.primary}
             >
               Add Employee
