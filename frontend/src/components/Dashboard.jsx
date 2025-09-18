@@ -186,7 +186,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
               />
               <div>
                 <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                  T&M Dashboard
+                  Rhino Dashboard
                 </h1>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   Welcome
