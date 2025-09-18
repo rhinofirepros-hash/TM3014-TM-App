@@ -317,6 +317,35 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
       setIsGeneratingPDF(false);
     }
   };
+
+  const resetForm = () => {
+    setFormData({
+      projectName: selectedProject?.name || "",
+      costCode: '',
+      dateOfWork: new Date(),
+      companyName: '',
+      tmTagTitle: '',
+      descriptionOfWork: '',
+      laborEntries: [],
+      materialEntries: [],
+      equipmentEntries: [],
+      otherEntries: [],
+      gcEmail: '',
+      autoEmail: true,
+      downloadPDF: true,
+      signature: null,
+      signerName: '',
+      signerTitle: 'Foreman'
+    });
+    setIsCustomProject(false);
+    setCustomProjectName('');
+    setIsCustomCompany(false);
+    setCustomCompanyName('');
+    setIsCustomEmail(false);
+    setCustomEmail('');
+  };
+
+  const handleSubmitAndEmail = async () => {
     if (!validateForm()) return;
     
     if (!formData.signature) {
