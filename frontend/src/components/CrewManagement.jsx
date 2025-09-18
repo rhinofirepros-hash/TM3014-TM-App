@@ -70,52 +70,12 @@ const CrewManagement = ({ onBack }) => {
 
   const loadCrewMembers = async () => {
     try {
-      // Load from both endpoints to sync data
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       if (backendUrl) {
-        // Load from employees endpoint (for cost data)
         const employeesResponse = await fetch(`${backendUrl}/api/employees`);
-        let employeesData = [];
         if (employeesResponse.ok) {
-          employeesData = await employeesResponse.json();
+          const employeesData = await employeesResponse.json();
           setCrewMembers(employeesData);
-        }
-
-        // Also load from workers endpoint and sync if needed
-        const workersResponse = await fetch(`${backendUrl}/api/workers`);
-        if (workersResponse.ok) {
-          const workersData = await workersResponse.json();
-          
-          // Sync any workers not in employees to employees
-          for (const worker of workersData) {
-            const existsInEmployees = employeesData.some(emp => emp.name === worker.name);
-            if (!existsInEmployees) {
-              // Create employee record for worker
-              const employeeData = {
-                name: worker.name,
-                base_pay: worker.hourlyRate || 30, // Default rate
-                burden_cost: (worker.hourlyRate || 30) * 0.4, // 40% burden cost
-                position: worker.position || 'Helper',
-                hire_date: new Date().toISOString(),
-                phone: worker.phone || '',
-                email: worker.email || '',
-                emergency_contact: ''
-              };
-
-              await fetch(`${backendUrl}/api/employees`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(employeeData)
-              });
-            }
-          }
-          
-          // Reload employees after sync
-          const updatedResponse = await fetch(`${backendUrl}/api/employees`);
-          if (updatedResponse.ok) {
-            const updatedData = await updatedResponse.json();
-            setCrewMembers(updatedData);
-          }
         }
       }
     } catch (error) {
