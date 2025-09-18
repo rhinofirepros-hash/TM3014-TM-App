@@ -476,7 +476,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Clickable statistics cards navigation testing completed successfully"
+    - "Project type functionality testing completed successfully"
   stuck_tasks: []
   test_all: false
   test_priority: "review_request_completed"
