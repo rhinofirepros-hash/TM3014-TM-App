@@ -31,7 +31,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
 
-const CrewLogging = ({ project, onBack }) => {
+const CrewLogging = ({ project, onBack, onDataUpdate }) => {
   const [crewLogs, setCrewLogs] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
