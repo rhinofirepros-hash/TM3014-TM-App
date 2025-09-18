@@ -240,7 +240,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
                     Profit Margin
                   </p>
                   <p className={`text-3xl font-bold ${projectStats.profitMargin >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {projectStats.profitMargin.toFixed(1)}%
+                    {(projectStats.profitMargin || 0).toFixed(1)}%
                   </p>
                 </div>
                 <PieChart className={`w-8 h-8 ${projectStats.profitMargin >= 0 ? 'text-green-500' : 'text-red-500'}`} />
