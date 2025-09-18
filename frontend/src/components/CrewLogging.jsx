@@ -23,7 +23,9 @@ import {
   CloudRain,
   Sun,
   Cloud,
-  Filter
+  Filter,
+  RefreshCw,
+  Zap
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
@@ -39,12 +41,6 @@ const CrewLogging = ({ project, onBack }) => {
     date: new Date(),
     crew_members: [],
     work_description: '',
-    hours_worked: '',
-    per_diem: '',
-    hotel_cost: '',
-    gas_expense: '',
-    other_expenses: '',
-    expense_notes: '',
     weather_conditions: 'clear'
   });
   
@@ -60,14 +56,16 @@ const CrewLogging = ({ project, onBack }) => {
   ];
 
   useEffect(() => {
-    loadCrewLogs();
-    loadEmployees();
+    if (project?.id) {
+      loadCrewLogs();
+      loadEmployees();
+    }
   }, [project]);
 
   const loadCrewLogs = async () => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      if (backendUrl && project) {
+      if (backendUrl && project?.id) {
         const response = await fetch(`${backendUrl}/api/crew-logs?project_id=${project.id}`);
         if (response.ok) {
           const logs = await response.json();
@@ -119,13 +117,7 @@ const CrewLogging = ({ project, onBack }) => {
         })),
         work_description: newLog.work_description,
         weather_conditions: newLog.weather_conditions,
-        expenses: {
-          per_diem: parseFloat(newLog.per_diem) || 0,
-          hotel_cost: parseFloat(newLog.hotel_cost) || 0,
-          gas_expense: parseFloat(newLog.gas_expense) || 0,
-          other_expenses: parseFloat(newLog.other_expenses) || 0,
-          expense_notes: newLog.expense_notes
-        }
+        expenses: {}
       };
 
       const response = await fetch(`${backendUrl}/api/crew-logs`, {
@@ -197,127 +189,77 @@ const CrewLogging = ({ project, onBack }) => {
       }));
     }
   };
-        toast({
-          title: "Backend Error",
-          description: "Backend URL not configured",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const logData = {
-        project_id: project.id,
-        project_name: project.name,
-        date: newLog.date.toISOString(),
-        crew_members: newLog.crew_members,
-        work_description: newLog.work_description,
-        hours_worked: parseFloat(newLog.hours_worked) || 0,
-        per_diem: parseFloat(newLog.per_diem) || 0,
-        hotel_cost: parseFloat(newLog.hotel_cost) || 0,
-        gas_expense: parseFloat(newLog.gas_expense) || 0,
-        other_expenses: parseFloat(newLog.other_expenses) || 0,
-        expense_notes: newLog.expense_notes,
-        weather_conditions: newLog.weather_conditions
-      };
-
-      const response = await fetch(`${backendUrl}/api/crew-logs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(logData)
-      });
-
-      if (response.ok) {
-        const createdLog = await response.json();
-        setCrewLogs(prev => [createdLog, ...prev]);
-        setShowCreateModal(false);
-        resetNewLog();
-        
-        toast({
-          title: "Crew Log Created",
-          description: `Crew log for ${format(newLog.date, 'MM/dd/yyyy')} has been created.`,
-        });
-      } else {
-        throw new Error('Failed to create crew log');
-      }
-    } catch (error) {
-      toast({
-        title: "Creation Failed",
-        description: "Failed to create crew log. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDeleteLog = async (logId) => {
-    try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      if (!backendUrl) return;
-
-      const response = await fetch(`${backendUrl}/api/crew-logs/${logId}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        setCrewLogs(prev => prev.filter(log => log.id !== logId));
-        toast({
-          title: "Log Deleted",
-          description: "Crew log has been deleted successfully.",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Deletion Failed",
-        description: "Failed to delete crew log.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const resetNewLog = () => {
     setNewLog({
       date: new Date(),
       crew_members: [],
       work_description: '',
-      hours_worked: '',
-      per_diem: '',
-      hotel_cost: '',
-      gas_expense: '',
-      other_expenses: '',
-      expense_notes: '',
       weather_conditions: 'clear'
     });
   };
 
-  const handleInputChange = (field, value) => {
+  const addCrewMember = () => {
+    const newMember = {
+      id: Date.now(),
+      name: '',
+      st_hours: 0,
+      ot_hours: 0,
+      dt_hours: 0,
+      pot_hours: 0,
+      total_hours: 0
+    };
     setNewLog(prev => ({
       ...prev,
-      [field]: value
+      crew_members: [...prev.crew_members, newMember]
     }));
   };
 
-  const handleCrewMemberToggle = (employeeName) => {
+  const updateCrewMember = (index, field, value) => {
+    setNewLog(prev => {
+      const updatedMembers = [...prev.crew_members];
+      updatedMembers[index] = {
+        ...updatedMembers[index],
+        [field]: value
+      };
+
+      // Auto-calculate total hours
+      if (field.includes('hours')) {
+        const member = updatedMembers[index];
+        member.total_hours = 
+          (parseFloat(member.st_hours) || 0) +
+          (parseFloat(member.ot_hours) || 0) +
+          (parseFloat(member.dt_hours) || 0) +
+          (parseFloat(member.pot_hours) || 0);
+      }
+
+      return {
+        ...prev,
+        crew_members: updatedMembers
+      };
+    });
+  };
+
+  const removeCrewMember = (index) => {
     setNewLog(prev => ({
       ...prev,
-      crew_members: prev.crew_members.includes(employeeName)
-        ? prev.crew_members.filter(name => name !== employeeName)
-        : [...prev.crew_members, employeeName]
+      crew_members: prev.crew_members.filter((_, i) => i !== index)
     }));
   };
 
-  const getTotalExpenses = (log) => {
-    return (log.per_diem || 0) + (log.hotel_cost || 0) + (log.gas_expense || 0) + (log.other_expenses || 0);
-  };
+  const totalHours = crewLogs.reduce((sum, log) => {
+    return sum + log.crew_members?.reduce((memberSum, member) => 
+      memberSum + (member.total_hours || 0), 0) || 0;
+  }, 0);
 
-  const getWeatherIcon = (weather) => {
-    const option = weatherOptions.find(opt => opt.value === weather);
-    return option ? option.icon : Sun;
-  };
+  const totalDays = new Set(crewLogs.map(log => 
+    new Date(log.date).toISOString().split('T')[0]
+  )).size;
 
-  const filteredLogs = filterDate 
-    ? crewLogs.filter(log => format(new Date(log.date), 'yyyy-MM-dd') === filterDate)
-    : crewLogs;
+  const filteredLogs = crewLogs.filter(log => {
+    if (!filterDate) return true;
+    return log.date.includes(filterDate);
+  });
 
   return (
     <>
@@ -329,17 +271,17 @@ const CrewLogging = ({ project, onBack }) => {
               <Button 
                 variant="outline" 
                 onClick={onBack}
-                className={`flex items-center gap-2 ${themeClasses.button.secondary}`}
+                className={themeClasses.button.secondary}
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Project
               </Button>
               <div>
                 <h1 className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                  Crew Logging
+                  Crew Logging - {project?.name}
                 </h1>
                 <p className={themeClasses.text.secondary}>
-                  {project.name} - Daily crew activities and expenses
+                  Log crew activities and sync with T&M data
                 </p>
               </div>
             </div>
@@ -349,203 +291,166 @@ const CrewLogging = ({ project, onBack }) => {
               className={themeClasses.button.primary}
             >
               <Plus className="w-4 h-4 mr-2" />
-              Log Daily Activity
+              Log Crew Activity
             </Button>
           </div>
 
-          {/* Statistics Cards */}
+          {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className={`${themeClasses.card} shadow-xl`}>
+            <Card className={`${themeClasses.card} shadow-lg`}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
-                      Total Logs
-                    </p>
-                    <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      {crewLogs.length}
-                    </p>
+                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Logs</p>
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{crewLogs.length}</p>
                   </div>
                   <Users className="w-8 h-8 text-blue-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className={`${themeClasses.card} shadow-xl`}>
+            <Card className={`${themeClasses.card} shadow-lg`}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
-                      Total Hours
-                    </p>
-                    <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      {crewLogs.reduce((sum, log) => sum + (log.hours_worked || 0), 0).toFixed(1)}
-                    </p>
+                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Hours</p>
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{totalHours.toFixed(1)}</p>
                   </div>
                   <Clock className="w-8 h-8 text-green-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className={`${themeClasses.card} shadow-xl`}>
+            <Card className={`${themeClasses.card} shadow-lg`}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
-                      Total Expenses
-                    </p>
-                    <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      ${crewLogs.reduce((sum, log) => sum + getTotalExpenses(log), 0).toLocaleString()}
-                    </p>
+                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Work Days</p>
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{totalDays}</p>
                   </div>
-                  <DollarSign className="w-8 h-8 text-red-500" />
+                  <CalendarIcon className="w-8 h-8 text-purple-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className={`${themeClasses.card} shadow-xl`}>
+            <Card className={`${themeClasses.card} shadow-lg`}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
-                      Avg Daily Hours
-                    </p>
-                    <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      {crewLogs.length > 0 
-                        ? (crewLogs.reduce((sum, log) => sum + (log.hours_worked || 0), 0) / crewLogs.length).toFixed(1)
-                        : '0.0'
-                      }
-                    </p>
+                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Labor Cost</p>
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${(totalHours * 95).toLocaleString()}</p>
                   </div>
-                  <Clock className="w-8 h-8 text-purple-500" />
+                  <DollarSign className="w-8 h-8 text-orange-500" />
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Filters */}
-          <div className="mb-6">
-            <div className="flex gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <Filter className={`w-4 h-4 ${themeClasses.text.secondary}`} />
-                <Label className={themeClasses.text.secondary}>Filter by Date:</Label>
-              </div>
-              <Input
-                type="date"
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                className={`w-48 ${themeClasses.input}`}
-              />
-              {filterDate && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setFilterDate('')}
-                  className={themeClasses.button.secondary}
-                >
-                  Clear Filter
-                </Button>
-              )}
-            </div>
           </div>
 
           {/* Crew Logs Table */}
-          {filteredLogs.length === 0 ? (
-            <Card className={`${themeClasses.card} shadow-xl`}>
-              <CardContent className="p-12 text-center">
-                <Users className={`w-16 h-16 mx-auto mb-4 ${themeClasses.text.muted}`} />
-                <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>
-                  {filterDate ? 'No Logs for Selected Date' : 'No Crew Logs Yet'}
-                </h3>
-                <p className={`mb-6 ${themeClasses.text.secondary}`}>
-                  {filterDate 
-                    ? 'Try selecting a different date or clear the filter.'
-                    : 'Start logging daily crew activities and expenses.'
-                  }
-                </p>
-                <Button 
-                  onClick={() => setShowCreateModal(true)}
-                  className={themeClasses.button.primary}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create First Log
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className={`${themeClasses.card} shadow-xl`}>
-              <CardHeader>
+          <Card className={`${themeClasses.card} shadow-lg`}>
+            <CardHeader>
+              <div className="flex justify-between items-center">
                 <CardTitle className={themeClasses.text.primary}>
                   Crew Activity Logs ({filteredLogs.length})
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
+                <div className="flex items-center gap-4">
+                  <Input
+                    placeholder="Filter by date (YYYY-MM-DD)"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className={`w-48 ${themeClasses.input}`}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setFilterDate('')}
+                    className={themeClasses.button.secondary}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {filteredLogs.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users className={`w-16 h-16 mx-auto mb-4 ${themeClasses.text.muted}`} />
+                  <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>
+                    No Crew Logs Yet
+                  </h3>
+                  <p className={`mb-6 ${themeClasses.text.secondary}`}>
+                    Start logging crew activities to track project progress.
+                  </p>
+                  <Button 
+                    onClick={() => setShowCreateModal(true)}
+                    className={themeClasses.button.primary}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create First Log
+                  </Button>
+                </div>
+              ) : (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
                         <TableHead className={themeClasses.text.primary}>Date</TableHead>
                         <TableHead className={themeClasses.text.primary}>Crew Members</TableHead>
+                        <TableHead className={themeClasses.text.primary}>Total Hours</TableHead>
                         <TableHead className={themeClasses.text.primary}>Work Description</TableHead>
-                        <TableHead className={themeClasses.text.primary}>Hours</TableHead>
                         <TableHead className={themeClasses.text.primary}>Weather</TableHead>
-                        <TableHead className={themeClasses.text.primary}>Expenses</TableHead>
+                        <TableHead className={themeClasses.text.primary}>Sync Status</TableHead>
                         <TableHead className={themeClasses.text.primary}>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredLogs.map((log) => {
-                        const WeatherIcon = getWeatherIcon(log.weather_conditions);
+                        const logTotalHours = log.crew_members?.reduce((sum, member) => 
+                          sum + (member.total_hours || 0), 0) || 0;
+                        
                         return (
                           <TableRow key={log.id} className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
                             <TableCell className={themeClasses.text.primary}>
                               {format(new Date(log.date), 'MM/dd/yyyy')}
                             </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-1">
-                                {log.crew_members.slice(0, 2).map((member, index) => (
-                                  <Badge key={index} variant="outline" className="text-xs">
-                                    {member}
-                                  </Badge>
-                                ))}
-                                {log.crew_members.length > 2 && (
-                                  <Badge variant="outline" className="text-xs">
-                                    +{log.crew_members.length - 2} more
-                                  </Badge>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell className={`max-w-xs truncate ${themeClasses.text.primary}`}>
-                              {log.work_description}
+                            <TableCell className={themeClasses.text.primary}>
+                              {log.crew_members?.length || 0} members
                             </TableCell>
                             <TableCell className={themeClasses.text.primary}>
-                              {log.hours_worked} hrs
+                              {logTotalHours.toFixed(1)}h
+                            </TableCell>
+                            <TableCell className={`max-w-xs truncate ${themeClasses.text.secondary}`}>
+                              {log.work_description || 'No description'}
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
-                                <WeatherIcon className={`w-4 h-4 ${themeClasses.text.secondary}`} />
-                                <span className={`capitalize text-sm ${themeClasses.text.secondary}`}>
-                                  {log.weather_conditions}
-                                </span>
-                              </div>
+                              <Badge className="bg-blue-100 text-blue-800">
+                                {weatherOptions.find(w => w.value === log.weather_conditions)?.label || 'Clear'}
+                              </Badge>
                             </TableCell>
-                            <TableCell className={themeClasses.text.primary}>
-                              ${getTotalExpenses(log).toLocaleString()}
+                            <TableCell>
+                              {log.synced_to_tm ? (
+                                <Badge className="bg-green-100 text-green-800">
+                                  <Zap className="w-3 h-3 mr-1" />
+                                  Synced
+                                </Badge>
+                              ) : (
+                                <Badge className="bg-yellow-100 text-yellow-800">
+                                  Pending
+                                </Badge>
+                              )}
                             </TableCell>
                             <TableCell>
                               <div className="flex gap-2">
                                 <Button
-                                  size="sm"
                                   variant="outline"
-                                  onClick={() => setSelectedLog(log)}
+                                  size="sm"
                                   className={themeClasses.button.secondary}
                                 >
                                   <Edit className="w-4 h-4" />
                                 </Button>
                                 <Button
-                                  size="sm"
                                   variant="outline"
-                                  onClick={() => handleDeleteLog(log.id)}
+                                  size="sm"
                                   className="text-red-600 hover:bg-red-50"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -558,24 +463,26 @@ const CrewLogging = ({ project, onBack }) => {
                     </TableBody>
                   </Table>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      {/* Create/Edit Crew Log Modal */}
+      {/* Create Crew Log Modal */}
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className={`sm:max-w-[700px] ${themeClasses.modal}`}>
+        <DialogContent className={`max-w-4xl max-h-[90vh] overflow-y-auto ${themeClasses.modal}`}>
           <DialogHeader>
-            <DialogTitle className={themeClasses.text.primary}>Log Daily Crew Activity</DialogTitle>
+            <DialogTitle className={themeClasses.text.primary}>
+              Log Crew Activity
+            </DialogTitle>
           </DialogHeader>
           
-          <div className="grid gap-4 py-4 max-h-96 overflow-y-auto">
-            {/* Date and Weather */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Date*</Label>
+          <div className="space-y-6">
+            {/* Date Selection with Auto-Populate */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Date *</Label>
+              <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -593,146 +500,159 @@ const CrewLogging = ({ project, onBack }) => {
                     <Calendar
                       mode="single"
                       selected={newLog.date}
-                      onSelect={(date) => handleInputChange('date', date)}
+                      onSelect={(date) => handleAutoPopulate(date)}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleAutoPopulate(newLog.date)}
+                  className={themeClasses.button.secondary}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Auto-Fill
+                </Button>
               </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Weather Conditions</Label>
-                <Select value={newLog.weather_conditions} onValueChange={(value) => handleInputChange('weather_conditions', value)}>
-                  <SelectTrigger className={themeClasses.input}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className={themeClasses.modal}>
-                    {weatherOptions.map((option) => {
-                      const IconComponent = option.icon;
-                      return (
-                        <SelectItem key={option.value} value={option.value}>
-                          <div className="flex items-center gap-2">
-                            <IconComponent className="w-4 h-4" />
-                            {option.label}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Crew Members Selection */}
-            <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Crew Members*</Label>
-              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
-                {employees.map((employee) => (
-                  <label key={employee.id} className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={newLog.crew_members.includes(employee.name)}
-                      onChange={() => handleCrewMemberToggle(employee.name)}
-                      className="rounded"
-                    />
-                    <span className={`text-sm ${themeClasses.text.primary}`}>{employee.name}</span>
-                  </label>
-                ))}
-              </div>
-              {newLog.crew_members.length === 0 && (
-                <p className={`text-xs ${themeClasses.text.secondary}`}>
-                  Select at least one crew member
-                </p>
-              )}
+              <p className={`text-xs ${themeClasses.text.secondary}`}>
+                Auto-fill will load existing crew data from T&M tags or previous logs for this date
+              </p>
             </div>
 
             {/* Work Description */}
             <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Work Description*</Label>
+              <Label className={themeClasses.text.primary}>Work Description</Label>
               <Textarea
                 value={newLog.work_description}
-                onChange={(e) => handleInputChange('work_description', e.target.value)}
+                onChange={(e) => setNewLog(prev => ({ ...prev, work_description: e.target.value }))}
                 className={themeClasses.input}
-                placeholder="Describe the work performed today..."
+                placeholder="Describe the work performed..."
                 rows={3}
               />
             </div>
 
-            {/* Hours and Expenses */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Hours Worked*</Label>
-                <Input
-                  type="number"
-                  step="0.5"
-                  value={newLog.hours_worked}
-                  onChange={(e) => handleInputChange('hours_worked', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="8.0"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Per Diem ($)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={newLog.per_diem}
-                  onChange={(e) => handleInputChange('per_diem', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Hotel Cost ($)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={newLog.hotel_cost}
-                  onChange={(e) => handleInputChange('hotel_cost', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="0.00"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Gas Expense ($)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={newLog.gas_expense}
-                  onChange={(e) => handleInputChange('gas_expense', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
-
+            {/* Weather Conditions */}
             <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Other Expenses ($)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={newLog.other_expenses}
-                onChange={(e) => handleInputChange('other_expenses', e.target.value)}
-                className={themeClasses.input}
-                placeholder="0.00"
-              />
+              <Label className={themeClasses.text.primary}>Weather Conditions</Label>
+              <Select value={newLog.weather_conditions} onValueChange={(value) => setNewLog(prev => ({ ...prev, weather_conditions: value }))}>
+                <SelectTrigger className={themeClasses.input}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={themeClasses.modal}>
+                  {weatherOptions.map((weather) => (
+                    <SelectItem key={weather.value} value={weather.value}>
+                      <div className="flex items-center gap-2">
+                        <weather.icon className="w-4 h-4" />
+                        {weather.label}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            {/* Expense Notes */}
-            <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Expense Notes</Label>
-              <Textarea
-                value={newLog.expense_notes}
-                onChange={(e) => handleInputChange('expense_notes', e.target.value)}
-                className={themeClasses.input}
-                placeholder="Additional notes about expenses..."
-                rows={2}
-              />
+            {/* Crew Members */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Label className={themeClasses.text.primary}>Crew Members</Label>
+                <Button
+                  type="button"
+                  onClick={addCrewMember}
+                  size="sm"
+                  className={themeClasses.button.primary}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Member
+                </Button>
+              </div>
+
+              {newLog.crew_members.map((member, index) => (
+                <Card key={member.id} className={themeClasses.card}>
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                      <div className="md:col-span-2">
+                        <Label className={`text-sm ${themeClasses.text.primary}`}>Name</Label>
+                        <Select 
+                          value={member.name} 
+                          onValueChange={(value) => updateCrewMember(index, 'name', value)}
+                        >
+                          <SelectTrigger className={themeClasses.input}>
+                            <SelectValue placeholder="Select employee" />
+                          </SelectTrigger>
+                          <SelectContent className={themeClasses.modal}>
+                            {employees.map((employee) => (
+                              <SelectItem key={employee.id} value={employee.name}>
+                                {employee.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label className={`text-sm ${themeClasses.text.primary}`}>ST Hours</Label>
+                        <Input
+                          type="number"
+                          step="0.5"
+                          value={member.st_hours || ''}
+                          onChange={(e) => updateCrewMember(index, 'st_hours', e.target.value)}
+                          className={themeClasses.input}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className={`text-sm ${themeClasses.text.primary}`}>OT Hours</Label>
+                        <Input
+                          type="number"
+                          step="0.5"
+                          value={member.ot_hours || ''}
+                          onChange={(e) => updateCrewMember(index, 'ot_hours', e.target.value)}
+                          className={themeClasses.input}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className={`text-sm ${themeClasses.text.primary}`}>DT Hours</Label>
+                        <Input
+                          type="number"
+                          step="0.5"
+                          value={member.dt_hours || ''}
+                          onChange={(e) => updateCrewMember(index, 'dt_hours', e.target.value)}
+                          className={themeClasses.input}
+                        />
+                      </div>
+                      
+                      <div className="flex items-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeCrewMember(index)}
+                          className="text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 text-sm text-right">
+                      <span className={themeClasses.text.secondary}>
+                        Total Hours: <span className="font-semibold">{member.total_hours || 0}</span>
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+
+              {newLog.crew_members.length === 0 && (
+                <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                  <Users className={`w-12 h-12 mx-auto mb-2 ${themeClasses.text.muted}`} />
+                  <p className={themeClasses.text.secondary}>
+                    No crew members added yet. Click "Add Member" to start.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -749,10 +669,10 @@ const CrewLogging = ({ project, onBack }) => {
             </Button>
             <Button 
               onClick={handleCreateLog}
-              disabled={!newLog.work_description || !newLog.hours_worked || newLog.crew_members.length === 0}
+              disabled={newLog.crew_members.length === 0}
               className={themeClasses.button.primary}
             >
-              Create Log
+              Create Log & Sync with T&M
             </Button>
           </DialogFooter>
         </DialogContent>
