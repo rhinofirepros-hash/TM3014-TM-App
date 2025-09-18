@@ -66,6 +66,14 @@ function App() {
     setCurrentView('crew');
   };
 
+  const handleManageEmployees = () => {
+    setCurrentView('employees');
+  };
+
+  const handleViewTMTags = () => {
+    setCurrentView('reports');
+  };
+
   const handleViewReports = () => {
     setCurrentView('reports');
   };
