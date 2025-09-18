@@ -16,6 +16,13 @@ from email.mime.base import MIMEBase
 from email import encoders
 import base64
 
+# Import financial models
+from models_financial import (
+    Invoice, InvoiceCreate, InvoiceUpdate,
+    Payable, PayableCreate, PayableUpdate,
+    CashflowForecast, CashflowForecastCreate, CashflowForecastUpdate,
+    Profitability, ProfitabilityCreate, ProfitabilityUpdate
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
