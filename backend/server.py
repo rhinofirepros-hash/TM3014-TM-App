@@ -249,6 +249,7 @@ class Project(BaseModel):
     description: Optional[str] = ""
     client_company: str
     gc_email: str
+    project_type: str = "full_project"  # full_project or tm_only
     contract_amount: Optional[float] = 0
     labor_rate: Optional[float] = 95.0  # Hourly rate billed to this client
     project_manager: str = "Jesus Garcia"
