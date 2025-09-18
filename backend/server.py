@@ -273,8 +273,8 @@ class ProjectCreate(BaseModel):
 class Employee(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
-    base_pay: float  # Base hourly rate
-    burden_cost: float  # Additional costs (benefits, taxes, etc.)
+    hourly_rate: float  # True hourly cost for calculations
+    gc_billing_rate: float = 95.0  # Rate billed to GC
     position: str
     hire_date: datetime
     status: str = "active"  # active, inactive, terminated
@@ -285,8 +285,8 @@ class Employee(BaseModel):
 
 class EmployeeCreate(BaseModel):
     name: str
-    base_pay: float
-    burden_cost: float
+    hourly_rate: float  # True hourly cost
+    gc_billing_rate: Optional[float] = 95.0  # Default GC billing rate
     position: str
     hire_date: datetime
     phone: Optional[str] = ""
