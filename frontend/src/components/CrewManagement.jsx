@@ -418,7 +418,7 @@ const CrewManagement = ({ onBack }) => {
                       Total Hourly Cost
                     </p>
                     <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      ${totalPayrollCost.toFixed(2)}
+                      ${(totalPayrollCost || 0).toFixed(2)}
                     </p>
                   </div>
                   <TrendingUp className="w-8 h-8 text-purple-500" />
