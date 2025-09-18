@@ -822,7 +822,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     value={customCompanyName}
                     onChange={(e) => setCustomCompanyName(e.target.value)}
                     placeholder="Enter new company name (e.g., ABC Construction)"
-                    className="flex-1"
+                    className={`flex-1 ${themeClasses.input}`}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         handleSaveCustomCompany();
@@ -833,7 +833,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     type="button"
                     onClick={handleSaveCustomCompany}
                     size="sm"
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className={themeClasses.button.primary}
                   >
                     Save
                   </Button>
