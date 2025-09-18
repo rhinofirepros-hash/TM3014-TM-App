@@ -328,25 +328,26 @@ const WorkerManagement = ({ onBack }) => {
               <div className="text-center py-12">
                 <Users className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
                 <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>No workers yet</h3>
-                <p className="text-gray-500 mb-4">Add your first worker to get started</p>
-                <Button onClick={() => setShowAddModal(true)}>
+                <p className={`mb-4 ${themeClasses.text.secondary}`}>Add your first worker to get started</p>
+                <Button onClick={() => setShowAddModal(true)} className={themeClasses.button.primary}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add First Worker
                 </Button>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Position</TableHead>
-                    <TableHead>Hourly Rate</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <div className={`rounded-lg ${themeClasses.table}`}>
+                <Table>
+                  <TableHeader>
+                    <TableRow className={isDarkMode ? 'border-white/10' : 'border-gray-200/30'}>
+                      <TableHead className={themeClasses.text.secondary}>Name</TableHead>
+                      <TableHead className={themeClasses.text.secondary}>Position</TableHead>
+                      <TableHead className={themeClasses.text.secondary}>Hourly Rate</TableHead>
+                      <TableHead className={themeClasses.text.secondary}>Phone</TableHead>
+                      <TableHead className={themeClasses.text.secondary}>Email</TableHead>
+                      <TableHead className={themeClasses.text.secondary}>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                   {workers.map((worker) => (
                     <TableRow key={worker.id}>
                       <TableCell className="font-medium">{worker.name}</TableCell>
