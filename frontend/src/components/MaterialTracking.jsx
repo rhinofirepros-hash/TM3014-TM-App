@@ -53,15 +53,20 @@ const MaterialTracking = ({ project, onBack }) => {
   const { toast } = useToast();
 
   const materialCategories = [
-    { value: 'general', label: 'General' },
-    { value: 'pipe', label: 'Pipe & Tubing' },
-    { value: 'fittings', label: 'Fittings' },
-    { value: 'valves', label: 'Valves' },
-    { value: 'equipment', label: 'Equipment' },
-    { value: 'electrical', label: 'Electrical' },
-    { value: 'safety', label: 'Safety Equipment' },
-    { value: 'consumables', label: 'Consumables' },
-    { value: 'tools', label: 'Tools' }
+    { value: 'sprinkler_heads', label: 'Sprinkler Heads & Nozzles' },
+    { value: 'pipe_tubing', label: 'Pipe & Tubing (Steel/CPVC)' },
+    { value: 'fittings', label: 'Fittings & Couplings' },
+    { value: 'valves', label: 'Valves & Controls' },
+    { value: 'pumps_tanks', label: 'Pumps & Storage Tanks' },
+    { value: 'alarm_devices', label: 'Alarm & Monitoring Devices' },
+    { value: 'hangers_supports', label: 'Hangers & Support Systems' },
+    { value: 'backflow_prevention', label: 'Backflow Prevention' },
+    { value: 'fire_department', label: 'Fire Department Connections' },
+    { value: 'testing_equipment', label: 'Testing & Inspection Tools' },
+    { value: 'safety_equipment', label: 'Safety Equipment' },
+    { value: 'consumables', label: 'Consumables (Thread compound, etc.)' },
+    { value: 'electrical', label: 'Electrical Components' },
+    { value: 'general', label: 'General Supplies' }
   ];
 
   useEffect(() => {
