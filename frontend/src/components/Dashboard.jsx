@@ -338,11 +338,11 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
               isDarkMode 
                 ? 'bg-white/10 text-white hover:bg-white/20' 
                 : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`} onClick={onManageWorkers}>
+            }`} onClick={onManageCrew}>
               <CardContent className="p-6 text-center">
                 <Users className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Workers</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage worker profiles</p>
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Crew</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage crew member profiles</p>
               </CardContent>
             </Card>
 
