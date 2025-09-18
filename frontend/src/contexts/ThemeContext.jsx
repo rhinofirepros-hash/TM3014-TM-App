@@ -36,15 +36,15 @@ export const ThemeProvider = ({ children }) => {
   const getThemeClasses = () => ({
     background: isDarkMode 
       ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
-      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100',
+      : 'bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-slate-100/90',
     
     card: isDarkMode 
-      ? 'backdrop-blur-md border-0 shadow-xl bg-white/10 text-white' 
-      : 'backdrop-blur-md border-0 shadow-xl bg-white/70 text-gray-900',
+      ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+      : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30',
     
     cardHover: isDarkMode 
-      ? 'hover:bg-white/20' 
-      : 'hover:bg-white/90',
+      ? 'hover:bg-white/20 hover:shadow-3xl transition-all duration-300' 
+      : 'hover:bg-white/60 hover:shadow-3xl transition-all duration-300',
     
     text: {
       primary: isDarkMode ? 'text-white' : 'text-gray-900',
@@ -52,27 +52,33 @@ export const ThemeProvider = ({ children }) => {
       muted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
     },
     
-    header: 'backdrop-blur-sm bg-white/10 border-b border-white/20',
+    header: isDarkMode 
+      ? 'backdrop-blur-xl bg-white/10 border-b border-white/20' 
+      : 'backdrop-blur-xl bg-white/30 border-b border-white/40',
     
     button: {
       ghost: isDarkMode 
-        ? 'text-white hover:bg-white/20' 
-        : 'text-gray-700 hover:bg-black/10',
+        ? 'text-white hover:bg-white/20 backdrop-blur border-white/20' 
+        : 'text-gray-700 hover:bg-white/40 backdrop-blur border-gray-300/50',
       primary: isDarkMode 
-        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-        : 'bg-blue-600 hover:bg-blue-700 text-white',
+        ? 'bg-blue-600/80 hover:bg-blue-700/90 text-white backdrop-blur border-blue-500/30' 
+        : 'bg-blue-600/80 hover:bg-blue-700/90 text-white backdrop-blur border-blue-500/30',
       secondary: isDarkMode 
-        ? 'bg-white/20 hover:bg-white/30 text-white' 
-        : 'bg-gray-200 hover:bg-gray-300 text-gray-900',
+        ? 'bg-white/20 hover:bg-white/30 text-white backdrop-blur border-white/30' 
+        : 'bg-white/50 hover:bg-white/70 text-gray-900 backdrop-blur border-gray-300/50',
     },
     
     input: isDarkMode 
-      ? 'bg-white/10 border-white/20 text-white placeholder-gray-400' 
-      : 'bg-white/70 border-gray-300 text-gray-900 placeholder-gray-500',
+      ? 'bg-white/10 border-white/20 text-white placeholder-gray-400 backdrop-blur' 
+      : 'bg-white/60 border-gray-300/50 text-gray-900 placeholder-gray-500 backdrop-blur',
     
     modal: isDarkMode 
-      ? 'bg-slate-900/95 backdrop-blur-md border-white/20' 
-      : 'bg-white/95 backdrop-blur-md border-gray-200',
+      ? 'bg-slate-900/95 backdrop-blur-xl border-white/20 shadow-2xl' 
+      : 'bg-white/95 backdrop-blur-xl border-gray-200/50 shadow-2xl',
+      
+    table: isDarkMode
+      ? 'bg-white/5 backdrop-blur border-white/10'
+      : 'bg-white/50 backdrop-blur border-gray-200/30',
   });
 
   const value = {
