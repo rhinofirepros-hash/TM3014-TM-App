@@ -4,8 +4,11 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Trash2, MoreVertical, Info, Plus } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const LaborTable = ({ entries, onChange, onSaveWorker }) => {
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   // Get saved workers from localStorage
   const savedWorkers = JSON.parse(localStorage.getItem('saved_workers') || '[]');
   const addEmptyRow = () => {
