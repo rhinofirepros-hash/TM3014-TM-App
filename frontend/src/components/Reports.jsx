@@ -144,6 +144,68 @@ const Reports = ({ onBack }) => {
     setShowTagModal(true);
   };
 
+  const handleDeleteTag = async (tagToDelete) => {
+    setIsDeleting(true);
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      // Try to delete from backend first
+      if (backendUrl) {
+        try {
+          const response = await fetch(`${backendUrl}/api/tm-tags/${tagToDelete.id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+          
+          if (!response.ok) {
+            console.warn('Failed to delete from backend, continuing with local deletion');
+          }
+        } catch (backendError) {
+          console.warn('Backend deletion failed, continuing with local deletion:', backendError);
+        }
+      }
+      
+      // Remove from local state
+      const updatedTags = tmTags.filter(tag => tag.id !== tagToDelete.id);
+      setTmTags(updatedTags);
+      setFilteredTags(updatedTags.filter(tag => {
+        const matchesSearch = tag.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            tag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            tag.foreman.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = filterStatus === 'all' || tag.status === filterStatus;
+        const matchesProject = filterProject === 'all' || tag.project === filterProject;
+        return matchesSearch && matchesStatus && matchesProject;
+      }));
+      
+      // Update localStorage as fallback
+      const savedTags = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
+      const updatedSavedTags = savedTags.filter(tag => tag.id !== tagToDelete.id);
+      localStorage.setItem('tm_tags_history', JSON.stringify(updatedSavedTags));
+      
+      // Close modals and show success message
+      setShowDeleteDialog(false);
+      setShowTagModal(false);
+      
+      toast({
+        title: "T&M Tag Deleted",
+        description: `"${tagToDelete.title}" has been permanently deleted.`,
+      });
+      
+    } catch (error) {
+      console.error('Error deleting T&M tag:', error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete T&M tag. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleExportData = () => {
     const dataStr = JSON.stringify(filteredTags, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
