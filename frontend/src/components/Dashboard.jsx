@@ -378,13 +378,17 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
 
         {/* Projects Overview with Analytics */}
         <div className="mb-8">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Active Projects</h2>
+          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Active Projects</h2>
           {projectAnalytics.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center text-gray-500">
-                <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No project data available</p>
-                <p className="text-sm mt-1">Create your first T&M tag to see project analytics</p>
+            <Card className={`backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white' 
+                : 'bg-white/70 text-gray-900'
+            }`}>
+              <CardContent className="p-8 text-center">
+                <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
+                <p className={isDarkMode ? 'text-gray-300' : 'text-gray-500'}>No project data available</p>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Create your first T&M tag to see project analytics</p>
                 <Button className="mt-4" onClick={handleCreateNewTag}>
                   Create First T&M Tag
                 </Button>
