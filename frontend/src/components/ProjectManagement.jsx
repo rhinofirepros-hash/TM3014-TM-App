@@ -192,6 +192,14 @@ const ProjectManagement = ({ onBack }) => {
           setShowProjectOverview(false);
           setSelectedProject(null);
         }}
+        onViewTMTags={() => {
+          // Navigate to reports page - we need to communicate with parent App component
+          // For now, let's show a better message
+          toast({
+            title: "Navigation",
+            description: "Navigate to Reports → Filter by project to view T&M tags for this project",
+          });
+        }}
       />
     );
   }
