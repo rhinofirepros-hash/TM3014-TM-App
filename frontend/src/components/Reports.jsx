@@ -344,6 +344,99 @@ const Reports = ({ onBack }) => {
     }
   };
 
+  const handleApprovalRequest = (tag) => {
+    if (tag.status === 'pending_review') {
+      setPendingApprovalTag(tag);
+      setShowApprovalModal(true);
+    }
+  };
+
+  const handleApproveTag = async () => {
+    if (!pendingApprovalTag) return;
+    
+    setIsSaving(true);
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Update status to approved on backend
+        const response = await fetch(`${backendUrl}/api/tm-tags/${pendingApprovalTag.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'submitted'
+          })
+        });
+
+        if (response.ok) {
+          // Update local state
+          const updatedTags = tmTags.map(tag => 
+            tag.id === pendingApprovalTag.id 
+              ? { ...tag, status: 'submitted' }
+              : tag
+          );
+          
+          setTmTags(updatedTags);
+          setFilteredTags(updatedTags.filter(tag => {
+            const matchesSearch = !searchTerm || (
+              tag.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              tag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              tag.foreman.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            return matchesSearch;
+          }));
+          
+          setShowApprovalModal(false);
+          setPendingApprovalTag(null);
+          
+          toast({
+            title: "T&M Tag Approved",
+            description: "T&M tag has been approved and registered successfully.",
+          });
+        } else {
+          throw new Error('Failed to approve T&M tag');
+        }
+      } else {
+        // Fallback to localStorage update
+        const updatedTags = tmTags.map(tag => 
+          tag.id === pendingApprovalTag.id 
+            ? { ...tag, status: 'submitted' }
+            : tag
+        );
+        
+        setTmTags(updatedTags);
+        setFilteredTags(updatedTags.filter(tag => {
+          const matchesSearch = !searchTerm || (
+            tag.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            tag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            tag.foreman.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          return matchesSearch;
+        }));
+        
+        localStorage.setItem('tm_tags_history', JSON.stringify(updatedTags));
+        setShowApprovalModal(false);
+        setPendingApprovalTag(null);
+        
+        toast({
+          title: "T&M Tag Approved",
+          description: "T&M tag has been approved locally.",
+        });
+      }
+    } catch (error) {
+      console.error('Error approving T&M tag:', error);
+      toast({
+        title: "Approval Failed",
+        description: "Failed to approve T&M tag. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDeleteTag = async (tagToDelete) => {
     setIsDeleting(true);
     
