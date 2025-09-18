@@ -39,8 +39,7 @@ const EmployeeManagement = ({ onBack }) => {
   const [positionFilter, setPositionFilter] = useState('');
   const [newEmployee, setNewEmployee] = useState({
     name: '',
-    base_pay: '',
-    burden_cost: '',
+    hourly_rate: '',
     position: '',
     hire_date: new Date(),
     phone: '',
