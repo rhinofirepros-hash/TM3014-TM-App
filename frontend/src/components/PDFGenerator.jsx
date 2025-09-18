@@ -13,26 +13,38 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       pdf.setLineWidth(0.5);
       pdf.rect(10, 10, 190, 277); // Outer border
       
-      // Clean Header Section - Logo in top right corner
+      // Clean Header Section - Logo in top right corner with improved loading
       let headerComplete = false;
       
-      // Try to add logo
+      // Try to add logo with better error handling
       try {
         const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
+        
+        // Create a canvas to handle CORS issues
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
         const img = new Image();
         img.crossOrigin = 'anonymous';
         
         await new Promise((resolve, reject) => {
           const timeout = setTimeout(() => {
-            console.log('Logo loading timeout');
+            console.log('❌ Logo loading timeout after 10 seconds');
             reject(new Error('Logo loading timeout'));
-          }, 5000); // 5 second timeout
+          }, 10000); // 10 second timeout
           
           img.onload = function() {
             clearTimeout(timeout);
             try {
-              // Add logo in TOP RIGHT CORNER as requested
-              pdf.addImage(img, 'PNG', 125, 15, 70, 35); // Moved to right side (x=125 instead of x=15)
+              // Draw image to canvas to convert to base64
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx.drawImage(img, 0, 0);
+              
+              // Convert to base64
+              const base64 = canvas.toDataURL('image/png');
+              
+              // Add logo in TOP RIGHT CORNER
+              pdf.addImage(base64, 'PNG', 125, 15, 70, 35);
               
               // Add "TIME & MATERIAL TAG" text on left side
               pdf.setTextColor(0, 0, 0);
@@ -40,26 +52,26 @@ const PDFGenerator = ({ formData, onGenerate }) => {
               pdf.setFont(undefined, 'bold');
               pdf.text('TIME & MATERIAL TAG', 15, 32);
               
-              console.log('✅ Logo successfully added to PDF header (top right)');
+              console.log('✅ Rhino logo successfully added to PDF header (top right corner)');
               headerComplete = true;
             } catch (imgError) {
-              console.error('Logo rendering error:', imgError);
+              console.error('❌ Logo rendering error:', imgError);
             }
             resolve();
           };
           
           img.onerror = function(error) {
             clearTimeout(timeout);
-            console.error('Logo loading failed:', error);
+            console.error('❌ Logo loading failed from URL:', logoUrl, error);
             reject(error);
           };
           
-          console.log('Loading logo from:', logoUrl);
+          console.log('🔄 Loading Rhino logo from:', logoUrl);
           img.src = logoUrl;
         });
         
       } catch (error) {
-        console.error('Logo loading error:', error);
+        console.error('❌ Logo loading error:', error);
       }
       
       // Fallback if logo failed - still show professional header
