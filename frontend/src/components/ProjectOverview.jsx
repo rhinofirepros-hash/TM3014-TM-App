@@ -100,6 +100,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
       <CrewLogging 
         project={project} 
         onBack={handleBackToOverview}
+        onDataUpdate={refreshProjectData} // Pass refresh function
       />
     );
   }
