@@ -306,7 +306,11 @@ const WorkerManagement = ({ onBack }) => {
             </CardContent>
           </Card>
           
-          <Card className={`${themeClasses.card} ${themeClasses.cardHover}`}>
+          <Card className={`${
+            isDarkMode 
+              ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:shadow-3xl transition-all duration-300' 
+              : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30 hover:bg-white/60 hover:shadow-3xl transition-all duration-300'
+          }`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
