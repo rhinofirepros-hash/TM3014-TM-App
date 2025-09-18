@@ -422,19 +422,27 @@ const Reports = ({ onBack }) => {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={`${
+            isDarkMode 
+              ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+              : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+          } shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Labor Cost</p>
-                  <p className="text-2xl font-bold text-gray-900">${stats.laborCost.toLocaleString()}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Labor Cost</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${stats.laborCost.toLocaleString()}</p>
                 </div>
-                <DollarSign className="w-8 h-8 text-purple-600" />
+                <DollarSign className={`w-8 h-8 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={`${
+            isDarkMode 
+              ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+              : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+          } shadow-xl`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
