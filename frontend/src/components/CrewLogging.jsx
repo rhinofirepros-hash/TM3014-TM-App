@@ -108,6 +108,105 @@ const CrewLogging = ({ project, onBack }) => {
 
       const logData = {
         project_id: project.id,
+        date: newLog.date.toISOString(),
+        crew_members: newLog.crew_members.map(member => ({
+          ...member,
+          st_hours: parseFloat(member.st_hours) || 0,
+          ot_hours: parseFloat(member.ot_hours) || 0,
+          dt_hours: parseFloat(member.dt_hours) || 0,
+          pot_hours: parseFloat(member.pot_hours) || 0,
+          total_hours: parseFloat(member.total_hours) || 0
+        })),
+        work_description: newLog.work_description,
+        weather_conditions: newLog.weather_conditions,
+        expenses: {
+          per_diem: parseFloat(newLog.per_diem) || 0,
+          hotel_cost: parseFloat(newLog.hotel_cost) || 0,
+          gas_expense: parseFloat(newLog.gas_expense) || 0,
+          other_expenses: parseFloat(newLog.other_expenses) || 0,
+          expense_notes: newLog.expense_notes
+        }
+      };
+
+      const response = await fetch(`${backendUrl}/api/crew-logs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(logData)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        await loadCrewLogs(); // Reload logs
+        resetNewLog();
+        setShowCreateModal(false);
+        
+        toast({
+          title: "Crew Log Created",
+          description: "Crew log saved and automatically synced with T&M data.",
+        });
+      } else {
+        throw new Error('Failed to create crew log');
+      }
+    } catch (error) {
+      toast({
+        title: "Creation Failed",
+        description: "Failed to create crew log. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Auto-populate from existing T&M or crew data
+  const handleAutoPopulate = async (selectedDate) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl || !project?.id) return;
+
+      const dateString = selectedDate.toISOString().split('T')[0];
+      const response = await fetch(`${backendUrl}/api/daily-crew-data?project_id=${project.id}&date=${dateString}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.source && data.crew_members && data.crew_members.length > 0) {
+          setNewLog(prev => ({
+            ...prev,
+            date: selectedDate,
+            crew_members: data.crew_members,
+            work_description: data.work_description || prev.work_description
+          }));
+          
+          toast({
+            title: "Data Auto-Populated",
+            description: `Loaded crew data from existing ${data.source === 'tm_tag' ? 'T&M tag' : 'crew log'}.`,
+          });
+        } else {
+          setNewLog(prev => ({
+            ...prev,
+            date: selectedDate
+          }));
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to auto-populate crew data:', error);
+      setNewLog(prev => ({
+        ...prev,
+        date: selectedDate
+      }));
+    }
+  };
+        toast({
+          title: "Backend Error",
+          description: "Backend URL not configured",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const logData = {
+        project_id: project.id,
         project_name: project.name,
         date: newLog.date.toISOString(),
         crew_members: newLog.crew_members,
