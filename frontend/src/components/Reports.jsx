@@ -827,7 +827,7 @@ const Reports = ({ onBack }) => {
 
     {/* Delete Confirmation Dialog */}
     <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={`sm:max-w-[425px] ${themeClasses.modal}`}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <X className="w-5 h-5" />
@@ -836,27 +836,35 @@ const Reports = ({ onBack }) => {
         </DialogHeader>
         
         <div className="py-4">
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className={`mb-4 p-4 rounded-lg border ${
+            isDarkMode 
+              ? 'bg-red-900/30 border-red-500/30' 
+              : 'bg-red-50 border-red-200'
+          }`}>
             <p className="text-red-800 font-medium">⚠️ This action cannot be undone!</p>
           </div>
           
           {selectedTag && (
             <div className="space-y-3">
-              <p className="text-gray-700">
+              <p className={themeClasses.text.primary}>
                 Are you sure you want to permanently delete this T&M tag?
               </p>
               
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="font-semibold text-gray-900">{selectedTag.title}</p>
-                <p className="text-sm text-gray-600">
+              <div className={`p-3 rounded-lg ${
+                isDarkMode 
+                  ? 'bg-white/5 border-white/20' 
+                  : 'bg-gray-50 border-gray-200'
+              }`}>
+                <p className={`font-semibold ${themeClasses.text.primary}`}>{selectedTag.title}</p>
+                <p className={`text-sm ${themeClasses.text.secondary}`}>
                   Project: {selectedTag.project} • Date: {new Date(selectedTag.date).toLocaleDateString()}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className={`text-sm ${themeClasses.text.secondary}`}>
                   Total Cost: ${((selectedTag.laborCost || 0) + (selectedTag.materialCost || 0)).toLocaleString()}
                 </p>
               </div>
               
-              <p className="text-sm text-gray-600">
+              <p className={`text-sm ${themeClasses.text.secondary}`}>
                 This will remove the T&M tag from all reports and cannot be recovered.
               </p>
             </div>
@@ -868,6 +876,7 @@ const Reports = ({ onBack }) => {
             variant="outline" 
             onClick={() => setShowDeleteDialog(false)}
             disabled={isDeleting}
+            className={themeClasses.button.secondary}
           >
             Cancel
           </Button>
