@@ -273,8 +273,8 @@ const EmployeeManagement = ({ onBack }) => {
     const matchesSearch = !searchTerm || 
       employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.position.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = !statusFilter || employee.status === statusFilter;
-    const matchesPosition = !positionFilter || employee.position === positionFilter;
+    const matchesStatus = statusFilter === '' || statusFilter === 'all' || employee.status === statusFilter;
+    const matchesPosition = positionFilter === '' || positionFilter === 'all' || employee.position === positionFilter;
     
     return matchesSearch && matchesStatus && matchesPosition;
   });
