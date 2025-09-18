@@ -372,6 +372,10 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
   const filteredLogs = crewLogs.filter(log => {
     if (!filterDate) return true;
     return log.date.includes(filterDate);
+  }).sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
   return (
