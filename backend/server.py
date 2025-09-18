@@ -526,7 +526,45 @@ async def get_employees(status: Optional[str] = None):
         query["status"] = "active"  # Default to active employees
     
     employees = await db.employees.find(query).to_list(1000)
-    return [Employee(**employee) for employee in employees]
+    
+    # Handle schema migration - convert old schema to new schema
+    processed_employees = []
+    for employee in employees:
+        if "_id" in employee:
+            del employee["_id"]  # Remove MongoDB ObjectId
+        
+        # Convert old schema to new schema if needed
+        if "base_pay" in employee and "burden_cost" in employee:
+            # Old schema: convert to new schema
+            total_cost = float(employee.get("base_pay", 0)) + float(employee.get("burden_cost", 0))
+            employee["hourly_rate"] = total_cost
+            employee["gc_billing_rate"] = employee.get("gc_billing_rate", 95.0)
+            
+            # Remove old fields
+            employee.pop("base_pay", None)
+            employee.pop("burden_cost", None)
+            
+            # Update in database to new schema
+            await db.employees.update_one(
+                {"id": employee["id"]},
+                {"$set": {
+                    "hourly_rate": total_cost,
+                    "gc_billing_rate": 95.0
+                }, "$unset": {
+                    "base_pay": "",
+                    "burden_cost": ""
+                }}
+            )
+        
+        # Ensure required fields exist
+        if "hourly_rate" not in employee:
+            employee["hourly_rate"] = 40.0  # Default value
+        if "gc_billing_rate" not in employee:
+            employee["gc_billing_rate"] = 95.0  # Default value
+            
+        processed_employees.append(employee)
+    
+    return [Employee(**employee) for employee in processed_employees]
 
 @api_router.get("/employees/{employee_id}")
 async def get_employee(employee_id: str):
