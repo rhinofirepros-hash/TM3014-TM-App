@@ -11,6 +11,7 @@ import EmailAuthModal from './EmailAuthModal';
 const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports, onLogout }) => {
   const [projects, setProjects] = useState([]);
   const [recentTags, setRecentTags] = useState([]);
+  const [projectAnalytics, setProjectAnalytics] = useState([]);
   const [showEmailAuthModal, setShowEmailAuthModal] = useState(false);
   const { toast } = useToast();
 
@@ -27,10 +28,12 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
       
       if (backendUrl) {
         // Try to load recent T&M tags from backend
-        const response = await fetch(`${backendUrl}/api/tm-tags?limit=5`);
+        const response = await fetch(`${backendUrl}/api/tm-tags?limit=50`); // Get more tags for analytics
         if (response.ok) {
           const tmTags = await response.json();
-          const recentTags = tmTags.map(tag => ({
+          
+          // Process recent tags
+          const recentTags = tmTags.slice(0, 5).map(tag => ({
             id: tag.id,
             project: tag.project_name,
             title: tag.tm_tag_title,
@@ -42,6 +45,9 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
             materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0
           }));
           setRecentTags(recentTags);
+          
+          // Generate project analytics
+          generateProjectAnalytics(tmTags);
         } else {
           console.warn('Failed to load T&M tags from backend, using localStorage fallback');
           loadLocalStorageData();
@@ -53,6 +59,61 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
       console.warn('Backend connection failed, using localStorage fallback:', error);
       loadLocalStorageData();
     }
+  };
+
+  const generateProjectAnalytics = (tmTags) => {
+    // Group T&M tags by project name
+    const projectGroups = tmTags.reduce((groups, tag) => {
+      const projectName = tag.project_name;
+      if (!groups[projectName]) {
+        groups[projectName] = [];
+      }
+      groups[projectName].push(tag);
+      return groups;
+    }, {});
+
+    // Calculate analytics for each project
+    const analytics = Object.entries(projectGroups).map(([projectName, tags]) => {
+      const totalHours = tags.reduce((sum, tag) => {
+        return sum + (tag.labor_entries?.reduce((entrySum, entry) => entrySum + (entry.total_hours || 0), 0) || 0);
+      }, 0);
+      
+      const totalLaborCost = tags.reduce((sum, tag) => {
+        return sum + (tag.labor_entries?.reduce((entrySum, entry) => entrySum + (entry.total_hours || 0) * 95, 0) || 0);
+      }, 0);
+      
+      const totalMaterialCost = tags.reduce((sum, tag) => {
+        return sum + (tag.material_entries?.reduce((entrySum, entry) => entrySum + (entry.total || 0), 0) || 0);
+      }, 0);
+
+      const totalCost = totalLaborCost + totalMaterialCost;
+      
+      // Get latest date
+      const latestDate = tags.reduce((latest, tag) => {
+        const tagDate = new Date(tag.date_of_work);
+        return tagDate > latest ? tagDate : latest;
+      }, new Date(0));
+
+      return {
+        id: projectName.toLowerCase().replace(/\s+/g, '-'),
+        name: projectName,
+        tagCount: tags.length,
+        totalHours,
+        totalCost,
+        laborCost: totalLaborCost,
+        materialCost: totalMaterialCost,
+        status: 'active',
+        lastActivity: latestDate.toLocaleDateString(),
+        progress: Math.min(100, (tags.length * 10)), // Simple progress calculation
+        tags: tags.slice(0, 3) // Keep first 3 tags for quick reference
+      };
+    });
+
+    // Sort by most recent activity
+    analytics.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
+    
+    setProjectAnalytics(analytics);
+    setProjects(analytics); // Update projects with analytics data
   };
 
   const loadLocalStorageData = () => {
