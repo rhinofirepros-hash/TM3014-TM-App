@@ -166,17 +166,46 @@ const Reports = ({ onBack }) => {
     };
   };
 
-  const handleGeneratePDF = async (tag) => {
+  const handleGeneratePDF = async (tag, preview = false) => {
     try {
       const formData = convertTagToPDFFormat(tag);
       const pdfGenerator = PDFGenerator({ formData });
       const result = await pdfGenerator.generatePDF();
       
       if (result.success) {
-        toast({
-          title: "PDF Generated",
-          description: `T&M tag PDF saved as ${result.filename}`,
-        });
+        if (preview) {
+          // Open PDF in new tab for preview
+          const newWindow = window.open();
+          if (newWindow) {
+            newWindow.document.write(`
+              <html>
+                <head><title>T&M Tag Preview - ${tag.title}</title></head>
+                <body style="margin:0; background:#f5f5f5;">
+                  <div style="text-align:center; padding:20px;">
+                    <h2 style="color:#333;">T&M Tag Preview</h2>
+                    <p style="color:#666;">Project: ${tag.project} | Date: ${tag.date}</p>
+                  </div>
+                  <embed src="${result.pdfData}" type="application/pdf" width="100%" height="90%" />
+                </body>
+              </html>
+            `);
+            toast({
+              title: "PDF Preview Opened",
+              description: "PDF opened in new tab for preview",
+            });
+          } else {
+            toast({
+              title: "Popup Blocked",
+              description: "Please allow popups to preview the PDF",
+              variant: "destructive"
+            });
+          }
+        } else {
+          toast({
+            title: "PDF Downloaded",
+            description: `T&M tag PDF downloaded as ${result.filename}`,
+          });
+        }
       } else {
         toast({
           title: "PDF Generation Failed",
