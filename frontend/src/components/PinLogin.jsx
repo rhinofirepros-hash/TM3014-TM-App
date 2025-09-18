@@ -12,6 +12,8 @@ const PinLogin = ({ onLoginSuccess }) => {
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loginMethod, setLoginMethod] = useState('pin'); // 'pin', 'gmail', 'outlook'
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
   const handlePinLogin = () => {
