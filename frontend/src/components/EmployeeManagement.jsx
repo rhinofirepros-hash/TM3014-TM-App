@@ -336,7 +336,7 @@ const EmployeeManagement = ({ onBack }) => {
                       Avg Hourly Rate
                     </p>
                     <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      ${averageHourlyRate.toFixed(2)}
+                      ${(averageHourlyRate || 0).toFixed(2)}
                     </p>
                   </div>
                   <DollarSign className="w-8 h-8 text-green-500" />
