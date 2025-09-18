@@ -497,7 +497,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
             </div>
 
-            {/* Contract Amount and Manager */}
+            {/* Contract Amount and Labor Rate */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={themeClasses.text.primary}>Contract Amount ($)*</Label>
@@ -511,20 +511,32 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Project Manager*</Label>
-                <Select value={newProject.project_manager} onValueChange={(value) => handleInputChange('project_manager', value)}>
-                  <SelectTrigger className={themeClasses.input}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className={themeClasses.modal}>
-                    {projectManagers.map((manager) => (
-                      <SelectItem key={manager} value={manager}>
-                        {manager}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className={themeClasses.text.primary}>Labor Rate ($/hr)*</Label>
+                <Input
+                  type="number"
+                  value={newProject.labor_rate}
+                  onChange={(e) => handleInputChange('labor_rate', e.target.value)}
+                  className={themeClasses.input}
+                  placeholder="95"
+                />
               </div>
+            </div>
+
+            {/* Project Manager */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Project Manager*</Label>
+              <Select value={newProject.project_manager} onValueChange={(value) => handleInputChange('project_manager', value)}>
+                <SelectTrigger className={themeClasses.input}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={themeClasses.modal}>
+                  {projectManagers.map((manager) => (
+                    <SelectItem key={manager} value={manager}>
+                      {manager}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Description */}
