@@ -193,12 +193,15 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
           setSelectedProject(null);
         }}
         onViewTMTags={() => {
-          // Navigate to reports page - we need to communicate with parent App component
-          // For now, let's show a better message
-          toast({
-            title: "Navigation",
-            description: "Navigate to Reports → Filter by project to view T&M tags for this project",
-          });
+          // Navigate back to parent and then to reports
+          if (onViewReports) {
+            onViewReports();
+          } else {
+            toast({
+              title: "Navigation",
+              description: "Go to Reports to view T&M tags for this project",
+            });
+          }
         }}
       />
     );
