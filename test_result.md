@@ -442,16 +442,10 @@ test_plan:
 
 test_plan:
   current_focus:
-    - "Employee schema restructuring"
-    - "JavaScript runtime errors"
-    - "Bidirectional crew log and T&M sync"
-    - "T&M Tag edit functionality"
-    - "Crew Log edit functionality"
-  stuck_tasks:
-    - "Employee schema restructuring"
-    - "JavaScript runtime errors"
+    - "Employee schema migration and CrewManagement functionality testing completed successfully"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "review_request_completed"
 
 agent_communication:
   - agent: "main"
