@@ -169,11 +169,11 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
     <>
     <div className={`min-h-screen transition-all duration-300 ${
       isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900' 
-        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100'
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
     }`}>
-      {/* Header with Theme Toggle */}
-      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20 sticky top-0 z-10">
+      {/* Header - Scrollable */}
+      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -187,7 +187,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
                   T&M Dashboard
                 </h1>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Welcome back, Jesus Garcia
+                  Welcome
                 </p>
               </div>
             </div>
