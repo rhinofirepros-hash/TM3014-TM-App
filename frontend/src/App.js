@@ -12,7 +12,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'form', 'workers', or 'reports'
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'form', 'workers', 'reports', or 'projects'
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
