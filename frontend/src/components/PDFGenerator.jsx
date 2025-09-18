@@ -62,14 +62,24 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         console.error('Logo loading error:', error);
       }
       
-      // Fallback if logo failed
+      // Fallback if logo failed - still show professional header
       if (!headerComplete) {
+        console.log('⚠️ Logo failed to load, using fallback header');
         pdf.setTextColor(0, 0, 0);
         pdf.setFontSize(18);
         pdf.setFont(undefined, 'bold');
-        pdf.text('RHINO FIRE PROTECTION', 105, 25, { align: 'center' });
-        pdf.setFontSize(14);
-        pdf.text('TIME & MATERIAL TAG', 105, 35, { align: 'center' });
+        pdf.text('RHINO FIRE PROTECTION', 15, 25);
+        pdf.setFontSize(16);
+        pdf.text('TIME & MATERIAL TAG', 15, 35);
+        
+        // Add a rectangle where logo would be to maintain layout
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(1);
+        pdf.rect(125, 15, 70, 35);
+        pdf.setFontSize(10);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text('LOGO', 160, 35, { align: 'center' });
+        pdf.setTextColor(0, 0, 0);
       }
       
       // Project Information Section
