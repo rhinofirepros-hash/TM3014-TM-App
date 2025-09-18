@@ -7,7 +7,7 @@ import requests
 import json
 
 # Test data persistence by retrieving stored data
-backend_url = 'https://fire-tm-reports.preview.emergentagent.com/api'
+backend_url = 'https://timematerial-app.preview.emergentagent.com/api'
 
 print('=== Verifying Data Persistence ===')
 

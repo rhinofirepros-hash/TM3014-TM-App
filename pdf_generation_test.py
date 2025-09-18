@@ -14,7 +14,7 @@ import os
 import time
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://fire-tm-reports.preview.emergentagent.com/api"
+BACKEND_URL = "https://timematerial-app.preview.emergentagent.com/api"
 
 class PDFGenerationTester:
     def __init__(self):
