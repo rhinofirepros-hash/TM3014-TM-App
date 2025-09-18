@@ -486,14 +486,8 @@ const EmployeeManagement = ({ onBack }) => {
                           <TableCell className={themeClasses.text.primary}>
                             {employee.position}
                           </TableCell>
-                          <TableCell className={themeClasses.text.primary}>
-                            ${employee.base_pay.toFixed(2)}
-                          </TableCell>
-                          <TableCell className={themeClasses.text.primary}>
-                            ${employee.burden_cost.toFixed(2)}
-                          </TableCell>
                           <TableCell className={`font-semibold ${themeClasses.text.primary}`}>
-                            ${getTotalCostPerHour(employee).toFixed(2)}
+                            ${(employee.hourly_rate || 0).toFixed(2)}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
                             {format(new Date(employee.hire_date), 'MM/dd/yyyy')}
