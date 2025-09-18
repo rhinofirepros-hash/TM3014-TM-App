@@ -641,7 +641,7 @@ async def delete_crew_log(log_id: str):
         return {"error": str(e)}
 
 async def sync_crew_log_to_tm(crew_log):
-    """Sync crew log data to T&M tags"""
+    """Sync crew log data to T&M tags - create if doesn't exist"""
     try:
         project_id = crew_log.get("project_id")
         log_date = crew_log.get("date")
@@ -649,10 +649,21 @@ async def sync_crew_log_to_tm(crew_log):
         if not project_id or not log_date:
             return
             
+        # Get date string for comparison
+        if hasattr(log_date, 'strftime'):
+            date_str = log_date.strftime('%Y-%m-%d')
+        else:
+            date_str = log_date.split("T")[0] if isinstance(log_date, str) else str(log_date)
+            
         # Check if T&M tag exists for same project and date
         tm_tag = await db.tm_tags.find_one({
             "project_id": project_id,
-            "date_of_work": {"$regex": log_date.split("T")[0]}  # Match date part
+            "$expr": {
+                "$eq": [
+                    {"$dateToString": {"format": "%Y-%m-%d", "date": "$date_of_work"}},
+                    date_str
+                ]
+            }
         })
         
         if tm_tag:
@@ -678,7 +689,8 @@ async def sync_crew_log_to_tm(crew_log):
                 {"$set": {
                     "labor_entries": labor_entries,
                     "description_of_work": crew_log.get("work_description", tm_tag.get("description_of_work", "")),
-                    "crew_log_synced": True
+                    "crew_log_synced": True,
+                    "status": "approved"  # Auto-approve when synced from crew log
                 }}
             )
             
@@ -687,12 +699,63 @@ async def sync_crew_log_to_tm(crew_log):
                 {"id": crew_log["id"]},
                 {"$set": {"synced_to_tm": True, "tm_tag_id": tm_tag["id"]}}
             )
+        else:
+            # Create new T&M tag from crew log data
+            # Get project details for T&M tag
+            project = await db.projects.find_one({"id": project_id})
+            if not project:
+                return
+                
+            labor_entries = []
+            for crew_member in crew_log.get("crew_members", []):
+                labor_entry = {
+                    "id": str(uuid.uuid4()),
+                    "worker_name": crew_member.get("name"),
+                    "quantity": 1,
+                    "st_hours": float(crew_member.get("st_hours", 0)),
+                    "ot_hours": float(crew_member.get("ot_hours", 0)),
+                    "dt_hours": float(crew_member.get("dt_hours", 0)),
+                    "pot_hours": float(crew_member.get("pot_hours", 0)),
+                    "total_hours": float(crew_member.get("total_hours", 0)),
+                    "date": log_date
+                }
+                labor_entries.append(labor_entry)
+            
+            new_tm_tag = {
+                "id": str(uuid.uuid4()),
+                "project_id": project_id,
+                "project_name": project.get("name", ""),
+                "cost_code": "",
+                "date_of_work": log_date,
+                "company_name": project.get("client_company", ""),
+                "tm_tag_title": f"Auto-generated from Crew Log - {date_str}",
+                "description_of_work": crew_log.get("work_description", ""),
+                "labor_entries": labor_entries,
+                "material_entries": [],
+                "equipment_entries": [],
+                "other_entries": [],
+                "gc_email": project.get("gc_email", ""),
+                "signature": None,
+                "foreman_name": crew_log.get("crew_members", [{}])[0].get("name", "Unknown") if crew_log.get("crew_members") else "Unknown",
+                "status": "pending_review",  # Needs review since auto-generated
+                "created_at": datetime.utcnow(),
+                "submitted_at": datetime.utcnow(),
+                "crew_log_synced": True
+            }
+            
+            await db.tm_tags.insert_one(new_tm_tag)
+            
+            # Mark crew log as synced
+            await db.crew_logs.update_one(
+                {"id": crew_log["id"]},
+                {"$set": {"synced_to_tm": True, "tm_tag_id": new_tm_tag["id"]}}
+            )
             
     except Exception as e:
         print(f"Error syncing crew log to T&M: {e}")
 
 async def sync_tm_to_crew_log(tm_tag):
-    """Sync T&M tag labor data to crew logs"""
+    """Sync T&M tag labor data to crew logs - create if doesn't exist"""
     try:
         project_id = tm_tag.get("project_id")
         work_date = tm_tag.get("date_of_work")
@@ -700,10 +763,21 @@ async def sync_tm_to_crew_log(tm_tag):
         if not project_id or not work_date:
             return
             
+        # Get date string for comparison
+        if hasattr(work_date, 'strftime'):
+            date_str = work_date.strftime('%Y-%m-%d')
+        else:
+            date_str = work_date.split("T")[0] if isinstance(work_date, str) else str(work_date)
+            
         # Check if crew log exists for same project and date
         crew_log = await db.crew_logs.find_one({
             "project_id": project_id,
-            "date": {"$regex": work_date.split("T")[0]}  # Match date part
+            "$expr": {
+                "$eq": [
+                    {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+                    date_str
+                ]
+            }
         })
         
         if not crew_log:
@@ -730,7 +804,9 @@ async def sync_tm_to_crew_log(tm_tag):
                 "expenses": {},
                 "created_at": datetime.utcnow(),
                 "synced_from_tm": True,
-                "tm_tag_id": tm_tag["id"]
+                "tm_tag_id": tm_tag["id"],
+                "synced_to_tm": True,  # Already synced since it came from T&M
+                "status": "pending_review"  # Needs review since auto-generated
             }
             
             await db.crew_logs.insert_one(new_crew_log)
