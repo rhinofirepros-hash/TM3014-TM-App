@@ -573,7 +573,15 @@ async def get_crew_logs(project_id: Optional[str] = None, date: Optional[str] = 
         query["date"] = date
         
     crew_logs = await db.crew_logs.find(query).to_list(1000)
-    return crew_logs
+    
+    # Convert to serializable format
+    serializable_logs = []
+    for log in crew_logs:
+        if "_id" in log:
+            del log["_id"]  # Remove MongoDB ObjectId
+        serializable_logs.append(log)
+    
+    return serializable_logs
 
 @api_router.put("/crew-logs/{log_id}")
 async def update_crew_log(log_id: str, crew_log_data: dict):
