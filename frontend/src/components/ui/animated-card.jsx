@@ -35,11 +35,11 @@ const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...prop
     <div
       ref={cardRef}
       className={cn(
-        "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-700 transform hover:scale-105 hover:shadow-2xl group cursor-pointer",
+        "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-1000 ease-out transform hover:scale-105 hover:shadow-2xl group cursor-pointer",
         isVisible 
           ? "opacity-100 translate-y-0 scale-100" 
-          : "opacity-0 translate-y-8 scale-95",
-        "hover:rotate-1 hover:-translate-y-2",
+          : "opacity-0 translate-y-12 scale-90",
+        "hover:rotate-0.5 hover:-translate-y-1",
         className
       )}
       {...props}
