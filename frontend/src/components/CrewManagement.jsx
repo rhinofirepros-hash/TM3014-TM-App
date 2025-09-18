@@ -481,7 +481,7 @@ const CrewManagement = ({ onBack }) => {
                 </SelectContent>
               </Select>
 
-              {(searchTerm || statusFilter || positionFilter) && (
+              {(searchTerm || (statusFilter && statusFilter !== 'all') || (positionFilter && positionFilter !== 'all')) && (
                 <Button 
                   variant="outline" 
                   size="sm"
