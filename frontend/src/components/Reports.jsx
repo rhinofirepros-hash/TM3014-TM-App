@@ -234,6 +234,113 @@ const Reports = ({ onBack }) => {
     setShowTagModal(true);
   };
 
+  const handleEditTag = (tag) => {
+    setEditingTag({
+      id: tag.id,
+      project: tag.project,
+      title: tag.title,
+      date: tag.date,
+      foreman: tag.foreman,
+      description: tag.description || '',
+      costCode: tag.costCode || '',
+      companyName: tag.companyName || '',
+      gcEmail: tag.gcEmail || ''
+    });
+    setShowEditModal(true);
+    setShowTagModal(false);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingTag) return;
+    
+    setIsSaving(true);
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Update on backend
+        const response = await fetch(`${backendUrl}/api/tm-tags/${editingTag.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tm_tag_title: editingTag.title,
+            description_of_work: editingTag.description,
+            cost_code: editingTag.costCode,
+            company_name: editingTag.companyName,
+            gc_email: editingTag.gcEmail,
+            foreman_name: editingTag.foreman
+          })
+        });
+
+        if (response.ok) {
+          // Update local state
+          const updatedTags = tmTags.map(tag => 
+            tag.id === editingTag.id 
+              ? {
+                  ...tag,
+                  title: editingTag.title,
+                  description: editingTag.description,
+                  costCode: editingTag.costCode,
+                  companyName: editingTag.companyName,
+                  gcEmail: editingTag.gcEmail,
+                  foreman: editingTag.foreman
+                }
+              : tag
+          );
+          
+          setTmTags(updatedTags);
+          setFilteredTags(updatedTags);
+          setShowEditModal(false);
+          setEditingTag(null);
+          
+          toast({
+            title: "T&M Tag Updated",
+            description: "Changes have been saved successfully.",
+          });
+        } else {
+          throw new Error('Failed to update T&M tag');
+        }
+      } else {
+        // Fallback to localStorage update
+        const updatedTags = tmTags.map(tag => 
+          tag.id === editingTag.id 
+            ? {
+                ...tag,
+                title: editingTag.title,
+                description: editingTag.description,
+                costCode: editingTag.costCode,
+                companyName: editingTag.companyName,
+                gcEmail: editingTag.gcEmail,
+                foreman: editingTag.foreman
+              }
+            : tag
+        );
+        
+        setTmTags(updatedTags);
+        setFilteredTags(updatedTags);
+        localStorage.setItem('tm_tags_history', JSON.stringify(updatedTags));
+        setShowEditModal(false);
+        setEditingTag(null);
+        
+        toast({
+          title: "T&M Tag Updated",
+          description: "Changes have been saved locally.",
+        });
+      }
+    } catch (error) {
+      console.error('Error updating T&M tag:', error);
+      toast({
+        title: "Update Failed",
+        description: "Failed to save changes. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDeleteTag = async (tagToDelete) => {
     setIsDeleting(true);
     
