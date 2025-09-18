@@ -131,7 +131,116 @@ class Worker(BaseModel):
     active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-# Project Management Models
+# Enhanced AI Super Tracking Models
+class Phase(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    name: str
+    description: Optional[str] = ""
+    estimated_hours: Optional[float] = 0
+    estimated_cost: Optional[float] = 0
+    actual_hours: Optional[float] = 0
+    actual_cost: Optional[float] = 0
+    status: str = "pending"  # pending, in-progress, completed, on-hold
+    start_date: Optional[datetime] = None
+    completion_date: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PhaseCreate(BaseModel):
+    project_id: str
+    name: str
+    description: Optional[str] = ""
+    estimated_hours: Optional[float] = 0
+    estimated_cost: Optional[float] = 0
+    status: Optional[str] = "pending"
+    start_date: Optional[datetime] = None
+
+class Task(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    phase_id: Optional[str] = None
+    name: str
+    description: Optional[str] = ""
+    assigned_to: Optional[str] = None
+    estimated_hours: Optional[float] = 0
+    actual_hours: Optional[float] = 0
+    status: str = "open"  # open, in-progress, completed, blocked
+    priority: str = "medium"  # low, medium, high, urgent
+    due_date: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class TaskCreate(BaseModel):
+    project_id: str
+    phase_id: Optional[str] = None
+    name: str
+    description: Optional[str] = ""
+    assigned_to: Optional[str] = None
+    estimated_hours: Optional[float] = 0
+    status: Optional[str] = "open"
+    priority: Optional[str] = "medium"
+    due_date: Optional[datetime] = None
+
+class ProjectUpdate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    source: str  # email, portal, manual, ai-generated
+    source_id: Optional[str] = None  # Original email ID or portal reference
+    update_type: str  # inspection, financial, material, delay, change-order, communication
+    title: str
+    summary: str
+    full_content: Optional[str] = ""
+    ai_confidence: Optional[float] = 0.0  # 0-1 confidence score from AI
+    requires_review: bool = True  # Always true for AI-generated updates
+    tags: List[str] = []
+    extracted_data: Optional[dict] = {}  # Structured data extracted by AI
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    reviewed_at: Optional[datetime] = None
+    reviewed_by: Optional[str] = None
+
+class ProjectUpdateCreate(BaseModel):
+    project_id: str
+    source: str
+    source_id: Optional[str] = None
+    update_type: str
+    title: str
+    summary: str
+    full_content: Optional[str] = ""
+    ai_confidence: Optional[float] = 0.0
+    requires_review: Optional[bool] = True
+    tags: Optional[List[str]] = []
+    extracted_data: Optional[dict] = {}
+
+class TMTicket(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    task_id: Optional[str] = None
+    tm_tag_id: Optional[str] = None  # Link to existing T&M tags
+    employee_name: str
+    date: datetime
+    ticket_type: str  # labor, material, equipment, other
+    hours: Optional[float] = 0
+    rate: Optional[float] = 95  # Default GC rate
+    cost: Optional[float] = 0
+    description: Optional[str] = ""
+    approved: bool = False
+    approved_by: Optional[str] = None  
+    approved_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class TMTicketCreate(BaseModel):
+    project_id: str
+    task_id: Optional[str] = None
+    tm_tag_id: Optional[str] = None
+    employee_name: str
+    date: datetime
+    ticket_type: str
+    hours: Optional[float] = 0
+    rate: Optional[float] = 95
+    cost: Optional[float] = 0
+    description: Optional[str] = ""
+
+# Project Management Models (extend existing)
 class Project(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
