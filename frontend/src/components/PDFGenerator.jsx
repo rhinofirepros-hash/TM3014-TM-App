@@ -423,7 +423,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       // Add footer logo and text with improved loading
       try {
-        const footerLogoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuqy_TITLEBLOCKRHINOFIRE1.png';
+        const footerLogoUrl = 'https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png';
         
         // Use the same canvas approach for consistency
         const footerCanvas = document.createElement('canvas');
@@ -433,7 +433,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         
         await new Promise((resolve) => {
           const footerTimeout = setTimeout(() => {
-            console.log('⚠️ Footer logo loading timeout, using fallback');
+            console.log('⚠️ Footer logo loading timeout, using text only');
             resolve();
           }, 5000);
           
@@ -469,7 +469,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
           
           footerImg.onerror = function() {
             clearTimeout(footerTimeout);
-            console.log('❌ Footer logo loading failed, using fallback text');
+            console.log('❌ Footer logo loading failed, using text only');
             // Fallback text only
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(10);
