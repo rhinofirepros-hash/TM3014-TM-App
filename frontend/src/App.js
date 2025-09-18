@@ -70,10 +70,12 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="App">
-        <PinLogin onLoginSuccess={handleLoginSuccess} />
-        <Toaster />
-      </div>
+      <ThemeProvider>
+        <div className="App">
+          <PinLogin onLoginSuccess={handleLoginSuccess} />
+          <Toaster />
+        </div>
+      </ThemeProvider>
     );
   }
 
