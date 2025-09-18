@@ -64,6 +64,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
             totalCrewExpenses: analytics.total_crew_expenses || 0,
             contractAmount: analytics.contract_amount || 0,
             trueEmployeeCost: analytics.true_employee_cost || 0,
+            laborMarkupProfit: analytics.labor_markup_profit || 0,
             profit: analytics.profit || 0,
             profitMargin: analytics.profit_margin || 0,
             tmTagCount: analytics.tm_tag_count || 0,
