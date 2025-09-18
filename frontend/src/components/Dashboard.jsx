@@ -309,7 +309,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
         {/* Quick Actions */}
         <div className="mb-8">
           <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
               isDarkMode 
                 ? 'bg-white/10 text-white hover:bg-white/20' 
@@ -343,6 +343,18 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
                 <Users className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                 <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Workers</h3>
                 <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage worker profiles</p>
+              </CardContent>
+            </Card>
+
+            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`} onClick={onManageProjects}>
+              <CardContent className="p-6 text-center">
+                <Building className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Projects</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Create and track project profitability</p>
               </CardContent>
             </Card>
 
