@@ -697,18 +697,47 @@ async def get_company_analytics():
         # Calculate company totals
         total_revenue = 0
         total_costs = 0
+        successful_analytics = 0
         
         for project in active_projects:
             try:
                 project_analytics = await get_project_analytics(project.id)
                 total_revenue += project_analytics.totalBill
                 total_costs += project_analytics.totalLaborCost + project_analytics.totalMaterialCost + project_analytics.totalExpense
-            except:
+                successful_analytics += 1
+            except Exception as e:
+                logger.warning(f"Skipping analytics for project {project.id}: {e}")
                 continue  # Skip projects with errors
         
         net_profit = total_revenue - total_costs
-        company_forecast = await get_company_forecast()
-        cash_runway = await get_cash_runway()
+        
+        # Get company forecast and cash runway with error handling
+        try:
+            company_forecast = await get_company_forecast()
+        except Exception as e:
+            logger.warning(f"Company forecast failed: {e}")
+            # Create a default forecast
+            company_forecast = CompanyForecast(
+                weekOf=datetime.utcnow(),
+                totalInflow=0,
+                totalOutflow=0,
+                net=0,
+                projects=[],
+                rollupNarrative="Company forecast unavailable"
+            )
+        
+        try:
+            cash_runway = await get_cash_runway()
+        except Exception as e:
+            logger.warning(f"Cash runway failed: {e}")
+            # Create a default runway
+            cash_runway = CashRunway(
+                nextInvoiceDate=datetime.utcnow() + timedelta(days=20),
+                weeklyBurn=[],
+                cumulativeBalance=[],
+                runwayWeeks=0,
+                runwayNarrative="Cash runway analysis unavailable"
+            )
         
         analytics = CompanyAnalytics(
             totalProjects=len(projects),
@@ -718,7 +747,7 @@ async def get_company_analytics():
             netProfit=net_profit,
             weeklyForecast=company_forecast,
             cashRunway=cash_runway,
-            rollupNarrative=f"Company performance: {len(active_projects)} active projects, ${total_revenue:,.2f} revenue, ${net_profit:,.2f} profit"
+            rollupNarrative=f"Company performance: {len(active_projects)} active projects, ${total_revenue:,.2f} revenue, ${net_profit:,.2f} profit (based on {successful_analytics} projects with complete data)"
         )
         
         return analytics
