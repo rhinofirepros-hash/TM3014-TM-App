@@ -695,27 +695,43 @@ const Reports = ({ onBack }) => {
 
             {/* Cost Summary - Larger Cards */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <h3 className={`font-semibold flex items-center gap-2 ${themeClasses.text.primary}`}>
                 <DollarSign className="w-5 h-5 text-green-600" />
                 Cost Summary
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-200">
+                <div className={`text-center p-6 rounded-lg border ${
+                  isDarkMode 
+                    ? 'bg-blue-900/30 border-blue-500/30' 
+                    : 'bg-blue-50 border-blue-200'
+                }`}>
                   <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                   <div className="text-3xl font-bold text-blue-600">{selectedTag.totalHours}</div>
                   <div className="text-sm font-medium text-blue-700">Total Hours</div>
                 </div>
-                <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
+                <div className={`text-center p-6 rounded-lg border ${
+                  isDarkMode 
+                    ? 'bg-green-900/30 border-green-500/30' 
+                    : 'bg-green-50 border-green-200'
+                }`}>
                   <User className="w-8 h-8 text-green-600 mx-auto mb-2" />
                   <div className="text-3xl font-bold text-green-600">${selectedTag.laborCost?.toLocaleString() || 0}</div>
                   <div className="text-sm font-medium text-green-700">Labor Cost</div>
                 </div>
-                <div className="text-center p-6 bg-purple-50 rounded-lg border border-purple-200">
+                <div className={`text-center p-6 rounded-lg border ${
+                  isDarkMode 
+                    ? 'bg-purple-900/30 border-purple-500/30' 
+                    : 'bg-purple-50 border-purple-200'
+                }`}>
                   <Building className="w-8 h-8 text-purple-600 mx-auto mb-2" />
                   <div className="text-3xl font-bold text-purple-600">${selectedTag.materialCost?.toLocaleString() || 0}</div>
                   <div className="text-sm font-medium text-purple-700">Material Cost</div>
                 </div>
-                <div className="text-center p-6 bg-gray-900 text-white rounded-lg border">
+                <div className={`text-center p-6 rounded-lg border ${
+                  isDarkMode 
+                    ? 'bg-gray-800 text-white border-gray-600' 
+                    : 'bg-gray-900 text-white border-gray-700'
+                }`}>
                   <DollarSign className="w-8 h-8 text-white mx-auto mb-2" />
                   <div className="text-3xl font-bold">${((selectedTag.laborCost || 0) + (selectedTag.materialCost || 0)).toLocaleString()}</div>
                   <div className="text-sm font-medium text-gray-300">Total Cost</div>
