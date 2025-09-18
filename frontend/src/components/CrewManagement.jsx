@@ -117,22 +117,6 @@ const CrewManagement = ({ onBack }) => {
 
       if (response.ok) {
         const createdMember = await response.json();
-        
-        // Also create in workers endpoint for backward compatibility
-        const workerData = {
-          name: newCrewMember.name,
-          position: newCrewMember.position,
-          hourlyRate: parseFloat(newCrewMember.hourly_rate) || 0,
-          phone: newCrewMember.phone,
-          email: newCrewMember.email
-        };
-
-        await fetch(`${backendUrl}/api/workers`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(workerData)
-        });
-
         setCrewMembers(prev => [createdMember, ...prev]);
         setShowCreateModal(false);
         resetNewCrewMember();
