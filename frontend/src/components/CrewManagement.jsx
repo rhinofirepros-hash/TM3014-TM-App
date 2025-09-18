@@ -297,8 +297,8 @@ const CrewManagement = ({ onBack }) => {
     setSelectedCrewMember(member);
     setEditCrewMember({
       name: member.name,
-      base_pay: member.base_pay.toString(),
-      burden_cost: member.burden_cost.toString(),
+      hourly_rate: (member.hourly_rate || 0).toString(),
+      gc_billing_rate: (member.gc_billing_rate || 95.0).toString(),
       position: member.position,
       hire_date: member.hire_date,
       phone: member.phone || '',
