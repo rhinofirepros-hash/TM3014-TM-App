@@ -901,12 +901,7 @@ const Reports = ({ onBack }) => {
               <Button 
                 variant="outline"
                 size="lg"
-                onClick={() => {
-                  toast({
-                    title: "Edit Feature",
-                    description: "T&M tag editing coming soon!",
-                  });
-                }}
+                onClick={() => handleEditTag(selectedTag)}
                 className={themeClasses.button.secondary}
               >
                 <FileText className="w-4 h-4 mr-2" />
