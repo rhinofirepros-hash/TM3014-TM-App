@@ -921,16 +921,22 @@ async def get_project_analytics(project_id: str):
                 
             work_days.add(tag.get("date_of_work", "").split("T")[0])
         
-        # Process crew logs (for any additional data not in T&M)
+        # Process crew logs - count ALL crew logs for comprehensive analytics
+        crew_log_hours = 0
+        crew_log_cost = 0
+        
         for log in crew_logs:
-            if not log.get("synced_to_tm"):  # Only count unsynced logs to avoid double counting
-                for crew_member in log.get("crew_members", []):
-                    additional_hours = float(crew_member.get("total_hours", 0))
-                    total_hours += additional_hours
-                    total_labor_cost += additional_hours * 95
-                    unique_crew_members.add(crew_member.get("name"))
-                
-                work_days.add(log.get("date", "").split("T")[0])
+            for crew_member in log.get("crew_members", []):
+                member_hours = float(crew_member.get("total_hours", 0))
+                crew_log_hours += member_hours
+                crew_log_cost += member_hours * 95
+                unique_crew_members.add(crew_member.get("name"))
+            
+            work_days.add(log.get("date", "").split("T")[0])
+        
+        # Use the higher of T&M or crew log data to avoid underestimating
+        total_hours = max(total_hours, crew_log_hours)
+        total_labor_cost = max(total_labor_cost, crew_log_cost)
         
         # Get project details
         project = await db.projects.find_one({"id": project_id})
