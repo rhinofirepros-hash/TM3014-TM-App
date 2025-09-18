@@ -49,10 +49,21 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       
       if (backendUrl) {
-        // Try to load recent T&M tags from backend
-        const response = await fetch(`${backendUrl}/api/tm-tags?limit=50`); // Get more tags for analytics
-        if (response.ok) {
-          const tmTags = await response.json();
+        // Load both projects and T&M tags data
+        const [projectsResponse, tmTagsResponse] = await Promise.all([
+          fetch(`${backendUrl}/api/projects`),
+          fetch(`${backendUrl}/api/tm-tags?limit=50`)
+        ]);
+
+        // Load projects for accurate active project count
+        if (projectsResponse.ok) {
+          const projectsData = await projectsResponse.json();
+          setProjects(projectsData);
+        }
+
+        // Load T&M tags for recent tags and analytics
+        if (tmTagsResponse.ok) {
+          const tmTags = await tmTagsResponse.json();
           
           // Process recent tags
           const recentTags = tmTags.slice(0, 5).map(tag => ({
@@ -68,10 +79,14 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           }));
           setRecentTags(recentTags);
           
-          // Generate project analytics
+          // Generate project analytics from T&M tags
           generateProjectAnalytics(tmTags);
         } else {
-          console.warn('Failed to load T&M tags from backend, using localStorage fallback');
+          console.warn('Failed to load T&M tags from backend');
+        }
+
+        // If no backend data, use localStorage fallback
+        if (!projectsResponse.ok && !tmTagsResponse.ok) {
           loadLocalStorageData();
         }
       } else {
