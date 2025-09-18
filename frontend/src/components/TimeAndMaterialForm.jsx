@@ -1040,7 +1040,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* GC Email and Delivery Options */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">General Contractor Delivery</h3>
+              <h3 className={`text-lg font-medium ${themeClasses.text.primary}`}>General Contractor Delivery</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
