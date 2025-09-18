@@ -435,6 +435,602 @@ class TMTagAPITester:
         
         return None
     
+    def create_realistic_project_data(self):
+        """Create realistic project data for testing"""
+        return {
+            "name": "Downtown Office Complex - Phase 2",
+            "description": "Complete electrical installation for 15-story office building including power distribution, lighting systems, and emergency backup systems.",
+            "client_company": "Metropolitan Development Corp",
+            "gc_email": "project.manager@metrodev.com",
+            "contract_amount": 485000.00,
+            "project_manager": "Jesus Garcia",
+            "start_date": (datetime.now() - timedelta(days=30)).isoformat(),
+            "estimated_completion": (datetime.now() + timedelta(days=90)).isoformat(),
+            "address": "1234 Downtown Ave, Metro City, ST 12345"
+        }
+    
+    def test_project_creation(self):
+        """Test project creation endpoint"""
+        print("\n=== Testing Project Creation ===")
+        
+        project_data = self.create_realistic_project_data()
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                required_fields = ["id", "name", "client_company", "gc_email", "status", "created_at"]
+                missing_fields = [field for field in required_fields if field not in response_data]
+                
+                if not missing_fields:
+                    self.created_project_id = response_data["id"]
+                    self.created_project_name = response_data["name"]
+                    self.log_result("projects", "Project creation", True)
+                    return response_data
+                else:
+                    self.log_result("projects", "Project creation", False, f"Missing fields: {missing_fields}", response)
+            else:
+                self.log_result("projects", "Project creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project creation", False, str(e))
+        
+        return None
+    
+    def test_project_retrieval(self):
+        """Test project retrieval endpoint"""
+        print("\n=== Testing Project Retrieval ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if isinstance(response_data, list):
+                    self.log_result("projects", "Project retrieval", True, f"Retrieved {len(response_data)} projects")
+                    return response_data
+                else:
+                    self.log_result("projects", "Project retrieval", False, "Response is not a list", response)
+            else:
+                self.log_result("projects", "Project retrieval", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project retrieval", False, str(e))
+        
+        return None
+    
+    def test_project_by_id(self, project_id):
+        """Test project retrieval by ID"""
+        print(f"\n=== Testing Project Retrieval by ID: {project_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/projects/{project_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "id" in response_data and response_data["id"] == project_id:
+                    self.log_result("projects", "Project by ID", True)
+                    return response_data
+                else:
+                    self.log_result("projects", "Project by ID", False, "ID mismatch in response", response)
+            else:
+                self.log_result("projects", "Project by ID", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project by ID", False, str(e))
+        
+        return None
+    
+    def test_project_update(self, project_id):
+        """Test project update endpoint"""
+        print(f"\n=== Testing Project Update: {project_id} ===")
+        
+        update_data = {
+            "name": "Downtown Office Complex - Phase 2 (Updated)",
+            "description": "Updated project description with additional scope",
+            "client_company": "Metropolitan Development Corp",
+            "gc_email": "updated.manager@metrodev.com",
+            "contract_amount": 525000.00,
+            "start_date": (datetime.now() - timedelta(days=30)).isoformat(),
+            "address": "1234 Downtown Ave, Metro City, ST 12345 (Updated)"
+        }
+        
+        try:
+            response = self.session.put(
+                f"{self.base_url}/projects/{project_id}",
+                json=update_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if response_data.get("name") == update_data["name"]:
+                    self.log_result("projects", "Project update", True)
+                    return response_data
+                else:
+                    self.log_result("projects", "Project update", False, "Update not reflected in response", response)
+            else:
+                self.log_result("projects", "Project update", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project update", False, str(e))
+        
+        return None
+    
+    def test_project_deletion(self, project_id):
+        """Test project deletion endpoint"""
+        print(f"\n=== Testing Project Deletion: {project_id} ===")
+        
+        try:
+            response = self.session.delete(f"{self.base_url}/projects/{project_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "message" in response_data and "deleted successfully" in response_data["message"]:
+                    self.log_result("projects", "Project deletion", True)
+                    return True
+                else:
+                    self.log_result("projects", "Project deletion", False, "Unexpected response format", response)
+            else:
+                self.log_result("projects", "Project deletion", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "Project deletion", False, str(e))
+        
+        return False
+    
+    def create_realistic_employee_data(self):
+        """Create realistic employee data for testing"""
+        return [
+            {
+                "name": "Carlos Martinez",
+                "base_pay": 28.50,
+                "burden_cost": 12.75,
+                "position": "Journeyman Electrician",
+                "hire_date": (datetime.now() - timedelta(days=365)).isoformat(),
+                "phone": "(555) 987-6543",
+                "email": "carlos.martinez@company.com",
+                "emergency_contact": "Maria Martinez - (555) 987-6544"
+            },
+            {
+                "name": "Jennifer Thompson",
+                "base_pay": 32.00,
+                "burden_cost": 14.50,
+                "position": "Senior Electrician",
+                "hire_date": (datetime.now() - timedelta(days=730)).isoformat(),
+                "phone": "(555) 876-5432",
+                "email": "jennifer.thompson@company.com",
+                "emergency_contact": "Robert Thompson - (555) 876-5433"
+            },
+            {
+                "name": "Michael Rodriguez",
+                "base_pay": 38.75,
+                "burden_cost": 17.25,
+                "position": "Master Electrician",
+                "hire_date": (datetime.now() - timedelta(days=1095)).isoformat(),
+                "phone": "(555) 765-4321",
+                "email": "michael.rodriguez@company.com",
+                "emergency_contact": "Sofia Rodriguez - (555) 765-4322"
+            }
+        ]
+    
+    def test_employee_creation(self):
+        """Test employee creation endpoint"""
+        print("\n=== Testing Employee Creation ===")
+        
+        employees_data = self.create_realistic_employee_data()
+        created_employees = []
+        
+        for employee_data in employees_data:
+            try:
+                response = self.session.post(
+                    f"{self.base_url}/employees",
+                    json=employee_data,
+                    headers={"Content-Type": "application/json"}
+                )
+                
+                if response.status_code == 200:
+                    response_data = response.json()
+                    required_fields = ["id", "name", "base_pay", "burden_cost", "position", "status", "created_at"]
+                    missing_fields = [field for field in required_fields if field not in response_data]
+                    
+                    if not missing_fields:
+                        created_employees.append(response_data)
+                        self.log_result("employees", f"Employee creation - {employee_data['name']}", True)
+                    else:
+                        self.log_result("employees", f"Employee creation - {employee_data['name']}", False, f"Missing fields: {missing_fields}", response)
+                else:
+                    self.log_result("employees", f"Employee creation - {employee_data['name']}", False, f"HTTP {response.status_code}", response)
+                    
+            except Exception as e:
+                self.log_result("employees", f"Employee creation - {employee_data['name']}", False, str(e))
+        
+        return created_employees
+    
+    def test_employee_retrieval(self):
+        """Test employee retrieval endpoint"""
+        print("\n=== Testing Employee Retrieval ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/employees")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if isinstance(response_data, list):
+                    self.log_result("employees", "Employee retrieval", True, f"Retrieved {len(response_data)} employees")
+                    return response_data
+                else:
+                    self.log_result("employees", "Employee retrieval", False, "Response is not a list", response)
+            else:
+                self.log_result("employees", "Employee retrieval", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("employees", "Employee retrieval", False, str(e))
+        
+        return None
+    
+    def test_employee_by_id(self, employee_id):
+        """Test employee retrieval by ID"""
+        print(f"\n=== Testing Employee Retrieval by ID: {employee_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/employees/{employee_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "id" in response_data and response_data["id"] == employee_id:
+                    self.log_result("employees", "Employee by ID", True)
+                    return response_data
+                else:
+                    self.log_result("employees", "Employee by ID", False, "ID mismatch in response", response)
+            else:
+                self.log_result("employees", "Employee by ID", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("employees", "Employee by ID", False, str(e))
+        
+        return None
+    
+    def test_employee_update(self, employee_id):
+        """Test employee update endpoint"""
+        print(f"\n=== Testing Employee Update: {employee_id} ===")
+        
+        update_data = {
+            "name": "Carlos Martinez (Updated)",
+            "base_pay": 30.00,
+            "burden_cost": 13.50,
+            "position": "Senior Journeyman Electrician",
+            "hire_date": (datetime.now() - timedelta(days=365)).isoformat(),
+            "phone": "(555) 987-6543",
+            "email": "carlos.martinez.updated@company.com"
+        }
+        
+        try:
+            response = self.session.put(
+                f"{self.base_url}/employees/{employee_id}",
+                json=update_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if response_data.get("base_pay") == update_data["base_pay"]:
+                    self.log_result("employees", "Employee update", True)
+                    return response_data
+                else:
+                    self.log_result("employees", "Employee update", False, "Update not reflected in response", response)
+            else:
+                self.log_result("employees", "Employee update", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("employees", "Employee update", False, str(e))
+        
+        return None
+    
+    def test_employee_deletion(self, employee_id):
+        """Test employee deletion endpoint"""
+        print(f"\n=== Testing Employee Deletion: {employee_id} ===")
+        
+        try:
+            response = self.session.delete(f"{self.base_url}/employees/{employee_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "message" in response_data and "deleted successfully" in response_data["message"]:
+                    self.log_result("employees", "Employee deletion", True)
+                    return True
+                else:
+                    self.log_result("employees", "Employee deletion", False, "Unexpected response format", response)
+            else:
+                self.log_result("employees", "Employee deletion", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("employees", "Employee deletion", False, str(e))
+        
+        return False
+    
+    def create_realistic_crew_log_data(self, project_id, project_name):
+        """Create realistic crew log data for testing"""
+        return {
+            "project_id": project_id,
+            "project_name": project_name,
+            "date": (datetime.now() - timedelta(days=1)).isoformat(),
+            "crew_members": ["Carlos Martinez", "Jennifer Thompson", "Michael Rodriguez"],
+            "work_description": "Installed main electrical panel and ran conduit for first floor lighting circuits. Completed rough-in for 12 office spaces including power outlets and switch boxes.",
+            "hours_worked": 24.0,  # 3 workers x 8 hours
+            "per_diem": 150.00,  # $50 per person
+            "hotel_cost": 0.00,  # Local project
+            "gas_expense": 45.50,
+            "other_expenses": 25.00,
+            "expense_notes": "Gas for company truck, lunch for crew",
+            "weather_conditions": "Clear, 72°F"
+        }
+    
+    def test_crew_log_creation(self):
+        """Test crew log creation endpoint"""
+        print("\n=== Testing Crew Log Creation ===")
+        
+        # Use existing project or create a default one
+        project_id = getattr(self, 'created_project_id', str(uuid.uuid4()))
+        project_name = getattr(self, 'created_project_name', 'Test Project')
+        
+        crew_log_data = self.create_realistic_crew_log_data(project_id, project_name)
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/crew-logs",
+                json=crew_log_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                required_fields = ["id", "project_id", "date", "crew_members", "work_description", "hours_worked", "created_at"]
+                missing_fields = [field for field in required_fields if field not in response_data]
+                
+                if not missing_fields:
+                    self.created_crew_log_id = response_data["id"]
+                    self.log_result("crew_logs", "Crew log creation", True)
+                    return response_data
+                else:
+                    self.log_result("crew_logs", "Crew log creation", False, f"Missing fields: {missing_fields}", response)
+            else:
+                self.log_result("crew_logs", "Crew log creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Crew log creation", False, str(e))
+        
+        return None
+    
+    def test_crew_log_retrieval(self):
+        """Test crew log retrieval endpoint"""
+        print("\n=== Testing Crew Log Retrieval ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/crew-logs")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if isinstance(response_data, list):
+                    self.log_result("crew_logs", "Crew log retrieval", True, f"Retrieved {len(response_data)} crew logs")
+                    return response_data
+                else:
+                    self.log_result("crew_logs", "Crew log retrieval", False, "Response is not a list", response)
+            else:
+                self.log_result("crew_logs", "Crew log retrieval", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Crew log retrieval", False, str(e))
+        
+        return None
+    
+    def test_crew_log_by_id(self, log_id):
+        """Test crew log retrieval by ID"""
+        print(f"\n=== Testing Crew Log Retrieval by ID: {log_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/crew-logs/{log_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "id" in response_data and response_data["id"] == log_id:
+                    self.log_result("crew_logs", "Crew log by ID", True)
+                    return response_data
+                else:
+                    self.log_result("crew_logs", "Crew log by ID", False, "ID mismatch in response", response)
+            else:
+                self.log_result("crew_logs", "Crew log by ID", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Crew log by ID", False, str(e))
+        
+        return None
+    
+    def test_crew_log_deletion(self, log_id):
+        """Test crew log deletion endpoint"""
+        print(f"\n=== Testing Crew Log Deletion: {log_id} ===")
+        
+        try:
+            response = self.session.delete(f"{self.base_url}/crew-logs/{log_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "message" in response_data and "deleted successfully" in response_data["message"]:
+                    self.log_result("crew_logs", "Crew log deletion", True)
+                    return True
+                else:
+                    self.log_result("crew_logs", "Crew log deletion", False, "Unexpected response format", response)
+            else:
+                self.log_result("crew_logs", "Crew log deletion", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("crew_logs", "Crew log deletion", False, str(e))
+        
+        return False
+    
+    def create_realistic_material_data(self, project_id, project_name):
+        """Create realistic material data for testing"""
+        return [
+            {
+                "project_id": project_id,
+                "project_name": project_name,
+                "purchase_date": (datetime.now() - timedelta(days=2)).isoformat(),
+                "vendor": "Metro Electrical Supply",
+                "material_name": "12 AWG THHN Copper Wire",
+                "quantity": 1000.0,
+                "unit_cost": 0.89,
+                "total_cost": 890.00,
+                "invoice_number": "MES-2024-0156",
+                "category": "wire"
+            },
+            {
+                "project_id": project_id,
+                "project_name": project_name,
+                "purchase_date": (datetime.now() - timedelta(days=1)).isoformat(),
+                "vendor": "Downtown Hardware",
+                "material_name": "20A GFCI Outlets",
+                "quantity": 15.0,
+                "unit_cost": 18.75,
+                "total_cost": 281.25,
+                "invoice_number": "DH-2024-0892",
+                "category": "outlets"
+            }
+        ]
+    
+    def test_material_creation(self):
+        """Test material purchase creation endpoint"""
+        print("\n=== Testing Material Purchase Creation ===")
+        
+        # Use existing project or create a default one
+        project_id = getattr(self, 'created_project_id', str(uuid.uuid4()))
+        project_name = getattr(self, 'created_project_name', 'Test Project')
+        
+        materials_data = self.create_realistic_material_data(project_id, project_name)
+        created_materials = []
+        
+        for material_data in materials_data:
+            try:
+                response = self.session.post(
+                    f"{self.base_url}/materials",
+                    json=material_data,
+                    headers={"Content-Type": "application/json"}
+                )
+                
+                if response.status_code == 200:
+                    response_data = response.json()
+                    required_fields = ["id", "project_id", "vendor", "material_name", "quantity", "unit_cost", "total_cost", "created_at"]
+                    missing_fields = [field for field in required_fields if field not in response_data]
+                    
+                    if not missing_fields:
+                        created_materials.append(response_data)
+                        self.log_result("materials", f"Material creation - {material_data['material_name']}", True)
+                    else:
+                        self.log_result("materials", f"Material creation - {material_data['material_name']}", False, f"Missing fields: {missing_fields}", response)
+                else:
+                    self.log_result("materials", f"Material creation - {material_data['material_name']}", False, f"HTTP {response.status_code}", response)
+                    
+            except Exception as e:
+                self.log_result("materials", f"Material creation - {material_data['material_name']}", False, str(e))
+        
+        return created_materials
+    
+    def test_material_retrieval(self):
+        """Test material purchase retrieval endpoint"""
+        print("\n=== Testing Material Purchase Retrieval ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/materials")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if isinstance(response_data, list):
+                    self.log_result("materials", "Material retrieval", True, f"Retrieved {len(response_data)} materials")
+                    return response_data
+                else:
+                    self.log_result("materials", "Material retrieval", False, "Response is not a list", response)
+            else:
+                self.log_result("materials", "Material retrieval", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("materials", "Material retrieval", False, str(e))
+        
+        return None
+    
+    def test_material_by_id(self, material_id):
+        """Test material purchase retrieval by ID"""
+        print(f"\n=== Testing Material Purchase Retrieval by ID: {material_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/materials/{material_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "id" in response_data and response_data["id"] == material_id:
+                    self.log_result("materials", "Material by ID", True)
+                    return response_data
+                else:
+                    self.log_result("materials", "Material by ID", False, "ID mismatch in response", response)
+            else:
+                self.log_result("materials", "Material by ID", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("materials", "Material by ID", False, str(e))
+        
+        return None
+    
+    def test_material_deletion(self, material_id):
+        """Test material purchase deletion endpoint"""
+        print(f"\n=== Testing Material Purchase Deletion: {material_id} ===")
+        
+        try:
+            response = self.session.delete(f"{self.base_url}/materials/{material_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "message" in response_data and "deleted successfully" in response_data["message"]:
+                    self.log_result("materials", "Material deletion", True)
+                    return True
+                else:
+                    self.log_result("materials", "Material deletion", False, "Unexpected response format", response)
+            else:
+                self.log_result("materials", "Material deletion", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("materials", "Material deletion", False, str(e))
+        
+        return False
+    
+    def test_project_analytics(self, project_id):
+        """Test project analytics endpoint"""
+        print(f"\n=== Testing Project Analytics: {project_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                required_fields = ["project_id", "project_name", "total_hours", "total_labor_cost_gc", 
+                                 "total_material_cost", "total_revenue", "total_costs", "profit", "profit_margin"]
+                missing_fields = [field for field in required_fields if field not in response_data]
+                
+                if not missing_fields:
+                    self.log_result("analytics", "Project analytics", True, f"Analytics calculated for project {project_id}")
+                    return response_data
+                else:
+                    self.log_result("analytics", "Project analytics", False, f"Missing fields: {missing_fields}", response)
+            else:
+                self.log_result("analytics", "Project analytics", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Project analytics", False, str(e))
+        
+        return None
+    
     def test_email_endpoint(self):
         """Test email endpoint (will likely fail due to missing SMTP config)"""
         print("\n=== Testing Email Endpoint ===")
