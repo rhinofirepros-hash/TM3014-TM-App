@@ -949,10 +949,14 @@ async def get_project_analytics(project_id: str):
         unique_crew_members = set()
         work_days = set()
         
+        # Get project details for labor rate
+        project = await db.projects.find_one({"id": project_id})
+        contract_amount = project.get("contract_amount", 0) if project else 0
+        project_labor_rate = project.get("labor_rate", 95.0) if project else 95.0  # Use project-specific rate
+        
         # Get employee data for accurate cost calculations
         employees = await db.employees.find({"status": "active"}).to_list(1000)
         employee_rates = {emp["name"]: emp.get("hourly_rate", 40) for emp in employees}  # Default to $40
-        employee_gc_rates = {emp["name"]: emp.get("gc_billing_rate", 95) for emp in employees}  # Default to $95
         
         # Process T&M tags
         total_true_cost = 0  # True employee cost
@@ -967,10 +971,9 @@ async def get_project_analytics(project_id: str):
                 
                 # Calculate true cost using employee's hourly rate
                 hourly_rate = employee_rates.get(worker_name, 40)  # Default $40
-                gc_rate = employee_gc_rates.get(worker_name, 95)   # Default $95
                 
                 total_true_cost += hours * hourly_rate
-                total_gc_billing += hours * gc_rate
+                total_gc_billing += hours * project_labor_rate  # Use project-specific rate
                 
                 unique_crew_members.add(worker_name)
             
@@ -1004,21 +1007,19 @@ async def get_project_analytics(project_id: str):
                         worker_name = crew_member.get("name", "Unknown")
                         
                         hourly_rate = employee_rates.get(worker_name, 40)  # Default $40
-                        gc_rate = employee_gc_rates.get(worker_name, 95)   # Default $95
                         
                         crew_log_hours += member_hours
                         crew_log_true_cost += member_hours * hourly_rate
-                        crew_log_gc_billing += member_hours * gc_rate
+                        crew_log_gc_billing += member_hours * project_labor_rate  # Use project-specific rate
                         unique_crew_members.add(worker_name)
                     elif isinstance(crew_member, str):
                         # Old format - just names, use hours_worked from log level
                         log_hours = float(log.get("hours_worked", 0)) / len(crew_members) if crew_members else 0
                         hourly_rate = employee_rates.get(crew_member, 40)  # Default $40
-                        gc_rate = employee_gc_rates.get(crew_member, 95)   # Default $95
                         
                         crew_log_hours += log_hours
                         crew_log_true_cost += log_hours * hourly_rate
-                        crew_log_gc_billing += log_hours * gc_rate
+                        crew_log_gc_billing += log_hours * project_labor_rate  # Use project-specific rate
                         unique_crew_members.add(crew_member)
             
             # Handle date properly - check if it's already a string or datetime object
