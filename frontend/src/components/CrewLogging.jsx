@@ -232,6 +232,51 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
     }
   };
 
+  const handleManualSync = async (logId) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl) {
+        toast({
+          title: "Backend Error",
+          description: "Backend URL not configured",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const response = await fetch(`${backendUrl}/api/crew-logs/${logId}/sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        await loadCrewLogs(); // Reload logs
+        
+        // Notify parent component to refresh analytics
+        if (onDataUpdate) {
+          onDataUpdate();
+        }
+        
+        toast({
+          title: "Sync Complete",
+          description: "Crew log has been synced to T&M tag successfully.",
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to sync crew log');
+      }
+    } catch (error) {
+      console.error('Manual sync error:', error);
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync crew log. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleDeleteLog = async (logId) => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
