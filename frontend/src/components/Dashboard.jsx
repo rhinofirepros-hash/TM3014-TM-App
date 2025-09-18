@@ -348,21 +348,25 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
               const currentUser = oauthEmailService.getCurrentUser();
               return (
                 <Card 
-                  className="cursor-pointer hover:shadow-md transition-shadow" 
+                  className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                    isDarkMode 
+                      ? 'bg-white/10 text-white hover:bg-white/20' 
+                      : 'bg-white/70 text-gray-900 hover:bg-white/90'
+                  }`}
                   onClick={() => setShowEmailAuthModal(true)}
                 >
                   <CardContent className="p-6 text-center">
                     {currentUser ? (
                       <>
-                        <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                        <h3 className="font-medium text-gray-900">Email Connected</h3>
-                        <p className="text-sm text-gray-500 mt-1 capitalize">{currentUser.provider} ({currentUser.email.split('@')[0]})</p>
+                        <CheckCircle className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Email Connected</h3>
+                        <p className={`text-sm mt-1 capitalize ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>{currentUser.provider} ({currentUser.email.split('@')[0]})</p>
                       </>
                     ) : (
                       <>
-                        <Mail className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-                        <h3 className="font-medium text-gray-900">Connect Email</h3>
-                        <p className="text-sm text-gray-500 mt-1">Setup Gmail or Outlook for sending</p>
+                        <Mail className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
+                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Connect Email</h3>
+                        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Setup Gmail or Outlook for sending</p>
                       </>
                     )}
                   </CardContent>
