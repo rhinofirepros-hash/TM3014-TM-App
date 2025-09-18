@@ -84,7 +84,3 @@ const RichTextEditor = ({ value, onChange }) => {
 };
 
 export default RichTextEditor;
-};
-};
-
-export default RichTextEditor;
