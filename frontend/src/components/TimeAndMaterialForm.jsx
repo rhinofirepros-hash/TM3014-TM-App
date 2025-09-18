@@ -1210,7 +1210,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                       equipmentEntries: [],
                       otherEntries: [],
                       gcEmail: '',
-                      autoEmail: true,
+                      autoEmail: false, // Changed from true to false
                       downloadPDF: true,
                       signature: null,
                       signerName: '',
