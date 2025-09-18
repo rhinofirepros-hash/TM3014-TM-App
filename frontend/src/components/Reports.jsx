@@ -731,12 +731,21 @@ const Reports = ({ onBack }) => {
                 Edit Tag
               </Button>
               <Button 
+                variant="outline"
                 size="lg"
-                onClick={() => selectedTag && handleGeneratePDF(selectedTag)}
+                onClick={() => selectedTag && handleGeneratePDF(selectedTag, true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Preview PDF
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => selectedTag && handleGeneratePDF(selectedTag, false)}
                 className="bg-red-600 hover:bg-red-700"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Export PDF
+                Download PDF
               </Button>
             </div>
           </div>
