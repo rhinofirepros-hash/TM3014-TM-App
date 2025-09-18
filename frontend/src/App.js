@@ -62,8 +62,8 @@ function App() {
     setSelectedProject(null);
   };
 
-  const handleManageWorkers = () => {
-    setCurrentView('workers');
+  const handleManageCrew = () => {
+    setCurrentView('crew');
   };
 
   const handleViewReports = () => {
