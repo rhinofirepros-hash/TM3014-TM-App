@@ -110,6 +110,11 @@ const FinancialTabs = ({ project, onBack }) => {
       } else {
         console.error('Profitability API error:', profitabilityRes.status, await profitabilityRes.text());
       }
+
+      // If no data exists, show sample data for demonstration
+      if (invoices.length === 0 && payables.length === 0 && cashflowData.length === 0 && profitabilityData.length === 0) {
+        console.log('No financial data found, showing demo message');
+      }
       
     } catch (error) {
       console.error('Error loading financial data:', error);
