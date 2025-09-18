@@ -200,8 +200,8 @@ const CrewManagement = ({ onBack }) => {
 
       const updateData = {
         name: editCrewMember.name,
-        base_pay: parseFloat(editCrewMember.base_pay) || 0,
-        burden_cost: parseFloat(editCrewMember.burden_cost) || 0,
+        hourly_rate: parseFloat(editCrewMember.hourly_rate) || 0,
+        gc_billing_rate: parseFloat(editCrewMember.gc_billing_rate) || 95.0,
         position: editCrewMember.position,
         hire_date: editCrewMember.hire_date,
         phone: editCrewMember.phone,
