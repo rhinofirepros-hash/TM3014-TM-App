@@ -226,7 +226,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         {/* Stats Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Projects */}
-          <AnimatedCard delay={0} className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={100} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
@@ -245,7 +245,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </AnimatedCard>
 
           {/* Total Hours */}
-          <AnimatedCard delay={100} className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={200} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
