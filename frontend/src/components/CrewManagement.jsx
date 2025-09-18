@@ -666,29 +666,32 @@ const CrewManagement = ({ onBack }) => {
             {/* Pay Information */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Base Pay ($/hour)*</Label>
+                <Label className={themeClasses.text.primary}>Hourly Rate ($/hour)*</Label>
                 <Input
                   type="number"
                   step="0.01"
-                  value={newCrewMember.base_pay}
-                  onChange={(e) => handleInputChange('base_pay', e.target.value)}
+                  value={newCrewMember.hourly_rate}
+                  onChange={(e) => handleInputChange('hourly_rate', e.target.value)}
                   className={themeClasses.input}
-                  placeholder="28.50"
+                  placeholder="40.00"
                 />
+                <p className={`text-xs ${themeClasses.text.secondary}`}>
+                  True cost including benefits, taxes, insurance
+                </p>
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Burden Cost ($/hour)*</Label>
+                <Label className={themeClasses.text.primary}>GC Billing Rate ($/hour)*</Label>
                 <Input
                   type="number"
                   step="0.01"
-                  value={newCrewMember.burden_cost}
-                  onChange={(e) => handleInputChange('burden_cost', e.target.value)}
+                  value={newCrewMember.gc_billing_rate}
+                  onChange={(e) => handleInputChange('gc_billing_rate', e.target.value)}
                   className={themeClasses.input}
-                  placeholder="12.75"
+                  placeholder="95.00"
                 />
                 <p className={`text-xs ${themeClasses.text.secondary}`}>
-                  Benefits, taxes, insurance, etc.
+                  Rate billed to General Contractor
                 </p>
               </div>
             </div>
