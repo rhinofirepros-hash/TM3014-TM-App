@@ -269,8 +269,8 @@ const CrewManagement = ({ onBack }) => {
   const resetNewCrewMember = () => {
     setNewCrewMember({
       name: '',
-      base_pay: '',
-      burden_cost: '',
+      hourly_rate: '',
+      gc_billing_rate: '95.0',
       position: '',
       hire_date: new Date(),
       phone: '',
