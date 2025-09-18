@@ -35,6 +35,8 @@ const Reports = ({ onBack }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
   useEffect(() => {
