@@ -318,7 +318,8 @@ const CrewManagement = ({ onBack }) => {
   };
 
   const getTotalCostPerHour = (member) => {
-    return (member.base_pay || 0) + (member.burden_cost || 0);
+    // New schema uses hourly_rate directly
+    return member.hourly_rate || 0;
   };
 
   const getUniquePositions = () => {
