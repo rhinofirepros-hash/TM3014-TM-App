@@ -300,11 +300,15 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </AnimatedCard>
 
           {/* T&M Tags */}
-          <AnimatedCard delay={400} className={`backdrop-blur-md border-0 shadow-xl ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
+          <AnimatedCard 
+            delay={400} 
+            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`}
+            onClick={onViewReports}
+          >
             <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
