@@ -554,6 +554,9 @@ class TMTagAPITester:
         if created_tm_tag and "id" in created_tm_tag:
             self.test_tm_tag_by_id(created_tm_tag["id"])
         
+        # Test DELETE functionality - NEW TEST FOR USER REPORTED ISSUE
+        self.test_tm_tag_deletion()
+        
         # Test Worker APIs
         self.test_worker_creation()
         self.test_worker_retrieval()
