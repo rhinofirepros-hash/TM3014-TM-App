@@ -119,6 +119,24 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: All T&M Tag APIs working perfectly. Tested POST /api/tm-tags with realistic data (Downtown Office Complex project with labor, materials, equipment, other entries), GET /api/tm-tags retrieval, and GET /api/tm-tags/{id} by ID. Data persistence verified in MongoDB - 2 tags stored with complete entry details. All endpoints return proper JSON responses with correct structure including UUIDs, timestamps, and all required fields."
+
+  - task: "DELETE T&M Tag API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added DELETE /api/tm-tags/{tm_tag_id} endpoint to fix user reported issue where deleted T&M reports show up again when navigating back to reports. Backend was missing the DELETE endpoint."
+      - working: false
+        agent: "testing"
+        comment: "Initial testing revealed 500 error when accessing deleted tags due to response model validation issue in GET endpoint. Fixed by removing response_model constraint from get_tm_tag endpoint."
+      - working: true
+        agent: "testing"
+        comment: "✅ DELETE ENDPOINT FULLY FUNCTIONAL: Comprehensive testing completed with 18/18 tests passed (100% success rate). DELETE /api/tm-tags/{tm_tag_id} works perfectly - tags are permanently removed from MongoDB, return proper success/error messages, and deleted tags are no longer accessible via GET requests or in lists. Fixed response validation issue in GET endpoint. All CRUD operations now working correctly."
   
   - task: "Worker Management API endpoints"
     implemented: true
