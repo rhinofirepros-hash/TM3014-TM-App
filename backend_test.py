@@ -465,7 +465,7 @@ class TMTagAPITester:
             
             if response.status_code == 200:
                 response_data = response.json()
-                required_fields = ["id", "name", "client_company", "gc_email", "status", "created_at"]
+                required_fields = ["id", "name", "client_company", "gc_email", "labor_rate", "status", "created_at"]
                 missing_fields = [field for field in required_fields if field not in response_data]
                 
                 if not missing_fields:
