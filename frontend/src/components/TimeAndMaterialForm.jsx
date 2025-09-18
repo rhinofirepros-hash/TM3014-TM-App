@@ -889,9 +889,9 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Description of Work */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Label className={`text-sm font-medium flex items-center gap-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Description Of Work*
-                <Info className="w-4 h-4 text-gray-400" />
+                <Info className={`w-4 h-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`} />
               </Label>
               <RichTextEditor
                 value={formData.descriptionOfWork}
