@@ -216,17 +216,77 @@ backend:
         agent: "testing"
         comment: "✅ MATERIAL PURCHASE ENDPOINTS FULLY FUNCTIONAL: Comprehensive testing completed with 5/5 tests passed (100% success rate). All operations working perfectly: POST /api/materials (creation), GET /api/materials (retrieval), GET /api/materials/{id} (by ID), DELETE /api/materials/{id} (deletion). Tested with realistic material data including vendors, quantities, unit costs, total costs, invoice numbers, and categories. Data persistence verified in MongoDB with proper project associations."
 
-  - task: "Project Analytics API endpoint"
+  - task: "Project-specific labor rates"
     implemented: true
-    working: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/frontend/src/components/ProjectManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR UPDATE: Added labor_rate field to Project model and ProjectCreate. Updated analytics to use project-specific labor rates instead of fixed $95/hr or individual employee rates. Projects can now set custom billing rates per client. Updated ProjectManagement.jsx to include labor rate field in creation form with default $95/hr but fully customizable. This allows proper profit calculations based on actual client rates."
+
+  - task: "Employee schema restructuring"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/frontend/src/components/EmployeeManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR SCHEMA CHANGE: Updated Employee model from base_pay/burden_cost structure to single hourly_rate field representing true employee cost. Updated EmployeeManagement.jsx to use new schema with single hourly rate input. Updated all cost calculations to use actual employee hourly rates instead of estimated 70% of billed rate. This provides accurate profit margins: True Cost (employee hourly_rate) vs Billed Amount (project labor_rate)."
+
+  - task: "Bidirectional crew log and T&M sync"
+    implemented: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ PROJECT ANALYTICS ENDPOINT FULLY FUNCTIONAL: Comprehensive testing completed with 1/1 tests passed (100% success rate). GET /api/projects/{id}/analytics endpoint working perfectly, calculating comprehensive project statistics including total hours, labor costs, material costs, crew expenses, true employee costs, total revenue, profit, and profit margin. Analytics properly aggregate data from T&M tags, crew logs, materials, and employee records. All calculations accurate and returned in proper JSON format."
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR FEATURE: Implemented bidirectional sync between crew logs and T&M tags. When crew log is created, automatically creates T&M tag marked 'pending_review'. When T&M tag is created, automatically creates crew log marked 'pending_review'. Enhanced sync functions with proper date matching, status tracking (synced_to_tm, synced_from_tm), and data consolidation. This eliminates duplicate data entry - users can create either crew log or T&M tag and the other is auto-generated."
+
+  - task: "T&M Tag edit functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Reports.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED EDIT FUNCTIONALITY: Added full edit capability for T&M tags in Reports component. Users can now click 'Edit Tag' button in T&M tag modal to modify title, cost code, company name, foreman, GC email, and description. Added backend PUT endpoint /api/tm-tags/{id} for updates. Edit modal includes all form fields with proper validation and save functionality."
+
+  - task: "Crew Log edit functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/CrewLogging.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED EDIT FUNCTIONALITY: Added full edit capability for crew logs. Users can now click edit button in crew logs table to modify date, work description, weather conditions, and all crew member hours (ST/OT/DT/POT). Added backend PUT and DELETE endpoints for crew logs. Edit modal includes full crew member management with add/remove functionality and automatic total hours calculation."
+
+  - task: "Enhanced cost analytics"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/frontend/src/components/ProjectOverview.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ENHANCED ANALYTICS: Updated project analytics to show comprehensive cost breakdown using new schema. Analytics now display: 1) Total Revenue (billed to client using project labor_rate), 2) True Costs (actual employee hourly_rate + materials + expenses), 3) Labor Markup Profit (difference between billed and true labor cost), 4) Net Profit (contract amount - true costs), 5) Profit Margin percentage. Added 5-card layout in ProjectOverview.jsx to display all key metrics clearly."
 
 frontend:
   - task: "PDF generation with actual logo"
