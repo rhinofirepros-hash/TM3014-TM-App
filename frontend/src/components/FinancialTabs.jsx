@@ -571,9 +571,29 @@ const FinancialTabs = ({ project, onBack }) => {
         <h2 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
           Financial Management
         </h2>
-        <Button variant="outline" onClick={onBack}>
-          Back to Project
-        </Button>
+        <div className="flex items-center gap-4">
+          {/* Debug info */}
+          <div className={`text-xs ${themeClasses.text.secondary}`}>
+            Project: {project?.name || 'Unknown'} (ID: {projectId || 'N/A'})
+          </div>
+          <Button variant="outline" onClick={onBack}>
+            Back to Project
+          </Button>
+        </div>
+      </div>
+
+      {/* Debug panel for development */}
+      <div className={`p-4 rounded-lg border ${themeClasses.card.primary} ${themeClasses.text.secondary}`}>
+        <h3 className="font-semibold mb-2">Debug Information:</h3>
+        <div className="grid grid-cols-4 gap-4 text-xs">
+          <div>Invoices: {invoices.length} records</div>
+          <div>Payables: {payables.length} records</div>
+          <div>Cashflow: {cashflowData.length} records</div>
+          <div>Profitability: {profitabilityData.length} records</div>
+        </div>
+        <div className="mt-2 text-xs">
+          Backend URL: {process.env.REACT_APP_BACKEND_URL}
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
