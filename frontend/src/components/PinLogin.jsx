@@ -50,12 +50,12 @@ const PinLogin = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${themeClasses.background}`}>
+      <Card className={`w-full max-w-md shadow-xl ${themeClasses.card}`}>
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-24 h-20 flex items-center justify-center overflow-hidden">
             <img 
-              src="https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png" 
+              src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
               alt="Rhino Fire Protection" 
               className="w-24 h-20 object-contain"
               onError={(e) => {
@@ -65,10 +65,10 @@ const PinLogin = ({ onLoginSuccess }) => {
             />
             <span className="text-red-500 font-bold text-xl hidden">RF</span>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className={`text-2xl font-bold ${themeClasses.text.primary}`}>
             Rhino Fire Protection
           </CardTitle>
-          <p className="text-gray-600">T&M Daily Tag Application</p>
+          <p className={themeClasses.text.secondary}>T&M Daily Tag Application</p>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Direct Login Instructions */}
