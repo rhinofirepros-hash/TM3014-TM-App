@@ -6,6 +6,7 @@ import { Label } from './ui/label';
 import { Separator } from './ui/separator';
 import { Mail, Shield } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 
 const PinLogin = ({ onLoginSuccess }) => {
   const [pin, setPin] = useState('');
