@@ -15,7 +15,11 @@ import {
   Search,
   Filter,
   BarChart3,
-  X
+  X,
+  Building,
+  Mail,
+  Clock,
+  User
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
