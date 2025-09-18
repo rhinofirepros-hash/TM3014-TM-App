@@ -137,8 +137,8 @@ const CrewManagement = ({ onBack }) => {
 
       const crewMemberData = {
         name: newCrewMember.name,
-        base_pay: parseFloat(newCrewMember.base_pay) || 0,
-        burden_cost: parseFloat(newCrewMember.burden_cost) || 0,
+        hourly_rate: parseFloat(newCrewMember.hourly_rate) || 0,
+        gc_billing_rate: parseFloat(newCrewMember.gc_billing_rate) || 95.0,
         position: newCrewMember.position,
         hire_date: newCrewMember.hire_date.toISOString(),
         phone: newCrewMember.phone,
