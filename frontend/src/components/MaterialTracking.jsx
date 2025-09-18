@@ -238,8 +238,8 @@ const MaterialTracking = ({ project, onBack }) => {
   };
 
   const filteredMaterials = materials.filter(material => {
-    const matchesCategory = !filterCategory || material.category === filterCategory;
-    const matchesVendor = !filterVendor || material.vendor === filterVendor;
+    const matchesCategory = filterCategory === '' || filterCategory === 'all' || material.category === filterCategory;
+    const matchesVendor = filterVendor === '' || filterVendor === 'all' || material.vendor === filterVendor;
     return matchesCategory && matchesVendor;
   });
 
