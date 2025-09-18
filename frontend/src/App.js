@@ -96,7 +96,7 @@ function App() {
               onLogout={handleLogout}
             />
           ) : currentView === 'crew' ? (
-            <WorkerManagement 
+            <CrewManagement 
               onBack={handleBackToDashboard}
             />
           ) : currentView === 'reports' ? (
