@@ -743,10 +743,10 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                   value={formData.projectName} 
                   onValueChange={(value) => handleInputChange('projectName', value)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className={`w-full ${themeClasses.input}`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className={themeClasses.modal}>
                     {savedProjects.map((project) => (
                       <SelectItem key={project.id} value={project.name}>
                         {project.name}
