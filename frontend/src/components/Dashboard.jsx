@@ -257,7 +257,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                   <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     Active Projects
                   </p>
-                  <p className="text-3xl font-bold">{projectAnalytics.length}</p>
+                  <p className="text-3xl font-bold">{projects.filter(p => p.status === 'active').length || projectAnalytics.length}</p>
                 </div>
                 <Building className={`w-8 h-8 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
