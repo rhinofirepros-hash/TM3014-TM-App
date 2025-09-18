@@ -124,6 +124,15 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
     );
   }
 
+  if (currentView === 'financial') {
+    return (
+      <FinancialTabs 
+        project={project} 
+        onBack={handleBackToOverview}
+      />
+    );
+  }
+
   // Default overview view
   return (
     <div className={`min-h-screen p-4 transition-all duration-300 ${themeClasses.background}`}>
