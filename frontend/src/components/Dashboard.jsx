@@ -227,11 +227,15 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         {/* Stats Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Projects */}
-          <AnimatedCard delay={100} className={`backdrop-blur-md border-0 shadow-xl ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
+          <AnimatedCard 
+            delay={100} 
+            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`}
+            onClick={onManageProjects}
+          >
             <AnimatedCardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
