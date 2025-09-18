@@ -447,12 +447,52 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         pdf.text('RHINO FIRE PROTECTION T&M TAG APP', 105, yPos + 2, { align: 'center' });
       }
       
-      // Save/download
+      // Save/download with more robust method
       const dateStr = formData.dateOfWork?.toISOString().split('T')[0].replace(/-/g, '');
       const filename = `TM_Tag_${dateStr}.pdf`;
       
-      // Save the PDF
-      pdf.save(filename);
+      try {
+        // Method 1: Try the standard jsPDF save method
+        pdf.save(filename);
+        
+        // Method 2: Also create blob URL as backup/additional download method
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        
+        // Create download link and trigger download
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // Clean up the blob URL after a short delay
+        setTimeout(() => {
+          URL.revokeObjectURL(blobUrl);
+        }, 1000);
+        
+      } catch (downloadError) {
+        console.error('Download error:', downloadError);
+        
+        // Fallback: Open PDF in new tab
+        const pdfDataUri = pdf.output('datauristring');
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(`
+            <html>
+              <head><title>${filename}</title></head>
+              <body style="margin:0;">
+                <embed src="${pdfDataUri}" type="application/pdf" width="100%" height="100%" />
+              </body>
+            </html>
+          `);
+        } else {
+          // If popup is blocked, provide download link
+          alert('Please allow popups to view the PDF, or check your downloads folder for the file.');
+        }
+      }
       
       if (onGenerate) {
         onGenerate({ success: true, filename });
