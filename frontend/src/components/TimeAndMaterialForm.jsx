@@ -759,14 +759,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Cost Code */}
             <div className="space-y-2">
-              <Label htmlFor="costCode" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="costCode" className={`text-sm font-medium ${themeClasses.text.primary}`}>
                 Cost Code
               </Label>
               <Input
                 id="costCode"
                 value={formData.costCode}
                 onChange={(e) => handleInputChange('costCode', e.target.value)}
-                className="w-full"
+                className={`w-full ${themeClasses.input}`}
               />
             </div>
 
