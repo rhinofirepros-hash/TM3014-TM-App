@@ -1154,7 +1154,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                       <PenTool className="w-4 h-4" />
                       <span className="font-medium">Signature Collected</span>
                     </div>
-                    <div className="text-sm text-gray-700">
+                    <div className={`text-sm ${themeClasses.text.primary}`}>
                       <p><strong>Name:</strong> {formData.signerName}</p>
                       <p><strong>Title:</strong> {formData.signerTitle}</p>
                       <p className="text-green-600 mt-1">Ready to generate final PDF and submit</p>
