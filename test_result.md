@@ -257,6 +257,9 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "MAJOR FEATURE: Implemented bidirectional sync between crew logs and T&M tags. When crew log is created, automatically creates T&M tag marked 'pending_review'. When T&M tag is created, automatically creates crew log marked 'pending_review'. Enhanced sync functions with proper date matching, status tracking (synced_to_tm, synced_from_tm), and data consolidation. This eliminates duplicate data entry - users can create either crew log or T&M tag and the other is auto-generated."
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ BIDIRECTIONAL SYNC NOT FULLY TESTED: Unable to complete comprehensive testing due to navigation issues caused by backend employee validation errors. Crew logging functionality exists in project overview but access was limited by runtime errors. Backend logs show crew log creation endpoints are working (POST /api/crew-logs returns 200 OK), but frontend integration testing was incomplete due to JavaScript runtime errors preventing full workflow testing."
 
   - task: "T&M Tag edit functionality"
     implemented: true
