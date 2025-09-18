@@ -210,8 +210,7 @@ const EmployeeManagement = ({ onBack }) => {
   const resetNewEmployee = () => {
     setNewEmployee({
       name: '',
-      base_pay: '',
-      burden_cost: '',
+      hourly_rate: '',
       position: '',
       hire_date: new Date(),
       phone: '',
