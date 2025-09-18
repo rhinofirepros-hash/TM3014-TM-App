@@ -22,6 +22,11 @@ class TMTagAPITester:
         self.test_results = {
             "tm_tags": {"passed": 0, "failed": 0, "errors": []},
             "workers": {"passed": 0, "failed": 0, "errors": []},
+            "projects": {"passed": 0, "failed": 0, "errors": []},
+            "employees": {"passed": 0, "failed": 0, "errors": []},
+            "crew_logs": {"passed": 0, "failed": 0, "errors": []},
+            "materials": {"passed": 0, "failed": 0, "errors": []},
+            "analytics": {"passed": 0, "failed": 0, "errors": []},
             "email": {"passed": 0, "failed": 0, "errors": []},
             "general": {"passed": 0, "failed": 0, "errors": []}
         }
