@@ -50,8 +50,16 @@ const PinLogin = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${themeClasses.background}`}>
-      <Card className={`w-full max-w-md shadow-xl ${themeClasses.card}`}>
+    <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
+      <Card className={`w-full max-w-md shadow-xl ${
+        isDarkMode 
+          ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+          : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
+      }`}>
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-24 h-20 flex items-center justify-center overflow-hidden">
             <img 
