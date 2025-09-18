@@ -489,13 +489,17 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
 
         {/* Recent Activity */}
         <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Recent T&M Tags</h2>
+          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Recent T&M Tags</h2>
           {recentTags.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center text-gray-500">
-                <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No T&M tags created yet</p>
-                <p className="text-sm mt-1">Create your first T&M tag to get started</p>
+            <Card className={`backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white' 
+                : 'bg-white/70 text-gray-900'
+            }`}>
+              <CardContent className="p-8 text-center">
+                <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
+                <p className={isDarkMode ? 'text-gray-300' : 'text-gray-500'}>No T&M tags created yet</p>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Create your first T&M tag to get started</p>
                 <Button className="mt-4" onClick={handleCreateNewTag}>
                   Create First T&M Tag
                 </Button>
@@ -504,14 +508,18 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
           ) : (
             <div className="space-y-3">
               {recentTags.map((tag, index) => (
-                <Card key={index}>
+                <Card key={index} className={`backdrop-blur-md border-0 shadow-xl ${
+                  isDarkMode 
+                    ? 'bg-white/10 text-white' 
+                    : 'bg-white/70 text-gray-900'
+                }`}>
                   <CardContent className="p-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="font-medium text-gray-900">{tag.title}</h3>
-                        <p className="text-sm text-gray-500">{tag.project} • {tag.date}</p>
+                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{tag.title}</h3>
+                        <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{tag.project} • {tag.date}</p>
                       </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className={`flex items-center space-x-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" />
                           {tag.workers} workers
