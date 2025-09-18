@@ -162,7 +162,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
         </div>
 
         {/* Key Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           {/* Total Revenue */}
           <Card className={`${themeClasses.card} shadow-xl`}>
             <CardContent className="p-6">
@@ -193,6 +193,23 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
                   </p>
                 </div>
                 <Calculator className="w-8 h-8 text-red-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Labor Markup Profit */}
+          <Card className={`${themeClasses.card} shadow-xl`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
+                    Labor Markup
+                  </p>
+                  <p className="text-3xl font-bold text-blue-500">
+                    ${projectStats.laborMarkupProfit?.toLocaleString() || '0'}
+                  </p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
