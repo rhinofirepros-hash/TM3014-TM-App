@@ -123,6 +123,9 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         companyName: project.client_company || '',
         gcEmail: project.gc_email || ''
       }));
+      
+      // Auto-populate with existing crew data for current date
+      autoPopulateFromCrewData(project.id, formData.dateOfWork);
     } else if (projectId === 'custom') {
       setSelectedProjectData(null);
       setFormData(prev => ({
@@ -133,6 +136,48 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
         gcEmail: ''
       }));
       setIsCustomProject(true);
+    }
+  };
+
+  const autoPopulateFromCrewData = async (projectId, date) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl || !projectId) return;
+
+      const dateString = date.toISOString().split('T')[0];
+      const response = await fetch(`${backendUrl}/api/daily-crew-data?project_id=${projectId}&date=${dateString}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.source && data.crew_members && data.crew_members.length > 0) {
+          // Convert crew member data to labor entries
+          const laborEntries = data.crew_members.map((member, index) => ({
+            id: Date.now() + index,
+            workerName: member.name,
+            quantity: 1,
+            stHours: member.st_hours || 0,
+            otHours: member.ot_hours || 0,
+            dtHours: member.dt_hours || 0,
+            potHours: member.pot_hours || 0,
+            totalHours: member.total_hours || 0,
+            date: dateString
+          }));
+
+          setFormData(prev => ({
+            ...prev,
+            laborEntries: laborEntries,
+            descriptionOfWork: data.work_description || prev.descriptionOfWork
+          }));
+          
+          toast({
+            title: "Labor Data Auto-Populated",
+            description: `Loaded crew data from existing ${data.source === 'tm_tag' ? 'T&M tag' : 'crew log'}.`,
+          });
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to auto-populate from crew data:', error);
     }
   };
 
