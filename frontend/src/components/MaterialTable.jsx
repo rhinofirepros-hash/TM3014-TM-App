@@ -3,8 +3,11 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Trash2, MoreVertical, Info } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const MaterialTable = ({ entries, onChange }) => {
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   const addEmptyRow = () => {
     const newEntry = {
       id: Date.now(),
