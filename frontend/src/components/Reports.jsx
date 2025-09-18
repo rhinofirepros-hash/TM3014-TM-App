@@ -539,7 +539,11 @@ const Reports = ({ onBack }) => {
                   {filteredTags.map((tag) => (
                     <TableRow 
                       key={tag.id} 
-                      className="cursor-pointer hover:bg-gray-50"
+                      className={`cursor-pointer transition-colors ${
+                        isDarkMode 
+                          ? 'hover:bg-white/10' 
+                          : 'hover:bg-gray-50'
+                      }`}
                       onClick={() => handleViewTag(tag)}
                     >
                       <TableCell>{new Date(tag.date).toLocaleDateString()}</TableCell>
