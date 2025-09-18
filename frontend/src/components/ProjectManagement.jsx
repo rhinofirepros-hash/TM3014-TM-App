@@ -428,7 +428,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       )}
                     </div>
                     
-                    <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                    <div className={`flex gap-2 mt-4 pt-4 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-100'}`}>
                       <Button
                         variant="outline"
                         size="sm"
