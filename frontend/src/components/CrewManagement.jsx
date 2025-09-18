@@ -337,8 +337,8 @@ const CrewManagement = ({ onBack }) => {
   });
 
   const totalCrewMembers = filteredCrewMembers.length;
-  const averageBasePay = filteredCrewMembers.length > 0 
-    ? filteredCrewMembers.reduce((sum, member) => sum + (member.base_pay || 0), 0) / filteredCrewMembers.length
+  const averageHourlyRate = filteredCrewMembers.length > 0 
+    ? filteredCrewMembers.reduce((sum, member) => sum + (member.hourly_rate || 0), 0) / filteredCrewMembers.length
     : 0;
   const totalPayrollCost = filteredCrewMembers.reduce((sum, member) => sum + getTotalCostPerHour(member), 0);
 
