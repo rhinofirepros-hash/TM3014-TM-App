@@ -18,7 +18,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
       
       // Try to add logo with better error handling
       try {
-        const logoUrl = 'https://customer-assets.emergentagent.com/job_b98f6205-b977-4a20-97e0-9a9b9eeea432/artifacts/yzknuiqy_TITLEBLOCKRHINOFIRE1.png';
+        const logoUrl = 'https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png';
         
         // Create a canvas to handle CORS issues
         const canvas = document.createElement('canvas');
@@ -74,9 +74,9 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         console.error('❌ Logo loading error:', error);
       }
       
-      // Fallback if logo failed - still show professional header
+      // Fallback if logo failed - NO LOGO PLACEHOLDER, just clean header
       if (!headerComplete) {
-        console.log('⚠️ Logo failed to load, using fallback header');
+        console.log('⚠️ Logo failed to load, using clean header without placeholder');
         pdf.setTextColor(0, 0, 0);
         pdf.setFontSize(18);
         pdf.setFont(undefined, 'bold');
@@ -84,14 +84,7 @@ const PDFGenerator = ({ formData, onGenerate }) => {
         pdf.setFontSize(16);
         pdf.text('TIME & MATERIAL TAG', 15, 35);
         
-        // Add a rectangle where logo would be to maintain layout
-        pdf.setDrawColor(200, 200, 200);
-        pdf.setLineWidth(1);
-        pdf.rect(125, 15, 70, 35);
-        pdf.setFontSize(10);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text('LOGO', 160, 35, { align: 'center' });
-        pdf.setTextColor(0, 0, 0);
+        // NO LOGO PLACEHOLDER - just leave the right side empty
       }
       
       // Project Information Section
