@@ -345,10 +345,16 @@ const Reports = ({ onBack }) => {
                 </div>
               </div>
             </div>
-            <Button onClick={handleExportData} className="flex items-center gap-2">
-              <Download className="w-4 h-4" />
-              Export Data
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={handleExportData} variant="outline" className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Export JSON
+              </Button>
+              <Button onClick={handleExportAllPDFs} className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Export All PDFs
+              </Button>
+            </div>
           </div>
         </div>
       </div>
