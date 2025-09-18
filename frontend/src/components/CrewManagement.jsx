@@ -797,7 +797,7 @@ const CrewManagement = ({ onBack }) => {
             </Button>
             <Button 
               onClick={handleCreateCrewMember}
-              disabled={!newCrewMember.name || !newCrewMember.position || !newCrewMember.base_pay || !newCrewMember.burden_cost}
+              disabled={!newCrewMember.name || !newCrewMember.position || !newCrewMember.hourly_rate || !newCrewMember.gc_billing_rate}
               className={themeClasses.button.primary}
             >
               Add Crew Member
