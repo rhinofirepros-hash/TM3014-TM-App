@@ -24,6 +24,7 @@ import {
   User
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Reports = ({ onBack }) => {
   const [tmTags, setTmTags] = useState([]);
