@@ -97,8 +97,7 @@ const EmployeeManagement = ({ onBack }) => {
 
       const employeeData = {
         name: newEmployee.name,
-        base_pay: parseFloat(newEmployee.base_pay) || 0,
-        burden_cost: parseFloat(newEmployee.burden_cost) || 0,
+        hourly_rate: parseFloat(newEmployee.hourly_rate) || 0,
         position: newEmployee.position,
         hire_date: newEmployee.hire_date.toISOString(),
         phone: newEmployee.phone,
