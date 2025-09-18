@@ -36,7 +36,9 @@ const Reports = ({ onBack }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [editingTag, setEditingTag] = useState(null);
+  const [pendingApprovalTag, setPendingApprovalTag] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { isDarkMode, getThemeClasses } = useTheme();
