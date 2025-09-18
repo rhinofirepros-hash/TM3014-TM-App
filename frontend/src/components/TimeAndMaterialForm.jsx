@@ -722,7 +722,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     value={customProjectName}
                     onChange={(e) => setCustomProjectName(e.target.value)}
                     placeholder="Enter new project name"
-                    className="flex-1"
+                    className={`flex-1 ${themeClasses.input}`}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         handleSaveCustomProject();
@@ -733,7 +733,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                     type="button"
                     onClick={handleSaveCustomProject}
                     size="sm"
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className={`${themeClasses.button.primary}`}
                   >
                     Save
                   </Button>
