@@ -388,26 +388,27 @@ const WorkerManagement = ({ onBack }) => {
 
       {/* Add/Edit Worker Modal */}
       <Dialog open={showAddModal} onOpenChange={resetModal}>
-        <DialogContent className="max-w-md">
+        <DialogContent className={`max-w-md ${themeClasses.modal}`}>
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className={themeClasses.text.primary}>
               {editingWorker ? 'Edit Worker' : 'Add New Worker'}
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name*</Label>
+              <Label htmlFor="name" className={themeClasses.text.secondary}>Name*</Label>
               <Input
                 id="name"
                 value={newWorker.name}
                 onChange={(e) => setNewWorker({...newWorker, name: e.target.value})}
                 placeholder="Enter worker name"
+                className={themeClasses.input}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="position">Position</Label>
+              <Label htmlFor="position" className={themeClasses.text.secondary}>Position</Label>
               <Input
                 id="position"
                 value={newWorker.position}
