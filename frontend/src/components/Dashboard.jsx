@@ -397,10 +397,14 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projectAnalytics.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                <Card key={project.id} className={`hover:shadow-lg transition-shadow backdrop-blur-md border-0 shadow-xl ${
+                  isDarkMode 
+                    ? 'bg-white/10 text-white' 
+                    : 'bg-white/70 text-gray-900'
+                }`}>
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
-                      <CardTitle className="text-base font-semibold text-gray-900">{project.name}</CardTitle>
+                      <CardTitle className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</CardTitle>
                       <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
                         {project.status}
                       </Badge>
@@ -410,20 +414,20 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
                     {/* Project Statistics */}
                     <div className="space-y-3 mb-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">T&M Tags:</span>
-                        <span className="font-semibold text-blue-600">{project.tagCount}</span>
+                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>T&M Tags:</span>
+                        <span className={`font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{project.tagCount}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Total Hours:</span>
-                        <span className="font-semibold text-green-600">{project.totalHours.toFixed(1)}</span>
+                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Hours:</span>
+                        <span className={`font-semibold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{project.totalHours.toFixed(1)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Total Cost:</span>
-                        <span className="font-semibold text-purple-600">${project.totalCost.toLocaleString()}</span>
+                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Cost:</span>
+                        <span className={`font-semibold ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>${project.totalCost.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Last Activity:</span>
-                        <span className="text-sm text-gray-500">{project.lastActivity}</span>
+                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Last Activity:</span>
+                        <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{project.lastActivity}</span>
                       </div>
                     </div>
 
