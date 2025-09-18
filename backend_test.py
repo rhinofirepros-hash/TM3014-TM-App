@@ -213,6 +213,142 @@ class TMTagAPITester:
         
         return None
     
+    def test_tm_tag_deletion(self):
+        """Test T&M tag deletion endpoint - comprehensive DELETE functionality test"""
+        print("\n=== Testing T&M Tag Deletion Functionality ===")
+        
+        # Step 1: First, get existing T&M tags to work with
+        print("Step 1: Getting existing T&M tags...")
+        try:
+            response = self.session.get(f"{self.base_url}/tm-tags")
+            if response.status_code != 200:
+                self.log_result("tm_tags", "DELETE test - Get existing tags", False, f"HTTP {response.status_code}", response)
+                return False
+            
+            existing_tags = response.json()
+            if not existing_tags:
+                # Create a tag first if none exist
+                print("No existing tags found. Creating one for deletion test...")
+                created_tag = self.test_tm_tag_creation()
+                if not created_tag:
+                    self.log_result("tm_tags", "DELETE test - Setup", False, "Could not create tag for deletion test")
+                    return False
+                tag_to_delete = created_tag
+                tag_id = created_tag["id"]
+            else:
+                tag_to_delete = existing_tags[0]
+                tag_id = tag_to_delete["id"]
+                
+            self.log_result("tm_tags", "DELETE test - Get existing tags", True, f"Found tag to delete: {tag_id}")
+            
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Get existing tags", False, str(e))
+            return False
+        
+        # Step 2: Verify the tag exists by getting it individually
+        print(f"Step 2: Verifying tag {tag_id} exists...")
+        try:
+            response = self.session.get(f"{self.base_url}/tm-tags/{tag_id}")
+            if response.status_code == 200:
+                self.log_result("tm_tags", "DELETE test - Verify tag exists", True)
+            else:
+                self.log_result("tm_tags", "DELETE test - Verify tag exists", False, f"Tag not found before deletion: HTTP {response.status_code}", response)
+                return False
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Verify tag exists", False, str(e))
+            return False
+        
+        # Step 3: Delete the T&M tag
+        print(f"Step 3: Deleting T&M tag {tag_id}...")
+        try:
+            response = self.session.delete(f"{self.base_url}/tm-tags/{tag_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "message" in response_data and "deleted successfully" in response_data["message"]:
+                    self.log_result("tm_tags", "DELETE test - Delete tag", True, f"Tag {tag_id} deleted successfully")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Delete tag", False, "Unexpected response format", response)
+                    return False
+            else:
+                self.log_result("tm_tags", "DELETE test - Delete tag", False, f"HTTP {response.status_code}", response)
+                return False
+                
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Delete tag", False, str(e))
+            return False
+        
+        # Step 4: Verify the deleted tag is no longer accessible by ID
+        print(f"Step 4: Verifying deleted tag {tag_id} is no longer accessible...")
+        try:
+            response = self.session.get(f"{self.base_url}/tm-tags/{tag_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "error" in response_data and "not found" in response_data["error"]:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (by ID)", True, "Tag correctly returns 'not found' error")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (by ID)", False, "Deleted tag still accessible", response)
+                    return False
+            else:
+                # Some APIs might return 404 instead of 200 with error message
+                if response.status_code == 404:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (by ID)", True, "Tag correctly returns 404")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (by ID)", False, f"Unexpected status: {response.status_code}", response)
+                    return False
+                    
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Verify tag deleted (by ID)", False, str(e))
+            return False
+        
+        # Step 5: Verify the deleted tag is no longer in the list
+        print("Step 5: Verifying deleted tag is no longer in the list...")
+        try:
+            response = self.session.get(f"{self.base_url}/tm-tags")
+            if response.status_code == 200:
+                current_tags = response.json()
+                deleted_tag_still_exists = any(tag["id"] == tag_id for tag in current_tags)
+                
+                if not deleted_tag_still_exists:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (from list)", True, "Deleted tag no longer appears in list")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Verify tag deleted (from list)", False, "Deleted tag still appears in list")
+                    return False
+            else:
+                self.log_result("tm_tags", "DELETE test - Verify tag deleted (from list)", False, f"HTTP {response.status_code}", response)
+                return False
+                
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Verify tag deleted (from list)", False, str(e))
+            return False
+        
+        # Step 6: Test deleting a non-existent tag (should return error)
+        print("Step 6: Testing deletion of non-existent tag...")
+        fake_id = str(uuid.uuid4())
+        try:
+            response = self.session.delete(f"{self.base_url}/tm-tags/{fake_id}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                if "error" in response_data and "not found" in response_data["error"]:
+                    self.log_result("tm_tags", "DELETE test - Non-existent tag", True, "Correctly returns error for non-existent tag")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Non-existent tag", False, "Should return error for non-existent tag", response)
+            else:
+                # Some APIs might return 404 for non-existent resources
+                if response.status_code == 404:
+                    self.log_result("tm_tags", "DELETE test - Non-existent tag", True, "Correctly returns 404 for non-existent tag")
+                else:
+                    self.log_result("tm_tags", "DELETE test - Non-existent tag", False, f"Unexpected status: {response.status_code}", response)
+                    
+        except Exception as e:
+            self.log_result("tm_tags", "DELETE test - Non-existent tag", False, str(e))
+            return False
+        
+        print("✅ DELETE functionality test completed successfully!")
+        return True
+    
     def create_realistic_worker_data(self):
         """Create realistic worker data for testing"""
         return [
