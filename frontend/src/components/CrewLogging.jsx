@@ -35,7 +35,9 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
   const [crewLogs, setCrewLogs] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
+  const [editingLog, setEditingLog] = useState(null);
   const [filterDate, setFilterDate] = useState('');
   const [newLog, setNewLog] = useState({
     date: new Date(),
