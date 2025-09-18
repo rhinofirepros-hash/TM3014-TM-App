@@ -113,6 +113,7 @@ function App() {
           ) : currentView === 'projects' ? (
             <ProjectManagement 
               onBack={handleBackToDashboard}
+              onViewReports={handleViewReports}
             />
           ) : currentView === 'employees' ? (
             <EmployeeManagement 
