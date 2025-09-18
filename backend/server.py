@@ -101,6 +101,7 @@ class TMTag(BaseModel):
     submitted_at: Optional[datetime] = None
 
 class TMTagCreate(BaseModel):
+    project_id: Optional[str] = None  # Link to project
     project_name: str
     cost_code: str
     date_of_work: datetime
