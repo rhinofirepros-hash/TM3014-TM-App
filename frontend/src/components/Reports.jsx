@@ -644,40 +644,48 @@ const Reports = ({ onBack }) => {
 
             {/* Project & Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4 p-4 bg-white border rounded-lg">
-                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <div className={`space-y-4 p-4 rounded-lg border ${
+                isDarkMode 
+                  ? 'bg-white/5 border-white/20' 
+                  : 'bg-white border-gray-200'
+              }`}>
+                <h3 className={`font-semibold flex items-center gap-2 ${themeClasses.text.primary}`}>
                   <Building className="w-5 h-5 text-blue-600" />
                   Project Information
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Company Name</Label>
-                    <p className="font-medium text-gray-800">{selectedTag.companyName || 'Not specified'}</p>
+                    <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Company Name</Label>
+                    <p className={`font-medium ${themeClasses.text.primary}`}>{selectedTag.companyName || 'Not specified'}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Cost Code</Label>
-                    <p className="font-medium text-gray-800">{selectedTag.costCode || 'Not specified'}</p>
+                    <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Cost Code</Label>
+                    <p className={`font-medium ${themeClasses.text.primary}`}>{selectedTag.costCode || 'Not specified'}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Foreman</Label>
-                    <p className="font-medium text-gray-800">{selectedTag.foreman}</p>
+                    <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Foreman</Label>
+                    <p className={`font-medium ${themeClasses.text.primary}`}>{selectedTag.foreman}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4 p-4 bg-white border rounded-lg">
-                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <div className={`space-y-4 p-4 rounded-lg border ${
+                isDarkMode 
+                  ? 'bg-white/5 border-white/20' 
+                  : 'bg-white border-gray-200'
+              }`}>
+                <h3 className={`font-semibold flex items-center gap-2 ${themeClasses.text.primary}`}>
                   <Mail className="w-5 h-5 text-green-600" />
                   Contact Information
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">GC Email</Label>
-                    <p className="font-medium text-gray-800">{selectedTag.gcEmail || 'Not provided'}</p>
+                    <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>GC Email</Label>
+                    <p className={`font-medium ${themeClasses.text.primary}`}>{selectedTag.gcEmail || 'Not provided'}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Submitted</Label>
-                    <p className="text-sm text-gray-600">
+                    <Label className={`text-sm font-medium ${themeClasses.text.secondary}`}>Submitted</Label>
+                    <p className={`text-sm ${themeClasses.text.secondary}`}>
                       {selectedTag.submittedAt ? new Date(selectedTag.submittedAt).toLocaleString() : 'Not available'}
                     </p>
                   </div>
