@@ -307,6 +307,18 @@ backend:
         comment: "✅ ENHANCED COST ANALYTICS FULLY FUNCTIONAL: Comprehensive testing confirmed all 5 key metrics cards are working perfectly: 1) Total Revenue ($0), 2) True Costs ($0), 3) Labor Markup ($0), 4) Net Profit ($200,000 - showing contract amount), 5) Profit Margin (100.0%). Project overview displays comprehensive cost breakdown analysis including Labor (GC Rate @ $95/hr), Labor (True Employee Cost), Materials with markup, Crew Expenses, and separate Labor/Material Markup Profit calculations. Analytics layout is professional and provides clear financial insights."
 
 frontend:
+  - task: "JavaScript runtime errors"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/EmployeeManagement.jsx, /app/frontend/src/components/ProjectOverview.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL JAVASCRIPT RUNTIME ERRORS DETECTED: Frontend shows red error screen with multiple TypeError: Cannot read properties of undefined (reading 'toFixed') errors in EmployeeManagement, Array.map, react-stack-bottom-frame, renderWithHooks, updateFunctionComponent, beginWork, runWithFiberInDEV, and performUnitOfWork functions. These errors are preventing proper navigation and component rendering, causing timeouts and blocking access to employee management and other features."
+
   - task: "PDF generation with actual logo"
     implemented: true
     working: "NA"
