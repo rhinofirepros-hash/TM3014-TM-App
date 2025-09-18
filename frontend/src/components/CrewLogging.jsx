@@ -134,6 +134,11 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
         resetNewLog();
         setShowCreateModal(false);
         
+        // Notify parent component to refresh analytics
+        if (onDataUpdate) {
+          onDataUpdate();
+        }
+        
         toast({
           title: "Crew Log Created",
           description: "Crew log saved and automatically synced with T&M data.",
