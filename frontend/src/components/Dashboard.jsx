@@ -20,7 +20,8 @@ import {
   Building,
   ArrowRight,
   Sun,
-  Moon
+  Moon,
+  Zap
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useTheme } from '../contexts/ThemeContext';
