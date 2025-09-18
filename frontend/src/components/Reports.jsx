@@ -652,12 +652,7 @@ const Reports = ({ onBack }) => {
               </Button>
               <Button 
                 size="lg"
-                onClick={() => {
-                  toast({
-                    title: "Export Feature",
-                    description: "PDF regeneration coming soon!",
-                  });
-                }}
+                onClick={() => selectedTag && handleGeneratePDF(selectedTag)}
                 className="bg-red-600 hover:bg-red-700"
               >
                 <Download className="w-4 h-4 mr-2" />
