@@ -95,7 +95,7 @@ function App() {
               onManageProjects={() => setCurrentView('projects')}
               onLogout={handleLogout}
             />
-          ) : currentView === 'workers' ? (
+          ) : currentView === 'crew' ? (
             <WorkerManagement 
               onBack={handleBackToDashboard}
             />
