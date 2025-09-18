@@ -442,7 +442,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
                   <div className="flex justify-between text-sm mb-1">
                     <span className={themeClasses.text.secondary}>Budget Utilization</span>
                     <span className={themeClasses.text.primary}>
-                      {projectStats.contractAmount > 0 ? ((projectStats.totalLaborCost + projectStats.totalMaterialCost) / projectStats.contractAmount * 100).toFixed(1) : 0}%
+                      {projectStats.contractAmount > 0 ? (((projectStats.totalLaborCost || 0) + (projectStats.totalMaterialCost || 0)) / projectStats.contractAmount * 100).toFixed(1) : 0}%
                     </span>
                   </div>
                   <Progress 
