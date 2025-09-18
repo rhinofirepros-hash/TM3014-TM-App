@@ -266,7 +266,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </AnimatedCard>
 
           {/* Total Revenue */}
-          <AnimatedCard delay={200} className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={300} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
@@ -287,7 +287,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </AnimatedCard>
 
           {/* T&M Tags */}
-          <AnimatedCard delay={300} className={`backdrop-blur-md border-0 shadow-xl ${
+          <AnimatedCard delay={400} className={`backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
