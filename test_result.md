@@ -329,6 +329,8 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "COMPLETED ALL REQUESTED FIXES: 1) Fixed PDF header - removed black square, added actual Rhino logo on white background, 2) Added company name field to replace customer reference, 3) Updated backend model and frontend integration, 4) EmailJS implemented with mock fallback, 5) All backend-frontend integrations working. Backend testing passed 100%. Ready for final frontend testing if needed."
+  - agent: "main"
+    message: "🚨 CRITICAL RUNTIME ERROR FIXED: User reported site was broken with runtime error. Identified 'Zap is not defined' ReferenceError in Dashboard component preventing app from loading after login. RESOLUTION: Added missing 'Zap' import to lucide-react imports in Dashboard.jsx. Site now loads successfully - dashboard displays with all stats cards, quick actions, and project data. Runtime error completely resolved."
   - agent: "testing"
     message: "🎉 BACKEND TESTING COMPLETED SUCCESSFULLY - ALL APIS WORKING PERFECTLY! Created comprehensive backend_test.py and tested all endpoints with realistic data. Results: 12/12 tests passed (100% success rate). ✅ T&M Tag APIs: POST/GET working with full data persistence (labor, materials, equipment, other entries). ✅ Worker Management APIs: POST/GET working with complete worker profiles. ✅ Email API: Properly configured and returns expected responses. ✅ CORS, error handling, and data validation all working correctly. MongoDB persistence verified with actual stored data. Backend is production-ready!"
   - agent: "testing"
