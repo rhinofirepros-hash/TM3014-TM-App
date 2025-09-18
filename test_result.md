@@ -421,15 +421,16 @@ test_plan:
 
 test_plan:
   current_focus:
-    - "Project-specific labor rates"
-    - "Employee schema restructuring" 
+    - "Employee schema restructuring"
+    - "JavaScript runtime errors"
     - "Bidirectional crew log and T&M sync"
     - "T&M Tag edit functionality"
     - "Crew Log edit functionality"
-    - "Enhanced cost analytics"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  stuck_tasks:
+    - "Employee schema restructuring"
+    - "JavaScript runtime errors"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "main"
