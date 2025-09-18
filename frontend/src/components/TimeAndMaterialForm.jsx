@@ -1118,7 +1118,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
+                  <Label className={`text-sm font-medium ${themeClasses.text.primary}`}>
                     Delivery Options
                   </Label>
                   <div className="flex flex-col gap-2">
