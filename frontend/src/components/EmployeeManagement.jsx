@@ -142,8 +142,7 @@ const EmployeeManagement = ({ onBack }) => {
 
       const updateData = {
         name: editEmployee.name,
-        base_pay: parseFloat(editEmployee.base_pay) || 0,
-        burden_cost: parseFloat(editEmployee.burden_cost) || 0,
+        hourly_rate: parseFloat(editEmployee.hourly_rate) || 0,
         position: editEmployee.position,
         hire_date: editEmployee.hire_date,
         phone: editEmployee.phone,
