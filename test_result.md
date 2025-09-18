@@ -223,6 +223,18 @@ test_plan:
   test_all: false
   test_priority: "completed"
 
+  - task: "Delete T&M Tag functionality"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Reports.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reports: 'there is no way to delete t&m projects' and clicking on T&M tag rows in reports table doesn't work - nothing happens when clicked."
+
 agent_communication:
   - agent: "main"
     message: "COMPLETED ALL REQUESTED FIXES: 1) Fixed PDF header - removed black square, added actual Rhino logo on white background, 2) Added company name field to replace customer reference, 3) Updated backend model and frontend integration, 4) EmailJS implemented with mock fallback, 5) All backend-frontend integrations working. Backend testing passed 100%. Ready for final frontend testing if needed."
@@ -230,3 +242,5 @@ agent_communication:
     message: "🎉 BACKEND TESTING COMPLETED SUCCESSFULLY - ALL APIS WORKING PERFECTLY! Created comprehensive backend_test.py and tested all endpoints with realistic data. Results: 12/12 tests passed (100% success rate). ✅ T&M Tag APIs: POST/GET working with full data persistence (labor, materials, equipment, other entries). ✅ Worker Management APIs: POST/GET working with complete worker profiles. ✅ Email API: Properly configured and returns expected responses. ✅ CORS, error handling, and data validation all working correctly. MongoDB persistence verified with actual stored data. Backend is production-ready!"
   - agent: "testing"
     message: "🎯 COMPREHENSIVE FRONTEND TESTING COMPLETED - ALL FEATURES WORKING PERFECTLY! Tested complete TM3014 T&M Daily Tag App with focus on logo fixes and full functionality. CRITICAL TESTS PASSED: ✅ Logo displays correctly on login/dashboard (no black background) ✅ Company Name field working (replaced Customer Reference) ✅ Complete workflow: PIN login (J777) → form creation → PDF generation → email functionality ✅ Backend integration: T&M tags save/load, worker management, reports display ✅ Responsive design: mobile (375x667), tablet (768x1024), desktop (1920x1080) ✅ PDF generation with proper logo integration, no duplicated text ✅ EmailJS mock service working correctly. APP IS PRODUCTION-READY!"
+  - agent: "main"
+    message: "USER REPORTED ISSUES: 1) Delete T&M tag functionality not visible/working - user says 'there is no way to delete t&m projects', 2) Clicking on T&M tag rows in reports table does nothing - modal should open. Investigating Reports.jsx component for missing imports and JavaScript errors that might prevent click handlers from working."
