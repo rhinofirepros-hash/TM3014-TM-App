@@ -302,7 +302,7 @@ class EmployeeSchemaTestRunner:
                 self.log_result("Analytics project creation", True, f"Created project: {project_id}")
                 
                 # Test analytics endpoint
-                analytics_response = self.session.get(f"{self.base_url}/analytics/{project_id}")
+                analytics_response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
                 
                 if analytics_response.status_code == 200:
                     analytics = analytics_response.json()
