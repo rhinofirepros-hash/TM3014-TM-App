@@ -803,14 +803,14 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
             {/* Company Name */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+              <Label className={`text-sm font-medium ${themeClasses.text.primary} flex items-center justify-between`}>
                 Company Name
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setIsCustomCompany(!isCustomCompany)}
-                  className="text-xs h-6 px-2"
+                  className={`text-xs h-6 px-2 ${themeClasses.button.secondary}`}
                 >
                   {isCustomCompany ? 'Cancel' : 'Add New'}
                 </Button>
