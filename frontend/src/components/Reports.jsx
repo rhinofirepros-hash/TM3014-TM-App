@@ -338,9 +338,9 @@ const Reports = ({ onBack }) => {
       </div>
     </div>
 
-    {/* T&M Tag Details Modal */}
+    {/* T&M Tag Details Modal - Large Version */}
     <Dialog open={showTagModal} onOpenChange={setShowTagModal}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>T&M Tag Details</span>
