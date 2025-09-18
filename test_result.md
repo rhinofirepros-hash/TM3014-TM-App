@@ -272,6 +272,9 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "IMPLEMENTED EDIT FUNCTIONALITY: Added full edit capability for T&M tags in Reports component. Users can now click 'Edit Tag' button in T&M tag modal to modify title, cost code, company name, foreman, GC email, and description. Added backend PUT endpoint /api/tm-tags/{id} for updates. Edit modal includes all form fields with proper validation and save functionality."
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ T&M TAG EDIT FUNCTIONALITY NOT FULLY TESTED: Testing was interrupted by navigation timeout errors caused by JavaScript runtime issues. T&M tag creation form is accessible and functional, but complete edit workflow testing was prevented by frontend runtime errors (TypeError: Cannot read properties of undefined reading 'toFixed'). Reports page navigation was attempted but testing incomplete due to technical issues."
 
   - task: "Crew Log edit functionality"
     implemented: true
