@@ -433,7 +433,7 @@ const ProjectOverview = ({ project, onBack, onViewTMTags }) => {
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span className={themeClasses.text.secondary}>Hours Logged</span>
-                    <span className={themeClasses.text.primary}>{projectStats.totalHoursLogged.toFixed(1)} hrs</span>
+                    <span className={themeClasses.text.primary}>{(projectStats.totalHoursLogged || 0).toFixed(1)} hrs</span>
                   </div>
                   <Progress value={Math.min(100, (projectStats.totalHoursLogged / 1000) * 100)} className="h-2" />
                 </div>
