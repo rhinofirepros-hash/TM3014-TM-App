@@ -1039,32 +1039,33 @@ async def get_project_analytics(project_id: str):
         materials = await db.materials.find({"project_id": project_id}).to_list(1000)
         total_material_cost = sum(float(material.get("total_cost", 0)) for material in materials)
         
-        # Calculate true employee cost and profit
-        true_employee_cost = total_labor_cost * 0.7  # Assuming 70% of billed rate is actual cost
-        total_project_cost = true_employee_cost + total_material_cost + total_other_cost
-        profit = contract_amount - total_project_cost
-        profit_margin = (profit / contract_amount * 100) if contract_amount > 0 else 0
+        # Calculate profit using true costs
+        total_project_cost = final_true_cost + total_material_cost + total_other_cost
+        labor_markup_profit = final_gc_billing - final_true_cost  # Labor markup profit
+        total_profit = contract_amount - total_project_cost
+        profit_margin = (total_profit / contract_amount * 100) if contract_amount > 0 else 0
         
         return {
             "project_id": project_id,
             "total_hours": total_hours,
-            "total_labor_cost": total_labor_cost,
-            "total_labor_cost_gc": total_labor_cost,  # Same as total_labor_cost for GC billing
+            "total_labor_cost": final_gc_billing,  # Amount billed to GC
+            "total_labor_cost_gc": final_gc_billing,
+            "true_employee_cost": final_true_cost,  # Actual cost of labor
+            "labor_markup_profit": labor_markup_profit,  # Profit from labor markup
             "total_material_cost": total_material_cost,
             "total_other_cost": total_other_cost,
-            "total_cost": total_labor_cost + total_material_cost + total_other_cost,
+            "total_cost": final_gc_billing + total_material_cost + total_other_cost,
             "contract_amount": contract_amount,
-            "true_employee_cost": true_employee_cost,
-            "total_crew_expenses": total_other_cost,  # Map other costs to crew expenses
-            "profit": profit,
+            "total_crew_expenses": total_other_cost,
+            "profit": total_profit,
             "profit_margin": profit_margin,
             "unique_crew_members": len(unique_crew_members),
             "work_days": len(work_days),
             "crew_members_list": list(unique_crew_members),
             "tm_tags_count": len(tm_tags),
-            "tm_tag_count": len(tm_tags),  # Alternative field name
+            "tm_tag_count": len(tm_tags),
             "crew_logs_count": len(crew_logs),
-            "crew_log_count": len(crew_logs),  # Alternative field name
+            "crew_log_count": len(crew_logs),
             "material_purchase_count": len(materials)
         }
         
