@@ -1984,6 +1984,9 @@ class TMTagAPITester:
         created_project = self.test_project_creation()
         self.test_project_retrieval()
         
+        # Test NEW Project Type Functionality
+        self.test_project_type_functionality()
+        
         if created_project and "id" in created_project:
             project_id = created_project["id"]
             self.test_project_by_id(project_id)
