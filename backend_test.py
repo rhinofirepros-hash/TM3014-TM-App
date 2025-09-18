@@ -1580,6 +1580,43 @@ class TMTagAPITester:
         
         return None
     
+    def test_project_analytics(self, project_id):
+        """Test project analytics endpoint with employee hourly rates"""
+        print(f"\n=== Testing Project Analytics: {project_id} ===")
+        
+        try:
+            response = self.session.get(f"{self.base_url}/analytics/{project_id}")
+            
+            if response.status_code == 200:
+                analytics = response.json()
+                
+                # Verify analytics structure
+                required_fields = ["project_id", "total_hours", "total_labor_cost", "true_employee_cost", 
+                                 "labor_markup_profit", "total_material_cost", "contract_amount", "profit_margin"]
+                missing_fields = [field for field in required_fields if field not in analytics]
+                
+                if not missing_fields:
+                    # Verify that true_employee_cost is different from total_labor_cost (showing markup)
+                    true_cost = analytics.get("true_employee_cost", 0)
+                    billed_cost = analytics.get("total_labor_cost", 0)
+                    markup_profit = analytics.get("labor_markup_profit", 0)
+                    
+                    if markup_profit == (billed_cost - true_cost):
+                        self.log_result("analytics", "Project analytics calculation", True, 
+                                      f"Analytics calculated correctly: True Cost=${true_cost}, Billed=${billed_cost}, Markup=${markup_profit}")
+                    else:
+                        self.log_result("analytics", "Project analytics calculation", False, 
+                                      f"Markup calculation incorrect: Expected {billed_cost - true_cost}, got {markup_profit}")
+                else:
+                    self.log_result("analytics", "Project analytics structure", False, f"Missing fields: {missing_fields}", response)
+            else:
+                self.log_result("analytics", "Project analytics", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Project analytics", False, str(e))
+        
+        return None
+    
     def test_email_endpoint(self):
         """Test email endpoint (will likely fail due to missing SMTP config)"""
         print("\n=== Testing Email Endpoint ===")
