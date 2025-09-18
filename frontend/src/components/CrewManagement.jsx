@@ -162,7 +162,7 @@ const CrewManagement = ({ onBack }) => {
         const workerData = {
           name: newCrewMember.name,
           position: newCrewMember.position,
-          hourlyRate: parseFloat(newCrewMember.base_pay) || 0,
+          hourlyRate: parseFloat(newCrewMember.hourly_rate) || 0,
           phone: newCrewMember.phone,
           email: newCrewMember.email
         };
