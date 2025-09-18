@@ -1138,7 +1138,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                         onChange={(e) => handleInputChange('downloadPDF', e.target.checked)}
                         className="rounded border-gray-300"
                       />
-                      <span className="text-sm text-gray-700">Download PDF copy</span>
+                      <span className={`text-sm ${themeClasses.text.primary}`}>Download PDF copy</span>
                     </label>
                   </div>
                 </div>
