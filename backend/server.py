@@ -1424,9 +1424,7 @@ async def send_email(email_request: EmailRequest):
         logger.error(f"Email sending failed: {str(e)}")
         return {"error": f"Failed to send email: {str(e)}"}
 
-# Include the router in the main app
-app.include_router(api_router)
-
+# CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
