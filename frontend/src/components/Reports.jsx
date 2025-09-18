@@ -359,86 +359,142 @@ const Reports = ({ onBack }) => {
         </DialogHeader>
 
         {selectedTag && (
-          <div className="space-y-6">
-            {/* Header Information */}
-            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Project</Label>
-                <p className="font-semibold">{selectedTag.project}</p>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Date</Label>
-                <p>{new Date(selectedTag.date).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Foreman</Label>
-                <p>{selectedTag.foreman}</p>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Status</Label>
-                <Badge variant={selectedTag.status === 'completed' ? 'default' : 'secondary'}>
-                  {selectedTag.status}
-                </Badge>
-              </div>
-            </div>
-
-            {/* T&M Tag Title */}
-            <div>
-              <Label className="text-sm font-medium text-gray-600">T&M Tag Title</Label>
-              <p className="font-semibold text-lg">{selectedTag.title}</p>
-            </div>
-
-            {/* Company Information */}
-            {selectedTag.companyName && (
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Company</Label>
-                <p>{selectedTag.companyName}</p>
-              </div>
-            )}
-
-            {/* Summary Stats */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{selectedTag.totalHours}</div>
-                <div className="text-sm text-blue-600">Total Hours</div>
-              </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">${selectedTag.laborCost?.toLocaleString() || 0}</div>
-                <div className="text-sm text-green-600">Labor Cost</div>
-              </div>
-              <div className="text-center p-3 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">${selectedTag.materialCost?.toLocaleString() || 0}</div>
-                <div className="text-sm text-purple-600">Material Cost</div>
+          <div className="space-y-6 py-4">
+            {/* Main Header Card */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-600">Project Name</Label>
+                  <p className="font-bold text-lg text-gray-900">{selectedTag.project}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-600">Date of Work</Label>
+                  <p className="font-semibold text-gray-800">{new Date(selectedTag.date).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-600">Status</Label>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={selectedTag.status === 'completed' ? 'default' : 'secondary'} className="text-sm">
+                      {selectedTag.status?.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Description */}
-            {selectedTag.description && (
+            {/* T&M Tag Title & Description */}
+            <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-gray-600">Description of Work</Label>
-                <p className="mt-1 p-3 bg-gray-50 rounded-lg">{selectedTag.description}</p>
+                <Label className="text-base font-semibold text-gray-700">T&M Tag Title</Label>
+                <p className="text-xl font-bold text-gray-900 mt-1">{selectedTag.title}</p>
               </div>
-            )}
 
-            {/* Contact Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium text-gray-600">GC Email</Label>
-                <p>{selectedTag.gcEmail || 'Not provided'}</p>
+              {selectedTag.description && (
+                <div>
+                  <Label className="text-base font-semibold text-gray-700">Description of Work</Label>
+                  <div className="mt-2 p-4 bg-gray-50 rounded-lg border">
+                    <p className="text-gray-800 leading-relaxed">{selectedTag.description}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Project & Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4 p-4 bg-white border rounded-lg">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Building className="w-5 h-5 text-blue-600" />
+                  Project Information
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">Company Name</Label>
+                    <p className="font-medium text-gray-800">{selectedTag.companyName || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">Cost Code</Label>
+                    <p className="font-medium text-gray-800">{selectedTag.costCode || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">Foreman</Label>
+                    <p className="font-medium text-gray-800">{selectedTag.foreman}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label className="text-sm font-medium text-gray-600">Cost Code</Label>
-                <p>{selectedTag.costCode || 'Not provided'}</p>
+
+              <div className="space-y-4 p-4 bg-white border rounded-lg">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-green-600" />
+                  Contact Information
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">GC Email</Label>
+                    <p className="font-medium text-gray-800">{selectedTag.gcEmail || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">Submitted</Label>
+                    <p className="text-sm text-gray-600">
+                      {selectedTag.submittedAt ? new Date(selectedTag.submittedAt).toLocaleString() : 'Not available'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Submission Info */}
-            {selectedTag.submittedAt && (
-              <div className="pt-4 border-t">
-                <Label className="text-sm font-medium text-gray-600">Submitted</Label>
-                <p className="text-sm text-gray-500">
-                  {new Date(selectedTag.submittedAt).toLocaleString()}
-                </p>
+            {/* Cost Summary - Larger Cards */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-green-600" />
+                Cost Summary
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-200">
+                  <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-blue-600">{selectedTag.totalHours}</div>
+                  <div className="text-sm font-medium text-blue-700">Total Hours</div>
+                </div>
+                <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
+                  <User className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-green-600">${selectedTag.laborCost?.toLocaleString() || 0}</div>
+                  <div className="text-sm font-medium text-green-700">Labor Cost</div>
+                </div>
+                <div className="text-center p-6 bg-purple-50 rounded-lg border border-purple-200">
+                  <Building className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-purple-600">${selectedTag.materialCost?.toLocaleString() || 0}</div>
+                  <div className="text-sm font-medium text-purple-700">Material Cost</div>
+                </div>
+                <div className="text-center p-6 bg-gray-900 text-white rounded-lg border">
+                  <DollarSign className="w-8 h-8 text-white mx-auto mb-2" />
+                  <div className="text-3xl font-bold">${((selectedTag.laborCost || 0) + (selectedTag.materialCost || 0)).toLocaleString()}</div>
+                  <div className="text-sm font-medium text-gray-300">Total Cost</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Details */}
+            {(selectedTag.equipmentCost || selectedTag.otherCost) && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900">Additional Costs</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {selectedTag.equipmentCost && (
+                    <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                      <div className="text-2xl font-bold text-orange-600">${selectedTag.equipmentCost.toLocaleString()}</div>
+                      <div className="text-sm text-orange-700">Equipment</div>
+                    </div>
+                  )}
+                  {selectedTag.otherCost && (
+                    <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="text-2xl font-bold text-yellow-600">${selectedTag.otherCost.toLocaleString()}</div>
+                      <div className="text-sm text-yellow-700">Other</div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
