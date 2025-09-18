@@ -511,7 +511,18 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
                   <Table>
                     <TableHeader>
                       <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                        <TableHead className={themeClasses.text.primary}>Date</TableHead>
+                        <TableHead 
+                          className={`${themeClasses.text.primary} cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors`}
+                          onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
+                        >
+                          <div className="flex items-center gap-2">
+                            Date
+                            <div className="flex flex-col">
+                              <ChevronUp className={`w-3 h-3 ${sortOrder === 'oldest' ? 'text-blue-600' : 'text-gray-400'}`} />
+                              <ChevronDown className={`w-3 h-3 -mt-1 ${sortOrder === 'newest' ? 'text-blue-600' : 'text-gray-400'}`} />
+                            </div>
+                          </div>
+                        </TableHead>
                         <TableHead className={themeClasses.text.primary}>Crew Members</TableHead>
                         <TableHead className={themeClasses.text.primary}>Total Hours</TableHead>
                         <TableHead className={themeClasses.text.primary}>Work Description</TableHead>
