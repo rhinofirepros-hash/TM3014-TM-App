@@ -306,29 +306,41 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageWorkers, onViewReports,
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
+          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleCreateNewTag}>
+            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`} onClick={handleCreateNewTag}>
               <CardContent className="p-6 text-center">
-                <Plus className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                <h3 className="font-medium text-gray-900">Create New T&M Tag</h3>
-                <p className="text-sm text-gray-500 mt-1">Start a new time & material tag</p>
+                <Plus className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create New T&M Tag</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Start a new time & material tag</p>
               </CardContent>
             </Card>
             
-            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={onViewReports}>
+            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`} onClick={onViewReports}>
               <CardContent className="p-6 text-center">
-                <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                <h3 className="font-medium text-gray-900">View Reports</h3>
-                <p className="text-sm text-gray-500 mt-1">View T&M tag history and reports</p>
+                <FileText className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>View Reports</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>View T&M tag history and reports</p>
               </CardContent>
             </Card>
             
-            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={onManageWorkers}>
+            <Card className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`} onClick={onManageWorkers}>
               <CardContent className="p-6 text-center">
-                <Users className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <h3 className="font-medium text-gray-900">Manage Workers</h3>
-                <p className="text-sm text-gray-500 mt-1">Add and manage worker profiles</p>
+                <Users className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Workers</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage worker profiles</p>
               </CardContent>
             </Card>
 
