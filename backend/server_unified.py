@@ -89,7 +89,16 @@ async def get_collection(name: str):
 def serialize_doc(doc: dict) -> dict:
     """Remove MongoDB ObjectId and ensure serialization"""
     if "_id" in doc:
+        # Use _id as the id field if no id field exists
+        if "id" not in doc:
+            doc["id"] = str(doc["_id"])
         del doc["_id"]
+    
+    # Convert any ObjectId fields to strings
+    for key, value in doc.items():
+        if hasattr(value, '__class__') and value.__class__.__name__ == 'ObjectId':
+            doc[key] = str(value)
+    
     return doc
 
 # Project Management Endpoints
