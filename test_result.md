@@ -479,10 +479,10 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Project type functionality testing completed successfully"
+    - "Project type functionality backend testing completed successfully"
   stuck_tasks: []
   test_all: false
-  test_priority: "review_request_completed"
+  test_priority: "backend_project_type_testing_completed"
 
 agent_communication:
   - agent: "main"
