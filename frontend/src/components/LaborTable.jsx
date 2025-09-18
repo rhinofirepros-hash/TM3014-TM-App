@@ -57,65 +57,73 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
   };
 
   return (
-    <div className="overflow-x-auto border rounded-lg">
+    <div className={`overflow-x-auto border rounded-lg ${
+      isDarkMode 
+        ? 'border-white/20 bg-white/5' 
+        : 'border-gray-300 bg-white/80'
+    }`}>
       <Table className="min-w-[800px]">
         <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 min-w-[140px]">
+          <TableRow className={`${
+            isDarkMode 
+              ? 'bg-white/10 border-white/20' 
+              : 'bg-gray-50/80 border-gray-200'
+          }`}>
+            <TableHead className={`text-xs sm:text-sm font-medium min-w-[140px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col">
                 <span>Worker Name*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Qty*</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[70px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>ST</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[70px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>OT</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[70px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>DT</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[70px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>POT</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[70px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[70px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>POT</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Total</span>
-                <span className="text-xs text-gray-500">(Hrs)</span>
+                <span className={`text-xs ${themeClasses.text.secondary}`}>(Hrs)</span>
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[90px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[90px] ${themeClasses.text.primary}`}>
               <div className="flex flex-col items-center">
                 <span>Date</span>
-                <Info className="w-3 h-3 text-gray-400 mt-1" />
+                <Info className={`w-3 h-3 mt-1 ${themeClasses.text.muted}`} />
               </div>
             </TableHead>
-            <TableHead className="text-xs sm:text-sm font-medium text-gray-700 text-center min-w-[80px]">
+            <TableHead className={`text-xs sm:text-sm font-medium text-center min-w-[80px] ${themeClasses.text.primary}`}>
               Actions
             </TableHead>
           </TableRow>
