@@ -333,10 +333,10 @@ const EmployeeManagement = ({ onBack }) => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>
-                      Avg Base Pay
+                      Avg Hourly Rate
                     </p>
                     <p className={`text-3xl font-bold ${themeClasses.text.primary}`}>
-                      ${averageBasePay.toFixed(2)}
+                      ${averageHourlyRate.toFixed(2)}
                     </p>
                   </div>
                   <DollarSign className="w-8 h-8 text-green-500" />
