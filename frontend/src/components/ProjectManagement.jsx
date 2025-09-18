@@ -637,6 +637,121 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Project Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className={`sm:max-w-[600px] ${themeClasses.modal}`}>
+          <DialogHeader>
+            <DialogTitle className={themeClasses.text.primary}>
+              Edit Project - {selectedProject?.name}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4 max-h-96 overflow-y-auto">
+            {/* Project Name and Client */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Project Name*</Label>
+                <Input
+                  value={editProject.name || ''}
+                  onChange={(e) => handleEditInputChange('name', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Client Company*</Label>
+                <Input
+                  value={editProject.client_company || ''}
+                  onChange={(e) => handleEditInputChange('client_company', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+            </div>
+
+            {/* Contract Amount and Manager */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Contract Amount ($)*</Label>
+                <Input
+                  type="number"
+                  value={editProject.contract_amount || ''}
+                  onChange={(e) => handleEditInputChange('contract_amount', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Project Manager*</Label>
+                <Select value={editProject.project_manager || ''} onValueChange={(value) => handleEditInputChange('project_manager', value)}>
+                  <SelectTrigger className={themeClasses.input}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className={themeClasses.modal}>
+                    {projectManagers.map((manager) => (
+                      <SelectItem key={manager} value={manager}>
+                        {manager}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label className={themeClasses.text.primary}>Description</Label>
+              <Textarea
+                value={editProject.description || ''}
+                onChange={(e) => handleEditInputChange('description', e.target.value)}
+                className={themeClasses.input}
+                rows={3}
+              />
+            </div>
+
+            {/* Address and GC Email */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>Project Address</Label>
+                <Input
+                  value={editProject.address || ''}
+                  onChange={(e) => handleEditInputChange('address', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className={themeClasses.text.primary}>GC Email</Label>
+                <Input
+                  type="email"
+                  value={editProject.gc_email || ''}
+                  onChange={(e) => handleEditInputChange('gc_email', e.target.value)}
+                  className={themeClasses.input}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowEditModal(false);
+                setSelectedProject(null);
+              }}
+              className={themeClasses.button.secondary}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleEditProject}
+              className={themeClasses.button.primary}
+            >
+              Update Project
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
