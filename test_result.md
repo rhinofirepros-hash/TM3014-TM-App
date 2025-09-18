@@ -308,16 +308,19 @@ backend:
 
 frontend:
   - task: "JavaScript runtime errors"
-    implemented: false
-    working: false
-    file: "/app/frontend/src/components/EmployeeManagement.jsx, /app/frontend/src/components/ProjectOverview.jsx"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/EmployeeManagement.jsx, /app/frontend/src/components/ProjectOverview.jsx, /app/frontend/src/components/CrewManagement.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true  
     status_history:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL JAVASCRIPT RUNTIME ERRORS DETECTED: Frontend shows red error screen with multiple TypeError: Cannot read properties of undefined (reading 'toFixed') errors in EmployeeManagement, Array.map, react-stack-bottom-frame, renderWithHooks, updateFunctionComponent, beginWork, runWithFiberInDEV, and performUnitOfWork functions. These errors are preventing proper navigation and component rendering, causing timeouts and blocking access to employee management and other features."
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED TOFIXED RUNTIME ERRORS: Updated CrewManagement.jsx to use new employee schema (hourly_rate instead of base_pay/burden_cost) and added proper null checks for all .toFixed() calls. Fixed statistics calculations, table displays, form inputs, and cost calculations. Component now handles the new schema properly: hourly_rate (true employee cost) and gc_billing_rate (rate billed to GC). All toFixed() calls now have null checks like (value || 0).toFixed(2)."
 
   - task: "PDF generation with actual logo"
     implemented: true
