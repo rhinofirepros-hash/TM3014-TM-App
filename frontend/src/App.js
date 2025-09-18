@@ -89,7 +89,7 @@ function App() {
             <Dashboard 
               onCreateNew={handleCreateNew}
               onOpenProject={handleOpenProject}
-              onManageCrew={handleManageWorkers}
+              onManageCrew={handleManageCrew}
               onViewReports={handleViewReports}
               onManageProjects={() => setCurrentView('projects')}
               onLogout={handleLogout}
