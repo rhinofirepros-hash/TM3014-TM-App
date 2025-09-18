@@ -1520,6 +1520,534 @@ class TMTagAPITester:
             self.log_result("analytics", "Enhanced cost analytics", False, str(e))
         
         return True
+
+    def test_tm_project_analytics(self):
+        """Test T&M project profit calculation - should show markup profit correctly"""
+        print("\n=== Testing T&M Project Analytics ===")
+        
+        # Create a T&M project
+        tm_project_data = {
+            "name": "T&M Test Project",
+            "description": "Time & Material project for testing profit calculations",
+            "client_company": "T&M Client Corp",
+            "gc_email": "tm@client.com",
+            "project_type": "tm_only",  # T&M project type
+            "contract_amount": 0,  # T&M projects don't have fixed contract
+            "labor_rate": 120.0,  # Rate billed to client
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "T&M Project Location"
+        }
+        
+        try:
+            # Create T&M project
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=tm_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code != 200:
+                self.log_result("analytics", "T&M project creation", False, f"HTTP {response.status_code}", response)
+                return False
+            
+            tm_project = response.json()
+            tm_project_id = tm_project["id"]
+            
+            # Create some employees for cost calculations
+            employee_data = {
+                "name": "T&M Test Worker",
+                "hourly_rate": 50.0,  # True cost
+                "gc_billing_rate": 120.0,  # Rate billed to GC
+                "position": "Test Electrician",
+                "hire_date": datetime.now().isoformat()
+            }
+            
+            emp_response = self.session.post(
+                f"{self.base_url}/employees",
+                json=employee_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            # Create T&M tag with labor for this project
+            tm_tag_data = {
+                "project_id": tm_project_id,
+                "project_name": tm_project["name"],
+                "cost_code": "TM-TEST-001",
+                "date_of_work": datetime.now().isoformat(),
+                "tm_tag_title": "T&M Test Work",
+                "description_of_work": "Testing T&M profit calculations",
+                "labor_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "worker_name": "T&M Test Worker",
+                        "quantity": 1,
+                        "st_hours": 10.0,
+                        "ot_hours": 0.0,
+                        "dt_hours": 0.0,
+                        "pot_hours": 0.0,
+                        "total_hours": 10.0,
+                        "date": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "material_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "material_name": "Test Material",
+                        "unit_of_measure": "each",
+                        "quantity": 5.0,
+                        "unit_cost": 20.0,
+                        "total": 100.0,
+                        "date_of_work": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "equipment_entries": [],
+                "other_entries": [],
+                "gc_email": "tm@client.com"
+            }
+            
+            tm_tag_response = self.session.post(
+                f"{self.base_url}/tm-tags",
+                json=tm_tag_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if tm_tag_response.status_code != 200:
+                self.log_result("analytics", "T&M tag creation", False, f"HTTP {tm_tag_response.status_code}", tm_tag_response)
+                return False
+            
+            # Wait a moment for data to be processed
+            import time
+            time.sleep(1)
+            
+            # Get analytics for T&M project
+            analytics_response = self.session.get(f"{self.base_url}/projects/{tm_project_id}/analytics")
+            
+            if analytics_response.status_code == 200:
+                analytics = analytics_response.json()
+                
+                # Verify T&M project analytics
+                project_type = analytics.get("project_type")
+                labor_markup_profit = analytics.get("labor_markup_profit", 0)
+                material_markup_profit = analytics.get("material_markup_profit", 0)
+                total_profit = analytics.get("profit", 0)
+                profit_margin = analytics.get("profit_margin", 0)
+                
+                # Expected calculations:
+                # Labor: 10 hours * $120/hr = $1200 billed, 10 hours * $50/hr = $500 true cost
+                # Labor markup profit = $1200 - $500 = $700
+                # Material markup profit = $100 * 0.2 = $20 (20% markup)
+                # Total profit = $700 + $20 = $720
+                
+                expected_labor_markup = 10 * 120 - 10 * 50  # $700
+                expected_material_markup = 100 * 0.2  # $20
+                expected_total_profit = expected_labor_markup + expected_material_markup  # $720
+                
+                success = True
+                issues = []
+                
+                if project_type != "tm_only":
+                    success = False
+                    issues.append(f"Expected project_type 'tm_only', got '{project_type}'")
+                
+                if abs(labor_markup_profit - expected_labor_markup) > 50:  # Allow some variance
+                    success = False
+                    issues.append(f"Expected labor markup profit ~${expected_labor_markup}, got ${labor_markup_profit}")
+                
+                if total_profit <= 0:
+                    success = False
+                    issues.append(f"Expected positive total profit, got ${total_profit}")
+                
+                if profit_margin <= 0:
+                    success = False
+                    issues.append(f"Expected positive profit margin, got {profit_margin}%")
+                
+                if success:
+                    self.log_result("analytics", "T&M project profit calculation", True, 
+                                  f"T&M project shows correct markup profit: Labor=${labor_markup_profit}, Material=${material_markup_profit}, Total=${total_profit} ({profit_margin:.1f}% margin)")
+                    self.tm_project_id = tm_project_id
+                else:
+                    self.log_result("analytics", "T&M project profit calculation", False, "; ".join(issues))
+                
+                return analytics
+            else:
+                self.log_result("analytics", "T&M project analytics", False, f"HTTP {analytics_response.status_code}", analytics_response)
+                
+        except Exception as e:
+            self.log_result("analytics", "T&M project analytics", False, str(e))
+        
+        return None
+
+    def test_full_project_analytics(self):
+        """Test full project profit calculation - should calculate profit as contract minus costs"""
+        print("\n=== Testing Full Project Analytics ===")
+        
+        # Create a full project
+        full_project_data = {
+            "name": "Full Contract Test Project",
+            "description": "Fixed contract project for testing profit calculations",
+            "client_company": "Full Contract Client Corp",
+            "gc_email": "full@client.com",
+            "project_type": "full_project",  # Full project type
+            "contract_amount": 50000.0,  # Fixed contract amount
+            "labor_rate": 95.0,  # Rate billed to client
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "Full Project Location"
+        }
+        
+        try:
+            # Create full project
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=full_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code != 200:
+                self.log_result("analytics", "Full project creation", False, f"HTTP {response.status_code}", response)
+                return False
+            
+            full_project = response.json()
+            full_project_id = full_project["id"]
+            
+            # Create T&M tag with labor and materials for this project
+            tm_tag_data = {
+                "project_id": full_project_id,
+                "project_name": full_project["name"],
+                "cost_code": "FULL-TEST-001",
+                "date_of_work": datetime.now().isoformat(),
+                "tm_tag_title": "Full Project Test Work",
+                "description_of_work": "Testing full project profit calculations",
+                "labor_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "worker_name": "T&M Test Worker",
+                        "quantity": 1,
+                        "st_hours": 20.0,
+                        "ot_hours": 0.0,
+                        "dt_hours": 0.0,
+                        "pot_hours": 0.0,
+                        "total_hours": 20.0,
+                        "date": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "material_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "material_name": "Full Project Material",
+                        "unit_of_measure": "each",
+                        "quantity": 10.0,
+                        "unit_cost": 100.0,
+                        "total": 1000.0,
+                        "date_of_work": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "equipment_entries": [],
+                "other_entries": [],
+                "gc_email": "full@client.com"
+            }
+            
+            tm_tag_response = self.session.post(
+                f"{self.base_url}/tm-tags",
+                json=tm_tag_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if tm_tag_response.status_code != 200:
+                self.log_result("analytics", "Full project T&M tag creation", False, f"HTTP {tm_tag_response.status_code}", tm_tag_response)
+                return False
+            
+            # Wait a moment for data to be processed
+            import time
+            time.sleep(1)
+            
+            # Get analytics for full project
+            analytics_response = self.session.get(f"{self.base_url}/projects/{full_project_id}/analytics")
+            
+            if analytics_response.status_code == 200:
+                analytics = analytics_response.json()
+                
+                # Verify full project analytics
+                project_type = analytics.get("project_type")
+                contract_amount = analytics.get("contract_amount", 0)
+                total_profit = analytics.get("profit", 0)
+                profit_margin = analytics.get("profit_margin", 0)
+                
+                # For full projects, profit should be contract amount minus true costs
+                success = True
+                issues = []
+                
+                if project_type != "full_project":
+                    success = False
+                    issues.append(f"Expected project_type 'full_project', got '{project_type}'")
+                
+                if contract_amount != 50000.0:
+                    success = False
+                    issues.append(f"Expected contract amount $50,000, got ${contract_amount}")
+                
+                # Profit should be positive and significant for full projects
+                if total_profit <= 0:
+                    success = False
+                    issues.append(f"Expected positive profit for full project, got ${total_profit}")
+                
+                if profit_margin <= 0:
+                    success = False
+                    issues.append(f"Expected positive profit margin, got {profit_margin}%")
+                
+                if success:
+                    self.log_result("analytics", "Full project profit calculation", True, 
+                                  f"Full project shows correct contract-based profit: ${total_profit} ({profit_margin:.1f}% margin) from ${contract_amount} contract")
+                    self.full_project_id = full_project_id
+                else:
+                    self.log_result("analytics", "Full project profit calculation", False, "; ".join(issues))
+                
+                return analytics
+            else:
+                self.log_result("analytics", "Full project analytics", False, f"HTTP {analytics_response.status_code}", analytics_response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Full project analytics", False, str(e))
+        
+        return None
+
+    def test_forecasted_schedule_creation(self):
+        """Test creating projects with forecasted values and verify they're stored correctly"""
+        print("\n=== Testing Forecasted Schedule Creation ===")
+        
+        # Create project with forecasted values
+        forecasted_project_data = {
+            "name": "Forecasted Schedule Test Project",
+            "description": "Project with forecasted schedule values for testing",
+            "client_company": "Forecast Client Corp",
+            "gc_email": "forecast@client.com",
+            "project_type": "full_project",
+            "contract_amount": 75000.0,
+            "labor_rate": 110.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "estimated_completion": (datetime.now() + timedelta(days=60)).isoformat(),
+            # Forecasted schedule fields
+            "estimated_hours": 500.0,
+            "estimated_labor_cost": 55000.0,
+            "estimated_material_cost": 15000.0,
+            "estimated_profit": 5000.0,
+            "address": "Forecasted Project Location"
+        }
+        
+        try:
+            # Create project with forecasted values
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=forecasted_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                project_id = project["id"]
+                
+                # Verify forecasted fields are stored correctly
+                forecasted_fields = {
+                    "estimated_hours": 500.0,
+                    "estimated_labor_cost": 55000.0,
+                    "estimated_material_cost": 15000.0,
+                    "estimated_profit": 5000.0
+                }
+                
+                success = True
+                issues = []
+                
+                for field, expected_value in forecasted_fields.items():
+                    actual_value = project.get(field)
+                    if actual_value != expected_value:
+                        success = False
+                        issues.append(f"Expected {field}={expected_value}, got {actual_value}")
+                
+                if success:
+                    self.log_result("analytics", "Forecasted schedule creation", True, 
+                                  f"Project created with forecasted values: {forecasted_fields}")
+                    self.forecasted_project_id = project_id
+                    return project
+                else:
+                    self.log_result("analytics", "Forecasted schedule creation", False, "; ".join(issues))
+            else:
+                self.log_result("analytics", "Forecasted schedule creation", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Forecasted schedule creation", False, str(e))
+        
+        return None
+
+    def test_analytics_response_fields(self):
+        """Test that GET /api/projects/{id}/analytics returns all new fields"""
+        print("\n=== Testing Analytics Response Fields ===")
+        
+        # Use forecasted project if available, otherwise create one
+        if not hasattr(self, 'forecasted_project_id'):
+            project = self.test_forecasted_schedule_creation()
+            if not project:
+                self.log_result("analytics", "Analytics response setup", False, "Could not create forecasted project")
+                return False
+        
+        project_id = self.forecasted_project_id
+        
+        try:
+            # Get analytics for the project
+            response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
+            
+            if response.status_code == 200:
+                analytics = response.json()
+                
+                # Check for all required new fields
+                required_new_fields = [
+                    "project_type",
+                    "material_markup_profit",
+                    "estimated_hours",
+                    "estimated_labor_cost", 
+                    "estimated_material_cost",
+                    "estimated_profit",
+                    "hours_variance",
+                    "labor_cost_variance",
+                    "material_cost_variance",
+                    "profit_variance"
+                ]
+                
+                missing_fields = []
+                present_fields = []
+                
+                for field in required_new_fields:
+                    if field in analytics:
+                        present_fields.append(f"{field}={analytics[field]}")
+                    else:
+                        missing_fields.append(field)
+                
+                if not missing_fields:
+                    self.log_result("analytics", "Analytics response fields", True, 
+                                  f"All new fields present: {', '.join(present_fields[:5])}...")  # Show first 5 to avoid long output
+                    return analytics
+                else:
+                    self.log_result("analytics", "Analytics response fields", False, 
+                                  f"Missing fields: {missing_fields}")
+            else:
+                self.log_result("analytics", "Analytics response fields", False, f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Analytics response fields", False, str(e))
+        
+        return None
+
+    def test_variance_analysis(self):
+        """Test variance analysis between forecasted vs actual values"""
+        print("\n=== Testing Variance Analysis ===")
+        
+        # Use forecasted project and add some actual data
+        if not hasattr(self, 'forecasted_project_id'):
+            project = self.test_forecasted_schedule_creation()
+            if not project:
+                self.log_result("analytics", "Variance analysis setup", False, "Could not create forecasted project")
+                return False
+        
+        project_id = self.forecasted_project_id
+        
+        try:
+            # Add some actual work data to compare against forecasts
+            tm_tag_data = {
+                "project_id": project_id,
+                "project_name": "Forecasted Schedule Test Project",
+                "cost_code": "VAR-TEST-001",
+                "date_of_work": datetime.now().isoformat(),
+                "tm_tag_title": "Variance Test Work",
+                "description_of_work": "Testing variance calculations",
+                "labor_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "worker_name": "Variance Test Worker",
+                        "quantity": 1,
+                        "st_hours": 30.0,  # Some actual hours to create variance
+                        "ot_hours": 0.0,
+                        "dt_hours": 0.0,
+                        "pot_hours": 0.0,
+                        "total_hours": 30.0,
+                        "date": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "material_entries": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "material_name": "Variance Test Material",
+                        "unit_of_measure": "each",
+                        "quantity": 20.0,
+                        "unit_cost": 50.0,
+                        "total": 1000.0,
+                        "date_of_work": datetime.now().strftime("%Y-%m-%d")
+                    }
+                ],
+                "equipment_entries": [],
+                "other_entries": [],
+                "gc_email": "forecast@client.com"
+            }
+            
+            tm_tag_response = self.session.post(
+                f"{self.base_url}/tm-tags",
+                json=tm_tag_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if tm_tag_response.status_code != 200:
+                self.log_result("analytics", "Variance test data creation", False, f"HTTP {tm_tag_response.status_code}", tm_tag_response)
+                return False
+            
+            # Wait for data processing
+            import time
+            time.sleep(1)
+            
+            # Get analytics with variance calculations
+            analytics_response = self.session.get(f"{self.base_url}/projects/{project_id}/analytics")
+            
+            if analytics_response.status_code == 200:
+                analytics = analytics_response.json()
+                
+                # Check variance calculations
+                hours_variance = analytics.get("hours_variance", 0)
+                labor_cost_variance = analytics.get("labor_cost_variance", 0)
+                material_cost_variance = analytics.get("material_cost_variance", 0)
+                profit_variance = analytics.get("profit_variance", 0)
+                
+                # Verify variance calculations exist and make sense
+                success = True
+                issues = []
+                
+                # Variance fields should exist
+                variance_fields = ["hours_variance", "labor_cost_variance", "material_cost_variance", "profit_variance"]
+                for field in variance_fields:
+                    if field not in analytics:
+                        success = False
+                        issues.append(f"Missing variance field: {field}")
+                
+                # Hours variance should be calculated (actual vs estimated)
+                estimated_hours = analytics.get("estimated_hours", 0)
+                actual_hours = analytics.get("total_hours", 0)
+                expected_hours_variance = actual_hours - estimated_hours
+                
+                if abs(hours_variance - expected_hours_variance) > 1:
+                    success = False
+                    issues.append(f"Hours variance calculation incorrect: expected {expected_hours_variance}, got {hours_variance}")
+                
+                if success:
+                    self.log_result("analytics", "Variance analysis", True, 
+                                  f"Variance calculations working: Hours={hours_variance}, Labor=${labor_cost_variance}, Material=${material_cost_variance}, Profit=${profit_variance}")
+                else:
+                    self.log_result("analytics", "Variance analysis", False, "; ".join(issues))
+                
+                return analytics
+            else:
+                self.log_result("analytics", "Variance analysis", False, f"HTTP {analytics_response.status_code}", analytics_response)
+                
+        except Exception as e:
+            self.log_result("analytics", "Variance analysis", False, str(e))
+        
+        return None
     
     def test_daily_crew_data_endpoint(self):
         """Test the daily crew data endpoint for auto-population"""
