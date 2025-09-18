@@ -609,9 +609,20 @@ const CrewLogging = ({ project, onBack, onDataUpdate }) => {
                                   Synced
                                 </Badge>
                               ) : (
-                                <Badge className="bg-yellow-100 text-yellow-800">
-                                  Pending
-                                </Badge>
+                                <div className="flex items-center gap-2">
+                                  <Badge className="bg-yellow-100 text-yellow-800">
+                                    Pending
+                                  </Badge>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleManualSync(log.id)}
+                                    className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                  >
+                                    <Zap className="w-3 h-3 mr-1" />
+                                    Sync
+                                  </Button>
+                                </div>
                               )}
                             </TableCell>
                             <TableCell>
