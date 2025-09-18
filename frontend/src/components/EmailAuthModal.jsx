@@ -194,11 +194,15 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
             // Not authenticated
             <div className="space-y-4">
               <div className="text-center mb-6">
-                <p className="text-gray-600 text-sm">
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   Connect your email account to send T&M tags directly to General Contractors
                 </p>
                 {(!process.env.REACT_APP_GOOGLE_CLIENT_ID && !process.env.REACT_APP_MICROSOFT_CLIENT_ID) && (
-                  <p className="text-yellow-600 text-xs mt-2 bg-yellow-50 p-2 rounded">
+                  <p className={`text-xs mt-2 p-2 rounded ${
+                    isDarkMode 
+                      ? 'text-yellow-300 bg-yellow-900/30' 
+                      : 'text-yellow-600 bg-yellow-50'
+                  }`}>
                     Demo Mode: Real OAuth credentials not configured
                   </p>
                 )}
@@ -209,14 +213,18 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
                   onClick={handleGmailAuth}
                   disabled={isLoading}
                   variant="outline"
-                  className="w-full flex items-center justify-center gap-3 h-12 border-gray-300 hover:border-red-400 hover:bg-red-50"
+                  className={`w-full flex items-center justify-center gap-3 h-12 ${
+                    isDarkMode 
+                      ? 'border-white/30 text-white hover:border-red-400 hover:bg-red-900/20' 
+                      : 'border-gray-300 hover:border-red-400 hover:bg-red-50 text-gray-700'
+                  }`}
                 >
                   {isLoading && authProvider === 'gmail' ? (
                     <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <Mail className="w-5 h-5 text-red-600" />
                   )}
-                  <span className="text-gray-700">
+                  <span>
                     {isLoading && authProvider === 'gmail' ? 'Connecting...' : 'Connect Gmail'}
                   </span>
                 </Button>
@@ -225,21 +233,25 @@ const EmailAuthModal = ({ open, onClose, onAuthSuccess }) => {
                   onClick={handleOutlookAuth}
                   disabled={isLoading}
                   variant="outline"
-                  className="w-full flex items-center justify-center gap-3 h-12 border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                  className={`w-full flex items-center justify-center gap-3 h-12 ${
+                    isDarkMode 
+                      ? 'border-white/30 text-white hover:border-blue-400 hover:bg-blue-900/20' 
+                      : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700'
+                  }`}
                 >
                   {isLoading && authProvider === 'outlook' ? (
                     <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <Mail className="w-5 h-5 text-blue-600" />
                   )}
-                  <span className="text-gray-700">
+                  <span>
                     {isLoading && authProvider === 'outlook' ? 'Connecting...' : 'Connect Outlook'}
                   </span>
                 </Button>
               </div>
 
               <div className="text-center">
-                <p className="text-xs text-gray-500">
+                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Emails will be sent from your personal account
                 </p>
               </div>
