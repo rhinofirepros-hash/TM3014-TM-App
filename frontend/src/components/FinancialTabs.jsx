@@ -626,13 +626,14 @@ const FinancialTabs = ({ project, onBack }) => {
         }`}
       >
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                <TableHead className={themeClasses.text.primary}>Inspection Type</TableHead>
-                <TableHead className={themeClasses.text.primary}>Status</TableHead>
-                <TableHead className={themeClasses.text.primary}>Date</TableHead>
-                <TableHead className={themeClasses.text.primary}>Notes</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
+                  <TableHead className={themeClasses.text.primary}>Inspection Type</TableHead>
+                  <TableHead className={themeClasses.text.primary}>Status</TableHead>
+                  <TableHead className={themeClasses.text.primary}>Date</TableHead>
+                  <TableHead className={themeClasses.text.primary}>Notes</TableHead>
                 <TableHead className={themeClasses.text.primary}>Actions</TableHead>
               </TableRow>
             </TableHeader>
