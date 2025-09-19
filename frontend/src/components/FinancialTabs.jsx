@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
 import { AnimatedCard, AnimatedCardContent } from './ui/animated-card';
 import { 
   Table, 
@@ -24,6 +23,7 @@ import {
   CreditCard,
   BarChart3
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
