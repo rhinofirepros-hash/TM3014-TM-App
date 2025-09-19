@@ -73,7 +73,7 @@ export const ThemeProvider = ({ children }) => {
       : 'bg-white/60 border-gray-300/50 text-gray-900 placeholder-gray-500 backdrop-blur',
     
     modal: isDarkMode 
-      ? 'bg-slate-900/95 backdrop-blur-xl border-white/20 shadow-2xl' 
+      ? 'bg-slate-800 backdrop-blur-xl border-slate-600 shadow-2xl' 
       : 'bg-white/95 backdrop-blur-xl border-gray-200/50 shadow-2xl',
       
     table: isDarkMode
