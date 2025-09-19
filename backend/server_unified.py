@@ -972,7 +972,19 @@ async def get_gc_dashboard(project_id: str):
     """GC: Get project dashboard (no financial data)"""
     try:
         projects_collection = await get_collection("projects")
+        
+        # Try to find project by id field first, then by _id field
         project = await projects_collection.find_one({"id": project_id})
+        if not project:
+            # Try finding by _id field (for unified schema)
+            try:
+                from bson import ObjectId
+                if ObjectId.is_valid(project_id):
+                    project = await projects_collection.find_one({"_id": ObjectId(project_id)})
+                else:
+                    project = await projects_collection.find_one({"_id": project_id})
+            except:
+                pass
         
         if not project:
             raise HTTPException(status_code=404, detail="Project not found")
