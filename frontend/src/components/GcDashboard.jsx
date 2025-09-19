@@ -201,7 +201,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
               </div>
               <Progress value={dashboardData.overallProgress} className="h-3" />
             </div>
-          </AnimatedCardContent>
+          </CardContent>
         </AnimatedCard>
 
         {/* Project Phases - using AnimatedCard */}
