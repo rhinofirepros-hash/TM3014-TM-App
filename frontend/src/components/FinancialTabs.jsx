@@ -697,7 +697,7 @@ const FinancialTabs = ({ project, onBack }) => {
         </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-5 backdrop-blur-md bg-white/10 border-white/20">
           <TabsTrigger value="invoices" className="flex items-center gap-2">
             <Receipt className="w-4 h-4" />
             Invoices
