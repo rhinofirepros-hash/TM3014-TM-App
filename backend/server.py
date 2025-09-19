@@ -1527,6 +1527,41 @@ def serialize_doc(doc):
         del doc["_id"]
     return doc
 
+def generate_project_pin():
+    """Generate a unique 4-digit PIN for project access"""
+    return f"{random.randint(1000, 9999)}"
+
+async def ensure_project_has_pin(project_id: str):
+    """Ensure project has a GC access PIN, generate if missing"""
+    try:
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            return None
+            
+        # Check if project has a PIN
+        if not project.get("gc_pin"):
+            # Generate new PIN
+            new_pin = generate_project_pin()
+            
+            # Make sure PIN is unique across all projects
+            while await db.projects.find_one({"gc_pin": new_pin}):
+                new_pin = generate_project_pin()
+            
+            # Update project with new PIN
+            await db.projects.update_one(
+                {"id": project_id},
+                {"$set": {"gc_pin": new_pin, "gc_pin_used": False}}
+            )
+            
+            logger.info(f"Generated new PIN for project {project_id}: {new_pin}")
+            return new_pin
+        
+        return project.get("gc_pin")
+        
+    except Exception as e:
+        logger.error(f"Error ensuring project PIN: {e}")
+        return None
+
 # FINANCIAL MANAGEMENT ENDPOINTS
 
 # INVOICES API ROUTES
