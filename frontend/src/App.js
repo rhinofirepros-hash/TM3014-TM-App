@@ -8,6 +8,7 @@ import CrewManagement from "./components/CrewManagement";
 import Reports from "./components/Reports";
 import ProjectManagement from "./components/ProjectManagement";
 import EmployeeManagement from "./components/EmployeeManagement";
+import FinancialTabs from "./components/FinancialTabs";
 import GcPortal from "./components/GcPortal";
 import GcOnlyLogin from "./components/GcOnlyLogin";
 import AdminGcManagement from "./components/AdminGcManagement";
