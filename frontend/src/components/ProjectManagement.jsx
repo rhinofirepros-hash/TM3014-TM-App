@@ -53,7 +53,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     // Plan submittal fields
     plan_submittal_status: '',
     plan_submittal_date: null,
-    plan_submittal_notes: ''
+    plan_submittal_notes: '',
     estimated_labor_cost: '',
     estimated_material_cost: '',
     estimated_profit: ''
