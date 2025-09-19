@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatedCard, AnimatedCardContent } from './ui/animated-card';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { 
   Table, 
   TableBody, 
