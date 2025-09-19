@@ -312,6 +312,23 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     );
   }
 
+  // If showing inspection management, render that component
+  if (showInspectionManagement && selectedProject) {
+    return (
+      <InspectionManagement 
+        project={selectedProject}
+        onProjectUpdate={(updatedProject) => {
+          setProjects(projects.map(p => p.id === updatedProject.id ? updatedProject : p));
+          setSelectedProject(updatedProject);
+        }}
+        onBack={() => {
+          setShowInspectionManagement(false);
+          setSelectedProject(null);
+        }}
+      />
+    );
+  }
+
   const totalProjects = projects.length;
   const totalValue = projects.reduce((sum, project) => sum + (project.contract_amount || 0), 0);
   const activeProjects = projects.filter(p => p.status === 'active').length;
