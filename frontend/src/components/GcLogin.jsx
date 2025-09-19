@@ -160,7 +160,7 @@ const GcLogin = ({ onLoginSuccess }) => {
 
             <Button
               onClick={handleLogin}
-              disabled={isLoading || !formData.projectId || formData.key.length !== 4}
+              disabled={isLoading || !formData.projectId || formData.pin.length !== 4}
               className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium"
             >
               {isLoading ? (
