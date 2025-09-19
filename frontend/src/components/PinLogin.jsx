@@ -176,9 +176,8 @@ const PinLogin = ({ onLoginSuccess }) => {
               />
             </div>
             
-            <div className={`text-xs text-center space-y-1 ${themeClasses.text.secondary}`}>
-              <p>• Admin Access: Use admin PIN (J777)</p>
-              <p>• GC Access: Use 4-digit project PIN</p>
+            <div className={`text-xs text-center ${themeClasses.text.secondary}`}>
+              <p>Enter your access PIN to continue</p>
             </div>
             
             <Button 
