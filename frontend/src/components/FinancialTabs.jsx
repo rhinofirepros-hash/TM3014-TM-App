@@ -40,6 +40,7 @@ const FinancialTabs = ({ project, onBack }) => {
   const [payables, setPayables] = useState([]);
   const [cashflowData, setCashflowData] = useState([]);
   const [profitabilityData, setProfitabilityData] = useState([]);
+  const [inspections, setInspections] = useState([]);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
