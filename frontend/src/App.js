@@ -18,6 +18,9 @@ function App() {
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, form, crew, reports, projects, employees
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // Check for GC route
+  const isGcRoute = window.location.pathname.startsWith('/gc');
+
   useEffect(() => {
     // Check if user is already authenticated
     const authStatus = localStorage.getItem('tm_app_authenticated');
