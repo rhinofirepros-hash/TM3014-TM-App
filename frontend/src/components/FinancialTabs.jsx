@@ -322,7 +322,11 @@ const FinancialTabs = ({ project, onBack }) => {
 
         {/* Cashflow Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className={themeClasses.card.primary}>
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+        isDarkMode 
+          ? 'bg-white/10 text-white' 
+          : 'bg-white/70 text-gray-900'
+      }`}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
