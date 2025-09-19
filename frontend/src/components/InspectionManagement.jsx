@@ -194,8 +194,30 @@ const InspectionManagement = ({ project, onProjectUpdate, onBack }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className={`min-h-screen transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="outline" onClick={onBack} className={themeClasses.button.secondary}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Projects
+          </Button>
+          <div>
+            <h1 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+              Inspection Management
+            </h1>
+            <p className={themeClasses.text.secondary}>
+              Manage inspection status for {project.name}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <InspectionCard 
           type="rough" 
           title="Rough Inspection" 
