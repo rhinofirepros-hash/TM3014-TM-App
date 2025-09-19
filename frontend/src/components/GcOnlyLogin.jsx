@@ -143,21 +143,6 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label className={`text-sm font-medium ${themeClasses.text.primary}`}>
-                <Building className="w-4 h-4 inline mr-2" />
-                Project ID
-              </Label>
-              <Input
-                type="text"
-                placeholder="Enter project ID"
-                value={formData.projectId}
-                onChange={(e) => handleInputChange('projectId', e.target.value)}
-                onKeyPress={handleKeyPress}
-                className={`${themeClasses.input.primary} h-12`}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label className={`text-sm font-medium ${themeClasses.text.primary}`}>
                 <Key className="w-4 h-4 inline mr-2" />
                 4-Digit PIN
               </Label>
