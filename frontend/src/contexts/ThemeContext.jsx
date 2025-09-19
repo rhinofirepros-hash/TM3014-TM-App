@@ -39,7 +39,7 @@ export const ThemeProvider = ({ children }) => {
       : 'bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-slate-100/90',
     
     card: isDarkMode 
-      ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
+      ? 'backdrop-blur-xl border-0 shadow-2xl bg-slate-800 text-white border border-slate-600' 
       : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30',
     
     cardHover: isDarkMode 
