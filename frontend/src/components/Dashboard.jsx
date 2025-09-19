@@ -352,7 +352,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         {/* Quick Actions */}
         <div className="mb-8">
           <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             <AnimatedCard 
               delay={200}
               className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
