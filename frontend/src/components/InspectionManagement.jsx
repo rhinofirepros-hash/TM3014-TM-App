@@ -228,6 +228,8 @@ const InspectionManagement = ({ project, onProjectUpdate, onBack }) => {
           title="Final Inspection" 
           icon={FileCheck}
         />
+          </div>
+        </div>
       </div>
     </div>
   );
