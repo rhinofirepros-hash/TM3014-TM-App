@@ -308,7 +308,7 @@ class PINInvestigator:
                 # Test with the auto-generated PIN
                 print(f"\n--- Testing with auto-generated PIN '{auto_pin}' ---")
                 login_data = {
-                    "project_id": project_id,
+                    "projectId": project_id,  # Use camelCase as expected by backend
                     "pin": auto_pin
                 }
                 
