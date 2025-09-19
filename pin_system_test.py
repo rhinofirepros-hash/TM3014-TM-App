@@ -121,7 +121,7 @@ class PINSystemTester:
         print(f"\n🚫 Step 3: Test that old PIN '{fresh_pin}' no longer works")
         try:
             login_data = {
-                "project_id": project_id,
+                "projectId": project_id,
                 "pin": fresh_pin  # Using the same PIN that was just used
             }
             
