@@ -1479,14 +1479,41 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
                 </Button>
                 
                 {!formData.signature ? (
-                  <Button 
-                    onClick={handleCollectSignatures}
-                    className={`${themeClasses.button.secondary} flex items-center justify-center gap-2 h-10`}
-                  >
-                    <PenTool className="w-4 h-4" />
-                    <span className="hidden sm:inline">Collect Signatures</span>
-                    <span className="sm:hidden">Sign</span>
-                  </Button>
+                  <div className="space-y-3">
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button 
+                        onClick={handleCollectSignatures}
+                        className={`${themeClasses.button.secondary} flex items-center justify-center gap-2 h-10`}
+                      >
+                        <PenTool className="w-4 h-4" />
+                        <span className="hidden sm:inline">Collect Signatures</span>
+                        <span className="sm:hidden">Sign</span>
+                      </Button>
+                      <div className="flex items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>or</span>
+                      </div>
+                      <Button 
+                        onClick={handleSubmitWithoutSignature}
+                        disabled={isGeneratingPDF}
+                        variant="outline"
+                        className={`${themeClasses.button.secondary} flex items-center justify-center gap-2 h-10 border-orange-500 text-orange-600 hover:bg-orange-50`}
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span className="hidden sm:inline">{isGeneratingPDF ? 'Saving...' : 'Log Progress (No Signature)'}</span>
+                        <span className="sm:hidden">{isGeneratingPDF ? 'Saving...' : 'Log Progress'}</span>
+                      </Button>
+                    </div>
+                    <div className={`p-3 rounded-lg border ${
+                      isDarkMode 
+                        ? 'bg-orange-900/20 border-orange-500/30 text-orange-200' 
+                        : 'bg-orange-50 border-orange-200 text-orange-800'
+                    }`}>
+                      <p className="text-sm">
+                        💡 <strong>Log Progress:</strong> Submit this T&M tag to track project progress. 
+                        You can collect signatures and generate final PDF later.
+                      </p>
+                    </div>
+                  </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button 
