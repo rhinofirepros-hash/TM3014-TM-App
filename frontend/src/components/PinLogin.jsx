@@ -19,9 +19,11 @@ const PinLogin = ({ onLoginSuccess }) => {
   const handlePinLogin = () => {
     setIsLoading(true);
     
-    // Simple PIN validation
+    // Accept both admin PIN and any valid GC PINs for testing
+    const validPins = ['J777', '2602', '2568', '6614', '4313', '7503'];
+    
     setTimeout(() => {
-      if (pin === 'J777') {
+      if (validPins.includes(pin)) {
         localStorage.setItem('tm_app_authenticated', 'true');
         localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
         localStorage.setItem('tm_app_login_method', 'pin');
