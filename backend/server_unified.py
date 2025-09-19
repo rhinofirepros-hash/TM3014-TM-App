@@ -1202,17 +1202,15 @@ async def get_gc_dashboard(project_id: str):
             )
         ]
         
-        # Get inspections (mock data for now)
-        inspections = [
-            InspectionStatusModel(
-                id=str(uuid.uuid4()),
-                projectId=project_id,
-                inspectionType="Rough-in Inspection",
-                result="pending",
-                scheduledDate=datetime.now() + timedelta(days=7),
-                notes="Scheduled for next week"
-            )
-        ]
+        # Get inspection data from project
+        inspections = {
+            "rough_inspection_status": project.get("rough_inspection_status", "pending"),
+            "rough_inspection_date": project.get("rough_inspection_date"),
+            "rough_inspection_notes": project.get("rough_inspection_notes"),
+            "final_inspection_status": project.get("final_inspection_status", "pending"),
+            "final_inspection_date": project.get("final_inspection_date"),
+            "final_inspection_notes": project.get("final_inspection_notes")
+        }
         
         # Build dashboard response
         dashboard = GcProjectDashboard(
