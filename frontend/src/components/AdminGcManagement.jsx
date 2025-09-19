@@ -314,7 +314,7 @@ const AdminGcManagement = ({ onBack }) => {
             >
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                <Table>
+                  <Table>
                   <TableHeader>
                     <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
                       <TableHead className={themeClasses.text.primary}>Project</TableHead>
