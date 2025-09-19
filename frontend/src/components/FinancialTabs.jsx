@@ -715,6 +715,10 @@ const FinancialTabs = ({ project, onBack }) => {
         <TabsContent value="profitability" className="mt-6">
           <ProfitabilityTab />
         </TabsContent>
+
+        <TabsContent value="inspections" className="mt-6">
+          <InspectionsTab />
+        </TabsContent>
       </Tabs>
     </div>
   );
