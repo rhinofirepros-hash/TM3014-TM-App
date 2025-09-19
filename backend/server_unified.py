@@ -14,6 +14,7 @@ from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timedelta
 import asyncio
+import random
 
 # Import both legacy and unified models
 from models_unified import (
