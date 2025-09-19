@@ -75,6 +75,13 @@ COLLECTIONS = {
     "cash_runway": "cash_runway"
 }
 
+# GC Dashboard collections
+gc_keys_collection = db["gc_keys"]
+gc_access_logs_collection = db["gc_access_logs"]
+project_phases_collection = db["project_phases"]
+inspection_status_collection = db["inspection_status"]
+gc_narratives_collection = db["gc_narratives"]
+
 # Helper functions
 async def get_collection(name: str):
     """Get collection with fallback to legacy if unified doesn't exist"""
