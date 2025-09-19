@@ -1273,9 +1273,9 @@ async def get_gc_keys_admin():
                 id=key["id"],
                 projectName=project_name,
                 keyLastFour=key["key"][-4:],
-                createdAt=key["createdAt"],
+                createdAt=key.get("created_at", key.get("createdAt")),
                 expiresAt=key["expiresAt"],
-                isUsed=key["isUsed"],
+                isUsed=key.get("used", key.get("isUsed", False)),
                 usedAt=key.get("usedAt")
             )
             admin_keys.append(admin_key)
