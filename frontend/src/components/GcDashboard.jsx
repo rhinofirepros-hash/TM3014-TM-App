@@ -467,7 +467,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                 : 'bg-white/70 text-gray-900'
             }`}
           >
-            <AnimatedCardContent className="p-6">
+            <CardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <FileText className="w-5 h-5 text-blue-500" />
                 <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Summary</h2>
@@ -486,7 +486,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </p>
                 </AnimatedCardContent>
               </AnimatedCard>
-            </AnimatedCardContent>
+            </CardContent>
           </AnimatedCard>
         )}
 
