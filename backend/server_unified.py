@@ -1038,6 +1038,7 @@ async def get_gc_dashboard(project_id: str):
         total_tm_hours = 0
         approved_tags = 0
         submitted_tags = 0
+        recent_tag_titles = []
         
         for tag in tm_tags:
             # Count hours from labor entries
@@ -1051,12 +1052,17 @@ async def get_gc_dashboard(project_id: str):
                 approved_tags += 1
             if status.lower() == "submitted":
                 submitted_tags += 1
+            
+            # Collect recent tag titles
+            if tag.get("tm_tag_title") or tag.get("title"):
+                recent_tag_titles.append(tag.get("tm_tag_title") or tag.get("title"))
         
         tm_tag_summary = GcTmTagSummary(
             totalTags=len(tm_tags),
             approvedTags=approved_tags,
             submittedTags=submitted_tags,
-            totalHours=total_tm_hours
+            totalHours=total_tm_hours,
+            recentTagTitles=recent_tag_titles[-5:]  # Last 5 tag titles
         )
         
         # Get project phases (mock data for now)
