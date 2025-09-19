@@ -877,14 +877,21 @@ async def get_project_gc_pin(project_id: str):
             while await projects_collection.find_one({"gc_pin": pin}):
                 pin = generate_project_pin()
             
-            # Update project with new PIN using the same criteria we used to find it
-            update_filter = {"id": project_id} if "id" in project else {"_id": project["_id"]}
-            await projects_collection.update_one(
-                update_filter,
-                {"$set": {"gc_pin": pin, "gc_pin_used": False}}
-            )
+            # Update project with new PIN - use the same query that found the project
+            if project.get("id") == project_id:
+                # Found by id field
+                update_result = await projects_collection.update_one(
+                    {"id": project_id},
+                    {"$set": {"gc_pin": pin, "gc_pin_used": False}}
+                )
+            else:
+                # Found by _id field  
+                update_result = await projects_collection.update_one(
+                    {"_id": project["_id"]},
+                    {"$set": {"gc_pin": pin, "gc_pin_used": False}}
+                )
             
-            logger.info(f"Generated new PIN for project {project_id}: {pin}")
+            logger.info(f"Generated new PIN for project {project_id}: {pin} (Updated {update_result.modified_count} documents)")
         
         return {
             "projectId": project_id,
