@@ -1238,6 +1238,70 @@ async def get_gc_dashboard(project_id: str):
         logger.error(f"Error fetching GC dashboard for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# GC ADMIN ENDPOINTS
+@api_router.get("/gc/keys/admin", response_model=List[GcKeyAdmin])
+async def get_gc_keys_admin():
+    """Admin: Get all GC keys for management"""
+    try:
+        keys = await gc_keys_collection.find({}).sort("createdAt", -1).to_list(1000)
+        admin_keys = []
+        
+        for key in keys:
+            # Get project info
+            project = await get_project_by_id(key["projectId"])
+            project_name = project.get("name", "Unknown Project") if project else "Unknown Project"
+            
+            admin_key = GcKeyAdmin(
+                id=key["id"],
+                projectName=project_name,
+                keyLastFour=key["key"][-4:],
+                createdAt=key["createdAt"],
+                expiresAt=key["expiresAt"],
+                isUsed=key["isUsed"],
+                usedAt=key.get("usedAt")
+            )
+            admin_keys.append(admin_key)
+        
+        return admin_keys
+    except Exception as e:
+        logger.error(f"Error fetching admin GC keys: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc/access-logs/admin", response_model=List[GcAccessLogAdmin])
+async def get_gc_access_logs_admin():
+    """Admin: Get all GC access logs"""
+    try:
+        logs = await gc_access_logs_collection.find({}).sort("timestamp", -1).to_list(1000)
+        admin_logs = []
+        
+        for log in logs:
+            # Get project info
+            project_id = log.get("projectId", "unknown")
+            if project_id != "unknown":
+                project = await get_project_by_id(project_id)
+                project_name = project.get("name", "Unknown Project") if project else "Unknown Project"
+            else:
+                project_name = "Unknown Project"
+            
+            # For access logs, we don't have gcKeyId, so we'll use the PIN info
+            key_last_four = log.get("usedPin", "****")[-4:] if log.get("usedPin") else "****"
+            
+            admin_log = GcAccessLogAdmin(
+                id=log["id"],
+                projectName=project_name,
+                keyLastFour=key_last_four,
+                timestamp=log["timestamp"],
+                ip=log.get("ip", "unknown"),
+                status=log["status"],
+                userAgent=log.get("userAgent")
+            )
+            admin_logs.append(admin_log)
+        
+        return admin_logs
+    except Exception as e:
+        logger.error(f"Error fetching admin access logs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include router in app (after all routes are defined)
 app.include_router(api_router)
 
