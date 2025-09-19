@@ -42,21 +42,12 @@ const PinLogin = ({ onLoginSuccess }) => {
         
         const backendUrl = process.env.REACT_APP_BACKEND_URL;
         
-        // We need to try to find which project this PIN belongs to
-        // First, get all projects and check their PINs
+        // Find project by PIN - much simpler approach
         const projectsResponse = await fetch(`${backendUrl}/api/projects`);
         
         if (projectsResponse.ok) {
           const projects = await projectsResponse.json();
-          let matchingProject = null;
-          
-          // Find project with matching PIN
-          for (const project of projects) {
-            if (project.gc_pin === pin && !project.gc_pin_used) {
-              matchingProject = project;
-              break;
-            }
-          }
+          const matchingProject = projects.find(p => p.gc_pin === pin && !p.gc_pin_used);
           
           if (matchingProject) {
             // Found matching project, attempt GC login
@@ -73,12 +64,6 @@ const PinLogin = ({ onLoginSuccess }) => {
             if (gcLoginResponse.ok) {
               const gcResult = await gcLoginResponse.json();
               
-              // Store GC login data and redirect to GC dashboard
-              localStorage.setItem('gc_authenticated', 'true');
-              localStorage.setItem('gc_project_id', matchingProject.id);
-              localStorage.setItem('gc_project_name', matchingProject.name);
-              localStorage.setItem('gc_login_time', new Date().getTime().toString());
-              
               toast({
                 title: "GC Login Successful", 
                 description: `Welcome to ${matchingProject.name} project dashboard`,
@@ -93,7 +78,7 @@ const PinLogin = ({ onLoginSuccess }) => {
               throw new Error(error.detail || 'GC login failed');
             }
           } else {
-            throw new Error('No project found with this PIN, or PIN has already been used');
+            throw new Error('PIN not found or already used');
           }
         } else {
           throw new Error('Unable to verify PIN - server error');
