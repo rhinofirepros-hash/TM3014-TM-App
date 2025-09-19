@@ -1767,6 +1767,71 @@ async def delete_profitability_entry(profitability_id: str):
         logger.error(f"Error deleting profitability {profitability_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# INSPECTIONS API ROUTES
+@api_router.get("/inspections/{project_id}", response_model=List[Inspection])
+async def get_inspections_by_project(project_id: str):
+    """Fetch all inspections for a project"""
+    try:
+        inspections = await inspections_collection.find({"project_id": project_id}).to_list(1000)
+        return [Inspection(**serialize_doc(inspection)) for inspection in inspections]
+    except Exception as e:
+        logger.error(f"Error fetching inspections for project {project_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/inspections", response_model=Inspection)
+async def create_inspection(inspection: InspectionCreate):
+    """Add a new inspection record"""
+    try:
+        inspection_dict = inspection.dict()
+        inspection_obj = Inspection(**inspection_dict)
+        
+        result = await inspections_collection.insert_one(inspection_obj.dict())
+        logger.info(f"Created inspection: {inspection_obj.inspection_type} for project {inspection_obj.project_id}")
+        
+        return inspection_obj
+    except Exception as e:
+        logger.error(f"Error creating inspection: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/inspections/{inspection_id}", response_model=Inspection)
+async def update_inspection(inspection_id: str, inspection_update: InspectionUpdate):
+    """Update inspection (status/notes/date)"""
+    try:
+        update_dict = {k: v for k, v in inspection_update.dict().items() if v is not None}
+        update_dict["updated_at"] = datetime.now(timezone.utc)
+        
+        result = await inspections_collection.update_one(
+            {"id": inspection_id}, 
+            {"$set": update_dict}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Inspection not found")
+        
+        updated_inspection = await inspections_collection.find_one({"id": inspection_id})
+        return Inspection(**serialize_doc(updated_inspection))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating inspection {inspection_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/inspections/{inspection_id}")
+async def delete_inspection(inspection_id: str):
+    """Delete inspection"""
+    try:
+        result = await inspections_collection.delete_one({"id": inspection_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Inspection not found")
+        
+        return {"message": "Inspection deleted successfully", "id": inspection_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting inspection {inspection_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/health")
 async def health_check():
     """Health check endpoint"""
