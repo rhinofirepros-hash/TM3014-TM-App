@@ -58,9 +58,9 @@
 ##
 ## agent_communication:
 ##     -agent: "user"
-##     -message: "USER REPORTED CRITICAL ISSUES: 1) Admin PIN J777 not working - getting 'invalid pin format' error, 2) GC Access Management card has hover effects blocking button clicks, 3) GC login/key connection issues - login doesn't connect to server"
+##     -message: "MOBILE RESPONSIVENESS REQUEST: Font too small on mobile GC dashboard, GC dashboard white in dark theme (unreadable), need blue UI theme consistency, larger crew information for GC readability, add project progress bar and design section"
 ##     -agent: "main"
-##     -message: "INVESTIGATION COMPLETED: 1) J777 admin PIN tested and working perfectly - likely user browser cache issue, 2) Hover effects removed from AnimatedCard component - changed from scale/transform to subtle bg-color transitions, 3) GC login system tested extensively - backend working perfectly, frontend connecting correctly, issue is users trying old/expired PINs. All systems operational."
+##     -message: "MOBILE RESPONSIVENESS COMPLETED: 1) Enhanced GC dashboard with mobile-first design, larger fonts (text-xl to text-4xl), 2) Fixed dark theme with proper slate-900 backgrounds and white text, 3) Consistent blue theme across all components, 4) Prominent crew information section with large readable stats, 5) Added project progress bars and design/planning section, 6) Added inspection status cards with mobile optimization, 7) Backend validation error fixed (inspections as dict), 8) Testing completed with fresh PINs 8656 and 5275"
 
 # Protocol Guidelines for Main agent
 #
