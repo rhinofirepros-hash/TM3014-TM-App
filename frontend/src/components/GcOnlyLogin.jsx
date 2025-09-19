@@ -37,56 +37,18 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      console.log('Backend URL:', backendUrl);
-      console.log('Attempting GC login with PIN:', formData.pin);
       
-      // Find project by PIN first
-      console.log('Fetching projects...');
-      const projectsResponse = await fetch(`${backendUrl}/api/projects`);
-      console.log('Projects response status:', projectsResponse.status);
-      
-      if (!projectsResponse.ok) {
-        const errorText = await projectsResponse.text();
-        console.error('Projects fetch failed:', projectsResponse.status, errorText);
-        throw new Error(`Server error: ${projectsResponse.status} - ${errorText.substring(0, 100)}`);
-      }
-      
-      const projects = await projectsResponse.json();
-      console.log('Found projects:', projects.length);
-      
-      const matchingProject = projects.find(p => {
-        console.log('Checking project:', p.name, 'PIN:', p.gc_pin, 'Used:', p.gc_pin_used);
-        return p.gc_pin === formData.pin && !p.gc_pin_used;
-      });
-      
-      if (!matchingProject) {
-        console.log('No matching project found for PIN:', formData.pin);
-        toast({
-          title: "Invalid PIN",
-          description: "PIN not found or already used",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      console.log('Found matching project:', matchingProject.name, matchingProject.id);
-
-      // Now login with the found project
-      console.log('Attempting GC login...');
-      const response = await fetch(`${backendUrl}/api/gc/login-simple`, {
+      // Secure PIN validation - only send PIN, no project data exposure
+      const response = await fetch(`${backendUrl}/api/gc/validate-pin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          projectId: matchingProject.id,
           pin: formData.pin,
-          ip: window.location.hostname,
-          userAgent: navigator.userAgent
+          ip: window.location.hostname
         })
       });
-
-      console.log('GC login response status:', response.status);
 
       if (response.ok) {
         const data = await response.json();
@@ -96,13 +58,12 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
         });
         
         // Navigate to GC dashboard
-        window.location.href = `/gc-portal/${matchingProject.id}`;
+        window.location.href = `/gc-portal/${data.projectId}`;
       } else {
         const error = await response.json();
-        console.error('GC login failed:', error);
         toast({
           title: "Login Failed",
-          description: error.detail || "Invalid credentials",
+          description: error.detail || "Invalid PIN",
           variant: "destructive"
         });
       }
