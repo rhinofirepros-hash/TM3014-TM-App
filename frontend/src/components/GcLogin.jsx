@@ -117,7 +117,7 @@ const GcLogin = ({ onLoginSuccess }) => {
               General Contractor Access
             </CardTitle>
             <p className={`text-sm ${themeClasses.text.secondary} mt-2`}>
-              Enter your project ID and access key to view project progress
+              Enter your project ID and 4-digit PIN to view project progress
             </p>
           </CardHeader>
           
