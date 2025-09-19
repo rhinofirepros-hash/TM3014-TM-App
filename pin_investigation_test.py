@@ -225,7 +225,7 @@ class PINInvestigator:
                 print(f"\n--- Testing PIN '2024' Authentication ---")
                 try:
                     login_data = {
-                        "project_id": project_id,
+                        "projectId": project_id,  # Use camelCase as expected by backend
                         "pin": "2024"
                     }
                     
