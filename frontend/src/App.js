@@ -114,6 +114,7 @@ function App() {
                       onManageProjects={() => setCurrentView('projects')}
                       onLogout={handleLogout}
                       onAdminGc={() => setCurrentView('admin-gc')}
+                      onFinancialManagement={() => setCurrentView('financial')}
                     />
                   ) : currentView === 'crew' ? (
                     <CrewManagement 
