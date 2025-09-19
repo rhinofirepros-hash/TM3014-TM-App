@@ -19,8 +19,9 @@ function App() {
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, form, crew, reports, projects, employees
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Check for GC route
+  // Check for GC routes
   const isGcRoute = window.location.pathname.startsWith('/gc');
+  const isGcLoginRoute = window.location.pathname === '/gc-login';
 
   useEffect(() => {
     // Check if user is already authenticated
