@@ -57,6 +57,13 @@ cashflow_forecasts_collection = db["cashflow_forecasts"]
 profitability_collection = db["profitability"]
 inspections_collection = db["inspections"]
 
+# GC Dashboard collections
+gc_keys_collection = db["gc_keys"]
+gc_access_logs_collection = db["gc_access_logs"]
+project_phases_collection = db["project_phases"]
+inspection_status_collection = db["inspection_status"]
+gc_narratives_collection = db["gc_narratives"]
+
 # Create the main app without a prefix
 app = FastAPI()
 
