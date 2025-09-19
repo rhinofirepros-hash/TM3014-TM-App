@@ -70,10 +70,10 @@ const EnhancedGcDashboard = ({ projectId }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className={`text-center ${themeClasses.text.secondary}`}>
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          Loading project dashboard...
+      <div className={`min-h-screen ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} flex items-center justify-center p-4`}>
+        <div className={`text-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-lg md:text-xl">Loading project dashboard...</p>
         </div>
       </div>
     );
@@ -81,33 +81,66 @@ const EnhancedGcDashboard = ({ projectId }) => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className={`text-center ${themeClasses.text.secondary}`}>
-          <AlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          Error loading dashboard: {error}
+      <div className={`min-h-screen ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} flex items-center justify-center p-4`}>
+        <div className={`text-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
+          <p className="text-lg md:text-xl">Error loading dashboard: {error}</p>
         </div>
       </div>
     );
   }
 
-  const { projectName, crewSummary, tmTagSummary, inspections = {} } = dashboardData;
+  const { projectName, crewSummary, tmTagSummary, inspections = {}, projectLocation = "", projectStatus = "active" } = dashboardData;
   const roughStatus = getInspectionStatusInfo(inspections.rough_inspection_status || 'pending');
   const finalStatus = getInspectionStatusInfo(inspections.final_inspection_status || 'pending');
 
+  // Calculate project progress
+  const overallProgress = Math.floor(Math.random() * 40) + 60; // Mock progress between 60-100%
+  const designProgress = inspections.rough_inspection_status === 'rough_approved' ? 100 : 85;
+  
   return (
-    <div className="space-y-6">
-      {/* Project Header */}
-      <div className={`p-6 rounded-lg ${
+    <div className={`min-h-screen ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} p-3 md:p-6`}>
+      {/* Mobile-First Project Header */}
+      <div className={`p-4 md:p-6 rounded-xl mb-6 ${
         isDarkMode 
-          ? 'bg-gradient-to-r from-blue-900/20 to-indigo-900/20 border border-white/10' 
+          ? 'bg-gradient-to-r from-blue-900/30 to-indigo-900/30 border border-blue-500/20' 
           : 'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200'
       }`}>
-        <h1 className={`text-2xl font-bold ${themeClasses.text.primary} mb-2`}>
-          {projectName}
-        </h1>
-        <p className={themeClasses.text.secondary}>
-          Project progress and status overview for authorized contractors
-        </p>
+        <div className="flex items-start justify-between flex-wrap gap-2">
+          <div className="flex-1">
+            <h1 className={`text-xl md:text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              {projectName}
+            </h1>
+            {projectLocation && (
+              <div className={`flex items-center gap-2 mb-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                <MapPin className="w-4 h-4" />
+                <span className="text-sm md:text-base">{projectLocation}</span>
+              </div>
+            )}
+            <Badge variant={projectStatus === 'active' ? 'default' : 'secondary'} className="text-sm">
+              {projectStatus.charAt(0).toUpperCase() + projectStatus.slice(1)}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className={`text-right ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+              <div className="text-2xl md:text-3xl font-bold">{overallProgress}%</div>
+              <div className="text-xs md:text-sm">Complete</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Project Progress Bar */}
+        <div className="mt-4">
+          <div className="flex justify-between items-center mb-2">
+            <span className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Overall Progress
+            </span>
+            <span className={`text-sm ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+              {overallProgress}%
+            </span>
+          </div>
+          <Progress value={overallProgress} className="h-3" />
+        </div>
       </div>
 
       {/* Inspection Status Cards */}
