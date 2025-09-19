@@ -37,17 +37,30 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      console.log('Backend URL:', backendUrl);
+      console.log('Attempting GC login with PIN:', formData.pin);
       
       // Find project by PIN first
+      console.log('Fetching projects...');
       const projectsResponse = await fetch(`${backendUrl}/api/projects`);
+      console.log('Projects response status:', projectsResponse.status);
+      
       if (!projectsResponse.ok) {
-        throw new Error("Unable to connect to server");
+        const errorText = await projectsResponse.text();
+        console.error('Projects fetch failed:', projectsResponse.status, errorText);
+        throw new Error(`Server error: ${projectsResponse.status} - ${errorText.substring(0, 100)}`);
       }
       
       const projects = await projectsResponse.json();
-      const matchingProject = projects.find(p => p.gc_pin === formData.pin && !p.gc_pin_used);
+      console.log('Found projects:', projects.length);
+      
+      const matchingProject = projects.find(p => {
+        console.log('Checking project:', p.name, 'PIN:', p.gc_pin, 'Used:', p.gc_pin_used);
+        return p.gc_pin === formData.pin && !p.gc_pin_used;
+      });
       
       if (!matchingProject) {
+        console.log('No matching project found for PIN:', formData.pin);
         toast({
           title: "Invalid PIN",
           description: "PIN not found or already used",
@@ -56,7 +69,10 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
         return;
       }
 
+      console.log('Found matching project:', matchingProject.name, matchingProject.id);
+
       // Now login with the found project
+      console.log('Attempting GC login...');
       const response = await fetch(`${backendUrl}/api/gc/login-simple`, {
         method: 'POST',
         headers: {
@@ -70,8 +86,11 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
         })
       });
 
+      console.log('GC login response status:', response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('GC login successful:', data);
         toast({
           title: "Login Successful",
           description: `Welcome to ${data.projectName} project dashboard`,
@@ -84,6 +103,7 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
         });
       } else {
         const error = await response.json();
+        console.error('GC login failed:', error);
         toast({
           title: "Login Failed",
           description: error.detail || "Invalid credentials",
@@ -94,7 +114,7 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
       console.error('GC Login error:', error);
       toast({
         title: "Connection Error",
-        description: "Unable to connect to server. Please try again.",
+        description: `${error.message}. Please check console for details.`,
         variant: "destructive"
       });
     } finally {
