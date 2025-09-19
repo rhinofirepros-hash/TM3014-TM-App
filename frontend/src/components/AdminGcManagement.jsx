@@ -518,6 +518,7 @@ const AdminGcManagement = ({ onBack }) => {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };
