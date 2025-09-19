@@ -417,9 +417,16 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                           {project.client_company}
                         </p>
                       </div>
-                      <Badge className={statusColors[project.status || 'active']}>
-                        {project.status || 'Active'}
-                      </Badge>
+                      <div className="text-right">
+                        <Badge className={`${statusColors[project.status || 'active']} mb-2`}>
+                          {project.status || 'Active'}
+                        </Badge>
+                        {project.gc_pin && (
+                          <div className={`text-xs ${themeClasses.text.secondary} font-mono`}>
+                            GC PIN: {project.gc_pin}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   
