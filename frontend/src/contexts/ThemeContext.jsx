@@ -43,7 +43,7 @@ export const ThemeProvider = ({ children }) => {
       : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30',
     
     cardHover: isDarkMode 
-      ? 'hover:bg-white/20 hover:shadow-3xl transition-all duration-300' 
+      ? 'hover:bg-slate-700 hover:shadow-3xl transition-all duration-300' 
       : 'hover:bg-white/60 hover:shadow-3xl transition-all duration-300',
     
     text: {
