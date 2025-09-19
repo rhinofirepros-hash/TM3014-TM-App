@@ -24,7 +24,6 @@ import {
   BarChart3
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTheme } from '../contexts/ThemeContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const FinancialTabs = ({ project, onBack }) => {
