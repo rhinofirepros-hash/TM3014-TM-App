@@ -543,6 +543,74 @@ const FinancialTabs = ({ project, onBack }) => {
     );
   };
 
+  // Inspections Tab Component
+  const InspectionsTab = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
+          Project Inspections
+        </h3>
+        <Button className="flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          Add Inspection
+        </Button>
+      </div>
+
+      <Card className={themeClasses.card.primary}>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
+                <TableHead className={themeClasses.text.primary}>Inspection Type</TableHead>
+                <TableHead className={themeClasses.text.primary}>Status</TableHead>
+                <TableHead className={themeClasses.text.primary}>Date</TableHead>
+                <TableHead className={themeClasses.text.primary}>Notes</TableHead>
+                <TableHead className={themeClasses.text.primary}>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {inspections.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className={`text-center py-8 ${themeClasses.text.secondary}`}>
+                    <AlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    No inspections scheduled. Add inspections to track project progress.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                inspections.map((inspection) => (
+                  <TableRow key={inspection.id} className={`${isDarkMode ? 'border-white/10' : 'border-gray-100'} hover:bg-gray-50 dark:hover:bg-white/5`}>
+                    <TableCell className={themeClasses.text.primary}>
+                      {inspection.inspection_type?.replace('_', ' ')?.toUpperCase() || inspection.inspectionType?.replace('_', ' ')?.toUpperCase()}
+                    </TableCell>
+                    <TableCell>
+                      {getStatusBadge(inspection.status)}
+                    </TableCell>
+                    <TableCell className={themeClasses.text.secondary}>
+                      {new Date(inspection.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className={themeClasses.text.secondary}>
+                      {inspection.notes || '-'}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline">
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
