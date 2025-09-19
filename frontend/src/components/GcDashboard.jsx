@@ -407,70 +407,87 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
           </AnimatedCard>
         </div>
 
-        {/* Inspections */}
+        {/* Inspections - using AnimatedCard */}
         {dashboardData.inspections.length > 0 && (
-          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
-            <div className="p-6">
+          <AnimatedCard 
+            delay={700}
+            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white' 
+                : 'bg-white/70 text-gray-900'
+            }`}
+          >
+            <AnimatedCardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <CheckCircle className="w-5 h-5 text-blue-500" />
                 <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Inspections</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {dashboardData.inspections.map((inspection) => (
-                  <div key={inspection.id} className={`p-4 rounded-lg border backdrop-blur-sm ${
-                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50/50'
-                  }`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className={`font-semibold ${themeClasses.text.primary}`}>
-                        {inspection.inspectionType}
-                      </h4>
-                      {getStatusBadge(inspection.result)}
-                    </div>
-                    {inspection.scheduledDate && (
-                      <p className={`text-sm ${themeClasses.text.secondary} flex items-center gap-1`}>
-                        <Calendar className="w-3 h-3" />
-                        {new Date(inspection.scheduledDate).toLocaleDateString()}
-                      </p>
-                    )}
-                    {inspection.notes && (
-                      <p className={`text-xs mt-2 ${themeClasses.text.secondary}`}>
-                        {inspection.notes}
-                      </p>
-                    )}
-                  </div>
+                {dashboardData.inspections.map((inspection, index) => (
+                  <AnimatedCard 
+                    key={inspection.id}
+                    delay={750 + index * 50}
+                    className={`cursor-default transition-all duration-300 ease-out backdrop-blur-sm border-0 shadow-md ${
+                      isDarkMode ? 'bg-white/5 text-white hover:bg-white/10' : 'bg-gray-50/50 text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <AnimatedCardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className={`font-semibold ${themeClasses.text.primary}`}>
+                          {inspection.inspectionType}
+                        </h4>
+                        {getStatusBadge(inspection.result)}
+                      </div>
+                      {inspection.scheduledDate && (
+                        <p className={`text-sm ${themeClasses.text.secondary} flex items-center gap-1`}>
+                          <Calendar className="w-3 h-3" />
+                          {new Date(inspection.scheduledDate).toLocaleDateString()}
+                        </p>
+                      )}
+                      {inspection.notes && (
+                        <p className={`text-xs mt-2 ${themeClasses.text.secondary}`}>
+                          {inspection.notes}
+                        </p>
+                      )}
+                    </AnimatedCardContent>
+                  </AnimatedCard>
                 ))}
               </div>
-            </div>
-          </div>
+            </AnimatedCardContent>
+          </AnimatedCard>
         )}
 
-        {/* Project Narrative */}
+        {/* Project Narrative - using AnimatedCard */}
         {dashboardData.narrative && (
-          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
-            <div className="p-6">
+          <AnimatedCard 
+            delay={800}
+            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white' 
+                : 'bg-white/70 text-gray-900'
+            }`}
+          >
+            <AnimatedCardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <FileText className="w-5 h-5 text-blue-500" />
                 <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Summary</h2>
               </div>
-              <div className={`p-4 rounded-lg border ${
-                isDarkMode 
-                  ? 'bg-blue-900/20 border-blue-500/30 text-blue-200' 
-                  : 'bg-blue-50/50 border-blue-200/50 text-blue-800'
-              }`}>
-                <p className={`${themeClasses.text.primary} leading-relaxed`}>
-                  {dashboardData.narrative}
-                </p>
-              </div>
-            </div>
-          </div>
+              <AnimatedCard 
+                delay={850}
+                className={`cursor-default transition-all duration-300 ease-out backdrop-blur-sm border-0 shadow-sm ${
+                  isDarkMode 
+                    ? 'bg-blue-900/20 text-blue-200 border-blue-500/30' 
+                    : 'bg-blue-50/50 text-blue-800 border-blue-200/50'
+                }`}
+              >
+                <AnimatedCardContent className="p-4">
+                  <p className={`${themeClasses.text.primary} leading-relaxed`}>
+                    {dashboardData.narrative}
+                  </p>
+                </AnimatedCardContent>
+              </AnimatedCard>
+            </AnimatedCardContent>
+          </AnimatedCard>
         )}
 
         {/* Footer */}
