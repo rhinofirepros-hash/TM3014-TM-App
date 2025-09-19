@@ -867,37 +867,34 @@ async def get_project_gc_pin(project_id: str):
         if not project:
             raise HTTPException(status_code=404, detail="Project not found")
         
-        # Ensure project has a PIN
-        pin = project.get("gc_pin")
-        if not pin:
-            # Generate new PIN
+        # ALWAYS generate a new PIN for admin access (not just when missing)
+        pin = generate_project_pin()
+        
+        # Make sure PIN is unique across all projects
+        while await projects_collection.find_one({"gc_pin": pin}):
             pin = generate_project_pin()
-            
-            # Make sure PIN is unique across all projects
-            while await projects_collection.find_one({"gc_pin": pin}):
-                pin = generate_project_pin()
-            
-            # Update project with new PIN - use the same query that found the project
-            if project.get("id") == project_id:
-                # Found by id field
-                update_result = await projects_collection.update_one(
-                    {"id": project_id},
-                    {"$set": {"gc_pin": pin, "gc_pin_used": False}}
-                )
-            else:
-                # Found by _id field  
-                update_result = await projects_collection.update_one(
-                    {"_id": project["_id"]},
-                    {"$set": {"gc_pin": pin, "gc_pin_used": False}}
-                )
-            
-            logger.info(f"Generated new PIN for project {project_id}: {pin} (Updated {update_result.modified_count} documents)")
+        
+        # Update project with new PIN using the same criteria we used to find it
+        if project.get("id") == project_id:
+            # Found by id field
+            update_result = await projects_collection.update_one(
+                {"id": project_id},
+                {"$set": {"gc_pin": pin, "gc_pin_used": False}}
+            )
+        else:
+            # Found by _id field  
+            update_result = await projects_collection.update_one(
+                {"_id": project["_id"]},
+                {"$set": {"gc_pin": pin, "gc_pin_used": False}}
+            )
+        
+        logger.info(f"Generated NEW PIN for project {project_id}: {pin} (Updated {update_result.modified_count} documents)")
         
         return {
             "projectId": project_id,
             "projectName": project.get("name", "Unknown Project"),
             "gcPin": pin,
-            "pinUsed": project.get("gc_pin_used", False)
+            "pinUsed": False  # Always false since we just generated it
         }
         
     except HTTPException:
