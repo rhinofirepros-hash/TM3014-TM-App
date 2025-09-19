@@ -167,10 +167,14 @@ const AdminGcManagement = ({ onBack }) => {
       </div>
 
       <Tabs defaultValue="keys" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="keys" className="flex items-center gap-2">
             <Key className="w-4 h-4" />
             Access Keys
+          </TabsTrigger>
+          <TabsTrigger value="test" className="flex items-center gap-2">
+            <ExternalLink className="w-4 h-4" />
+            Test GC Dashboard
           </TabsTrigger>
           <TabsTrigger value="logs" className="flex items-center gap-2">
             <Activity className="w-4 h-4" />
