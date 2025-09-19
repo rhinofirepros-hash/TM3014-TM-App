@@ -210,7 +210,7 @@ class GCDashboardReviewTester:
                 # Verify main dashboard structure
                 expected_main_fields = [
                     "projectId", "projectName", "crewSummary", "tmTagSummary", 
-                    "phases", "inspections", "narrative"
+                    "phases", "inspections", "narrative", "overallProgress", "lastUpdated"
                 ]
                 missing_main_fields = [field for field in expected_main_fields if field not in dashboard_data]
                 
