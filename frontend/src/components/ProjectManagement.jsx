@@ -770,6 +770,90 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                 )}
               </div>
             </div>
+
+            {/* Plan Submittal Section */}
+            <div className={`p-4 rounded-lg border ${
+              isDarkMode 
+                ? 'bg-purple-900/20 border-purple-500/30' 
+                : 'bg-purple-50 border-purple-200'
+            }`}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">📋</span>
+                <h4 className={`font-semibold ${themeClasses.text.primary}`}>
+                  Plan Submittal Tracking
+                </h4>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className={themeClasses.text.primary}>Submittal Status</Label>
+                  <Select 
+                    value={newProject.plan_submittal_status || (newProject.project_type === 'tm_only' ? 'approved' : 'in_design')} 
+                    onValueChange={(value) => handleInputChange('plan_submittal_status', value)}
+                  >
+                    <SelectTrigger className={themeClasses.input}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className={themeClasses.modal}>
+                      <SelectItem value="in_design">In Design</SelectItem>
+                      <SelectItem value="submitted">Submitted</SelectItem>
+                      <SelectItem value="corrections">Corrections Required</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className={themeClasses.text.primary}>Submittal Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "justify-start text-left font-normal",
+                          themeClasses.input,
+                          !newProject.plan_submittal_date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {newProject.plan_submittal_date && !isNaN(new Date(newProject.plan_submittal_date)) 
+                          ? format(new Date(newProject.plan_submittal_date), "MM/dd/yyyy") 
+                          : "Select date"
+                        }
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className={`w-auto p-0 ${themeClasses.modal}`}>
+                      <Calendar
+                        mode="single"
+                        selected={newProject.plan_submittal_date ? new Date(newProject.plan_submittal_date) : null}
+                        onSelect={(date) => handleInputChange('plan_submittal_date', date)}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              
+              <div className="mt-3">
+                <Label className={themeClasses.text.primary}>Submittal Notes</Label>
+                <textarea
+                  value={newProject.plan_submittal_notes || ''}
+                  onChange={(e) => handleInputChange('plan_submittal_notes', e.target.value)}
+                  className={`w-full mt-1 p-2 rounded border resize-none h-20 ${themeClasses.input}`}
+                  placeholder={newProject.project_type === 'tm_only' ? 'T&M projects are auto-approved but notes can be added here...' : 'Add notes about plan submittal status...'}
+                />
+              </div>
+              
+              {newProject.project_type === 'tm_only' && (
+                <div className={`mt-2 p-2 rounded text-xs ${
+                  isDarkMode 
+                    ? 'bg-green-900/20 text-green-300 border border-green-500/30' 
+                    : 'bg-green-50 text-green-700 border border-green-200'
+                }`}>
+                  ℹ️ T&M projects are automatically set to "Approved" but can be edited if needed.
+                </div>
+              )}
+            </div>
           </div>
 
           <DialogFooter>
