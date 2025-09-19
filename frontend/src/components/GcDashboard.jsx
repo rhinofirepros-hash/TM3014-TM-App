@@ -472,20 +472,15 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                 <FileText className="w-5 h-5 text-blue-500" />
                 <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Summary</h2>
               </div>
-              <AnimatedCard 
-                delay={850}
-                className={`cursor-default transition-all duration-300 ease-out backdrop-blur-sm border-0 shadow-sm ${
-                  isDarkMode 
-                    ? 'bg-blue-900/20 text-blue-200 border-blue-500/30' 
-                    : 'bg-blue-50/50 text-blue-800 border-blue-200/50'
-                }`}
-              >
-                <AnimatedCardContent className="p-4">
-                  <p className={`${themeClasses.text.primary} leading-relaxed`}>
-                    {dashboardData.narrative}
-                  </p>
-                </AnimatedCardContent>
-              </AnimatedCard>
+              <div className={`p-4 rounded-lg border transition-all duration-300 ease-out backdrop-blur-sm shadow-sm ${
+                isDarkMode 
+                  ? 'bg-blue-900/20 text-blue-200 border-blue-500/30' 
+                  : 'bg-blue-50/50 text-blue-800 border-blue-200/50'
+              }`}>
+                <p className={`${themeClasses.text.primary} leading-relaxed`}>
+                  {dashboardData.narrative}
+                </p>
+              </div>
             </CardContent>
           </AnimatedCard>
         )}
