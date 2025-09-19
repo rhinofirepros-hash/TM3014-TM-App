@@ -277,6 +277,116 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
     return true;
   };
 
+  const handleSubmitWithoutSignature = async () => {
+    if (!validateForm()) return;
+    
+    setIsGeneratingPDF(true);
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      if (backendUrl) {
+        // Submit to backend for progress tracking
+        const tmTagData = {
+          project_id: formData.projectId,
+          project_name: formData.projectName,
+          cost_code: formData.costCode,
+          date_of_work: formData.dateOfWork,
+          company_name: formData.companyName,
+          tm_tag_title: formData.tmTagTitle,
+          description_of_work: typeof formData.descriptionOfWork === 'string' 
+            ? formData.descriptionOfWork 
+            : formData.descriptionOfWork.replace(/<[^>]*>/g, ''),
+          labor_entries: formData.laborEntries.map(entry => ({
+            id: entry.id?.toString() || Date.now().toString(),
+            worker_name: entry.workerName,
+            quantity: entry.quantity,
+            st_hours: entry.stHours,
+            ot_hours: entry.otHours,
+            dt_hours: entry.dtHours,
+            pot_hours: entry.potHours,
+            total_hours: entry.totalHours,
+            date: entry.date
+          })),
+          material_entries: formData.materialEntries,
+          equipment_entries: formData.equipmentEntries,
+          other_entries: formData.otherEntries,
+          gc_email: formData.gcEmail,
+          signature: null, // No signature for progress tracking
+          foreman_name: formData.foremanName,
+          status: "draft_progress", // Special status for unsigned submissions
+          created_at: new Date().toISOString(),
+          submitted_at: new Date().toISOString(),
+          notes: "Submitted without signature for progress tracking - wet signature pending"
+        };
+
+        const response = await fetch(`${backendUrl}/api/tm-tags`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tmTagData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          
+          toast({
+            title: "Progress Logged",
+            description: "T&M tag saved for progress tracking. You can add signature later.",
+          });
+
+          // Reset form and navigate
+          resetForm();
+          if (onSubmit) {
+            onSubmit();
+          }
+        } else {
+          throw new Error('Failed to submit T&M tag for progress tracking');
+        }
+      } else {
+        // Save to localStorage for progress tracking (fallback)
+        const savedTags = JSON.parse(localStorage.getItem('tm_tags_history') || '[]');
+        const newTag = {
+          id: Date.now().toString(),
+          project: formData.projectName,
+          title: formData.tmTagTitle,
+          costCode: formData.costCode,
+          date: formData.dateOfWork,
+          status: 'draft_progress',
+          totalHours: formData.laborEntries.reduce((sum, entry) => sum + (entry.totalHours || 0), 0),
+          laborCost: 0, // We'll calculate this later when signature is added
+          signature: null,
+          submittedAt: new Date().toISOString(),
+          notes: "Progress tracking - signature pending"
+        };
+        
+        savedTags.unshift(newTag);
+        localStorage.setItem('tm_tags_history', JSON.stringify(savedTags));
+        
+        toast({
+          title: "Progress Logged Locally",
+          description: "T&M tag saved for progress tracking. Add signature when ready.",
+        });
+
+        resetForm();
+        if (onSubmit) {
+          onSubmit();
+        }
+      }
+      
+    } catch (error) {
+      console.error('Submit without signature error:', error);
+      toast({
+        title: "Submission Failed",
+        description: "An error occurred while logging progress.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
   const handleSubmitForm = async () => {
     if (!validateForm()) return;
     
