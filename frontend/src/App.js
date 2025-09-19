@@ -89,7 +89,7 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div className="App min-h-screen">
+      <div className="App min-h-screen w-full overflow-x-hidden">
         {/* GC Routes */}
         {isGcLoginRoute ? (
           <GcOnlyLogin onLoginSuccess={() => {
