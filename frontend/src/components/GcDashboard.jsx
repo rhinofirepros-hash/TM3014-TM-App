@@ -382,18 +382,20 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
 
         {/* Inspections */}
         {dashboardData.inspections.length > 0 && (
-          <Card className={themeClasses.card.primary}>
-            <CardHeader>
-              <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                <CheckCircle className="w-5 h-5" />
-                Inspections
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <div className="p-6">
+              <div className={`flex items-center gap-2 mb-4`}>
+                <CheckCircle className="w-5 h-5 text-blue-500" />
+                <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Inspections</h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {dashboardData.inspections.map((inspection) => (
-                  <div key={inspection.id} className={`p-4 rounded-lg border ${
-                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50'
+                  <div key={inspection.id} className={`p-4 rounded-lg border backdrop-blur-sm ${
+                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50/50'
                   }`}>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className={`font-semibold ${themeClasses.text.primary}`}>
@@ -415,39 +417,41 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Project Narrative */}
         {dashboardData.narrative && (
-          <Card className={themeClasses.card.primary}>
-            <CardHeader>
-              <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                <FileText className="w-5 h-5" />
-                Project Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={`p-4 rounded-lg ${
+          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <div className="p-6">
+              <div className={`flex items-center gap-2 mb-4`}>
+                <FileText className="w-5 h-5 text-blue-500" />
+                <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Summary</h2>
+              </div>
+              <div className={`p-4 rounded-lg border ${
                 isDarkMode 
-                  ? 'bg-blue-900/20 border border-blue-500/30' 
-                  : 'bg-blue-50 border border-blue-200'
+                  ? 'bg-blue-900/20 border-blue-500/30 text-blue-200' 
+                  : 'bg-blue-50/50 border-blue-200/50 text-blue-800'
               }`}>
                 <p className={`${themeClasses.text.primary} leading-relaxed`}>
                   {dashboardData.narrative}
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Footer */}
         <div className="text-center py-8">
-          <p className={`text-sm ${themeClasses.text.secondary}`}>
+          <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             This dashboard provides project progress information only.
           </p>
-          <p className={`text-xs mt-1 ${themeClasses.text.secondary}`}>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             For questions, contact your project manager • Powered by Rhino Fire Protection
           </p>
         </div>
