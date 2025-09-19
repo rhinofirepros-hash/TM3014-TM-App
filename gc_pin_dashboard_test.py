@@ -448,7 +448,7 @@ class GCPinDashboardTester:
                         
                         # Test that old PIN no longer works
                         old_pin_login = {
-                            "project_id": self.test_project_id,
+                            "projectId": self.test_project_id,
                             "pin": original_pin
                         }
                         
