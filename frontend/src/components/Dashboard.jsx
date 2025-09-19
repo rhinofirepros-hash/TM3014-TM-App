@@ -21,7 +21,8 @@ import {
   ArrowRight,
   Sun,
   Moon,
-  Zap
+  Zap,
+  Shield
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useTheme } from '../contexts/ThemeContext';
