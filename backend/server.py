@@ -567,12 +567,26 @@ async def create_project(project: ProjectCreate):
 
 @api_router.get("/projects", response_model=List[Project])
 async def get_projects(status: Optional[str] = None):
-    query = {}
-    if status:
-        query["status"] = status
-    
-    projects = await db.projects.find(query).to_list(1000)
-    return [Project(**project) for project in projects]
+    try:
+        query = {}
+        if status:
+            query["status"] = status
+        
+        projects = await db.projects.find(query).to_list(1000)
+        
+        # Ensure all projects have GC PINs
+        for project in projects:
+            if not project.get("gc_pin"):
+                # Generate PIN for existing project
+                pin = await ensure_project_has_pin(project["id"])
+                if pin:
+                    project["gc_pin"] = pin
+                    project["gc_pin_used"] = False
+        
+        return [Project(**project) for project in projects]
+    except Exception as e:
+        logger.error(f"Error fetching projects: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/projects/{project_id}")
 async def get_project(project_id: str):
