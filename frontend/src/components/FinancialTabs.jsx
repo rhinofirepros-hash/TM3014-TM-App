@@ -645,36 +645,56 @@ const FinancialTabs = ({ project, onBack }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-          Financial Management
-        </h2>
-        <div className="flex items-center gap-4">
-          {/* Debug info */}
-          <div className={`text-xs ${themeClasses.text.secondary}`}>
-            Project: {project?.name || 'Unknown'} (ID: {projectId || 'N/A'})
+    <div className={`min-h-screen ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
+      {/* Header */}
+      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
+                alt="Rhino Fire Protection" 
+                className="h-10 w-auto"
+              />
+              <div>
+                <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Financial Management
+                </h2>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {project?.name || 'Project Financial Overview'}
+                </p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={onBack} className="backdrop-blur-sm bg-white/10 border-white/20">
+              Back to Project
+            </Button>
           </div>
-          <Button variant="outline" onClick={onBack}>
-            Back to Project
-          </Button>
         </div>
       </div>
 
-      {/* Debug panel for development */}
-      <div className={`p-4 rounded-lg border ${themeClasses.card.primary} ${themeClasses.text.secondary}`}>
-        <h3 className="font-semibold mb-2">Debug Information:</h3>
-        <div className="grid grid-cols-5 gap-4 text-xs">
-          <div>Invoices: {invoices.length} records</div>
-          <div>Payables: {payables.length} records</div>
-          <div>Cashflow: {cashflowData.length} records</div>
-          <div>Profitability: {profitabilityData.length} records</div>
-          <div>Inspections: {inspections.length} records</div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Debug panel for development */}
+        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg p-4 ${
+          isDarkMode 
+            ? 'bg-white/10 text-white' 
+            : 'bg-white/70 text-gray-900'
+        }`}>
+          <h3 className="font-semibold mb-2">System Status:</h3>
+          <div className="grid grid-cols-5 gap-4 text-xs">
+            <div>Invoices: {invoices.length} records</div>
+            <div>Payables: {payables.length} records</div>
+            <div>Cashflow: {cashflowData.length} records</div>
+            <div>Profitability: {profitabilityData.length} records</div>
+            <div>Inspections: {inspections.length} records</div>
+          </div>
+          <div className="mt-2 text-xs opacity-70">
+            Project ID: {projectId || 'N/A'}
+          </div>
         </div>
-        <div className="mt-2 text-xs">
-          Backend URL: {process.env.REACT_APP_BACKEND_URL}
-        </div>
-      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
