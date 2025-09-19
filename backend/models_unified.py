@@ -65,6 +65,9 @@ class Project(BaseModel):
     endDate: Optional[datetime] = None
     status: ProjectStatus = ProjectStatus.ACTIVE
     notes: Optional[str] = None
+    # GC PIN fields for dashboard access
+    gc_pin: Optional[str] = None
+    gc_pin_used: Optional[bool] = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
