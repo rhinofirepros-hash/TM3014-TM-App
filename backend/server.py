@@ -45,6 +45,7 @@ invoices_collection = db["invoices"]
 payables_collection = db["payables"]
 cashflow_forecasts_collection = db["cashflow_forecasts"]
 profitability_collection = db["profitability"]
+inspections_collection = db["inspections"]
 
 # Create the main app without a prefix
 app = FastAPI()
