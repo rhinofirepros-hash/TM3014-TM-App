@@ -16,31 +16,101 @@ const PinLogin = ({ onLoginSuccess }) => {
   const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
-  const handlePinLogin = () => {
+  const handlePinLogin = async () => {
     setIsLoading(true);
     
-    // Accept both admin PIN and any valid GC PINs for testing
-    const validPins = ['J777', '2602', '2568', '6614', '4313', '7503'];
-    
-    setTimeout(() => {
-      if (validPins.includes(pin)) {
-        localStorage.setItem('tm_app_authenticated', 'true');
-        localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
-        localStorage.setItem('tm_app_login_method', 'pin');
-        onLoginSuccess();
-        toast({
-          title: "Login Successful",
-          description: "Welcome to Rhino Fire Protection T&M App",
-        });
+    try {
+      // Accept both admin PINs and any valid GC PINs for testing
+      const validAdminPins = ['J777', '2602', '2568', '6614', '4313', '7503'];
+      
+      if (validAdminPins.includes(pin)) {
+        // Admin PIN - regular admin login
+        setTimeout(() => {
+          localStorage.setItem('tm_app_authenticated', 'true');
+          localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
+          localStorage.setItem('tm_app_login_method', 'pin');
+          onLoginSuccess();
+          toast({
+            title: "Admin Login Successful",
+            description: "Welcome to Rhino Fire Protection T&M App",
+          });
+          setIsLoading(false);
+        }, 1000);
+      } else if (pin.length === 4 && /^\d{4}$/.test(pin)) {
+        // 4-digit PIN - try GC login
+        console.log('Attempting GC login with 4-digit PIN:', pin);
+        
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        
+        // We need to try to find which project this PIN belongs to
+        // First, get all projects and check their PINs
+        const projectsResponse = await fetch(`${backendUrl}/api/projects`);
+        
+        if (projectsResponse.ok) {
+          const projects = await projectsResponse.json();
+          let matchingProject = null;
+          
+          // Find project with matching PIN
+          for (const project of projects) {
+            if (project.gc_pin === pin && !project.gc_pin_used) {
+              matchingProject = project;
+              break;
+            }
+          }
+          
+          if (matchingProject) {
+            // Found matching project, attempt GC login
+            const gcLoginResponse = await fetch(`${backendUrl}/api/gc/login-simple`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                projectId: matchingProject.id,
+                pin: pin,
+                ip: 'admin-unified-login'
+              })
+            });
+            
+            if (gcLoginResponse.ok) {
+              const gcResult = await gcLoginResponse.json();
+              
+              // Store GC login data and redirect to GC dashboard
+              localStorage.setItem('gc_authenticated', 'true');
+              localStorage.setItem('gc_project_id', matchingProject.id);
+              localStorage.setItem('gc_project_name', matchingProject.name);
+              localStorage.setItem('gc_login_time', new Date().getTime().toString());
+              
+              toast({
+                title: "GC Login Successful", 
+                description: `Welcome to ${matchingProject.name} project dashboard`,
+              });
+              
+              // Redirect to GC dashboard
+              window.location.href = `/gc-portal/${matchingProject.id}`;
+              return;
+              
+            } else {
+              const error = await gcLoginResponse.json();
+              throw new Error(error.detail || 'GC login failed');
+            }
+          } else {
+            throw new Error('No project found with this PIN, or PIN has already been used');
+          }
+        } else {
+          throw new Error('Unable to verify PIN - server error');
+        }
       } else {
-        toast({
-          title: "Invalid PIN",
-          description: "Please check your PIN and try again.",
-          variant: "destructive"
-        });
+        throw new Error('Invalid PIN format');
       }
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login Failed",
+        description: error.message || "Please check your PIN and try again.",
+        variant: "destructive"
+      });
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   // Simplified direct login - no OAuth needed
