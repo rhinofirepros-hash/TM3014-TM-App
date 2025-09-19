@@ -81,6 +81,15 @@ class Project(BaseModel):
     plan_submittal_status: PlanSubmittalStatus = PlanSubmittalStatus.APPROVED  # T&M projects default to approved
     plan_submittal_date: Optional[datetime] = None
     plan_submittal_notes: Optional[str] = None
+    
+    # Inspection tracking for GC portal
+    rough_inspection_status: Optional[str] = "pending"  # rough_requested, rough_approved, rough_partial
+    rough_inspection_date: Optional[datetime] = None
+    rough_inspection_notes: Optional[str] = None
+    final_inspection_status: Optional[str] = "pending"  # final_requested, final_approved, final_partial  
+    final_inspection_date: Optional[datetime] = None
+    final_inspection_notes: Optional[str] = None
+    
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
