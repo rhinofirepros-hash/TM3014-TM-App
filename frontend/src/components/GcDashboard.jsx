@@ -115,70 +115,85 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <Card className={themeClasses.card.primary}>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+    <div className={`min-h-screen ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
+      {/* Header */}
+      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
+                alt="Rhino Fire Protection" 
+                className="h-10 w-auto"
+              />
               <div>
-                <h1 className={`text-3xl font-bold ${themeClasses.text.primary}`}>
+                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                   {dashboardData.projectName}
                 </h1>
                 {dashboardData.projectLocation && (
-                  <p className={`flex items-center gap-2 mt-2 ${themeClasses.text.secondary}`}>
+                  <p className={`flex items-center gap-2 mt-1 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <MapPin className="w-4 h-4" />
                     {dashboardData.projectLocation}
                   </p>
                 )}
               </div>
-              <div className="text-right">
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-2 mb-2">
                 {getStatusBadge(dashboardData.projectStatus)}
                 {adminAccess && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="secondary" className="text-xs">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 border-purple-300">
                       Admin Access
                     </Badge>
                     <button
                       onClick={() => window.close()}
-                      className={`text-xs px-2 py-1 rounded ${
+                      className={`text-xs px-2 py-1 rounded border ${
                         isDarkMode 
-                          ? 'text-gray-300 hover:text-white hover:bg-white/10' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                          ? 'text-gray-300 border-gray-600 hover:text-white hover:bg-white/10' 
+                          : 'text-gray-600 border-gray-300 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                     >
                       Close Tab
                     </button>
                   </div>
                 )}
-                <p className={`text-sm mt-2 ${themeClasses.text.secondary}`}>
-                  Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
-                </p>
               </div>
+              <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Overall Progress */}
-        <Card className={themeClasses.card.primary}>
-          <CardHeader>
-            <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-              <TrendingUp className="w-5 h-5" />
-              Overall Project Progress
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+          isDarkMode 
+            ? 'bg-white/10 text-white' 
+            : 'bg-white/70 text-gray-900'
+        }`}>
+          <div className="p-6">
+            <div className={`flex items-center gap-2 mb-4`}>
+              <TrendingUp className="w-5 h-5 text-blue-500" />
+              <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Overall Project Progress</h2>
+            </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+                <span className={`text-3xl font-bold ${themeClasses.text.primary}`}>
                   {Math.round(dashboardData.overallProgress)}%
                 </span>
                 <span className={themeClasses.text.secondary}>Complete</span>
               </div>
               <Progress value={dashboardData.overallProgress} className="h-3" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Project Phases */}
         <Card className={themeClasses.card.primary}>
