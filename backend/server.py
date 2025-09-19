@@ -25,6 +25,16 @@ from models_financial import (
     Inspection, InspectionCreate, InspectionUpdate
 )
 
+# Import GC Dashboard models
+from models_gc_dashboard import (
+    GcKey, GcKeyCreate, GcAccessLog, GcAccessLogCreate,
+    ProjectPhaseModel, ProjectPhaseCreate, ProjectPhaseUpdate,
+    InspectionStatusModel, InspectionStatusCreate, InspectionStatusUpdate,
+    GcNarrative, GcNarrativeCreate,
+    GcProjectDashboard, GcCrewSummary, GcMaterialSummary, GcTmTagSummary,
+    GcKeyAdmin, GcAccessLogAdmin
+)
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
