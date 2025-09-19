@@ -14,7 +14,7 @@ const GcLogin = ({ onLoginSuccess }) => {
   
   const [formData, setFormData] = useState({
     projectId: '',
-    key: ''
+    pin: ''
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,19 +26,19 @@ const GcLogin = ({ onLoginSuccess }) => {
   };
 
   const handleLogin = async () => {
-    if (!formData.projectId || !formData.key) {
+    if (!formData.projectId || !formData.pin) {
       toast({
         title: "Missing Information",
-        description: "Please enter both Project ID and Access Key",
+        description: "Please enter both Project ID and PIN",
         variant: "destructive"
       });
       return;
     }
 
-    if (formData.key.length !== 4) {
+    if (formData.pin.length !== 4) {
       toast({
-        title: "Invalid Key",
-        description: "Access key must be 4 digits",
+        title: "Invalid PIN",
+        description: "PIN must be 4 digits",
         variant: "destructive"
       });
       return;
@@ -49,21 +49,15 @@ const GcLogin = ({ onLoginSuccess }) => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       
-      // Get client IP and user agent
-      const ip = await fetch('https://api.ipify.org?format=json')
-        .then(res => res.json())
-        .then(data => data.ip)
-        .catch(() => 'unknown');
-      
-      const response = await fetch(`${backendUrl}/api/gc/login`, {
+      const response = await fetch(`${backendUrl}/api/gc/login-simple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           projectId: formData.projectId,
-          key: formData.key,
-          ip: ip,
+          pin: formData.pin,
+          ip: 'web-client',
           userAgent: navigator.userAgent
         })
       });
@@ -73,14 +67,15 @@ const GcLogin = ({ onLoginSuccess }) => {
         
         toast({
           title: "Access Granted",
-          description: "Loading your project dashboard...",
+          description: `Loading project dashboard... New PIN: ${result.newPin}`,
         });
 
         // Call parent callback with login success
         if (onLoginSuccess) {
           onLoginSuccess({
             projectId: result.projectId,
-            keyId: result.keyId
+            projectName: result.projectName,
+            newPin: result.newPin
           });
         }
       } else {
@@ -92,7 +87,7 @@ const GcLogin = ({ onLoginSuccess }) => {
       console.error('GC Login error:', error);
       toast({
         title: "Access Denied",
-        description: error.message || "Invalid project ID or access key",
+        description: error.message || "Invalid project ID or PIN",
         variant: "destructive"
       });
     } finally {
