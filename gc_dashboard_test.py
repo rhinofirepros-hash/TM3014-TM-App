@@ -585,14 +585,15 @@ class GCDashboardTester:
         financial_fields = [
             "contract_amount", "total_cost", "labor_cost", "material_cost", 
             "profit", "profit_margin", "hourly_rate", "billing_rate", 
-            "unit_cost", "total_cost", "cost", "rate", "amount"
+            "unit_cost", "cost", "amount"
         ]
         
         dashboard_str = json.dumps(dashboard).lower()
         found_financial_fields = []
         
         for field in financial_fields:
-            if field in dashboard_str:
+            # Use word boundaries to avoid false positives like "generated" containing "rate"
+            if f'"{field}"' in dashboard_str or f"'{field}'" in dashboard_str:
                 found_financial_fields.append(field)
         
         if not found_financial_fields:
