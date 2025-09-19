@@ -94,7 +94,7 @@ function App() {
         ) : (
           <>
             {!isAuthenticated ? (
-              <PinLogin onLogin={handleLoginSuccess} />
+              <PinLogin onLogin={handleLogin} />
             ) : (
               <div className="main-content">
                 <BrowserRouter>
