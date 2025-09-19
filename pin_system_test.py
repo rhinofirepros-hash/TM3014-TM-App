@@ -231,7 +231,7 @@ class PINSystemTester:
                     
                     # Test login with this PIN too
                     login_data = {
-                        "project_id": project_id,
+                        "projectId": project_id,
                         "pin": pin
                     }
                     
