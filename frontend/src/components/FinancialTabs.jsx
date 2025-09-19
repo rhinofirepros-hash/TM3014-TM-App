@@ -677,7 +677,7 @@ const FinancialTabs = ({ project, onBack }) => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="invoices" className="flex items-center gap-2">
             <Receipt className="w-4 h-4" />
             Invoices
@@ -693,6 +693,10 @@ const FinancialTabs = ({ project, onBack }) => {
           <TabsTrigger value="profitability" className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             Profitability
+          </TabsTrigger>
+          <TabsTrigger value="inspections" className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            Inspections
           </TabsTrigger>
         </TabsList>
 
