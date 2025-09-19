@@ -76,7 +76,7 @@ class GCPinLoginTester:
         print(f"\n=== Step 2: Test GC Login with PIN '{pin}' ===")
         
         login_data = {
-            "project_id": project_id,
+            "projectId": project_id,
             "pin": pin
         }
         
