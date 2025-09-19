@@ -922,7 +922,7 @@ async def sync_crew_log_to_tm(crew_log):
                 "project_id": project_id,
                 "project_name": project.get("name", ""),
                 "cost_code": "",
-                "date_of_work": log_date,
+                "date_of_work": date_str,  # Use the processed date string to ensure consistency
                 "company_name": project.get("client_company", ""),
                 "tm_tag_title": f"Auto-generated from Crew Log - {date_str}",
                 "description_of_work": crew_log.get("work_description", ""),
