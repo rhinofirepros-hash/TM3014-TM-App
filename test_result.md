@@ -57,8 +57,10 @@
 ##   test_priority: "high_first"  # or "sequential" or "stuck_first"
 ##
 ## agent_communication:
-##     -agent: "main"  # or "testing" or "user"
-##     -message: "Communication message between agents"
+##     -agent: "user"
+##     -message: "USER REPORTED CRITICAL ISSUES: 1) Admin PIN J777 not working - getting 'invalid pin format' error, 2) GC Access Management card has hover effects blocking button clicks, 3) GC login/key connection issues - login doesn't connect to server"
+##     -agent: "main"
+##     -message: "Investigating user-reported issues. Need to fix admin PIN login, remove hover effects from GC card, and debug GC login connection problems"
 
 # Protocol Guidelines for Main agent
 #
