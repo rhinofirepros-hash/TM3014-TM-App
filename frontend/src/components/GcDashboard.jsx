@@ -181,7 +181,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
         {/* Overall Progress - using AnimatedCard */}
         <AnimatedCard 
           delay={100}
-          className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+          className={`cursor-default transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
             isDarkMode 
               ? 'bg-white/10 text-white' 
               : 'bg-white/70 text-gray-900'
