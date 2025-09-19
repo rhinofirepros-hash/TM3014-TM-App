@@ -849,18 +849,49 @@ async def ensure_project_has_pin(project_id: str):
 async def get_project_gc_pin(project_id: str):
     """Admin: Get current GC PIN for project"""
     try:
-        pin = await ensure_project_has_pin(project_id)
-        if pin:
-            projects_collection = await get_collection("projects")
-            project = await projects_collection.find_one({"id": project_id})
-            return {
-                "projectId": project_id,
-                "projectName": project.get("name", "Unknown Project"),
-                "gcPin": pin,
-                "pinUsed": project.get("gc_pin_used", False)
-            }
-        else:
+        projects_collection = await get_collection("projects")
+        
+        # Try to find project by id field first, then by _id field
+        project = await projects_collection.find_one({"id": project_id})
+        if not project:
+            # Try finding by _id field (for unified schema)
+            try:
+                from bson import ObjectId
+                if ObjectId.is_valid(project_id):
+                    project = await projects_collection.find_one({"_id": ObjectId(project_id)})
+                else:
+                    project = await projects_collection.find_one({"_id": project_id})
+            except:
+                pass
+        
+        if not project:
             raise HTTPException(status_code=404, detail="Project not found")
+        
+        # Ensure project has a PIN
+        pin = project.get("gc_pin")
+        if not pin:
+            # Generate new PIN
+            pin = generate_project_pin()
+            
+            # Make sure PIN is unique across all projects
+            while await projects_collection.find_one({"gc_pin": pin}):
+                pin = generate_project_pin()
+            
+            # Update project with new PIN
+            await projects_collection.update_one(
+                {"_id": project["_id"]},
+                {"$set": {"gc_pin": pin, "gc_pin_used": False}}
+            )
+            
+            logger.info(f"Generated new PIN for project {project_id}: {pin}")
+        
+        return {
+            "projectId": project_id,
+            "projectName": project.get("name", "Unknown Project"),
+            "gcPin": pin,
+            "pinUsed": project.get("gc_pin_used", False)
+        }
+        
     except HTTPException:
         raise
     except Exception as e:
