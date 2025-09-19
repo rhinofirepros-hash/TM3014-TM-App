@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://fireprotect-app.preview.emergentagent.com/api"
+BACKEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com/api"
 
 class GCDashboardFocusedTester:
     def __init__(self):

@@ -11,8 +11,8 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://fireprotect-app.preview.emergentagent.com/api"
-FRONTEND_URL = "https://fireprotect-app.preview.emergentagent.com"
+BACKEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com/api"
+FRONTEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com"
 
 class GCConnectivityTester:
     def __init__(self):

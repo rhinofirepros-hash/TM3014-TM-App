@@ -1,76 +1,37 @@
 <analysis>
-The AI engineer's work involved a significant architectural pivot from an MVP to a unified schema, alongside continuous feature development and bug fixes. Initially, a critical  runtime error in  was resolved. A major data migration script () was developed and executed to transition to a new schema, forming the foundation for an expanded financial management system (invoices, payables, cashflow, profitability, inspections) and a GC Dashboard. Numerous features like clickable dashboard cards, enhanced T&M profit calculation, and forecasted schedules were integrated. Key bug fixes included synchronizing dashboard project counts, resolving a crew log to T&M tag sync issue due to a MongoDB date parsing error, and fixing frontend loading in new financial tabs. Most recently, a simplified, auto-generating 4-digit PIN system for GC project access was implemented, and a Submit Without Signature option for T&M tags was added. The immediate task is to fix a  import error in .
+The AI engineer's work involved an iterative development process, addressing both core features and numerous bugs. Initially, the focus was on a significant architectural pivot to a unified schema, which required a data migration and expansion of financial and GC dashboard modules. A critical  import error was resolved. The primary challenge became stabilizing the GC Dashboard's simplified 4-digit PIN system, which involved extensive debugging across backend () and frontend components (, , ). This included resolving server configuration issues, data consistency problems, authentication flow mismatches between admin and GC logins, and prop handling errors. Concurrently, comprehensive UI theme implementations using glass morphism and  components were applied across the GC Dashboard and Financial tabs, alongside mobile responsiveness fixes. New product features like plan submittal tracking and updated employee roles were also integrated.
 </analysis>
 
 <product_requirements>
-The core objective for Rhino Fire Protection is to provide foremen with a web-based Time and Material Daily Tag App (TM3014) for managing labor, materials, equipment, and expenses. This app generates branded, signable PDFs for General Contractors, prioritizing user-friendliness and professional branding.
-
-Implemented features include: a comprehensive T&M Form; branded PDF generation with digital signatures; PIN-based authentication and Crew management; an enhanced Dashboard and Reports with project analytics and bulk PDF export; EmailJS integration for PDF delivery; Rhino Fire Protection branding with modern UI (dark/light theme, glass morphism); FastAPI/MongoDB for data persistence across T&M tags, crews, projects, and employees. A Project Overview System handles full project lifecycle management. Cost calculations were restructured from  to  with project-specific labor rates, enabling detailed profit breakdowns. Bidirectional sync auto-populates T&M tags from crew logs, and editing is enabled for projects, T&M tags, and crew logs. Recent additions include clickable dashboard cards, a project type selector (Full Project/T&M) with conditional contract amounts, and forecasted schedule fields for project planning with refined T&M profit calculation. The user specifically requested, and the engineer has worked on, implementing a unified schema including Invoices, Payables, Cashflow Forecasting, Profitability, and Inspections modules, a GC Dashboard with an auto-regenerating 4-digit PIN system, and T&M tag submission without signatures.
+Rhino Fire Protection's core product is a web-based Time and Material Daily Tag App (TM3014) for foremen to manage labor, materials, equipment, and expenses. It generates branded, signable PDFs for GCs, emphasizing user-friendliness and professional branding. Key features include a T&M Form, PDF generation with digital signatures, PIN-based authentication, Crew management, a Dashboard and Reports with project analytics, and bulk PDF export. The app utilizes EmailJS integration, Rhino Fire Protection branding with a modern UI (dark/light theme, glass morphism), and a FastAPI/MongoDB backend. A Project Overview System manages the full project lifecycle. Cost calculations use  and project-specific labor rates for detailed profit breakdowns. Bidirectional sync auto-populates T&M tags from crew logs, and editing is enabled for projects, T&M tags, and crew logs. Recent user-requested additions include clickable dashboard cards, a project type selector, forecasted schedule fields, refined T&M profit calculation, a unified schema for Invoices, Payables, Cashflow Forecasting, Profitability, and Inspections modules, a GC Dashboard with an auto-regenerating 4-digit PIN system, T&M tag submission without signatures, plan submittal tracking (In Design, Submitted, Corrections, Approval, auto-approved for T&M), and updated employee roles (e.g., Fire Sprinkler Installation Personnel).
 </product_requirements>
 
 <key_technical_concepts>
-- **React.js**: Frontend UI, state management, routing.
-- **FastAPI**: Python backend, REST API, Pydantic for data validation.
+- **React.js**: Frontend UI, state management, routing,  context.
+- **FastAPI**: Python backend, REST API, Pydantic for data validation, MongoDB integration (Motor).
 - **MongoDB**: NoSQL database, UUIDs for identifiers.
-- **Tailwind CSS + Shadcn UI**: Styling, responsive design, component library.
-- **Node.js (Migration Script)**: For schema migration.
-- **recharts**: Frontend charting library.
-- **lucide-react**: Icon library.
+- **Tailwind CSS + Shadcn UI**: Styling, responsive design, component library, .
+- **Node.js**: Migration script (for ).
+- **lucide-react**: Icon library for React components.
+- **Supervisor**: Process manager for running backend and frontend services.
+- **Kubernetes Ingress**: Manages external access to services within the cluster.
 </key_technical_concepts>
 
 <code_architecture>
-The application employs a React frontend, a FastAPI backend, and a MongoDB database.
+The application comprises a React frontend, a FastAPI backend, and a MongoDB database.
 
 
-
--   :
-    -   **Importance**: Core application logic and API endpoint definition.
-    -   **Changes**: Integrated new  and . Added comprehensive API routes for Invoices, Payables, Cashflow, Profitability, and Inspections. Implemented GC PIN management (generation, regeneration, validation) directly into Project model and related endpoints. Added a manual sync endpoint () and improved error logging within .
--   :
-    -   **Importance**: Defines Pydantic models for all financial management entities.
-    -   **Changes**: New file. Contains models for , , , , and .
--   :
-    -   **Importance**: Defines Pydantic models for the General Contractor Dashboard system.
-    -   **Changes**: New file. Contains models for , , , etc.
--   :
-    -   **Importance**: Handles the one-time data migration from the old MVP schema to the new unified schema.
-    -   **Changes**: New file. Transforms , , ,  into their respective new collections, adding default values and calculating derived fields.
--   :
-    -   **Importance**: Manages overall application routing and component rendering.
-    -   **Changes**: Added routes for the new GC Portal components (, , ).
--   :
-    -   **Importance**: Provides an overview of project statistics and navigation.
-    -   **Changes**: Fixed active project count to fetch and filter  from the backend for consistency. Added an Admin GC button to navigate to GC management.
--   :
-    -   **Importance**: Displays T&M tags and handles PDF generation.
-    -   **Changes**: Added functionality to approve pending T&M tags with an Approve button and an , changing status from Pending Review to Submitted.
--   :
-    -   **Importance**: Form for creating new T&M tags.
-    -   **Changes**: Added a Submit for Progress button to allow saving a T&M tag without requiring a digital signature.
--   :
-    -   **Importance**: Provides a detailed view of a single project.
-    -   **Changes**: Integrated the new  component to provide access to Invoices, Payables, Cashflow, Profitability, and Inspections data.
--   :
-    -   **Importance**: Manages the creation, editing, and listing of projects.
-    -   **Changes**: Modified to display the auto-generated 4-digit GC PIN for each project.
--   :
-    -   **Importance**: Manages recording of crew activities.
-    -   **Changes**: Implemented sorting functionality for the crew logs table by date (newest/oldest). Added a Manual Sync button for logs not yet synced to a T&M tag.
--   :
-    -   **Importance**: New component responsible for displaying and managing the UI for financial data.
-    -   **Changes**: New file. Manages active tabs (Invoices, Payables, Cashflow, Profitability, Inspections), fetches respective data, and displays tables/charts. Initial debugging involved correcting the  prop usage, adding error handling, and implementing temporary sample data for empty states.
--   :
-    -   **Importance**: New component for General Contractor authentication.
-    -   **Changes**: New file. Reworked to support login using a Project ID and a single-use 4-digit PIN, with immediate PIN regeneration upon successful use.
--   :
-    -   **Importance**: New component intended to be the main dashboard view for General Contractors.
-    -   **Changes**: New file. Currently facing a compilation error related to a missing  icon import from .
--   :
-    -   **Importance**: Acts as a container or layout for GC-specific views.
-    -   **Changes**: New file.
--   :
-    -   **Importance**: Provides an interface for internal administrators to manage GC-related settings.
-    -   **Changes**: New file.
+-   : This is the actively running backend server. It was initially missing GC dashboard and PIN management functionalities. These were migrated from , including  imports, GC collection definitions, PIN generation/regeneration logic, and GC-related API endpoints (, ). Crucially, project lookup logic was fixed to use  consistently, and  errors were resolved in . The  endpoint now uses a  Pydantic model for robust request body validation.
+-   : This file was updated to define a  enum (, , , ) and integrate , , and  fields into the  and  models. The  and  fields were also formally added to the  model for the GC PIN system.
+-   : Manages global routing and authentication state. It was modified to correctly pass the  prop to  and  to resolve prop mismatch errors. A new route  was added for the dedicated  component, and logic for handling GC routes was adjusted.
+-   : The General Contractor's main dashboard. An initial  import error ( icon) was fixed. It underwent significant styling updates to adopt the glass morphism theme with  components and was modified to ensure  (not ) was correctly imported and used. All hover-based motion effects were removed, retaining only subtle color transitions.
+-   : Displays financial data (Invoices, Payables, etc.). Received comprehensive styling updates for theme cohesion, converting  components to  and applying glass morphism. A JSX syntax error () and a duplicate  import were resolved, and responsive table styling was implemented.
+-   : A newly created component for a dedicated, simplified GC login. It was modified to function as a PIN-only login, automatically discovering the project based on the 4-digit PIN, removing the need for GCs to input a long project ID. Error handling was enhanced, and it was updated to correctly receive and use the  prop.
+-   : Admin interface for managing GC projects. It was updated to correctly display both Project ID and PIN during PIN generation, removing the previous  interface. It now uses  components with consistent dark theme styling and has all hover animations removed from project cards to improve usability.
+-   : The primary admin login component. It was modified to remove the explicit display of admin PIN  for security and to integrate into a unified login system capable of handling both admin and GC PINs.
+-   : Manages project creation and editing. UI elements for the new plan submittal fields (, , ) were added, and date validation was implemented for  and  to prevent Invalid time value runtime errors.
+-   : Manages crew details and employee roles. The  array was updated to include roles specific to fire sprinkler installation (e.g., 'Helper', 'Fitter', 'Journeyman', 'Foreman', 'Superintendent', 'Project Manager').
+-   : The custom UI component providing animated card styling. It exports , which was previously mis-imported as  in other components, leading to compilation errors. This discrepancy was corrected throughout the codebase.
 
 </code_architecture>
 
@@ -83,31 +44,12 @@ The application employs a React frontend, a FastAPI backend, and a MongoDB datab
 - Project Updates Dashboard based on AI-parsed data.
 - Full editing of line items in existing T&M tags.
 - Advanced Reporting (custom date ranges, comparisons).
-- Mobile Optimization & Performance Optimization.
-- Fix  import error in .
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was completing the implementation of a comprehensive GC Dashboard system and addressing a critical user feedback regarding its login mechanism. The user reported Errors when I try to login to the GC Dashboard and requested a simplified 4-digit PIN system for project access, with the PIN regenerating after each use.
-
-To address this, the AI engineer:
-1.  **Modified Backend ():**
-    *   Added  and  imports.
-    *   Implemented  and  functions.
-    *   Updated the  model to include  (string) and  (boolean) fields.
-    *   Integrated PIN generation into the  endpoint.
-    *   Replaced the initial complex GC login logic with the new PIN-based authentication.
-    *   Ensured existing projects retrieve and have PINs via updates to  and  endpoints.
-2.  **Modified Frontend (, , , etc.):**
-    *   Simplified  to accommodate the new Project ID and 4-digit PIN input.
-    *   Updated UI labels from key to PIN across relevant components.
-    *    was updated to display the generated GC PIN for each project.
-
-The backend implementation and testing for this simplified GC PIN system are 100% complete and verified. The system auto-generates unique 4-digit PINs, handles single-use authentication, and regenerates PINs upon successful use, ensuring security.
-
-However, during the subsequent frontend testing, a compilation error was reported:  in . This indicates an incorrect icon import in the newly created GC Dashboard component.
+Immediately prior to this summary, the AI engineer was addressing a persistent  console error during GC login and fine-tuning the visual hover effects on cards as per user feedback. The user reported the specific console error for GC login and requested to retain  on cards while ensuring all motion/hover animations were removed. The engineer identified that the  component in  was missing the  prop. This was corrected by explicitly passing the  function as  to the  component. Concurrently, in , the styling was adjusted to reintroduce  and  to cards, providing a subtle visual feedback on hover without triggering any disruptive shadow or movement effects, thus ensuring UI consistency without interfering with user interaction.
 </current_work>
 
 <optional_next_step>
-The next step is to fix the  import error for the  icon in .
+Test the GC login using a fresh PIN and verify the restored hover colors on cards.
 </optional_next_step>
