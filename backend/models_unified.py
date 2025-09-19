@@ -108,6 +108,14 @@ class ProjectCreate(BaseModel):
     plan_submittal_status: Optional[PlanSubmittalStatus] = None  # Will be set based on contract type
     plan_submittal_date: Optional[datetime] = None
     plan_submittal_notes: Optional[str] = None
+    
+    # Inspection tracking
+    rough_inspection_status: Optional[str] = "pending"
+    rough_inspection_date: Optional[datetime] = None
+    rough_inspection_notes: Optional[str] = None
+    final_inspection_status: Optional[str] = "pending"
+    final_inspection_date: Optional[datetime] = None
+    final_inspection_notes: Optional[str] = None
 
 class CrewMember(BaseModel):
     """Enhanced crew member model with separate cost and billing rates"""
