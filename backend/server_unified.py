@@ -828,8 +828,9 @@ async def ensure_project_has_pin(project_id: str):
                 new_pin = generate_project_pin()
             
             # Update project with new PIN
+            update_query = {"id": project_id} if "id" in project else {"_id": project.get("_id")}
             await projects_collection.update_one(
-                {"id": project_id},
+                update_query,
                 {"$set": {"gc_pin": new_pin, "gc_pin_used": False}}
             )
             
