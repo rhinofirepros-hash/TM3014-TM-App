@@ -688,7 +688,10 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {newProject.estimated_completion ? format(newProject.estimated_completion, "MM/dd/yyyy") : "Pick a date"}
+                      {newProject.estimated_completion && !isNaN(new Date(newProject.estimated_completion)) 
+                        ? format(new Date(newProject.estimated_completion), "MM/dd/yyyy") 
+                        : "Pick a date"
+                      }
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className={`w-auto p-0 ${themeClasses.modal}`} align="start">
