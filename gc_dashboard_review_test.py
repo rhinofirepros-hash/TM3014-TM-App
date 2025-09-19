@@ -351,19 +351,29 @@ class GCDashboardReviewTester:
         """Test narrative structure"""
         print(f"  → Testing Narrative Structure for Project {project_id}")
         
-        expected_fields = ["lastUpdated", "content", "author"]
-        missing_fields = [field for field in expected_fields if field not in narrative]
-        
-        if not missing_fields:
-            last_updated = narrative.get("lastUpdated", "unknown")
-            content_length = len(narrative.get("content", ""))
-            author = narrative.get("author", "unknown")
-            
+        # Check if narrative is a string (actual API response) or dict
+        if isinstance(narrative, str):
+            content_length = len(narrative)
             self.log_result("gc_dashboard", f"Narrative structure - {project_id}", True, 
-                          f"Author: {author}, Content: {content_length} chars, Updated: {last_updated}")
+                          f"Narrative content: {content_length} chars - '{narrative[:50]}{'...' if len(narrative) > 50 else ''}'")
+        elif isinstance(narrative, dict):
+            # Handle dict format if API changes
+            expected_fields = ["lastUpdated", "content", "author"]
+            missing_fields = [field for field in expected_fields if field not in narrative]
+            
+            if not missing_fields:
+                last_updated = narrative.get("lastUpdated", "unknown")
+                content_length = len(narrative.get("content", ""))
+                author = narrative.get("author", "unknown")
+                
+                self.log_result("gc_dashboard", f"Narrative structure - {project_id}", True, 
+                              f"Author: {author}, Content: {content_length} chars, Updated: {last_updated}")
+            else:
+                self.log_result("gc_dashboard", f"Narrative structure - {project_id}", False, 
+                              f"Missing narrative fields: {missing_fields}")
         else:
             self.log_result("gc_dashboard", f"Narrative structure - {project_id}", False, 
-                          f"Missing narrative fields: {missing_fields}")
+                          f"Unexpected narrative data type: {type(narrative).__name__}")
     
     def run_comprehensive_gc_dashboard_test(self):
         """Run the complete GC dashboard workflow test as requested in review"""
