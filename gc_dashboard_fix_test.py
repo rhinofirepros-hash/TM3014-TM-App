@@ -57,24 +57,24 @@ class GCDashboardFixTester:
                     response_data = response.json()
                     
                     # Verify the response structure
-                    expected_fields = ["project_id", "project_name", "crew_summary", "materials_summary", "tm_tags_summary"]
+                    expected_fields = ["projectId", "projectName", "crewSummary", "tmTagSummary"]
                     missing_fields = [field for field in expected_fields if field not in response_data]
                     
                     if not missing_fields:
                         self.log_result("gc_dashboard", f"GC Dashboard API Fix - Project {project_id}", True, 
-                                      f"Returns 200 OK with complete dashboard data. Project: {response_data.get('project_name', 'Unknown')}")
+                                      f"Returns 200 OK with complete dashboard data. Project: {response_data.get('projectName', 'Unknown')}")
                         
                         # Log some key metrics from the response
-                        crew_summary = response_data.get("crew_summary", {})
-                        materials_summary = response_data.get("materials_summary", {})
-                        tm_tags_summary = response_data.get("tm_tags_summary", {})
+                        crew_summary = response_data.get("crewSummary", {})
+                        tm_tag_summary = response_data.get("tmTagSummary", {})
+                        materials = response_data.get("materials", [])
                         
                         print(f"   📊 Dashboard Data Summary:")
-                        print(f"   - Project Name: {response_data.get('project_name', 'N/A')}")
-                        print(f"   - Total Hours: {crew_summary.get('total_hours', 0)}")
-                        print(f"   - Work Days: {crew_summary.get('total_days', 0)}")
-                        print(f"   - Materials Count: {materials_summary.get('total_items', 0)}")
-                        print(f"   - T&M Tags Count: {tm_tags_summary.get('total_tags', 0)}")
+                        print(f"   - Project Name: {response_data.get('projectName', 'N/A')}")
+                        print(f"   - Total Hours: {crew_summary.get('totalHours', 0)}")
+                        print(f"   - Work Days: {crew_summary.get('totalDays', 0)}")
+                        print(f"   - Materials Count: {len(materials)}")
+                        print(f"   - T&M Tags Count: {tm_tag_summary.get('totalTags', 0)}")
                         
                     else:
                         self.log_result("gc_dashboard", f"GC Dashboard API Fix - Project {project_id}", False, 
