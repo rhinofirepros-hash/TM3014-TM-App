@@ -2805,12 +2805,32 @@ class TMTagAPITester:
             "details": self.test_results
         }
 
+    def run_gc_pin_tests(self):
+        """Run GC PIN system tests specifically"""
+        print("🚀 Starting GC PIN System Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # Test basic connectivity first
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Aborting tests.")
+            return self.generate_report()
+        
+        print("\n" + "=" * 60)
+        print("🔐 TESTING GC PIN SYSTEM")
+        print("=" * 60)
+        
+        # Run the comprehensive GC PIN system test
+        self.test_gc_pin_system()
+        
+        return self.generate_report()
+
 if __name__ == "__main__":
     tester = TMTagAPITester()
     
-    # Run T&M analytics and forecasted schedule tests specifically
-    print("Running T&M Analytics and Forecasted Schedule Tests...")
-    results = tester.run_tm_analytics_tests()
+    # Run GC PIN system tests specifically as requested in review
+    print("Running GC PIN System Tests...")
+    results = tester.run_gc_pin_tests()
     
     # Exit with error code if tests failed
     if results["failed"] > 0:
