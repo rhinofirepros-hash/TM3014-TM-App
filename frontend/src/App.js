@@ -92,7 +92,10 @@ function App() {
       <div className="App min-h-screen">
         {/* GC Routes */}
         {isGcLoginRoute ? (
-          <GcOnlyLogin />
+          <GcOnlyLogin onLoginSuccess={() => {
+            // For GC login, we handle the redirect inside the component
+            // No additional action needed here
+          }} />
         ) : isGcRoute ? (
           <GcPortal />
         ) : (
