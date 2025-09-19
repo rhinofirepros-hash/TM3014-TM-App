@@ -141,16 +141,16 @@ const GcLogin = ({ onLoginSuccess }) => {
               <div className="space-y-2">
                 <Label className={`text-sm font-medium ${themeClasses.text.primary}`}>
                   <Key className="w-4 h-4 inline mr-2" />
-                  4-Digit Access Key
+                  4-Digit PIN
                 </Label>
                 <Input
                   type="text"
                   placeholder="0000"
                   maxLength={4}
-                  value={formData.key}
+                  value={formData.pin}
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, ''); // Only digits
-                    handleInputChange('key', value);
+                    handleInputChange('pin', value);
                   }}
                   onKeyPress={handleKeyPress}
                   className={`${themeClasses.input.primary} h-12 text-center text-lg tracking-widest`}
