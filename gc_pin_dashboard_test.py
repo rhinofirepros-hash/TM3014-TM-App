@@ -44,9 +44,10 @@ class GCPinDashboardTester:
         """Test basic API connectivity"""
         print("\n=== Testing Basic Connectivity ===")
         try:
-            response = self.session.get(f"{self.base_url}/")
+            # Test with a known working endpoint instead of root
+            response = self.session.get(f"{self.base_url}/projects")
             if response.status_code == 200:
-                self.log_result("general", "Basic connectivity", True, "API is accessible")
+                self.log_result("general", "Basic connectivity", True, "API is accessible via /projects")
                 return True
             else:
                 self.log_result("general", "Basic connectivity", False, f"Status code: {response.status_code}", response)
