@@ -336,10 +336,11 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
             description: "T&M tag saved for progress tracking. You can add signature later.",
           });
 
-          // Reset form and navigate
+          // Reset form and navigate back
           resetForm();
-          if (typeof onSubmit === 'function') {
-            onSubmit();
+          // Navigate back to dashboard if callback exists  
+          if (typeof onBackToDashboard === 'function') {
+            onBackToDashboard();
           }
         } else {
           throw new Error('Failed to submit T&M tag for progress tracking');
