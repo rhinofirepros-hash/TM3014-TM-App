@@ -66,11 +66,12 @@ const FinancialTabs = ({ project, onBack }) => {
       console.log('Backend URL:', backendUrl);
       
       // Load all financial data in parallel
-      const [invoicesRes, payablesRes, cashflowRes, profitabilityRes] = await Promise.all([
+      const [invoicesRes, payablesRes, cashflowRes, profitabilityRes, inspectionsRes] = await Promise.all([
         fetch(`${backendUrl}/api/invoices/${projectId}`),
         fetch(`${backendUrl}/api/payables/${projectId}`),
         fetch(`${backendUrl}/api/cashflow/${projectId}`),
-        fetch(`${backendUrl}/api/profitability/${projectId}`)
+        fetch(`${backendUrl}/api/profitability/${projectId}`),
+        fetch(`${backendUrl}/api/inspections/${projectId}`)
       ]);
 
       console.log('API Responses:', {
