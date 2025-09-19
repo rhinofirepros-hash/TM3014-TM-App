@@ -322,133 +322,108 @@ const EnhancedGcDashboard = ({ projectId }) => {
         </div>
       </div>
 
-      {/* Progress Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Crew Activity - Enhanced */}
-        <AnimatedCard className={`${themeClasses.card} cursor-pointer hover:shadow-lg transition-shadow`}>
-          <CardHeader className="pb-3">
-            <CardTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
-              <Users className="w-5 h-5" />
-              Crew Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Total Hours</span>
-                <span className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-                  {crewSummary?.totalHours || 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Work Days</span>
-                <span className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-                  {crewSummary?.totalDays || 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Active Crew</span>
-                <span className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-                  {crewSummary?.activeCrewMembers || 0} members
-                </span>
-              </div>
-              
-              {/* Recent Work Descriptions */}
-              {crewSummary?.recentDescriptions && crewSummary.recentDescriptions.length > 0 && (
-                <div className={`mt-4 p-3 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                  <div className={`text-sm font-medium ${themeClasses.text.primary} mb-2`}>
-                    Recent Work:
-                  </div>
-                  <div className="space-y-1">
-                    {crewSummary.recentDescriptions.slice(0, 3).map((desc, index) => (
-                      <div key={index} className={`text-xs ${themeClasses.text.secondary}`}>
-                        • {desc}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </AnimatedCard>
-
-        {/* T&M Reports - Enhanced */}
-        <AnimatedCard className={`${themeClasses.card} cursor-pointer hover:shadow-lg transition-shadow`}>
-          <CardHeader className="pb-3">
-            <CardTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
-              <FileText className="w-5 h-5" />
+      {/* Daily Reports & T&M Tags */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className={`p-4 md:p-6 rounded-xl ${
+          isDarkMode ? 'bg-slate-800/50 border border-slate-700' : 'bg-white border border-gray-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <FileText className={`w-6 h-6 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+            <h3 className={`text-lg md:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Daily Reports
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Total Tags</span>
-                <span className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-                  {tmTagSummary?.totalTags || 0}
-                </span>
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="text-center">
+              <div className={`text-2xl md:text-3xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                {tmTagSummary?.totalTags || 0}
               </div>
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Approved</span>
-                <span className={`text-lg font-semibold text-green-600`}>
-                  {tmTagSummary?.approvedTags || 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={themeClasses.text.secondary}>Total Hours</span>
-                <span className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-                  {tmTagSummary?.totalHours || 0} hrs
-                </span>
-              </div>
-
-              {/* Recent Tag Titles */}
-              {tmTagSummary?.recentTagTitles && tmTagSummary.recentTagTitles.length > 0 && (
-                <div className={`mt-4 p-3 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                  <div className={`text-sm font-medium ${themeClasses.text.primary} mb-2`}>
-                    Recent Reports:
-                  </div>
-                  <div className="space-y-1">
-                    {tmTagSummary.recentTagTitles.slice(0, 3).map((title, index) => (
-                      <div key={index} className={`text-xs ${themeClasses.text.secondary}`}>
-                        • {title}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </AnimatedCard>
-
-        {/* Materials Overview */}
-        <AnimatedCard className={`${themeClasses.card}`}>
-          <CardHeader className="pb-3">
-            <CardTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
-              <Package className="w-5 h-5" />
-              Materials
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className={`text-center py-8 ${themeClasses.text.secondary}`}>
-                <Package className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                No material data available
+              <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Total Reports
               </div>
             </div>
-          </CardContent>
-        </AnimatedCard>
+            <div className="text-center">
+              <div className={`text-2xl md:text-3xl font-bold text-green-500`}>
+                {tmTagSummary?.approvedTags || 0}
+              </div>
+              <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Approved
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Reports */}
+          {tmTagSummary?.recentTagTitles && tmTagSummary.recentTagTitles.length > 0 && (
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-50'}`}>
+              <h4 className={`text-sm md:text-base font-medium mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Recent Reports:
+              </h4>
+              <div className="space-y-2">
+                {tmTagSummary.recentTagTitles.slice(0, 3).map((title, index) => (
+                  <div key={index} className={`text-sm md:text-base ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    • {title}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Project Status Summary */}
+        <div className={`p-4 md:p-6 rounded-xl ${
+          isDarkMode ? 'bg-slate-800/50 border border-slate-700' : 'bg-white border border-gray-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <TrendingUp className={`w-6 h-6 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+            <h3 className={`text-lg md:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Project Status
+            </h3>
+          </div>
+          
+          <div className="space-y-4">
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-green-900/20 border border-green-500/30' : 'bg-green-50 border border-green-200'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className={`font-medium ${isDarkMode ? 'text-green-300' : 'text-green-700'}`}>
+                  On Schedule
+                </span>
+              </div>
+              <p className={`text-sm md:text-base ${isDarkMode ? 'text-green-200' : 'text-green-600'}`}>
+                Project is progressing as planned
+              </p>
+            </div>
+            
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-blue-900/20 border border-blue-500/30' : 'bg-blue-50 border border-blue-200'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className={`w-5 h-5 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                <span className={`font-medium ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}>
+                  Active Work
+                </span>
+              </div>
+              <p className={`text-sm md:text-base ${isDarkMode ? 'text-blue-200' : 'text-blue-600'}`}>
+                Crew currently on-site working
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer - Mobile Optimized */}
       <div className={`text-center py-6 border-t ${
-        isDarkMode ? 'border-white/10' : 'border-gray-200'
+        isDarkMode ? 'border-slate-700' : 'border-gray-200'
       }`}>
-        <p className={`text-sm ${themeClasses.text.secondary}`}>
-          This dashboard provides project progress information only.
-        </p>
-        <p className={`text-xs ${themeClasses.text.secondary} mt-1`}>
-          For questions, contact your project manager • Powered by Rhino Fire Protection
-        </p>
+        <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-slate-800/30' : 'bg-gray-50'}`}>
+          <p className={`text-base md:text-lg font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            Rhino Fire Protection
+          </p>
+          <p className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            This dashboard provides real-time project progress information
+          </p>
+          <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} mt-2`}>
+            For questions or concerns, contact your project manager
+          </p>
+        </div>
       </div>
     </div>
   );
