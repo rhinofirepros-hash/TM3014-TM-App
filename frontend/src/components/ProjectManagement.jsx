@@ -283,6 +283,11 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     setShowProjectOverview(true);
   };
 
+  const openInspectionManagement = (project) => {
+    setSelectedProject(project);
+    setShowInspectionManagement(true);
+  };
+
   // If showing project overview, render that component
   if (showProjectOverview && selectedProject) {
     return (
