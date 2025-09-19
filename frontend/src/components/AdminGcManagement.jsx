@@ -304,16 +304,8 @@ const AdminGcManagement = ({ onBack }) => {
               </Dialog>
             </div>
 
-            <AnimatedCard 
-              delay={100}
-              className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white' 
-                  : 'bg-white/70 text-gray-900'
-              }`}
-            >
+            <Card className={themeClasses.card.primary}>
               <CardContent className="p-0">
-                <div className="overflow-x-auto">
                   <Table>
                   <TableHeader>
                     <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
