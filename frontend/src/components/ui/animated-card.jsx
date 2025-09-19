@@ -42,7 +42,7 @@ const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...prop
         isVisible 
           ? "opacity-100 translate-y-0 scale-100" 
           : "opacity-0 translate-y-8 scale-95",
-        "hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1 hover:rotate-[0.5deg]",
+        "transition-colors hover:bg-white/10",
         "active:scale-[0.98] active:shadow-lg",
         className
       )}
