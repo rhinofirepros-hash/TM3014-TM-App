@@ -336,6 +336,77 @@ const AdminGcManagement = ({ onBack }) => {
           </div>
         </TabsContent>
 
+        <TabsContent value="test" className="mt-6">
+          <div className="space-y-6">
+            <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
+              Test GC Dashboard Access
+            </h3>
+            <p className={`${themeClasses.text.secondary}`}>
+              Access GC dashboards directly for testing and troubleshooting without needing PINs.
+            </p>
+
+            <Card className={themeClasses.card.primary}>
+              <CardContent className="p-6">
+                <div className="grid gap-4">
+                  {projects.length === 0 ? (
+                    <div className={`text-center py-8 ${themeClasses.text.secondary}`}>
+                      <ExternalLink className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      No projects available for testing.
+                    </div>
+                  ) : (
+                    projects.map((project) => (
+                      <div 
+                        key={project.id} 
+                        className={`p-4 rounded-lg border transition-colors ${
+                          isDarkMode 
+                            ? 'border-white/20 bg-white/5 hover:bg-white/10' 
+                            : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className={`font-semibold ${themeClasses.text.primary}`}>
+                              {project.name}
+                            </h4>
+                            <p className={`text-sm mt-1 ${themeClasses.text.secondary}`}>
+                              Project ID: {project.id}
+                            </p>
+                            {project.location && (
+                              <p className={`text-xs mt-1 ${themeClasses.text.secondary}`}>
+                                Location: {project.location}
+                              </p>
+                            )}
+                            {project.gc_pin && (
+                              <p className={`text-xs mt-1 font-mono ${themeClasses.text.secondary}`}>
+                                Current PIN: {project.gc_pin}
+                              </p>
+                            )}
+                          </div>
+                          <div className="space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Open GC dashboard in new tab
+                                const url = `/gc-portal/${project.id}`;
+                                window.open(url, '_blank');
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              Open Dashboard
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         <TabsContent value="logs" className="mt-6">
           <div className="space-y-6">
             <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
