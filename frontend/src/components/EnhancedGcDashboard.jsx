@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AnimatedCard, CardContent, CardHeader, CardTitle } from './ui/animated-card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { Progress } from './ui/progress';
 import { 
   Calendar, 
   Users, 
@@ -14,7 +15,12 @@ import {
   Wrench,
   FileCheck,
   Info,
-  ExternalLink
+  ExternalLink,
+  TrendingUp,
+  MapPin,
+  Hammer,
+  Clipboard,
+  PenTool
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
