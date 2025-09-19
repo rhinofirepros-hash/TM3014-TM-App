@@ -1104,7 +1104,7 @@ async def get_gc_dashboard(project_id: str):
             projectLocation=project.get("address", ""),
             projectStatus=project.get("status", "active"),
             overallProgress=75.0,  # Mock calculation
-            lastUpdated=datetime.now().isoformat(),
+            lastUpdated=datetime.now(),
             crewSummary=crew_summary,
             materials=materials_summary,
             tmTagSummary=tm_tag_summary,
