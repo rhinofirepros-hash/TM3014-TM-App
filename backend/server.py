@@ -754,25 +754,28 @@ async def sync_crew_log_to_tm(crew_log):
         logger.info(f"Looking for T&M tag with project_id: {project_id}, date: {date_str}")
             
         # Check if T&M tag exists for same project and date
-        # Handle both string and date formats for date_of_work field
+        # Use a safer approach that handles both string and date formats
+        # First try to find by string match (most common case)
         tm_tag = await db.tm_tags.find_one({
             "project_id": project_id,
-            "$or": [
-                # Case 1: date_of_work is a Date object
-                {
+            "date_of_work": {"$regex": f"^{date_str}"}
+        })
+        
+        # If not found, try to find by date conversion (only if no string matches exist)
+        if not tm_tag:
+            try:
+                tm_tag = await db.tm_tags.find_one({
+                    "project_id": project_id,
                     "$expr": {
                         "$eq": [
                             {"$dateToString": {"format": "%Y-%m-%d", "date": "$date_of_work"}},
                             date_str
                         ]
                     }
-                },
-                # Case 2: date_of_work is a string - check if it starts with the date
-                {
-                    "date_of_work": {"$regex": f"^{date_str}"}
-                }
-            ]
-        })
+                })
+            except Exception as date_query_error:
+                logger.warning(f"Date query failed (expected for string dates): {date_query_error}")
+                # This is expected when date_of_work is stored as string
         
         if tm_tag:
             logger.info(f"Found existing T&M tag: {tm_tag.get('id')}, updating with crew log data")
