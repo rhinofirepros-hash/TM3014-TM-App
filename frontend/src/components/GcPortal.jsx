@@ -34,7 +34,7 @@ const GcPortal = () => {
       {!loginData ? (
         <GcLogin onLoginSuccess={handleLoginSuccess} />
       ) : (
-        <GcDashboard 
+        <EnhancedGcDashboard 
           projectId={loginData.projectId} 
           keyId={loginData.keyId}
           adminAccess={loginData.adminAccess}
