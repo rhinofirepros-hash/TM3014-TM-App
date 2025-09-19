@@ -204,55 +204,64 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
           </AnimatedCardContent>
         </AnimatedCard>
 
-        {/* Project Phases */}
-        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
-        }`}>
-          <div className="p-6">
+        {/* Project Phases - using AnimatedCard */}
+        <AnimatedCard 
+          delay={200}
+          className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}
+        >
+          <AnimatedCardContent className="p-6">
             <div className={`flex items-center gap-2 mb-4`}>
               <Activity className="w-5 h-5 text-blue-500" />
               <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Phases</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dashboardData.phases.map((phase) => {
+              {dashboardData.phases.map((phase, index) => {
                 const PhaseIcon = getPhaseIcon(phase.phase);
                 return (
-                  <div key={phase.id} className={`p-4 rounded-lg border backdrop-blur-sm ${
-                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50/50'
-                  }`}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <PhaseIcon className="w-5 h-5 text-blue-500" />
-                      <h4 className={`font-semibold ${themeClasses.text.primary}`}>
-                        {phase.phase.charAt(0).toUpperCase() + phase.phase.slice(1)}
-                      </h4>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className={`text-sm ${themeClasses.text.secondary}`}>Progress</span>
-                        <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
-                          {Math.round(phase.percentComplete)}%
-                        </span>
+                  <AnimatedCard 
+                    key={phase.id}
+                    delay={300 + index * 50}
+                    className={`cursor-default transition-all duration-300 ease-out backdrop-blur-sm border-0 shadow-md ${
+                      isDarkMode ? 'bg-white/5 text-white hover:bg-white/10' : 'bg-gray-50/50 text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <AnimatedCardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <PhaseIcon className="w-5 h-5 text-blue-500" />
+                        <h4 className={`font-semibold ${themeClasses.text.primary}`}>
+                          {phase.phase.charAt(0).toUpperCase() + phase.phase.slice(1)}
+                        </h4>
                       </div>
-                      <Progress value={phase.percentComplete} className="h-2" />
-                      {phase.plannedDate && (
-                        <p className={`text-xs ${themeClasses.text.secondary}`}>
-                          Planned: {new Date(phase.plannedDate).toLocaleDateString()}
-                        </p>
-                      )}
-                      {phase.actualDate && (
-                        <p className={`text-xs text-green-400`}>
-                          Completed: {new Date(phase.actualDate).toLocaleDateString()}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className={`text-sm ${themeClasses.text.secondary}`}>Progress</span>
+                          <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
+                            {Math.round(phase.percentComplete)}%
+                          </span>
+                        </div>
+                        <Progress value={phase.percentComplete} className="h-2" />
+                        {phase.plannedDate && (
+                          <p className={`text-xs ${themeClasses.text.secondary}`}>
+                            Planned: {new Date(phase.plannedDate).toLocaleDateString()}
+                          </p>
+                        )}
+                        {phase.actualDate && (
+                          <p className={`text-xs text-green-400`}>
+                            Completed: {new Date(phase.actualDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    </AnimatedCardContent>
+                  </AnimatedCard>
                 );
               })}
             </div>
-          </div>
-        </div>
+          </AnimatedCardContent>
+        </AnimatedCard>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
