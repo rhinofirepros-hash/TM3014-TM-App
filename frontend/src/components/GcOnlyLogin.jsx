@@ -12,7 +12,6 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    projectId: '',
     pin: ''
   });
   const [isLoading, setIsLoading] = useState(false);
