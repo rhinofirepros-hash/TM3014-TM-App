@@ -37,7 +37,7 @@ const PinLogin = ({ onLoginSuccess }) => {
           setIsLoading(false);
         }, 1000);
       } else if (pin.length === 4 && /^\d{4}$/.test(pin)) {
-        // 4-digit PIN - try GC login
+        // 4-digit numeric PIN - try GC login
         console.log('Attempting GC login with 4-digit PIN:', pin);
         
         const backendUrl = process.env.REACT_APP_BACKEND_URL;
