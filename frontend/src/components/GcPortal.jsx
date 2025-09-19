@@ -12,12 +12,12 @@ const GcPortal = () => {
     
     if (match) {
       const projectId = match[1];
-      // TEMPORARILY DISABLED: Direct admin access - force GC login for testing
-      // setLoginData({
-      //   projectId: projectId,
-      //   keyId: null,
-      //   adminAccess: true
-      // });
+      // Direct admin access - skip login for admins
+      setLoginData({
+        projectId: projectId,
+        keyId: null,
+        adminAccess: true
+      });
     }
   }, []);
 
