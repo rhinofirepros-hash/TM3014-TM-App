@@ -960,6 +960,10 @@ class GCDashboardTester:
             print("❌ Cannot connect to backend. Stopping tests.")
             return
         
+        # PRIORITY: Test the specific GC Dashboard API fix first
+        print("\n🎯 PRIORITY TEST: GC Dashboard API Fix")
+        self.test_gc_dashboard_api_fix()
+        
         # Setup
         if not self.setup_test_project():
             print("❌ Cannot create test project. Stopping tests.")
