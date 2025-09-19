@@ -59,7 +59,7 @@ const GcDashboard = ({ projectId, keyId }) => {
     const icons = {
       design: Activity,
       approval: CheckCircle,
-      mobilization: Tool,
+      mobilization: Wrench,
       installation: Building,
       inspection: AlertCircle,
       closeout: FileText
