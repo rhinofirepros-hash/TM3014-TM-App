@@ -537,7 +537,11 @@ const FinancialTabs = ({ project, onBack }) => {
 
             {/* Alerts */}
             {latestProfitability.alerts && latestProfitability.alerts.length > 0 && (
-              <Card className={themeClasses.card.primary}>
+              <Card className={`backdrop-blur-md border-0 shadow-xl ${
+        isDarkMode 
+          ? 'bg-white/10 text-white' 
+          : 'bg-white/70 text-gray-900'
+      }`}>
                 <CardHeader>
                   <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
                     <AlertCircle className="w-5 h-5 text-yellow-600" />
