@@ -220,7 +220,7 @@ class GCPinDashboardTester:
         print("\n=== Testing GC Login with Invalid Project ID ===")
         
         login_data = {
-            "project_id": str(uuid.uuid4()),  # Random UUID
+            "projectId": str(uuid.uuid4()),  # Random UUID
             "pin": "1234"
         }
         
