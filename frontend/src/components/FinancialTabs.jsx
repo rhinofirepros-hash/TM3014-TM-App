@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from './ui/card';
+import { useTheme } from '../contexts/ThemeContext';
+import { AnimatedCard, AnimatedCardContent } from './ui/animated-card';
 import { 
   Table, 
   TableBody, 
