@@ -143,69 +143,183 @@ const EnhancedGcDashboard = ({ projectId }) => {
         </div>
       </div>
 
-      {/* Inspection Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <AnimatedCard className={`${themeClasses.card} border-l-4 border-l-orange-500`}>
-          <CardHeader className="pb-3">
-            <CardTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
-              <Wrench className="w-5 h-5" />
-              Rough Inspection
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={`flex items-center gap-3 p-3 rounded-lg ${roughStatus.bgColor}`}>
-              <roughStatus.icon className={`w-6 h-6 ${roughStatus.color}`} />
-              <div>
-                <div className={`font-semibold ${themeClasses.text.primary}`}>
-                  {roughStatus.label}
-                </div>
-                {inspections.rough_inspection_date && (
-                  <div className={`text-sm ${themeClasses.text.secondary}`}>
-                    {new Date(inspections.rough_inspection_date).toLocaleDateString()}
-                  </div>
-                )}
-              </div>
+      {/* Design & Plan Status */}
+      <div className={`p-4 md:p-6 rounded-xl mb-6 ${
+        isDarkMode 
+          ? 'bg-slate-800/50 border border-slate-700' 
+          : 'bg-white border border-gray-200'
+      }`}>
+        <div className="flex items-center gap-3 mb-4">
+          <PenTool className={`w-6 h-6 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+          <h2 className={`text-lg md:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            Design & Planning
+          </h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-slate-700/50' : 'bg-blue-50'}`}>
+            <div className="flex justify-between items-center mb-2">
+              <span className={`font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Design Progress
+              </span>
+              <span className={`text-lg font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                {designProgress}%
+              </span>
             </div>
-            {inspections.rough_inspection_notes && (
-              <div className={`mt-3 p-3 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                <div className={`text-sm ${themeClasses.text.secondary}`}>
-                  {inspections.rough_inspection_notes}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </AnimatedCard>
+            <Progress value={designProgress} className="h-2 mb-2" />
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              Plans submitted and under review
+            </p>
+          </div>
+          
+          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-slate-700/50' : 'bg-green-50'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              <span className={`font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Permits Status
+              </span>
+            </div>
+            <p className={`text-lg font-semibold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+              Approved
+            </p>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              Ready for installation
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <AnimatedCard className={`${themeClasses.card} border-l-4 border-l-green-500`}>
-          <CardHeader className="pb-3">
-            <CardTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
-              <FileCheck className="w-5 h-5" />
-              Final Inspection
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={`flex items-center gap-3 p-3 rounded-lg ${finalStatus.bgColor}`}>
-              <finalStatus.icon className={`w-6 h-6 ${finalStatus.color}`} />
-              <div>
-                <div className={`font-semibold ${themeClasses.text.primary}`}>
-                  {finalStatus.label}
-                </div>
-                {inspections.final_inspection_date && (
-                  <div className={`text-sm ${themeClasses.text.secondary}`}>
-                    {new Date(inspections.final_inspection_date).toLocaleDateString()}
-                  </div>
-                )}
-              </div>
+      {/* CREW INFORMATION - LARGE AND PROMINENT */}
+      <div className={`p-4 md:p-6 rounded-xl mb-6 ${
+        isDarkMode 
+          ? 'bg-gradient-to-r from-blue-900/20 to-indigo-900/20 border border-blue-500/30' 
+          : 'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200'
+      }`}>
+        <div className="flex items-center gap-3 mb-6">
+          <Users className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+          <h2 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            Current Crew Activity
+          </h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="text-center">
+            <div className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+              {crewSummary?.totalHours || 0}
             </div>
-            {inspections.final_inspection_notes && (
-              <div className={`mt-3 p-3 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
-                <div className={`text-sm ${themeClasses.text.secondary}`}>
-                  {inspections.final_inspection_notes}
+            <div className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Total Hours Logged
+            </div>
+          </div>
+          <div className="text-center">
+            <div className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+              {crewSummary?.activeCrewMembers || 0}
+            </div>
+            <div className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Active Crew Members
+            </div>
+          </div>
+          <div className="text-center">
+            <div className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+              {crewSummary?.totalDays || 0}
+            </div>
+            <div className={`text-sm md:text-base font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Work Days
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Work - Large Text for GC to Read */}
+        {crewSummary?.recentDescriptions && crewSummary.recentDescriptions.length > 0 && (
+          <div className={`p-4 md:p-6 rounded-lg ${isDarkMode ? 'bg-slate-800/50' : 'bg-white/70'}`}>
+            <h3 className={`text-lg md:text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Recent Work Activities
+            </h3>
+            <div className="space-y-3">
+              {crewSummary.recentDescriptions.slice(0, 5).map((desc, index) => (
+                <div key={index} className="flex items-start gap-3">
+                  <div className={`w-2 h-2 rounded-full mt-3 ${isDarkMode ? 'bg-blue-400' : 'bg-blue-600'}`} />
+                  <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    {desc}
+                  </p>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Inspection Status Cards - Mobile Optimized */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <div className={`p-4 md:p-6 rounded-xl border-l-4 border-l-orange-500 ${
+          isDarkMode ? 'bg-slate-800/50 border-t border-r border-b border-slate-700' : 'bg-white border border-gray-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <Wrench className={`w-6 h-6 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
+            <h3 className={`text-lg md:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Rough Inspection
+            </h3>
+          </div>
+          
+          <div className={`flex items-center gap-4 p-4 rounded-lg ${
+            isDarkMode ? 'bg-slate-700/50' : roughStatus.bgColor
+          }`}>
+            <roughStatus.icon className={`w-8 h-8 ${roughStatus.color}`} />
+            <div className="flex-1">
+              <div className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {roughStatus.label}
               </div>
-            )}
-          </CardContent>
-        </AnimatedCard>
+              {inspections.rough_inspection_date && (
+                <div className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {new Date(inspections.rough_inspection_date).toLocaleDateString()}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {inspections.rough_inspection_notes && (
+            <div className={`mt-4 p-4 rounded-lg ${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'}`}>
+              <p className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                {inspections.rough_inspection_notes}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className={`p-4 md:p-6 rounded-xl border-l-4 border-l-green-500 ${
+          isDarkMode ? 'bg-slate-800/50 border-t border-r border-b border-slate-700' : 'bg-white border border-gray-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-4">
+            <FileCheck className={`w-6 h-6 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+            <h3 className={`text-lg md:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Final Inspection
+            </h3>
+          </div>
+          
+          <div className={`flex items-center gap-4 p-4 rounded-lg ${
+            isDarkMode ? 'bg-slate-700/50' : finalStatus.bgColor
+          }`}>
+            <finalStatus.icon className={`w-8 h-8 ${finalStatus.color}`} />
+            <div className="flex-1">
+              <div className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {finalStatus.label}
+              </div>
+              {inspections.final_inspection_date && (
+                <div className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {new Date(inspections.final_inspection_date).toLocaleDateString()}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {inspections.final_inspection_notes && (
+            <div className={`mt-4 p-4 rounded-lg ${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'}`}>
+              <p className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                {inspections.final_inspection_notes}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Progress Overview */}
