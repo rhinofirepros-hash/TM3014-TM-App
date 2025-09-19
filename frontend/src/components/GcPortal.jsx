@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GcLogin from './GcLogin';
-import GcDashboard from './GcDashboard';
+import EnhancedGcDashboard from './EnhancedGcDashboard';
 
 const GcPortal = () => {
   const [loginData, setLoginData] = useState(null);
