@@ -103,7 +103,14 @@ class PINSystemTester:
                     self.log_result("Fresh PIN Login", False, f"Login failed: {login_result.get('message', 'Unknown error')}", response)
                     return False
             else:
-                self.log_result("Fresh PIN Login", False, f"HTTP {response.status_code}", response)
+                # Show detailed error response for debugging
+                try:
+                    error_data = response.json()
+                    error_detail = error_data.get("detail", "No detail provided")
+                    print(f"   🔍 Error details: {error_detail}")
+                    self.log_result("Fresh PIN Login", False, f"HTTP {response.status_code} - {error_detail}", response)
+                except:
+                    self.log_result("Fresh PIN Login", False, f"HTTP {response.status_code} - {response.text[:200]}", response)
                 return False
                 
         except Exception as e:
