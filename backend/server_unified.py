@@ -794,6 +794,279 @@ async def health_check():
 # Include router in app
 app.include_router(api_router)
 
+# GC PIN SYSTEM FUNCTIONS
+
+def generate_project_pin():
+    """Generate a unique 4-digit PIN for project access"""
+    return f"{random.randint(1000, 9999)}"
+
+async def ensure_project_has_pin(project_id: str):
+    """Ensure project has a GC access PIN, generate if missing"""
+    try:
+        projects_collection = await get_collection("projects")
+        project = await projects_collection.find_one({"id": project_id})
+        if not project:
+            return None
+            
+        # Check if project has a PIN
+        if not project.get("gc_pin"):
+            # Generate new PIN
+            new_pin = generate_project_pin()
+            
+            # Make sure PIN is unique across all projects
+            while await projects_collection.find_one({"gc_pin": new_pin}):
+                new_pin = generate_project_pin()
+            
+            # Update project with new PIN
+            await projects_collection.update_one(
+                {"id": project_id},
+                {"$set": {"gc_pin": new_pin, "gc_pin_used": False}}
+            )
+            
+            logger.info(f"Generated new PIN for project {project_id}: {new_pin}")
+            return new_pin
+        
+        return project.get("gc_pin")
+        
+    except Exception as e:
+        logger.error(f"Error ensuring project PIN: {e}")
+        return None
+
+# GC DASHBOARD API ROUTES - SIMPLIFIED PIN SYSTEM
+
+@api_router.get("/projects/{project_id}/gc-pin")
+async def get_project_gc_pin(project_id: str):
+    """Admin: Get current GC PIN for project"""
+    try:
+        pin = await ensure_project_has_pin(project_id)
+        if pin:
+            projects_collection = await get_collection("projects")
+            project = await projects_collection.find_one({"id": project_id})
+            return {
+                "projectId": project_id,
+                "projectName": project.get("name", "Unknown Project"),
+                "gcPin": pin,
+                "pinUsed": project.get("gc_pin_used", False)
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Project not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting project GC PIN: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/gc/login-simple")
+async def gc_login_simple(login_data: dict):
+    """GC: Simple login with project ID and PIN"""
+    try:
+        project_id = login_data.get("projectId")
+        pin = login_data.get("pin")
+        ip = login_data.get("ip", "unknown")
+        
+        if not project_id or not pin:
+            raise HTTPException(status_code=400, detail="Project ID and PIN required")
+        
+        # Find project with matching PIN
+        projects_collection = await get_collection("projects")
+        project = await projects_collection.find_one({
+            "id": project_id,
+            "gc_pin": pin,
+            "gc_pin_used": False
+        })
+        
+        if not project:
+            # Log failed access
+            await gc_access_logs_collection.insert_one({
+                "id": str(uuid.uuid4()),
+                "projectId": project_id,
+                "timestamp": datetime.now(),
+                "ip": ip,
+                "status": "failed",
+                "userAgent": login_data.get("userAgent", ""),
+                "failureReason": "Invalid PIN or PIN already used"
+            })
+            raise HTTPException(status_code=401, detail="Invalid PIN or PIN already used")
+        
+        # Mark PIN as used and generate new one
+        new_pin = generate_project_pin()
+        
+        # Ensure new PIN is unique
+        while await projects_collection.find_one({"gc_pin": new_pin}):
+            new_pin = generate_project_pin()
+        
+        # Update project with new PIN
+        await projects_collection.update_one(
+            {"id": project_id},
+            {"$set": {
+                "gc_pin": new_pin,
+                "gc_pin_used": False,
+                "gc_last_access": datetime.now(),
+                "gc_last_ip": ip
+            }}
+        )
+        
+        # Log successful access
+        await gc_access_logs_collection.insert_one({
+            "id": str(uuid.uuid4()),
+            "projectId": project_id,
+            "timestamp": datetime.now(),
+            "ip": ip,
+            "status": "success",
+            "userAgent": login_data.get("userAgent", ""),
+            "usedPin": pin,
+            "newPin": new_pin
+        })
+        
+        logger.info(f"GC login successful for project {project_id}. Old PIN: {pin}, New PIN: {new_pin}")
+        
+        return {
+            "success": True,
+            "projectId": project_id,
+            "projectName": project.get("name", "Unknown Project"),
+            "message": "Login successful",
+            "newPin": new_pin  # Admin can see the new PIN
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error during GC login: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc/dashboard/{project_id}", response_model=GcProjectDashboard)
+async def get_gc_dashboard(project_id: str):
+    """GC: Get project dashboard (no financial data)"""
+    try:
+        projects_collection = await get_collection("projects")
+        project = await projects_collection.find_one({"id": project_id})
+        
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        # Get crew logs for this project
+        crew_logs_collection = await get_collection("crew_logs")
+        crew_logs = await crew_logs_collection.find({"project_id": project_id}).to_list(length=None)
+        
+        # Calculate crew summary (hours/days only, no financial data)
+        total_hours = 0
+        total_days = len(set(log.get("date", "") for log in crew_logs if log.get("date")))
+        active_crew_members = len(set(member.get("name", "") for log in crew_logs for member in log.get("crew", [])))
+        recent_descriptions = []
+        
+        for log in crew_logs:
+            # Sum up all crew member hours
+            for member in log.get("crew", []):
+                total_hours += member.get("straight_time", 0)
+                total_hours += member.get("overtime", 0)
+                total_hours += member.get("double_time", 0)
+                total_hours += member.get("premium_overtime", 0)
+            
+            # Collect recent work descriptions
+            if log.get("work_description"):
+                recent_descriptions.append(log["work_description"])
+        
+        crew_summary = GcCrewSummary(
+            totalHours=total_hours,
+            totalDays=total_days,
+            activeCrewMembers=active_crew_members,
+            recentDescriptions=recent_descriptions[-5:]  # Last 5 descriptions
+        )
+        
+        # Get materials for this project (quantities only)
+        materials_collection = await get_collection("materials")
+        materials = await materials_collection.find({"project_id": project_id}).to_list(length=None)
+        
+        materials_summary = []
+        for material in materials:
+            materials_summary.append({
+                "item": material.get("item", "Unknown Item"),
+                "vendor": material.get("vendor", "Unknown Vendor"),
+                "quantity": material.get("quantity", "N/A"),
+                "date": material.get("date", "")
+            })
+        
+        # Get T&M tags for this project (counts/hours only)
+        tm_tags_collection = await get_collection("tm_tags")
+        tm_tags = await tm_tags_collection.find({"project_id": project_id}).to_list(length=None)
+        
+        total_tm_hours = 0
+        approved_tags = 0
+        submitted_tags = 0
+        
+        for tag in tm_tags:
+            # Count hours from labor entries
+            for entry in tag.get("entries", []):
+                if entry.get("category") == "Labor":
+                    total_tm_hours += entry.get("hours", 0)
+            
+            # Count status
+            status = tag.get("status", "")
+            if status.lower() in ["approved", "submitted"]:
+                approved_tags += 1
+            if status.lower() == "submitted":
+                submitted_tags += 1
+        
+        tm_tag_summary = GcTmTagSummary(
+            totalTags=len(tm_tags),
+            approvedTags=approved_tags,
+            submittedTags=submitted_tags,
+            totalHours=total_tm_hours
+        )
+        
+        # Get project phases (mock data for now)
+        phases = [
+            {
+                "id": str(uuid.uuid4()),
+                "phase": "design",
+                "percentComplete": 100,
+                "plannedDate": datetime.now().isoformat(),
+                "actualDate": datetime.now().isoformat()
+            },
+            {
+                "id": str(uuid.uuid4()),
+                "phase": "installation",
+                "percentComplete": 75,
+                "plannedDate": (datetime.now() + timedelta(days=30)).isoformat(),
+                "actualDate": None
+            }
+        ]
+        
+        # Get inspections (mock data for now)
+        inspections = [
+            {
+                "id": str(uuid.uuid4()),
+                "inspectionType": "Rough-in Inspection",
+                "result": "scheduled",
+                "scheduledDate": (datetime.now() + timedelta(days=7)).isoformat(),
+                "notes": "Scheduled for next week"
+            }
+        ]
+        
+        # Build dashboard response
+        dashboard = GcProjectDashboard(
+            projectId=project_id,
+            projectName=project.get("name", "Unknown Project"),
+            projectLocation=project.get("address", ""),
+            projectStatus=project.get("status", "active"),
+            overallProgress=75.0,  # Mock calculation
+            lastUpdated=datetime.now().isoformat(),
+            crewSummary=crew_summary,
+            materials=materials_summary,
+            tmTagSummary=tm_tag_summary,
+            phases=phases,
+            inspections=inspections,
+            narrative=f"Project {project.get('name', 'Unknown')} is progressing well with {total_hours:.1f} hours logged across {total_days} work days."
+        )
+        
+        return dashboard
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching GC dashboard for project {project_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
