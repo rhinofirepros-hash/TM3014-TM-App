@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { useTheme } from '../contexts/ThemeContext';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { 
-  Building, 
-  Users, 
-  Clock, 
-  FileText,
-  Package,
-  CheckCircle,
-  AlertCircle,
-  Calendar,
+import { AnimatedCard, AnimatedCardContent } from './ui/animated-card';
+import {
   MapPin,
   TrendingUp,
   Activity,
-  Wrench
+  Users,
+  FileText,
+  Package,
+  CheckCircle,
+  Calendar,
+  Clock,
+  Wrench,
+  Zap,
+  Building,
+  Sun,
+  Moon,
+  AlertCircle
 } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
 
 const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
