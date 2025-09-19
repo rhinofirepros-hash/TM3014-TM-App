@@ -2202,14 +2202,14 @@ class TMTagAPITester:
         print("Test 4: Create new project and verify automatic PIN generation")
         new_project_data = {
             "name": "GC PIN Test Project",
-            "description": "Test project for GC PIN system verification",
-            "client_company": "Test Client Corp",
-            "gc_email": "test@client.com",
-            "contract_amount": 50000.00,
-            "labor_rate": 95.0,
-            "project_manager": "Jesus Garcia",
-            "start_date": datetime.now().isoformat(),
-            "address": "123 Test Street, Test City, TS 12345"
+            "client": "Test Client Corp",
+            "contractType": "T&M",
+            "invoiceSchedule": "monthly",
+            "billingDay": 20,
+            "openingBalance": 0.0,
+            "gcRate": 95.0,
+            "startDate": datetime.now().isoformat(),
+            "notes": "Test project for GC PIN system verification"
         }
         
         try:
