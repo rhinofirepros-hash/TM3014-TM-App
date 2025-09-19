@@ -359,10 +359,10 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
           {/* Materials Summary */}
           <AnimatedCard 
             delay={600}
-            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+            className={`cursor-default transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
               isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+                ? 'bg-white/10 text-white' 
+                : 'bg-white/70 text-gray-900'
             }`}
           >
             <CardContent className="p-6">
