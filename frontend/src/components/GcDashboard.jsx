@@ -123,7 +123,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
         ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
         : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
     }`}>
-      {/* Header */}
+      {/* Header - matches main Dashboard */}
       <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
@@ -138,50 +138,56 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   {dashboardData.projectName}
                 </h1>
                 {dashboardData.projectLocation && (
-                  <p className={`flex items-center gap-2 mt-1 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <p className={`flex items-center gap-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <MapPin className="w-4 h-4" />
                     {dashboardData.projectLocation}
                   </p>
                 )}
               </div>
             </div>
-            <div className="text-right">
-              <div className="flex items-center gap-2 mb-2">
-                {getStatusBadge(dashboardData.projectStatus)}
-                {adminAccess && (
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 border-purple-300">
-                      Admin Access
-                    </Badge>
-                    <button
-                      onClick={() => window.close()}
-                      className={`text-xs px-2 py-1 rounded border ${
-                        isDarkMode 
-                          ? 'text-gray-300 border-gray-600 hover:text-white hover:bg-white/10' 
-                          : 'text-gray-600 border-gray-300 hover:text-gray-900 hover:bg-gray-100'
-                      }`}
-                    >
-                      Close Tab
-                    </button>
-                  </div>
-                )}
+            
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <div className="flex items-center gap-2 mb-2">
+                  {getStatusBadge(dashboardData.projectStatus)}
+                  {adminAccess && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700">
+                        Admin Access
+                      </Badge>
+                      <button
+                        onClick={() => window.close()}
+                        className={`text-xs px-2 py-1 rounded border transition-colors ${
+                          isDarkMode 
+                            ? 'text-gray-300 border-gray-600 hover:text-white hover:bg-white/10' 
+                            : 'text-gray-600 border-gray-300 hover:text-gray-900 hover:bg-gray-100'
+                        }`}
+                      >
+                        Close Tab
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
+                </p>
               </div>
-              <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
-              </p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Overall Progress */}
-        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
-        }`}>
-          <div className="p-6">
+        {/* Overall Progress - using AnimatedCard */}
+        <AnimatedCard 
+          delay={100}
+          className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}
+        >
+          <AnimatedCardContent className="p-6">
             <div className={`flex items-center gap-2 mb-4`}>
               <TrendingUp className="w-5 h-5 text-blue-500" />
               <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Overall Project Progress</h2>
@@ -195,8 +201,8 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
               </div>
               <Progress value={dashboardData.overallProgress} className="h-3" />
             </div>
-          </div>
-        </div>
+          </AnimatedCardContent>
+        </AnimatedCard>
 
         {/* Project Phases */}
         <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
