@@ -596,11 +596,12 @@ const FinancialTabs = ({ project, onBack }) => {
       {/* Debug panel for development */}
       <div className={`p-4 rounded-lg border ${themeClasses.card.primary} ${themeClasses.text.secondary}`}>
         <h3 className="font-semibold mb-2">Debug Information:</h3>
-        <div className="grid grid-cols-4 gap-4 text-xs">
+        <div className="grid grid-cols-5 gap-4 text-xs">
           <div>Invoices: {invoices.length} records</div>
           <div>Payables: {payables.length} records</div>
           <div>Cashflow: {cashflowData.length} records</div>
           <div>Profitability: {profitabilityData.length} records</div>
+          <div>Inspections: {inspections.length} records</div>
         </div>
         <div className="mt-2 text-xs">
           Backend URL: {process.env.REACT_APP_BACKEND_URL}
