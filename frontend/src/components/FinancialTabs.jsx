@@ -237,7 +237,11 @@ const FinancialTabs = ({ project, onBack }) => {
         </Button>
       </div>
 
-      <Card className={themeClasses.card.primary}>
+      <Card className={`backdrop-blur-md border-0 shadow-xl ${
+        isDarkMode 
+          ? 'bg-white/10 text-white' 
+          : 'bg-white/70 text-gray-900'
+      }`}>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
