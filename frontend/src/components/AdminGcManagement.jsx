@@ -451,7 +451,7 @@ const AdminGcManagement = ({ onBack }) => {
               GC Access Logs
             </h3>
 
-            <Card className={themeClasses.card.primary}>
+            <AnimatedCard className={themeClasses.card.primary}>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
