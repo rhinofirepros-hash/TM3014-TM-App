@@ -2825,12 +2825,253 @@ class TMTagAPITester:
         
         return self.generate_report()
 
+    def test_gc_pin_system_investigation(self):
+        """Test the specific GC PIN system issue reported by user"""
+        print("\n=== INVESTIGATING GC PIN SYSTEM ISSUE ===")
+        print("User reported: PIN 8598 for '3rd Ave' project not working for login and not showing in table")
+        print("Testing specific project ID: 68cc802f8d44fcd8015b39b8")
+        
+        # Step 1: Get the specific project's PIN
+        print("\nStep 1: Getting PIN for project 68cc802f8d44fcd8015b39b8...")
+        try:
+            response = self.session.get(f"{self.base_url}/projects/68cc802f8d44fcd8015b39b8/gc-pin")
+            
+            if response.status_code == 200:
+                pin_data = response.json()
+                project_pin = pin_data.get("gcPin") or pin_data.get("gc_pin")
+                project_name = pin_data.get("projectName") or pin_data.get("project_name")
+                pin_used = pin_data.get("pinUsed") or pin_data.get("gc_pin_used", False)
+                
+                self.log_result("general", "Get specific project PIN", True, 
+                              f"Project: {project_name}, PIN: {project_pin}, Used: {pin_used}")
+                
+                # Store for later tests
+                self.test_project_id = "68cc802f8d44fcd8015b39b8"
+                self.test_project_pin = project_pin
+                self.test_project_name = project_name
+                
+            else:
+                self.log_result("general", "Get specific project PIN", False, 
+                              f"HTTP {response.status_code}", response)
+                return False
+                
+        except Exception as e:
+            self.log_result("general", "Get specific project PIN", False, str(e))
+            return False
+        
+        # Step 2: Check if the PIN was saved to the project
+        print(f"\nStep 2: Checking if PIN is saved in project record...")
+        try:
+            response = self.session.get(f"{self.base_url}/projects/68cc802f8d44fcd8015b39b8")
+            
+            if response.status_code == 200:
+                project_data = response.json()
+                stored_pin = project_data.get("gc_pin")
+                stored_pin_used = project_data.get("gc_pin_used", False)
+                
+                if stored_pin:
+                    self.log_result("general", "PIN saved in project", True, 
+                                  f"Project has gc_pin: {stored_pin}, gc_pin_used: {stored_pin_used}")
+                    
+                    # Check if it matches the PIN from step 1
+                    if stored_pin == self.test_project_pin:
+                        self.log_result("general", "PIN consistency", True, "PIN matches between endpoints")
+                    else:
+                        self.log_result("general", "PIN consistency", False, 
+                                      f"PIN mismatch: endpoint returned {self.test_project_pin}, project has {stored_pin}")
+                else:
+                    self.log_result("general", "PIN saved in project", False, "Project has no gc_pin field")
+                    
+            else:
+                self.log_result("general", "PIN saved in project", False, 
+                              f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("general", "PIN saved in project", False, str(e))
+        
+        # Step 3: Test GC login with the generated PIN
+        print(f"\nStep 3: Testing GC login with PIN {self.test_project_pin}...")
+        try:
+            login_data = {
+                "projectId": "68cc802f8d44fcd8015b39b8",
+                "pin": self.test_project_pin
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/gc/login-simple",
+                json=login_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                login_result = response.json()
+                if "success" in login_result and login_result["success"]:
+                    self.log_result("general", "GC login with PIN", True, 
+                                  f"Login successful with PIN {self.test_project_pin}")
+                    
+                    # Check if PIN was regenerated after use
+                    new_pin = login_result.get("newPin")
+                    if new_pin:
+                        self.log_result("general", "PIN regeneration", True, 
+                                      f"New PIN generated: {new_pin}")
+                        self.new_pin = new_pin
+                    else:
+                        self.log_result("general", "PIN regeneration", False, "No new PIN in response")
+                        
+                else:
+                    self.log_result("general", "GC login with PIN", False, 
+                                  f"Login failed: {login_result}")
+                    
+            elif response.status_code == 401:
+                error_data = response.json()
+                self.log_result("general", "GC login with PIN", False, 
+                              f"Login rejected (401): {error_data.get('detail', 'Unknown error')}")
+            else:
+                self.log_result("general", "GC login with PIN", False, 
+                              f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("general", "GC login with PIN", False, str(e))
+        
+        # Step 4: Check all projects to see their PIN status
+        print(f"\nStep 4: Checking all projects for PIN status...")
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                projects = response.json()
+                projects_with_pins = 0
+                projects_without_pins = 0
+                target_project_found = False
+                
+                print(f"Found {len(projects)} projects:")
+                for project in projects:
+                    project_id = project.get("id")
+                    project_name = project.get("name", "Unknown")
+                    gc_pin = project.get("gc_pin")
+                    gc_pin_used = project.get("gc_pin_used", False)
+                    
+                    if gc_pin:
+                        projects_with_pins += 1
+                        pin_status = "USED" if gc_pin_used else "ACTIVE"
+                        print(f"  - {project_name} (ID: {project_id[:8]}...): PIN {gc_pin} ({pin_status})")
+                        
+                        if project_id == "68cc802f8d44fcd8015b39b8":
+                            target_project_found = True
+                            if project_name == "3rd Ave":
+                                self.log_result("general", "Target project in list", True, 
+                                              f"'3rd Ave' project found with PIN {gc_pin}")
+                            else:
+                                self.log_result("general", "Target project name", False, 
+                                              f"Project found but name is '{project_name}', not '3rd Ave'")
+                    else:
+                        projects_without_pins += 1
+                        print(f"  - {project_name} (ID: {project_id[:8]}...): NO PIN")
+                
+                if not target_project_found:
+                    self.log_result("general", "Target project in list", False, 
+                                  "Project 68cc802f8d44fcd8015b39b8 not found in projects list")
+                
+                self.log_result("general", "Projects PIN status", True, 
+                              f"{projects_with_pins} projects with PINs, {projects_without_pins} without PINs")
+                
+            else:
+                self.log_result("general", "Projects PIN status", False, 
+                              f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("general", "Projects PIN status", False, str(e))
+        
+        # Step 5: Test if the issue is with PIN 8598 specifically
+        print(f"\nStep 5: Testing if PIN 8598 exists in any project...")
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                projects = response.json()
+                pin_8598_found = False
+                
+                for project in projects:
+                    if project.get("gc_pin") == "8598":
+                        pin_8598_found = True
+                        project_name = project.get("name", "Unknown")
+                        project_id = project.get("id")
+                        self.log_result("general", "PIN 8598 exists", True, 
+                                      f"PIN 8598 found in project '{project_name}' (ID: {project_id})")
+                        break
+                
+                if not pin_8598_found:
+                    self.log_result("general", "PIN 8598 exists", False, 
+                                  "PIN 8598 not found in any project - this explains the login failure")
+                    
+                    # Test login with non-existent PIN 8598
+                    print("Testing login with non-existent PIN 8598...")
+                    login_data = {
+                        "projectId": "68cc802f8d44fcd8015b39b8",
+                        "pin": "8598"
+                    }
+                    
+                    login_response = self.session.post(
+                        f"{self.base_url}/gc/login-simple",
+                        json=login_data,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    
+                    if login_response.status_code == 401:
+                        self.log_result("general", "Invalid PIN rejection", True, 
+                                      "System correctly rejects non-existent PIN 8598")
+                    else:
+                        self.log_result("general", "Invalid PIN rejection", False, 
+                                      f"Unexpected response to invalid PIN: {login_response.status_code}")
+                
+            else:
+                self.log_result("general", "PIN 8598 search", False, 
+                              f"HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("general", "PIN 8598 search", False, str(e))
+        
+        return True
+
+    def run_pin_investigation_tests(self):
+        """Run the specific PIN investigation tests"""
+        print("🚀 Starting GC PIN System Investigation")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # Test basic connectivity first
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Aborting tests.")
+            return self.generate_report()
+        
+        print("\n" + "=" * 60)
+        print("🔍 INVESTIGATING SPECIFIC PIN ISSUE")
+        print("=" * 60)
+        
+        # Run the specific PIN investigation
+        self.test_gc_pin_system_investigation()
+        
+        return self.generate_report()
+
 if __name__ == "__main__":
     tester = TMTagAPITester()
     
-    # Run GC PIN system tests specifically as requested in review
-    print("Running GC PIN System Tests...")
-    results = tester.run_gc_pin_tests()
+    # Check command line arguments for specific test types
+    if len(sys.argv) > 1:
+        test_type = sys.argv[1].lower()
+        
+        if test_type == "pin_investigation":
+            print("Running GC PIN System Investigation...")
+            results = tester.run_pin_investigation_tests()
+        elif test_type == "gc_pin":
+            print("Running GC PIN System Tests...")
+            results = tester.run_gc_pin_tests()
+        else:
+            print("Running GC PIN System Investigation (default)...")
+            results = tester.run_pin_investigation_tests()
+    else:
+        print("Running GC PIN System Investigation...")
+        results = tester.run_pin_investigation_tests()
     
     # Exit with error code if tests failed
     if results["failed"] > 0:
