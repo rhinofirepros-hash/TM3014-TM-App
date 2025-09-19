@@ -22,7 +22,8 @@ import {
   Trash2,
   Eye,
   TrendingUp,
-  Clock
+  Clock,
+  Wrench
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
