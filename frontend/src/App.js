@@ -136,6 +136,11 @@ function App() {
                     />
                   ) : currentView === 'admin-gc' ? (
                     <AdminGcManagement onBack={() => setCurrentView('dashboard')} />
+                  ) : currentView === 'financial' ? (
+                    <FinancialTabs 
+                      project={selectedProject || { id: 'default', name: 'Default Project' }}
+                      onBack={() => setCurrentView('dashboard')} 
+                    />
                   ) : (
                     <TimeAndMaterialForm 
                       selectedProject={selectedProject}
