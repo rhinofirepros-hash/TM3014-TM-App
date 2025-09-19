@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { AnimatedCard, AnimatedCardContent } from './ui/animated-card';
+import { AnimatedCard, CardContent } from './ui/animated-card';
 import {
   MapPin,
   TrendingUp,
