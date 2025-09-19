@@ -243,7 +243,7 @@ const FinancialTabs = ({ project, onBack }) => {
             : 'bg-white/70 text-gray-900'
         }`}
       >
-        <AnimatedCardContent className="p-0">
+        <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
