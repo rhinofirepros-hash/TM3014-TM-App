@@ -119,7 +119,7 @@ class GCPinLoginTester:
         print(f"\n=== Step 3: Verify Old PIN '{old_pin}' is Rejected ===")
         
         login_data = {
-            "project_id": project_id,
+            "projectId": project_id,
             "pin": old_pin
         }
         
