@@ -263,15 +263,18 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
           </AnimatedCardContent>
         </AnimatedCard>
 
-        {/* Summary Cards */}
+        {/* Summary Cards - using AnimatedCard pattern */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Crew Summary */}
-          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
-            <div className="p-6">
+          <AnimatedCard 
+            delay={400}
+            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`}
+          >
+            <AnimatedCardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <Users className="w-5 h-5 text-blue-500" />
                 <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Crew Activity</h3>
@@ -309,16 +312,19 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+            </AnimatedCardContent>
+          </AnimatedCard>
 
           {/* T&M Tags Summary */}
-          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
-            <div className="p-6">
+          <AnimatedCard 
+            delay={500}
+            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`}
+          >
+            <AnimatedCardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <FileText className="w-5 h-5 text-blue-500" />
                 <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Daily Reports</h3>
@@ -347,16 +353,19 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
+            </AnimatedCardContent>
+          </AnimatedCard>
 
           {/* Materials Summary */}
-          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
-            isDarkMode 
-              ? 'bg-white/10 text-white' 
-              : 'bg-white/70 text-gray-900'
-          }`}>
-            <div className="p-6">
+          <AnimatedCard 
+            delay={600}
+            className={`cursor-default hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+              isDarkMode 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-white/70 text-gray-900 hover:bg-white/90'
+            }`}
+          >
+            <AnimatedCardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <Package className="w-5 h-5 text-blue-500" />
                 <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Materials</h3>
@@ -394,8 +403,8 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </p>
                 )}
               </div>
-            </div>
-          </div>
+            </AnimatedCardContent>
+          </AnimatedCard>
         </div>
 
         {/* Inspections */}
