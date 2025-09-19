@@ -196,23 +196,25 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
         </div>
 
         {/* Project Phases */}
-        <Card className={themeClasses.card.primary}>
-          <CardHeader>
-            <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-              <Activity className="w-5 h-5" />
-              Project Phases
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+          isDarkMode 
+            ? 'bg-white/10 text-white' 
+            : 'bg-white/70 text-gray-900'
+        }`}>
+          <div className="p-6">
+            <div className={`flex items-center gap-2 mb-4`}>
+              <Activity className="w-5 h-5 text-blue-500" />
+              <h2 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Project Phases</h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {dashboardData.phases.map((phase) => {
                 const PhaseIcon = getPhaseIcon(phase.phase);
                 return (
-                  <div key={phase.id} className={`p-4 rounded-lg border ${
-                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50'
+                  <div key={phase.id} className={`p-4 rounded-lg border backdrop-blur-sm ${
+                    isDarkMode ? 'border-white/20 bg-white/5' : 'border-gray-200 bg-gray-50/50'
                   }`}>
                     <div className="flex items-center gap-3 mb-3">
-                      <PhaseIcon className="w-5 h-5 text-blue-600" />
+                      <PhaseIcon className="w-5 h-5 text-blue-500" />
                       <h4 className={`font-semibold ${themeClasses.text.primary}`}>
                         {phase.phase.charAt(0).toUpperCase() + phase.phase.slice(1)}
                       </h4>
@@ -231,7 +233,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                         </p>
                       )}
                       {phase.actualDate && (
-                        <p className={`text-xs text-green-600`}>
+                        <p className={`text-xs text-green-400`}>
                           Completed: {new Date(phase.actualDate).toLocaleDateString()}
                         </p>
                       )}
@@ -240,97 +242,107 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                 );
               })}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Crew Summary */}
-          <Card className={themeClasses.card.primary}>
-            <CardHeader>
-              <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                <Users className="w-5 h-5" />
-                Crew Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-                    {dashboardData.crewSummary.totalHours.toFixed(0)}
-                  </p>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Total Hours</p>
-                </div>
-                <div className="text-center">
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-                    {dashboardData.crewSummary.totalDays}
-                  </p>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Work Days</p>
-                </div>
+          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <div className="p-6">
+              <div className={`flex items-center gap-2 mb-4`}>
+                <Users className="w-5 h-5 text-blue-500" />
+                <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Crew Activity</h3>
               </div>
-              <div className="pt-2 border-t">
-                <p className={`text-sm font-medium mb-2 ${themeClasses.text.primary}`}>
-                  Active Crew: {dashboardData.crewSummary.activeCrewMembers} members
-                </p>
-                {dashboardData.crewSummary.recentDescriptions.length > 0 && (
-                  <div>
-                    <p className={`text-xs font-medium mb-1 ${themeClasses.text.secondary}`}>
-                      Recent Work:
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+                      {dashboardData.crewSummary.totalHours.toFixed(0)}
                     </p>
-                    {dashboardData.crewSummary.recentDescriptions.slice(0, 2).map((desc, index) => (
-                      <p key={index} className={`text-xs ${themeClasses.text.secondary} mb-1 truncate`}>
-                        • {desc}
-                      </p>
-                    ))}
+                    <p className={`text-sm ${themeClasses.text.secondary}`}>Total Hours</p>
                   </div>
-                )}
+                  <div className="text-center">
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+                      {dashboardData.crewSummary.totalDays}
+                    </p>
+                    <p className={`text-sm ${themeClasses.text.secondary}`}>Work Days</p>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-white/20">
+                  <p className={`text-sm font-medium mb-2 ${themeClasses.text.primary}`}>
+                    Active Crew: {dashboardData.crewSummary.activeCrewMembers} members
+                  </p>
+                  {dashboardData.crewSummary.recentDescriptions.length > 0 && (
+                    <div>
+                      <p className={`text-xs font-medium mb-1 ${themeClasses.text.secondary}`}>
+                        Recent Work:
+                      </p>
+                      {dashboardData.crewSummary.recentDescriptions.slice(0, 2).map((desc, index) => (
+                        <p key={index} className={`text-xs ${themeClasses.text.secondary} mb-1 truncate`}>
+                          • {desc}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* T&M Tags Summary */}
-          <Card className={themeClasses.card.primary}>
-            <CardHeader>
-              <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                <FileText className="w-5 h-5" />
-                Daily Reports
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-                    {dashboardData.tmTagSummary.totalTags}
-                  </p>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Total Tags</p>
+          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <div className="p-6">
+              <div className={`flex items-center gap-2 mb-4`}>
+                <FileText className="w-5 h-5 text-blue-500" />
+                <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Daily Reports</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+                      {dashboardData.tmTagSummary.totalTags}
+                    </p>
+                    <p className={`text-sm ${themeClasses.text.secondary}`}>Total Tags</p>
+                  </div>
+                  <div className="text-center">
+                    <p className={`text-2xl font-bold text-green-400`}>
+                      {dashboardData.tmTagSummary.approvedTags}
+                    </p>
+                    <p className={`text-sm ${themeClasses.text.secondary}`}>Approved</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <p className={`text-2xl font-bold text-green-600`}>
-                    {dashboardData.tmTagSummary.approvedTags}
+                <div className="pt-2 border-t border-white/20">
+                  <p className={`text-sm ${themeClasses.text.secondary}`}>
+                    Submitted: {dashboardData.tmTagSummary.submittedTags} tags
                   </p>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Approved</p>
+                  <p className={`text-sm ${themeClasses.text.secondary}`}>
+                    Total Hours: {dashboardData.tmTagSummary.totalHours.toFixed(0)} hrs
+                  </p>
                 </div>
               </div>
-              <div className="pt-2 border-t">
-                <p className={`text-sm ${themeClasses.text.secondary}`}>
-                  Submitted: {dashboardData.tmTagSummary.submittedTags} tags
-                </p>
-                <p className={`text-sm ${themeClasses.text.secondary}`}>
-                  Total Hours: {dashboardData.tmTagSummary.totalHours.toFixed(0)} hrs
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Materials Summary */}
-          <Card className={themeClasses.card.primary}>
-            <CardHeader>
-              <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                <Package className="w-5 h-5" />
-                Materials
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg ${
+            isDarkMode 
+              ? 'bg-white/10 text-white' 
+              : 'bg-white/70 text-gray-900'
+          }`}>
+            <div className="p-6">
+              <div className={`flex items-center gap-2 mb-4`}>
+                <Package className="w-5 h-5 text-blue-500" />
+                <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Materials</h3>
+              </div>
               <div className="space-y-3">
                 {dashboardData.materials.length === 0 ? (
                   <p className={`text-sm ${themeClasses.text.secondary}`}>
@@ -364,8 +376,8 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </p>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Inspections */}
