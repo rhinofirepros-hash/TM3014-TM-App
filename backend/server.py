@@ -891,25 +891,28 @@ async def sync_tm_to_crew_log(tm_tag):
             date_str = work_date.split("T")[0] if isinstance(work_date, str) else str(work_date)
             
         # Check if crew log exists for same project and date
-        # Handle both string and date formats for date field
+        # Use a safer approach that handles both string and date formats
+        # First try to find by string match (most common case)
         crew_log = await db.crew_logs.find_one({
             "project_id": project_id,
-            "$or": [
-                # Case 1: date is a Date object
-                {
+            "date": {"$regex": f"^{date_str}"}
+        })
+        
+        # If not found, try to find by date conversion (only if no string matches exist)
+        if not crew_log:
+            try:
+                crew_log = await db.crew_logs.find_one({
+                    "project_id": project_id,
                     "$expr": {
                         "$eq": [
                             {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
                             date_str
                         ]
                     }
-                },
-                # Case 2: date is a string - check if it starts with the date
-                {
-                    "date": {"$regex": f"^{date_str}"}
-                }
-            ]
-        })
+                })
+            except Exception as date_query_error:
+                logger.warning(f"Date query failed (expected for string dates): {date_query_error}")
+                # This is expected when date is stored as string
         
         if not crew_log:
             # Create new crew log from T&M data
