@@ -888,14 +888,24 @@ async def sync_tm_to_crew_log(tm_tag):
             date_str = work_date.split("T")[0] if isinstance(work_date, str) else str(work_date)
             
         # Check if crew log exists for same project and date
+        # Handle both string and date formats for date field
         crew_log = await db.crew_logs.find_one({
             "project_id": project_id,
-            "$expr": {
-                "$eq": [
-                    {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
-                    date_str
-                ]
-            }
+            "$or": [
+                # Case 1: date is a Date object
+                {
+                    "$expr": {
+                        "$eq": [
+                            {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+                            date_str
+                        ]
+                    }
+                },
+                # Case 2: date is a string - check if it starts with the date
+                {
+                    "date": {"$regex": f"^{date_str}"}
+                }
+            ]
         })
         
         if not crew_log:
