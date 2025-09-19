@@ -338,7 +338,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBackToDashboard }) => {
 
           // Reset form and navigate
           resetForm();
-          if (onSubmit) {
+          if (typeof onSubmit === 'function') {
             onSubmit();
           }
         } else {
