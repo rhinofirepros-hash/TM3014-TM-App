@@ -126,29 +126,29 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
       {/* Header - matches main Dashboard */}
       <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
               <img 
                 src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
                 alt="Rhino Fire Protection" 
-                className="h-10 w-auto"
+                className="h-8 sm:h-10 w-auto"
               />
               <div>
-                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h1 className={`text-xl sm:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                   {dashboardData.projectName}
                 </h1>
                 {dashboardData.projectLocation && (
                   <p className={`flex items-center gap-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <MapPin className="w-4 h-4" />
-                    {dashboardData.projectLocation}
+                    <span className="truncate">{dashboardData.projectLocation}</span>
                   </p>
                 )}
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center space-x-4 text-right">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {getStatusBadge(dashboardData.projectStatus)}
                   {adminAccess && (
                     <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                     </div>
                   )}
                 </div>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`text-xs sm:text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
                 </p>
               </div>
@@ -177,7 +177,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         {/* Overall Progress - using AnimatedCard */}
         <AnimatedCard 
           delay={100}
