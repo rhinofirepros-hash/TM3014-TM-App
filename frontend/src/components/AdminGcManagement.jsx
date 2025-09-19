@@ -207,7 +207,7 @@ const AdminGcManagement = ({ onBack }) => {
                 <DialogTrigger asChild>
                   <Button className="flex items-center gap-2">
                     <Plus className="w-4 h-4" />
-                    Generate New Key
+                    Get Project PIN
                   </Button>
                 </DialogTrigger>
                 <DialogContent className={`sm:max-w-[500px] ${themeClasses.modal}`}>
