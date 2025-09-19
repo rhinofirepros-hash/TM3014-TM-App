@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
-const GcDashboard = ({ projectId, keyId }) => {
+const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
