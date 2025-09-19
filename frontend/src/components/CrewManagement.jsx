@@ -53,15 +53,12 @@ const CrewManagement = ({ onBack }) => {
   const { toast } = useToast();
 
   const positions = [
-    'Apprentice Electrician',
-    'Journeyman Electrician', 
-    'Senior Electrician',
-    'Master Electrician',
-    'Foreman',
-    'Project Manager',
     'Helper',
-    'Welder',
-    'Pipe Fitter'
+    'Fitter',
+    'Journeyman',
+    'Foreman',
+    'Superintendent',
+    'Project Manager'
   ];
 
   useEffect(() => {
