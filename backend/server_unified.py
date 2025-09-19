@@ -801,7 +801,20 @@ async def ensure_project_has_pin(project_id: str):
     """Ensure project has a GC access PIN, generate if missing"""
     try:
         projects_collection = await get_collection("projects")
+        
+        # Try to find project by id field first, then by _id field
         project = await projects_collection.find_one({"id": project_id})
+        if not project:
+            # Try finding by _id field (for unified schema)
+            try:
+                from bson import ObjectId
+                if ObjectId.is_valid(project_id):
+                    project = await projects_collection.find_one({"_id": ObjectId(project_id)})
+                else:
+                    project = await projects_collection.find_one({"_id": project_id})
+            except:
+                pass
+        
         if not project:
             return None
             
