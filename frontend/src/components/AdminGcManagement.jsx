@@ -156,31 +156,53 @@ const AdminGcManagement = ({ onBack }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-          GC Access Management
-        </h2>
-        <Button variant="outline" onClick={onBack}>
-          Back to Dashboard
-        </Button>
+    <div className={`min-h-screen ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    }`}>
+      {/* Header */}
+      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center space-x-4">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
+                alt="Rhino Fire Protection" 
+                className="h-8 sm:h-10 w-auto"
+              />
+              <div>
+                <h2 className={`text-xl sm:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  GC Access Management
+                </h2>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Manage General Contractor Access
+                </p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={onBack} className="backdrop-blur-sm bg-white/10 border-white/20 w-full sm:w-auto">
+              Back to Dashboard
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <Tabs defaultValue="keys" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="keys" className="flex items-center gap-2">
-            <Key className="w-4 h-4" />
-            Access Keys
-          </TabsTrigger>
-          <TabsTrigger value="test" className="flex items-center gap-2">
-            <ExternalLink className="w-4 h-4" />
-            Test GC Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="logs" className="flex items-center gap-2">
-            <Activity className="w-4 h-4" />
-            Access Logs
-          </TabsTrigger>
-        </TabsList>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+        <Tabs defaultValue="keys" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 backdrop-blur-md bg-white/10 border-white/20">
+            <TabsTrigger value="keys" className="flex items-center gap-2">
+              <Key className="w-4 h-4" />
+              <span className="hidden sm:inline">Access Keys</span>
+            </TabsTrigger>
+            <TabsTrigger value="test" className="flex items-center gap-2">
+              <ExternalLink className="w-4 h-4" />
+              <span className="hidden sm:inline">Test GC Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="logs" className="flex items-center gap-2 col-span-2 sm:col-span-1">
+              <Activity className="w-4 h-4" />
+              <span className="hidden sm:inline">Access Logs</span>
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="keys" className="mt-6">
           <div className="space-y-6">
