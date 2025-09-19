@@ -114,8 +114,16 @@ const FinancialTabs = ({ project, onBack }) => {
         console.error('Profitability API error:', profitabilityRes.status, await profitabilityRes.text());
       }
 
+      if (inspectionsRes.ok) {
+        const inspectionsData = await inspectionsRes.json();
+        console.log('Inspections data:', inspectionsData);
+        setInspections(inspectionsData);
+      } else {
+        console.error('Inspections API error:', inspectionsRes.status, await inspectionsRes.text());
+      }
+
       // If no data exists, show sample data for demonstration
-      if (invoices.length === 0 && payables.length === 0 && cashflowData.length === 0 && profitabilityData.length === 0) {
+      if (invoices.length === 0 && payables.length === 0 && cashflowData.length === 0 && profitabilityData.length === 0 && inspections.length === 0) {
         console.log('No financial data found, showing demo message');
       }
       
