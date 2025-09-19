@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { format } from 'date-fns';
-import { CalendarIcon, CheckCircle, Clock, AlertCircle, Wrench, FileCheck } from 'lucide-react';
+import { CalendarIcon, CheckCircle, Clock, AlertCircle, Wrench, FileCheck, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
