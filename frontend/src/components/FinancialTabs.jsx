@@ -393,7 +393,11 @@ const FinancialTabs = ({ project, onBack }) => {
 
         {/* Cashflow Chart */}
         {cashflowData.length > 0 && (
-          <Card className={themeClasses.card.primary}>
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+        isDarkMode 
+          ? 'bg-white/10 text-white' 
+          : 'bg-white/70 text-gray-900'
+      }`}>
             <CardHeader>
               <CardTitle className={themeClasses.text.primary}>Cashflow Over Time</CardTitle>
             </CardHeader>
