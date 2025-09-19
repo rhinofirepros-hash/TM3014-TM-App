@@ -21,7 +21,8 @@ from models_financial import (
     Invoice, InvoiceCreate, InvoiceUpdate,
     Payable, PayableCreate, PayableUpdate,
     CashflowForecast, CashflowForecastCreate, CashflowForecastUpdate,
-    Profitability, ProfitabilityCreate, ProfitabilityUpdate
+    Profitability, ProfitabilityCreate, ProfitabilityUpdate,
+    Inspection, InspectionCreate, InspectionUpdate
 )
 
 ROOT_DIR = Path(__file__).parent
