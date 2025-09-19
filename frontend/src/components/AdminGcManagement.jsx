@@ -285,46 +285,45 @@ const AdminGcManagement = ({ onBack }) => {
                   <TableHeader>
                     <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
                       <TableHead className={themeClasses.text.primary}>Project</TableHead>
-                      <TableHead className={themeClasses.text.primary}>Key</TableHead>
-                      <TableHead className={themeClasses.text.primary}>Expires</TableHead>
+                      <TableHead className={themeClasses.text.primary}>Current PIN</TableHead>
+                      <TableHead className={themeClasses.text.primary}>PIN Used</TableHead>
                       <TableHead className={themeClasses.text.primary}>Status</TableHead>
-                      <TableHead className={themeClasses.text.primary}>Used At</TableHead>
+                      <TableHead className={themeClasses.text.primary}>Last Access</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {gcKeys.length === 0 ? (
+                    {projects.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} className={`text-center py-8 ${themeClasses.text.secondary}`}>
                           <Key className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                          No GC keys generated yet. Create your first key to get started.
+                          No projects available.
                         </TableCell>
                       </TableRow>
                     ) : (
-                      gcKeys.map((key) => {
-                        const isExpired = new Date(key.expiresAt) < new Date();
-                        return (
-                          <TableRow key={key.id} className={`${isDarkMode ? 'border-white/10' : 'border-gray-100'} hover:bg-gray-50 dark:hover:bg-white/5`}>
-                            <TableCell className={themeClasses.text.primary}>
-                              {key.projectName}
-                            </TableCell>
-                            <TableCell className={`font-mono ${themeClasses.text.primary}`}>
-                              ****{key.keyLastFour}
-                            </TableCell>
-                            <TableCell className={themeClasses.text.secondary}>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-3 h-3" />
-                                {new Date(key.expiresAt).toLocaleDateString()}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {getStatusBadge(null, key.used, isExpired)}
-                            </TableCell>
-                            <TableCell className={themeClasses.text.secondary}>
-                              {key.usedAt ? new Date(key.usedAt).toLocaleString() : '-'}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
+                      projects.map((project) => (
+                        <TableRow key={project.id} className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
+                          <TableCell className={themeClasses.text.primary}>
+                            <div>
+                              <div className="font-medium">{project.name}</div>
+                              <div className="text-sm text-gray-500">{project.id}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className={`font-mono ${themeClasses.text.primary}`}>
+                            {project.gc_pin || 'Not Set'}
+                          </TableCell>
+                          <TableCell>
+                            {getStatusBadge(null, project.gc_pin_used, false)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
+                              {project.status || 'active'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className={themeClasses.text.secondary}>
+                            {project.gc_last_access ? new Date(project.gc_last_access).toLocaleString() : 'Never'}
+                          </TableCell>
+                        </TableRow>
+                      ))
                     )}
                   </TableBody>
                   </Table>
