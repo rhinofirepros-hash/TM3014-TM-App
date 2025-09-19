@@ -659,7 +659,10 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {newProject.start_date ? format(newProject.start_date, "MM/dd/yyyy") : "Pick a date"}
+                      {newProject.start_date && !isNaN(new Date(newProject.start_date)) 
+                        ? format(new Date(newProject.start_date), "MM/dd/yyyy") 
+                        : "Pick a date"
+                      }
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className={`w-auto p-0 ${themeClasses.modal}`} align="start">
