@@ -12,9 +12,18 @@ import uuid
 
 # Enums for type safety
 class ProjectStatus(str, Enum):
+    """Project status enumeration"""
     ACTIVE = "active"
     COMPLETED = "completed"
-    ON_HOLD = "on-hold"
+    PAUSED = "paused"
+    CANCELLED = "cancelled"
+
+class PlanSubmittalStatus(str, Enum):
+    """Plan submittal status enumeration"""
+    IN_DESIGN = "in_design"
+    SUBMITTED = "submitted"
+    CORRECTIONS = "corrections"  
+    APPROVED = "approved"
 
 class ContractType(str, Enum):
     TM = "T&M"
