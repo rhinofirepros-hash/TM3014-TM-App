@@ -25,6 +25,20 @@ class AlertType(str, Enum):
     LOW_MARGIN = "low_margin"
     OVER_BUDGET = "over_budget"
 
+class InspectionType(str, Enum):
+    ROUGH = "rough"
+    PARTIAL_ROUGH = "partial_rough"
+    FINAL = "final"
+    PARTIAL_FINAL = "partial_final"
+    UNDERGROUND = "underground"
+    OTHER = "other"
+
+class InspectionStatus(str, Enum):
+    SCHEDULED = "scheduled"
+    PASSED = "passed"
+    FAILED = "failed"
+    PENDING = "pending"
+
 # Core Models
 class LineItem(BaseModel):
     """Invoice line item"""
