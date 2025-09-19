@@ -175,7 +175,7 @@ class GCPinDashboardTester:
             return False
         
         login_data = {
-            "project_id": self.test_project_id,
+            "projectId": self.test_project_id,
             "pin": self.test_project_pin
         }
         
