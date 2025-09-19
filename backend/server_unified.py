@@ -1067,31 +1067,34 @@ async def get_gc_dashboard(project_id: str):
         
         # Get project phases (mock data for now)
         phases = [
-            {
-                "id": str(uuid.uuid4()),
-                "phase": "design",
-                "percentComplete": 100,
-                "plannedDate": datetime.now().isoformat(),
-                "actualDate": datetime.now().isoformat()
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "phase": "installation",
-                "percentComplete": 75,
-                "plannedDate": (datetime.now() + timedelta(days=30)).isoformat(),
-                "actualDate": None
-            }
+            ProjectPhaseModel(
+                id=str(uuid.uuid4()),
+                projectId=project_id,
+                phase="design",
+                percentComplete=100,
+                plannedDate=datetime.now(),
+                actualDate=datetime.now()
+            ),
+            ProjectPhaseModel(
+                id=str(uuid.uuid4()),
+                projectId=project_id,
+                phase="installation",
+                percentComplete=75,
+                plannedDate=datetime.now() + timedelta(days=30),
+                actualDate=None
+            )
         ]
         
         # Get inspections (mock data for now)
         inspections = [
-            {
-                "id": str(uuid.uuid4()),
-                "inspectionType": "Rough-in Inspection",
-                "result": "scheduled",
-                "scheduledDate": (datetime.now() + timedelta(days=7)).isoformat(),
-                "notes": "Scheduled for next week"
-            }
+            InspectionStatusModel(
+                id=str(uuid.uuid4()),
+                projectId=project_id,
+                inspectionType="Rough-in Inspection",
+                result="pending",
+                scheduledDate=datetime.now() + timedelta(days=7),
+                notes="Scheduled for next week"
+            )
         ]
         
         # Build dashboard response
