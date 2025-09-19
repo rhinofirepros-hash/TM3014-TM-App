@@ -90,17 +90,13 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('GC login successful:', data);
         toast({
           title: "Login Successful",
           description: `Welcome to ${data.projectName} project dashboard`,
         });
         
-        onLoginSuccess({
-          projectId: matchingProject.id,
-          keyId: null,
-          adminAccess: false
-        });
+        // Navigate to GC dashboard
+        window.location.href = `/gc-portal/${matchingProject.id}`;
       } else {
         const error = await response.json();
         console.error('GC login failed:', error);
