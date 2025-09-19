@@ -118,7 +118,11 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
         estimated_hours: parseFloat(newProject.estimated_hours) || 0,
         estimated_labor_cost: parseFloat(newProject.estimated_labor_cost) || 0,
         estimated_material_cost: parseFloat(newProject.estimated_material_cost) || 0,
-        estimated_profit: parseFloat(newProject.estimated_profit) || 0
+        estimated_profit: parseFloat(newProject.estimated_profit) || 0,
+        // Include plan submittal fields
+        plan_submittal_status: newProject.plan_submittal_status || (newProject.project_type === 'tm_only' ? 'approved' : 'in_design'),
+        plan_submittal_date: newProject.plan_submittal_date ? newProject.plan_submittal_date.toISOString() : null,
+        plan_submittal_notes: newProject.plan_submittal_notes || ''
       };
 
       const response = await fetch(`${backendUrl}/api/projects`, {
