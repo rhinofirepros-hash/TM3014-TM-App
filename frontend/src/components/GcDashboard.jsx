@@ -431,7 +431,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                       isDarkMode ? 'bg-white/5 text-white hover:bg-white/10' : 'bg-gray-50/50 text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                    <AnimatedCardContent className="p-4">
+                    <div className="p-4">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className={`font-semibold ${themeClasses.text.primary}`}>
                           {inspection.inspectionType}
@@ -449,7 +449,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                           {inspection.notes}
                         </p>
                       )}
-                    </AnimatedCardContent>
+                    </div>
                   </AnimatedCard>
                 ))}
               </div>
