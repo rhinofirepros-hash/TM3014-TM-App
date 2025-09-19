@@ -78,7 +78,8 @@ const FinancialTabs = ({ project, onBack }) => {
         invoices: invoicesRes.status,
         payables: payablesRes.status,
         cashflow: cashflowRes.status,
-        profitability: profitabilityRes.status
+        profitability: profitabilityRes.status,
+        inspections: inspectionsRes.status
       });
 
       if (invoicesRes.ok) {
