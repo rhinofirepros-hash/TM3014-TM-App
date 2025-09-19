@@ -1,812 +1,654 @@
 import React, { useState, useEffect } from 'react';
-import { AnimatedCard, CardContent } from './ui/animated-card';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from './ui/table';
-import { Button } from './ui/button';
+import { AnimatedCard, CardContent, CardHeader, CardTitle } from './ui/animated-card';
 import { Badge } from './ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  TrendingUp, 
-  TrendingDown,
-  AlertCircle,
-  DollarSign,
-  Receipt,
-  CreditCard,
-  BarChart3
+  DollarSign, 
+  FileText, 
+  Calculator, 
+  TrendingUp,
+  PlusCircle,
+  Edit,
+  Trash2,
+  Download,
+  Filter,
+  Search,
+  ArrowLeft
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useToast } from '../hooks/use-toast';
 
 const FinancialTabs = ({ project, onBack }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
+  const { toast } = useToast();
   
-  // State for each financial module
+  const [activeTab, setActiveTab] = useState('invoices');
+  const [loading, setLoading] = useState(true);
+  
+  // Financial data states
   const [invoices, setInvoices] = useState([]);
   const [payables, setPayables] = useState([]);
-  const [cashflowData, setCashflowData] = useState([]);
-  const [profitabilityData, setProfitabilityData] = useState([]);
-  const [inspections, setInspections] = useState([]);
-  
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('invoices');
+  const [cashflowData, setCashflowData] = useState(null);
+  const [profitabilityData, setProfitabilityData] = useState(null);
 
-  const projectId = project?.id;
+  // Modal states
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
-    if (projectId) {
-      loadFinancialData();
-    } else {
-      setLoading(false);
-      setError('No project ID available');
-    }
-  }, [projectId]);
+    fetchFinancialData();
+  }, [project.id]);
 
-  const loadFinancialData = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchFinancialData = async () => {
     try {
+      setLoading(true);
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      console.log('Loading financial data for project:', projectId);
-      console.log('Backend URL:', backendUrl);
       
-      // Load all financial data in parallel
-      const [invoicesRes, payablesRes, cashflowRes, profitabilityRes, inspectionsRes] = await Promise.all([
-        fetch(`${backendUrl}/api/invoices/${projectId}`),
-        fetch(`${backendUrl}/api/payables/${projectId}`),
-        fetch(`${backendUrl}/api/cashflow/${projectId}`),
-        fetch(`${backendUrl}/api/profitability/${projectId}`),
-        fetch(`${backendUrl}/api/inspections/${projectId}`)
+      // Fetch all financial data concurrently
+      const [invoicesRes, payablesRes, cashflowRes, profitabilityRes] = await Promise.all([
+        fetch(`${backendUrl}/api/invoices?projectId=${project.id}`),
+        fetch(`${backendUrl}/api/payables?projectId=${project.id}`),
+        fetch(`${backendUrl}/api/cashflow?projectId=${project.id}`),
+        fetch(`${backendUrl}/api/profitability?projectId=${project.id}`)
       ]);
-
-      console.log('API Responses:', {
-        invoices: invoicesRes.status,
-        payables: payablesRes.status,
-        cashflow: cashflowRes.status,
-        profitability: profitabilityRes.status,
-        inspections: inspectionsRes.status
-      });
-
+      
+      // Process responses
       if (invoicesRes.ok) {
         const invoicesData = await invoicesRes.json();
-        console.log('Invoices data:', invoicesData);
         setInvoices(invoicesData);
       } else {
         console.error('Invoices API error:', invoicesRes.status, await invoicesRes.text());
+        setInvoices([]); // Set empty array on error
       }
       
       if (payablesRes.ok) {
         const payablesData = await payablesRes.json();
-        console.log('Payables data:', payablesData);
         setPayables(payablesData);
       } else {
         console.error('Payables API error:', payablesRes.status, await payablesRes.text());
+        setPayables([]); // Set empty array on error
       }
       
       if (cashflowRes.ok) {
         const cashflowResData = await cashflowRes.json();
-        console.log('Cashflow data:', cashflowResData);
         setCashflowData(cashflowResData);
       } else {
         console.error('Cashflow API error:', cashflowRes.status, await cashflowRes.text());
+        setCashflowData(null);
       }
       
       if (profitabilityRes.ok) {
         const profitabilityResData = await profitabilityRes.json();
-        console.log('Profitability data:', profitabilityResData);
         setProfitabilityData(profitabilityResData);
       } else {
         console.error('Profitability API error:', profitabilityRes.status, await profitabilityRes.text());
+        setProfitabilityData(null);
       }
 
-      if (inspectionsRes.ok) {
-        const inspectionsData = await inspectionsRes.json();
-        console.log('Inspections data:', inspectionsData);
-        setInspections(inspectionsData);
-      } else {
-        console.error('Inspections API error:', inspectionsRes.status, await inspectionsRes.text());
-      }
-
-      // If no data exists, show sample data for demonstration
-      if (invoices.length === 0 && payables.length === 0 && cashflowData.length === 0 && profitabilityData.length === 0 && inspections.length === 0) {
-        console.log('No financial data found, showing demo message');
-      }
-      
     } catch (error) {
-      console.error('Error loading financial data:', error);
-      setError(error.message);
+      console.error('Error fetching financial data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load financial data",
+        variant: "destructive"
+      });
+      // Set default empty states
+      setInvoices([]);
+      setPayables([]);
+      setCashflowData(null);
+      setProfitabilityData(null);
     } finally {
       setLoading(false);
     }
   };
 
-  // Status badge helper
-  const getStatusBadge = (status, type = 'default') => {
-    const statusColors = {
-      draft: 'secondary',
-      sent: 'default',
-      paid: 'success',
-      overdue: 'destructive',
-      pending: 'secondary'
-    };
-    
-    return (
-      <Badge variant={statusColors[status] || 'secondary'}>
-        {status?.charAt(0).toUpperCase() + status?.slice(1)}
-      </Badge>
-    );
+  const handleCreateItem = async (itemData) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const endpoint = activeTab === 'invoices' ? 'invoices' : 'payables';
+      
+      const response = await fetch(`${backendUrl}/api/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...itemData,
+          projectId: project.id
+        })
+      });
+
+      if (response.ok) {
+        const newItem = await response.json();
+        
+        if (activeTab === 'invoices') {
+          setInvoices([...invoices, newItem]);
+        } else {
+          setPayables([...payables, newItem]);
+        }
+        
+        setShowCreateModal(false);
+        toast({
+          title: "Success",
+          description: `${activeTab.slice(0, -1)} created successfully`
+        });
+      } else {
+        throw new Error(`Failed to create ${activeTab.slice(0, -1)}`);
+      }
+    } catch (error) {
+      console.error('Error creating item:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
-  // Invoices Tab Component
-  const InvoicesTab = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
+  const handleDeleteItem = async (itemId) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const endpoint = activeTab === 'invoices' ? 'invoices' : 'payables';
+      
+      const response = await fetch(`${backendUrl}/api/${endpoint}/${itemId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        if (activeTab === 'invoices') {
+          setInvoices(invoices.filter(item => item.id !== itemId));
+        } else {
+          setPayables(payables.filter(item => item.id !== itemId));
+        }
+        
+        toast({
+          title: "Success",
+          description: `${activeTab.slice(0, -1)} deleted successfully`
+        });
+      } else {
+        throw new Error(`Failed to delete ${activeTab.slice(0, -1)}`);
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const tabs = [
+    { id: 'invoices', label: 'Invoices', icon: FileText, data: invoices },
+    { id: 'payables', label: 'Payables', icon: Calculator, data: payables },
+    { id: 'cashflow', label: 'Cashflow', icon: TrendingUp, data: cashflowData },
+    { id: 'profitability', label: 'Profitability', icon: DollarSign, data: profitabilityData }
+  ];
+
+  const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className={`text-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            Loading financial data...
+          </div>
+        </div>
+      );
+    }
+
+    const currentTab = tabs.find(tab => tab.id === activeTab);
+    
+    switch (activeTab) {
+      case 'invoices':
+        return <InvoicesTab invoices={invoices} onDelete={handleDeleteItem} />;
+      case 'payables':
+        return <PayablesTab payables={payables} onDelete={handleDeleteItem} />;
+      case 'cashflow':
+        return <CashflowTab data={cashflowData} />;
+      case 'profitability':
+        return <ProfitabilityTab data={profitabilityData} />;
+      default:
+        return <div>Select a tab</div>;
+    }
+  };
+
+  const InvoicesTab = ({ invoices, onDelete }) => (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           Project Invoices
-        </h3>
-        <Button className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
+        </h2>
+        <Button 
+          onClick={() => setShowCreateModal(true)}
+          className="w-full sm:w-auto"
+        >
+          <PlusCircle className="w-4 h-4 mr-2" />
           Create Invoice
         </Button>
       </div>
 
-      <AnimatedCard 
-        delay={100}
-        className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
-        }`}
-      >
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                  <TableHead className={themeClasses.text.primary}>Invoice #</TableHead>
-                <TableHead className={themeClasses.text.primary}>Status</TableHead>
-                <TableHead className={themeClasses.text.primary}>Total</TableHead>
-                <TableHead className={themeClasses.text.primary}>Due Date</TableHead>
-                <TableHead className={themeClasses.text.primary}>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className={`text-center py-8 ${themeClasses.text.secondary}`}>
-                    <Receipt className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    No invoices found. Create your first invoice to get started.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                invoices.map((invoice) => (
-                  <TableRow key={invoice.id} className={`${isDarkMode ? 'border-white/10' : 'border-gray-100'} hover:bg-gray-50 dark:hover:bg-white/5`}>
-                    <TableCell className={themeClasses.text.primary}>
-                      {invoice.invoice_number}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(invoice.status)}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.primary}>
-                      ${invoice.total?.toLocaleString() || '0.00'}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.secondary}>
-                      {new Date(invoice.due_date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-          </div>
-        </CardContent>
-      </AnimatedCard>
+      {invoices.length === 0 ? (
+        <div className={`text-center py-12 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+          <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-lg md:text-xl">No invoices found</p>
+          <p className="text-sm md:text-base">Create your first invoice to get started</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className={`w-full rounded-lg overflow-hidden ${
+            isDarkMode ? 'bg-slate-800' : 'bg-white'
+          }`}>
+            <thead className={isDarkMode ? 'bg-slate-700' : 'bg-gray-50'}>
+              <tr>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Invoice #</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Status</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Total</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Due Date</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {invoices.map((invoice) => (
+                <tr key={invoice.id} className={isDarkMode ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'}>
+                  <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {invoice.invoiceNumber || `INV-${invoice.id.slice(-6)}`}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant={invoice.status === 'paid' ? 'default' : 'secondary'}>
+                      {invoice.status || 'pending'}
+                    </Badge>
+                  </td>
+                  <td className={`px-4 py-3 text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    ${(invoice.total || 0).toLocaleString()}
+                  </td>
+                  <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : 'N/A'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingItem(invoice)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onDelete(invoice.id)}
+                        className="text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 
-  // Payables Tab Component
-  const PayablesTab = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-          Project Payables
-        </h3>
-        <Button className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
+  const PayablesTab = ({ payables, onDelete }) => (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          Accounts Payable
+        </h2>
+        <Button 
+          onClick={() => setShowCreateModal(true)}
+          className="w-full sm:w-auto"
+        >
+          <PlusCircle className="w-4 h-4 mr-2" />
           Add Payable
         </Button>
       </div>
 
-      <AnimatedCard 
-        delay={100}
-        className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
-        }`}
-      >
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                  <TableHead className={themeClasses.text.primary}>Vendor</TableHead>
-                  <TableHead className={themeClasses.text.primary}>Description</TableHead>
-                  <TableHead className={themeClasses.text.primary}>Amount</TableHead>
-                <TableHead className={themeClasses.text.primary}>Status</TableHead>
-                <TableHead className={themeClasses.text.primary}>Due Date</TableHead>
-                <TableHead className={themeClasses.text.primary}>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {payables.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className={`text-center py-8 ${themeClasses.text.secondary}`}>
-                    <CreditCard className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    No payables found. Add payables to track vendor payments.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                payables.map((payable) => (
-                  <TableRow key={payable.id} className={`${isDarkMode ? 'border-white/10' : 'border-gray-100'} hover:bg-gray-50 dark:hover:bg-white/5`}>
-                    <TableCell className={themeClasses.text.primary}>
-                      {payable.vendor_id}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.primary}>
-                      {payable.description}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.primary}>
-                      ${payable.amount?.toLocaleString() || '0.00'}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(payable.status)}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.secondary}>
-                      {new Date(payable.due_date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-          </div>
-        </CardContent>
-      </AnimatedCard>
+      {payables.length === 0 ? (
+        <div className={`text-center py-12 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+          <Calculator className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-lg md:text-xl">No payables found</p>
+          <p className="text-sm md:text-base">Add your first payable to get started</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className={`w-full rounded-lg overflow-hidden ${
+            isDarkMode ? 'bg-slate-800' : 'bg-white'
+          }`}>
+            <thead className={isDarkMode ? 'bg-slate-700' : 'bg-gray-50'}>
+              <tr>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Vendor</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Description</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Amount</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Due Date</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Status</th>
+                <th className={`px-4 py-3 text-left text-sm font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {payables.map((payable) => (
+                <tr key={payable.id} className={isDarkMode ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'}>
+                  <td className={`px-4 py-3 text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {payable.vendor}
+                  </td>
+                  <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {payable.description}
+                  </td>
+                  <td className={`px-4 py-3 text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    ${(payable.amount || 0).toLocaleString()}
+                  </td>
+                  <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {payable.dueDate ? new Date(payable.dueDate).toLocaleDateString() : 'N/A'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant={payable.status === 'paid' ? 'default' : 'secondary'}>
+                      {payable.status || 'pending'}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingItem(payable)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onDelete(payable.id)}
+                        className="text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 
-  // Cashflow Tab Component
-  const CashflowTab = () => {
-    const totalInflow = cashflowData.reduce((sum, item) => sum + (item.inflow || 0), 0);
-    const totalOutflow = cashflowData.reduce((sum, item) => sum + (item.outflow || 0), 0);
-    const netCashflow = totalInflow - totalOutflow;
-    const avgRunwayWeeks = cashflowData.length > 0 ? 
-      Math.round(cashflowData.reduce((sum, item) => sum + (item.runway_weeks || 0), 0) / cashflowData.length) : 0;
-
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-            Cashflow Forecasting
-          </h3>
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Add Forecast Entry
-          </Button>
-        </div>
-
-        {/* Cashflow Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Total Inflow</p>
-                  <p className={`text-2xl font-bold text-green-600`}>${totalInflow.toLocaleString()}</p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Total Outflow</p>
-                  <p className={`text-2xl font-bold text-red-600`}>${totalOutflow.toLocaleString()}</p>
-                </div>
-                <TrendingDown className="w-8 h-8 text-red-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Net Cashflow</p>
-                  <p className={`text-2xl font-bold ${netCashflow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    ${netCashflow.toLocaleString()}
-                  </p>
-                </div>
-                <DollarSign className={`w-8 h-8 ${netCashflow >= 0 ? 'text-green-600' : 'text-red-600'}`} />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm ${themeClasses.text.secondary}`}>Runway (Weeks)</p>
-                  <p className={`text-2xl font-bold ${avgRunwayWeeks > 8 ? 'text-green-600' : 'text-yellow-600'}`}>
-                    {avgRunwayWeeks}
-                  </p>
-                </div>
-                <BarChart3 className={`w-8 h-8 ${avgRunwayWeeks > 8 ? 'text-green-600' : 'text-yellow-600'}`} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Cashflow Chart */}
-        {cashflowData.length > 0 && (
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardHeader>
-              <CardTitle className={themeClasses.text.primary}>Cashflow Over Time</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={cashflowData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="week_start" 
-                    tickFormatter={(value) => new Date(value).toLocaleDateString()}
-                  />
-                  <YAxis tickFormatter={(value) => `$${value.toLocaleString()}`} />
-                  <Tooltip 
-                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                    formatter={(value, name) => [`$${value.toLocaleString()}`, name]}
-                  />
-                  <Legend />
-                  <Line type="monotone" dataKey="inflow" stroke="#10b981" name="Inflow" />
-                  <Line type="monotone" dataKey="outflow" stroke="#ef4444" name="Outflow" />
-                  <Line type="monotone" dataKey="net" stroke="#3b82f6" name="Net" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        )}
-
-        {cashflowData.length === 0 && (
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-8 text-center">
-              <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p className={themeClasses.text.secondary}>
-                No cashflow data available. Add forecast entries to see cashflow projections.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    );
-  };
-
-  // Profitability Tab Component
-  const ProfitabilityTab = () => {
-    const latestProfitability = profitabilityData[profitabilityData.length - 1];
-    
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-            Profitability Analysis
-          </h3>
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Add Profitability Entry
-          </Button>
-        </div>
-
-        {latestProfitability ? (
-          <>
-            {/* Profitability Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`text-sm ${themeClasses.text.secondary}`}>Revenue</p>
-                      <p className={`text-2xl font-bold text-green-600`}>
-                        ${latestProfitability.revenue?.toLocaleString() || '0'}
-                      </p>
-                    </div>
-                    <DollarSign className="w-8 h-8 text-green-600" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`text-sm ${themeClasses.text.secondary}`}>Labor Cost</p>
-                      <p className={`text-2xl font-bold text-red-600`}>
-                        ${latestProfitability.labor_cost?.toLocaleString() || '0'}
-                      </p>
-                    </div>
-                    <TrendingDown className="w-8 h-8 text-red-600" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`text-sm ${themeClasses.text.secondary}`}>Material Cost</p>
-                      <p className={`text-2xl font-bold text-red-600`}>
-                        ${latestProfitability.material_cost?.toLocaleString() || '0'}
-                      </p>
-                    </div>
-                    <TrendingDown className="w-8 h-8 text-red-600" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`text-sm ${themeClasses.text.secondary}`}>Profit Margin</p>
-                      <p className={`text-2xl font-bold ${latestProfitability.profit_margin >= 10 ? 'text-green-600' : 'text-red-600'}`}>
-                        {latestProfitability.profit_margin?.toFixed(1) || '0'}%
-                      </p>
-                    </div>
-                    <TrendingUp className={`w-8 h-8 ${latestProfitability.profit_margin >= 10 ? 'text-green-600' : 'text-red-600'}`} />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Alerts */}
-            {latestProfitability.alerts && latestProfitability.alerts.length > 0 && (
-              <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-                <CardHeader>
-                  <CardTitle className={`${themeClasses.text.primary} flex items-center gap-2`}>
-                    <AlertCircle className="w-5 h-5 text-yellow-600" />
-                    Profitability Alerts
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {latestProfitability.alerts.map((alert, index) => (
-                      <div key={index} className={`p-3 rounded-lg border ${
-                        alert.type === 'low_margin' 
-                          ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-500/30' 
-                          : 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-500/30'
-                      }`}>
-                        <div className="flex items-center gap-2">
-                          <AlertCircle className={`w-4 h-4 ${
-                            alert.type === 'low_margin' ? 'text-yellow-600' : 'text-red-600'
-                          }`} />
-                          <span className={`font-medium ${
-                            alert.type === 'low_margin' ? 'text-yellow-800 dark:text-yellow-200' : 'text-red-800 dark:text-red-200'
-                          }`}>
-                            {alert.type === 'low_margin' ? 'Low Margin Alert' : 'Over Budget Alert'}
-                          </span>
-                        </div>
-                        <p className={`mt-1 text-sm ${
-                          alert.type === 'low_margin' ? 'text-yellow-700 dark:text-yellow-300' : 'text-red-700 dark:text-red-300'
-                        }`}>
-                          {alert.message}
-                        </p>
-                        <p className={`text-xs mt-1 ${themeClasses.text.secondary}`}>
-                          {new Date(alert.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </>
-        ) : (
-          <Card className={`backdrop-blur-md border-0 shadow-xl ${
-        isDarkMode 
-          ? 'bg-white/10 text-white' 
-          : 'bg-white/70 text-gray-900'
-      }`}>
-            <CardContent className="p-8 text-center">
-              <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p className={themeClasses.text.secondary}>
-                No profitability data available. Add profitability entries to track project performance.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    );
-  };
-
-  // Inspections Tab Component
-  const InspectionsTab = () => (
+  const CashflowTab = ({ data }) => (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-          Project Inspections
-        </h3>
-        <Button className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          Add Inspection
-        </Button>
+      <h2 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        Project Cashflow
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Total Inflow
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold text-green-600`}>
+              ${data?.totalInflow || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
+
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Total Outflow
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold text-red-600`}>
+              ${data?.totalOutflow || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
+
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Net Cashflow
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${
+              (data?.netCashflow || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+            }`}>
+              ${data?.netCashflow || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
       </div>
 
-      <AnimatedCard 
-        delay={100}
-        className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
-        }`}
-      >
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                  <TableHead className={themeClasses.text.primary}>Inspection Type</TableHead>
-                  <TableHead className={themeClasses.text.primary}>Status</TableHead>
-                  <TableHead className={themeClasses.text.primary}>Date</TableHead>
-                  <TableHead className={themeClasses.text.primary}>Notes</TableHead>
-                <TableHead className={themeClasses.text.primary}>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {inspections.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className={`text-center py-8 ${themeClasses.text.secondary}`}>
-                    <AlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    No inspections scheduled. Add inspections to track project progress.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                inspections.map((inspection) => (
-                  <TableRow key={inspection.id} className={`${isDarkMode ? 'border-white/10' : 'border-gray-100'} hover:bg-gray-50 dark:hover:bg-white/5`}>
-                    <TableCell className={themeClasses.text.primary}>
-                      {inspection.inspection_type?.replace('_', ' ')?.toUpperCase() || inspection.inspectionType?.replace('_', ' ')?.toUpperCase()}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(inspection.status)}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.secondary}>
-                      {new Date(inspection.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className={themeClasses.text.secondary}>
-                      {inspection.notes || '-'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-          </div>
-        </CardContent>
-      </AnimatedCard>
+      {!data && (
+        <div className={`text-center py-12 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+          <TrendingUp className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-lg md:text-xl">No cashflow data available</p>
+          <p className="text-sm md:text-base">Cashflow analysis will appear here once you have invoices and payables</p>
+        </div>
+      )}
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className={`text-center ${themeClasses.text.secondary}`}>
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          Loading financial data...
-          {projectId && (
-            <p className="text-xs mt-2">Project ID: {projectId}</p>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const ProfitabilityTab = ({ data }) => (
+    <div className="space-y-6">
+      <h2 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        Project Profitability
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Total Revenue
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              ${data?.totalRevenue || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className={`text-center ${themeClasses.text.secondary}`}>
-          <AlertCircle className="w-12 h-12 mx-auto mb-2 text-red-500" />
-          <p className="text-red-600">Error loading financial data: {error}</p>
-          <p className="text-xs mt-2">Project ID: {projectId || 'Not available'}</p>
-          <Button 
-            onClick={loadFinancialData} 
-            variant="outline" 
-            className="mt-4"
-          >
-            Retry
-          </Button>
-        </div>
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Total Costs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              ${data?.totalCosts || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
+
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Gross Profit
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-xl font-bold ${
+              (data?.grossProfit || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+            }`}>
+              ${data?.grossProfit || 0}
+            </div>
+          </CardContent>
+        </AnimatedCard>
+
+        <AnimatedCard className={isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Profit Margin
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-xl font-bold ${
+              (data?.profitMargin || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+            }`}>
+              {data?.profitMargin || 0}%
+            </div>
+          </CardContent>
+        </AnimatedCard>
       </div>
-    );
-  }
+
+      {!data && (
+        <div className={`text-center py-12 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+          <DollarSign className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-lg md:text-xl">No profitability data available</p>
+          <p className="text-sm md:text-base">Profitability analysis will appear here once you have financial data</p>
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <div className={`min-h-screen ${
+    <div className={`min-h-screen transition-all duration-300 ${
       isDarkMode 
         ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
         : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
     }`}>
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center space-x-4">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
-                alt="Rhino Fire Protection" 
-                className="h-10 w-auto"
-              />
-              <div>
-                <h2 className={`text-xl sm:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                  Financial Management
-                </h2>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  {project?.name || 'Project Financial Overview'}
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" onClick={onBack} className="backdrop-blur-sm bg-white/10 border-white/20 w-full sm:w-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={onBack}
+              className={`${isDarkMode ? 'border-slate-600 text-gray-300 hover:bg-slate-800' : 'border-gray-300'}`}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Project
             </Button>
+            <div>
+              <h1 className={`text-xl md:text-2xl lg:text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Financial Management
+              </h1>
+              <p className={`text-sm md:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                {project.name}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-        {/* Debug panel for development */}
-        <div className={`backdrop-blur-md border-0 shadow-xl rounded-lg p-4 ${
-          isDarkMode 
-            ? 'bg-white/10 text-white' 
-            : 'bg-white/70 text-gray-900'
+        {/* System Status */}
+        <div className={`p-4 md:p-6 rounded-xl mb-6 ${
+          isDarkMode ? 'bg-slate-800/50 border border-slate-700' : 'bg-white border border-gray-200'
         }`}>
-          <h3 className="font-semibold mb-2 text-sm sm:text-base">System Status:</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 text-xs">
-            <div>Invoices: {invoices.length} records</div>
-            <div>Payables: {payables.length} records</div>
-            <div>Cashflow: {cashflowData.length} records</div>
-            <div>Profitability: {profitabilityData.length} records</div>
-            <div className="col-span-2 sm:col-span-1">Inspections: {inspections.length} records</div>
+          <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            System Status:
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Invoices: {invoices.length} records
+            </div>
+            <div className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Payables: {payables.length} records
+            </div>
+            <div className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Cashflow: {cashflowData ? '1' : '0'} records
+            </div>
+            <div className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              Profitability: {profitabilityData ? '1' : '0'} records
+            </div>
           </div>
-          <div className="mt-2 text-xs opacity-70 break-all">
-            Project ID: {projectId || 'N/A'}
+          <div className={`text-xs mt-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            Project ID: {project.id}
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 backdrop-blur-md bg-white/10 border-white/20 h-auto">
-            <TabsTrigger value="invoices" className="flex items-center gap-2 p-2 sm:p-3">
-              <Receipt className="w-4 h-4" />
-              <span className="hidden sm:inline">Invoices</span>
-            </TabsTrigger>
-            <TabsTrigger value="payables" className="flex items-center gap-2 p-2 sm:p-3">
-              <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline">Payables</span>
-            </TabsTrigger>
-            <TabsTrigger value="cashflow" className="flex items-center gap-2 p-2 sm:p-3">
-              <BarChart3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Cashflow</span>
-            </TabsTrigger>
-            <TabsTrigger value="profitability" className="flex items-center gap-2 p-2 sm:p-3">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">Profitability</span>
-            </TabsTrigger>
-            <TabsTrigger value="inspections" className="flex items-center gap-2 p-2 sm:p-3 col-span-2 sm:col-span-1">
-              <AlertCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">Inspections</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Tab Navigation */}
+        <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
+                  isActive
+                    ? isDarkMode
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-blue-600 text-white'
+                    : isDarkMode
+                      ? 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+                      : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
-          <TabsContent value="invoices" className="space-y-4">
-            <InvoicesTab />
-          </TabsContent>
-          <TabsContent value="payables" className="space-y-4">
-            <PayablesTab />
-          </TabsContent>
-          <TabsContent value="cashflow" className="space-y-4">
-            <CashflowTab />
-          </TabsContent>
-          <TabsContent value="profitability" className="space-y-4">
-            <ProfitabilityTab />
-          </TabsContent>
-          <TabsContent value="inspections" className="space-y-4">
-            <InspectionsTab />
-          </TabsContent>
-        </Tabs>
+        {/* Tab Content */}
+        <div className={`rounded-xl ${
+          isDarkMode ? 'bg-slate-800/30 border border-slate-700' : 'bg-white/70 border border-gray-200'
+        } p-4 md:p-6`}>
+          {renderTabContent()}
+        </div>
       </div>
+
+      {/* Create Modal would go here */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className={`max-w-md w-full rounded-lg ${
+            isDarkMode ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-gray-200'
+          } p-6`}>
+            <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Create {activeTab.slice(0, -1)}
+            </h3>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
+              Create form for {activeTab} would be implemented here.
+            </p>
+            <div className="flex gap-2">
+              <Button onClick={() => setShowCreateModal(false)} variant="outline" className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={() => setShowCreateModal(false)} className="flex-1">
+                Create
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
