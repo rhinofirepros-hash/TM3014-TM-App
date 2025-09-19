@@ -109,7 +109,7 @@ const AdminGcManagement = ({ onBack }) => {
         const data = await response.json();
         toast({
           title: "PIN Generated Successfully",
-          description: `Project: ${data.projectName}\nProject ID: ${data.projectId}\nPIN: ${data.gcPin}\n\nUse these credentials for GC login.`,
+          description: `Project: ${data.projectName}\nPIN: ${data.gcPin}\n\nGCs can now login with just this 4-digit PIN.`,
           duration: 10000 // Show for 10 seconds
         });
         
