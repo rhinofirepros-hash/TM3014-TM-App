@@ -246,12 +246,13 @@ const FinancialTabs = ({ project, onBack }) => {
         }`}
       >
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
-                <TableHead className={themeClasses.text.primary}>Vendor</TableHead>
-                <TableHead className={themeClasses.text.primary}>Description</TableHead>
-                <TableHead className={themeClasses.text.primary}>Amount</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
+                  <TableHead className={themeClasses.text.primary}>Vendor</TableHead>
+                  <TableHead className={themeClasses.text.primary}>Description</TableHead>
+                  <TableHead className={themeClasses.text.primary}>Amount</TableHead>
                 <TableHead className={themeClasses.text.primary}>Status</TableHead>
                 <TableHead className={themeClasses.text.primary}>Due Date</TableHead>
                 <TableHead className={themeClasses.text.primary}>Actions</TableHead>
