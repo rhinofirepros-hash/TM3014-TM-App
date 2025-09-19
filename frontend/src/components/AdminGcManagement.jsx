@@ -512,6 +512,7 @@ const AdminGcManagement = ({ onBack }) => {
                     )}
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </AnimatedCard>
           </div>
