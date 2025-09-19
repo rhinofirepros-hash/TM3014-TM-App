@@ -451,8 +451,16 @@ const AdminGcManagement = ({ onBack }) => {
               GC Access Logs
             </h3>
 
-            <AnimatedCard className={themeClasses.card.primary}>
+            <AnimatedCard 
+              delay={300}
+              className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white' 
+                  : 'bg-white/70 text-gray-900'
+              }`}
+            >
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
