@@ -28,6 +28,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
 import ProjectOverview from './ProjectOverview';
+import InspectionManagement from './InspectionManagement';
 
 const ProjectManagement = ({ onBack, onViewReports }) => {
   const [projects, setProjects] = useState([]);
