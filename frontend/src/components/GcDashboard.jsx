@@ -134,6 +134,23 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
               </div>
               <div className="text-right">
                 {getStatusBadge(dashboardData.projectStatus)}
+                {adminAccess && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="secondary" className="text-xs">
+                      Admin Access
+                    </Badge>
+                    <button
+                      onClick={() => window.close()}
+                      className={`text-xs px-2 py-1 rounded ${
+                        isDarkMode 
+                          ? 'text-gray-300 hover:text-white hover:bg-white/10' 
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }`}
+                    >
+                      Close Tab
+                    </button>
+                  </div>
+                )}
                 <p className={`text-sm mt-2 ${themeClasses.text.secondary}`}>
                   Last Updated: {new Date(dashboardData.lastUpdated).toLocaleDateString()}
                 </p>
