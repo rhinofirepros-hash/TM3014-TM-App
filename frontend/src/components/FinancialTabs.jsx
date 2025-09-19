@@ -582,7 +582,11 @@ const FinancialTabs = ({ project, onBack }) => {
             )}
           </>
         ) : (
-          <Card className={themeClasses.card.primary}>
+          <Card className={`backdrop-blur-md border-0 shadow-xl ${
+        isDarkMode 
+          ? 'bg-white/10 text-white' 
+          : 'bg-white/70 text-gray-900'
+      }`}>
             <CardContent className="p-8 text-center">
               <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p className={themeClasses.text.secondary}>
