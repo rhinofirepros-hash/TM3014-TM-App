@@ -519,6 +519,15 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => openInspectionManagement(project)}
+                        className={themeClasses.button.secondary}
+                        title="Manage Inspections"
+                      >
+                        <Wrench className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => openEditModal(project)}
                         className={themeClasses.button.secondary}
                       >
