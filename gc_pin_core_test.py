@@ -11,7 +11,7 @@ import uuid
 import sys
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://firepro-tracker.preview.emergentagent.com/api"
+BACKEND_URL = "https://fireprotect-app.preview.emergentagent.com/api"
 
 class GCPinCoreTester:
     def __init__(self):

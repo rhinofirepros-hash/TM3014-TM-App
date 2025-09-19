@@ -13,7 +13,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://firepro-tracker.preview.emergentagent.com/api"
+BACKEND_URL = "https://fireprotect-app.preview.emergentagent.com/api"
 
 class TMTagAPITester:
     def __init__(self):
@@ -2423,7 +2423,7 @@ class TMTagAPITester:
             response = self.session.options(
                 f"{self.base_url}/tm-tags",
                 headers={
-                    "Origin": "https://firepro-tracker.preview.emergentagent.com",
+                    "Origin": "https://fireprotect-app.preview.emergentagent.com",
                     "Access-Control-Request-Method": "POST",
                     "Access-Control-Request-Headers": "Content-Type"
                 }
