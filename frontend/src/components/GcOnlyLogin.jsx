@@ -24,10 +24,10 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
   };
 
   const handleLogin = async () => {
-    if (!formData.projectId || formData.pin.length !== 4) {
+    if (formData.pin.length !== 4) {
       toast({
-        title: "Missing Information",
-        description: "Please enter both Project ID and 4-digit PIN",
+        title: "Invalid PIN",
+        description: "Please enter a 4-digit PIN",
         variant: "destructive"
       });
       return;
@@ -37,13 +37,33 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      
+      // Find project by PIN first
+      const projectsResponse = await fetch(`${backendUrl}/api/projects`);
+      if (!projectsResponse.ok) {
+        throw new Error("Unable to connect to server");
+      }
+      
+      const projects = await projectsResponse.json();
+      const matchingProject = projects.find(p => p.gc_pin === formData.pin && !p.gc_pin_used);
+      
+      if (!matchingProject) {
+        toast({
+          title: "Invalid PIN",
+          description: "PIN not found or already used",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Now login with the found project
       const response = await fetch(`${backendUrl}/api/gc/login-simple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          projectId: formData.projectId,
+          projectId: matchingProject.id,
           pin: formData.pin,
           ip: window.location.hostname,
           userAgent: navigator.userAgent
@@ -58,7 +78,7 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
         });
         
         onLoginSuccess({
-          projectId: formData.projectId,
+          projectId: matchingProject.id,
           keyId: null,
           adminAccess: false
         });
@@ -74,7 +94,7 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
       console.error('GC Login error:', error);
       toast({
         title: "Connection Error",
-        description: "Unable to connect to server",
+        description: "Unable to connect to server. Please try again.",
         variant: "destructive"
       });
     } finally {
