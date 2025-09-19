@@ -2083,6 +2083,178 @@ class TMTagAPITester:
             self.log_result("crew_logs", "Daily crew data endpoint", False, str(e))
         
         return True
+
+    def test_gc_pin_system(self):
+        """Test the fixed GC PIN system as requested in review"""
+        print("\n=== Testing Fixed GC PIN System ===")
+        
+        # Test 1: Get all projects to verify we have projects in the system
+        print("Test 1: GET /api/projects to verify projects exist")
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                projects = response.json()
+                if isinstance(projects, list) and len(projects) > 0:
+                    self.log_result("projects", "GC PIN - Projects exist", True, f"Found {len(projects)} projects in system")
+                    self.available_projects = projects
+                    
+                    # Show project details for testing
+                    print(f"Available projects for PIN testing:")
+                    for project in projects[:5]:  # Show first 5 projects
+                        print(f"  - ID: {project.get('id')}, Name: {project.get('name', 'Unknown')}")
+                else:
+                    self.log_result("projects", "GC PIN - Projects exist", False, "No projects found in system")
+                    return False
+            else:
+                self.log_result("projects", "GC PIN - Projects exist", False, f"HTTP {response.status_code}", response)
+                return False
+                
+        except Exception as e:
+            self.log_result("projects", "GC PIN - Projects exist", False, str(e))
+            return False
+        
+        # Test 2: Test the specific project IDs mentioned in the review request
+        test_project_ids = ["68cc802f8d44fcd8015b39b8", "68cc802f8d44fcd8015b39b9"]
+        
+        for project_id in test_project_ids:
+            print(f"Test 2: GET /api/projects/{project_id}/gc-pin for project {project_id}")
+            try:
+                response = self.session.get(f"{self.base_url}/projects/{project_id}/gc-pin")
+                
+                if response.status_code == 200:
+                    pin_data = response.json()
+                    
+                    # Verify response structure
+                    required_fields = ["projectId", "projectName", "gcPin", "pinUsed"]
+                    missing_fields = [field for field in required_fields if field not in pin_data]
+                    
+                    if not missing_fields:
+                        self.log_result("projects", f"GC PIN - Project {project_id}", True, 
+                                      f"PIN: {pin_data['gcPin']}, Project: {pin_data['projectName']}, Used: {pin_data['pinUsed']}")
+                        
+                        # Verify PIN is 4 digits
+                        pin = pin_data['gcPin']
+                        if isinstance(pin, str) and len(pin) == 4 and pin.isdigit():
+                            self.log_result("projects", f"GC PIN - PIN format {project_id}", True, f"Valid 4-digit PIN: {pin}")
+                        else:
+                            self.log_result("projects", f"GC PIN - PIN format {project_id}", False, f"Invalid PIN format: {pin}")
+                    else:
+                        self.log_result("projects", f"GC PIN - Project {project_id}", False, f"Missing fields: {missing_fields}", response)
+                        
+                elif response.status_code == 404:
+                    self.log_result("projects", f"GC PIN - Project {project_id}", False, "Project not found (404)", response)
+                else:
+                    self.log_result("projects", f"GC PIN - Project {project_id}", False, f"HTTP {response.status_code}", response)
+                    
+            except Exception as e:
+                self.log_result("projects", f"GC PIN - Project {project_id}", False, str(e))
+        
+        # Test 3: Test PIN generation for existing projects (use first available project)
+        if hasattr(self, 'available_projects') and self.available_projects:
+            test_project = self.available_projects[0]
+            project_id = test_project['id']
+            
+            print(f"Test 3: Verify PIN generation for existing project {project_id}")
+            try:
+                response = self.session.get(f"{self.base_url}/projects/{project_id}/gc-pin")
+                
+                if response.status_code == 200:
+                    pin_data = response.json()
+                    
+                    # Verify all required fields are present
+                    if all(field in pin_data for field in ["projectId", "projectName", "gcPin", "pinUsed"]):
+                        pin = pin_data['gcPin']
+                        project_name = pin_data['projectName']
+                        pin_used = pin_data['pinUsed']
+                        
+                        self.log_result("projects", "GC PIN - Generation verification", True, 
+                                      f"Project: {project_name}, PIN: {pin}, Used: {pin_used}")
+                        
+                        # Verify PIN uniqueness by testing multiple projects
+                        pins_collected = [pin]
+                        for additional_project in self.available_projects[1:4]:  # Test up to 3 more projects
+                            try:
+                                add_response = self.session.get(f"{self.base_url}/projects/{additional_project['id']}/gc-pin")
+                                if add_response.status_code == 200:
+                                    add_pin_data = add_response.json()
+                                    add_pin = add_pin_data.get('gcPin')
+                                    if add_pin:
+                                        pins_collected.append(add_pin)
+                            except:
+                                pass  # Skip errors for additional projects
+                        
+                        # Check PIN uniqueness
+                        unique_pins = set(pins_collected)
+                        if len(unique_pins) == len(pins_collected):
+                            self.log_result("projects", "GC PIN - Uniqueness", True, f"All {len(pins_collected)} PINs are unique: {pins_collected}")
+                        else:
+                            self.log_result("projects", "GC PIN - Uniqueness", False, f"Duplicate PINs found: {pins_collected}")
+                    else:
+                        self.log_result("projects", "GC PIN - Generation verification", False, "Missing required fields in response", response)
+                else:
+                    self.log_result("projects", "GC PIN - Generation verification", False, f"HTTP {response.status_code}", response)
+                    
+            except Exception as e:
+                self.log_result("projects", "GC PIN - Generation verification", False, str(e))
+        
+        # Test 4: Test PIN generation for a newly created project
+        print("Test 4: Create new project and verify automatic PIN generation")
+        new_project_data = {
+            "name": "GC PIN Test Project",
+            "description": "Test project for GC PIN system verification",
+            "client_company": "Test Client Corp",
+            "gc_email": "test@client.com",
+            "contract_amount": 50000.00,
+            "labor_rate": 95.0,
+            "project_manager": "Jesus Garcia",
+            "start_date": datetime.now().isoformat(),
+            "address": "123 Test Street, Test City, TS 12345"
+        }
+        
+        try:
+            # Create new project
+            create_response = self.session.post(
+                f"{self.base_url}/projects",
+                json=new_project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if create_response.status_code == 200:
+                new_project = create_response.json()
+                new_project_id = new_project.get('id')
+                
+                if new_project_id:
+                    # Test PIN endpoint for new project
+                    pin_response = self.session.get(f"{self.base_url}/projects/{new_project_id}/gc-pin")
+                    
+                    if pin_response.status_code == 200:
+                        pin_data = pin_response.json()
+                        
+                        if all(field in pin_data for field in ["projectId", "projectName", "gcPin", "pinUsed"]):
+                            new_pin = pin_data['gcPin']
+                            self.log_result("projects", "GC PIN - New project PIN", True, 
+                                          f"New project automatically assigned PIN: {new_pin}")
+                            
+                            # Verify PIN format
+                            if isinstance(new_pin, str) and len(new_pin) == 4 and new_pin.isdigit():
+                                self.log_result("projects", "GC PIN - New project PIN format", True, f"Valid 4-digit PIN: {new_pin}")
+                            else:
+                                self.log_result("projects", "GC PIN - New project PIN format", False, f"Invalid PIN format: {new_pin}")
+                        else:
+                            self.log_result("projects", "GC PIN - New project PIN", False, "Missing required fields", pin_response)
+                    else:
+                        self.log_result("projects", "GC PIN - New project PIN", False, f"HTTP {pin_response.status_code}", pin_response)
+                else:
+                    self.log_result("projects", "GC PIN - New project creation", False, "No project ID returned")
+            else:
+                self.log_result("projects", "GC PIN - New project creation", False, f"HTTP {create_response.status_code}", create_response)
+                
+        except Exception as e:
+            self.log_result("projects", "GC PIN - New project PIN", False, str(e))
+        
+        print("✅ GC PIN System testing completed!")
+        return True
         """Test project analytics endpoint"""
         print(f"\n=== Testing Project Analytics: {project_id} ===")
         
