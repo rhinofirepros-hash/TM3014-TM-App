@@ -402,6 +402,18 @@ backend:
         agent: "testing"
         comment: "🎉 FINANCIAL MANAGEMENT SYSTEM API TESTING COMPLETED - PERFECT SUCCESS: Comprehensive testing completed with 22/22 tests passed (100% success rate). ✅ CRITICAL ISSUE RESOLVED: Fixed logger initialization error preventing financial endpoints registration. ✅ ALL FINANCIAL ENDPOINTS WORKING PERFECTLY: 1) INVOICES - All CRUD operations with status enum validation (draft, sent, paid, overdue), line items structure, MongoDB persistence, 2) PAYABLES - All CRUD operations with vendor management, PO numbers, status enum validation (pending, paid, overdue), 3) CASHFLOW FORECASTS - All CRUD operations with weekly projections, inflow/outflow tracking, runway calculations, 4) PROFITABILITY - All CRUD operations with revenue tracking, cost breakdowns, profit margins, alert system (low_margin, over_budget), 5) HEALTH CHECK - GET /api/health working correctly. ✅ DATA MODEL VALIDATION: All enum validations working, MongoDB collections (invoices, payables, cashflow_forecasts, profitability) functional, UUID generation working, data persistence verified. The financial management system is fully operational and ready for production use."
 
+  - task: "GC Dashboard Backend System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py, /app/backend/models_gc_dashboard.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎉 GC DASHBOARD BACKEND TESTING COMPLETED - PERFECT SUCCESS: Comprehensive testing of the complete General Contractor access system completed with 36/36 tests passed (100.0% success rate). ✅ ALL GC DASHBOARD FUNCTIONALITY WORKING PERFECTLY: 1) GC Key Management - POST /api/gc/keys (creation), GET /api/gc/keys/admin (admin view) with key uniqueness validation and expiration handling ✅, 2) GC Authentication - POST /api/gc/login with valid/invalid key testing, single-use key consumption (keys marked as used), expired key rejection, access logging ✅, 3) GC Dashboard Data - GET /api/gc/dashboard/{project_id} with complete dashboard data including crew summary (hours/days only), materials summary (quantities only), T&M tag summary (counts/hours only), inspection status, project phases, narrative display ✅, 4) Project Phases Management - POST /api/project-phases (creation), GET /api/project-phases/{project_id} (retrieval), PUT /api/project-phases/{phase_id} (progress updates) ✅, 5) GC Access Logs - GET /api/gc/access-logs/admin with IP tracking and user agent logging ✅, 6) GC Narratives - POST /api/gc-narratives (creation), GET /api/gc-narratives/{project_id} (latest narrative retrieval) ✅. ✅ SECURITY VALIDATION CONFIRMED: NO financial data exposed in GC dashboard (costs, rates, profit margins excluded), single-use key security working properly, access logging tracking all attempts. ✅ DATA INTEGRATION VERIFIED: GC dashboard successfully pulls from existing collections (projects, crew_logs, tm_tags, materials) with proper data calculations (total hours, days, quantities). The complete GC Dashboard system is fully operational and ready for production use."
+
 frontend:
   - task: "Financial Management Frontend Component"
     implemented: true
