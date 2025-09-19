@@ -1886,117 +1886,98 @@ async def delete_inspection(inspection_id: str):
         logger.error(f"Error deleting inspection {inspection_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# GC DASHBOARD API ROUTES
+# GC DASHBOARD API ROUTES - SIMPLIFIED PIN SYSTEM
 
-@api_router.post("/gc/keys", response_model=GcKey)
-async def create_gc_key(gc_key: GcKeyCreate):
-    """Admin: Create new GC key for project"""
+@api_router.get("/projects/{project_id}/gc-pin")
+async def get_project_gc_pin(project_id: str):
+    """Admin: Get current GC PIN for project"""
     try:
-        # Ensure key is unique
-        existing_key = await gc_keys_collection.find_one({"key": gc_key.key, "active": True})
-        if existing_key:
-            raise HTTPException(status_code=400, detail="Key already exists")
-        
-        gc_key_dict = gc_key.dict()
-        gc_key_obj = GcKey(**gc_key_dict)
-        
-        result = await gc_keys_collection.insert_one(gc_key_obj.dict())
-        logger.info(f"Created GC key: {gc_key_obj.key} for project {gc_key_obj.projectId}")
-        
-        return gc_key_obj
+        pin = await ensure_project_has_pin(project_id)
+        if pin:
+            project = await db.projects.find_one({"id": project_id})
+            return {
+                "projectId": project_id,
+                "projectName": project.get("name", "Unknown Project"),
+                "gcPin": pin,
+                "pinUsed": project.get("gc_pin_used", False)
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Project not found")
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error creating GC key: {e}")
+        logger.error(f"Error getting project GC PIN: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/gc/keys/admin", response_model=List[GcKeyAdmin])
-async def get_gc_keys_admin():
-    """Admin: Get all GC keys with project info"""
-    try:
-        keys = await gc_keys_collection.find({"active": True}).to_list(1000)
-        admin_keys = []
-        
-        for key in keys:
-            # Get project name
-            project = await db.projects.find_one({"id": key["projectId"]})
-            project_name = project.get("name", "Unknown Project") if project else "Unknown Project"
-            
-            admin_key = GcKeyAdmin(
-                id=key["id"],
-                projectName=project_name,
-                keyLastFour=key["key"][-4:],  # Only last 4 digits
-                expiresAt=key["expiresAt"],
-                active=key["active"],
-                used=key.get("used", False),
-                usedAt=key.get("usedAt")
-            )
-            admin_keys.append(admin_key)
-        
-        return admin_keys
-    except Exception as e:
-        logger.error(f"Error fetching admin GC keys: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.post("/gc/login")
-async def gc_login(login_data: dict):
-    """GC: Login with project ID and key"""
+@api_router.post("/gc/login-simple")
+async def gc_login_simple(login_data: dict):
+    """GC: Simple login with project ID and PIN"""
     try:
         project_id = login_data.get("projectId")
-        key = login_data.get("key")
+        pin = login_data.get("pin")
         ip = login_data.get("ip", "unknown")
-        user_agent = login_data.get("userAgent", "")
         
-        if not project_id or not key:
-            raise HTTPException(status_code=400, detail="Project ID and key required")
+        if not project_id or not pin:
+            raise HTTPException(status_code=400, detail="Project ID and PIN required")
         
-        # Find valid key
-        gc_key = await gc_keys_collection.find_one({
-            "projectId": project_id,
-            "key": key,
-            "active": True,
-            "used": False,
-            "expiresAt": {"$gt": datetime.now(timezone.utc)}
+        # Find project with matching PIN
+        project = await db.projects.find_one({
+            "id": project_id,
+            "gc_pin": pin,
+            "gc_pin_used": False
         })
         
-        if not gc_key:
+        if not project:
             # Log failed access
             await gc_access_logs_collection.insert_one({
                 "id": str(uuid.uuid4()),
-                "gcKeyId": "unknown",
                 "projectId": project_id,
                 "timestamp": datetime.now(timezone.utc),
                 "ip": ip,
                 "status": "failed",
-                "userAgent": user_agent
+                "userAgent": login_data.get("userAgent", ""),
+                "failureReason": "Invalid PIN or PIN already used"
             })
-            raise HTTPException(status_code=401, detail="Invalid or expired key")
+            raise HTTPException(status_code=401, detail="Invalid PIN or PIN already used")
         
-        # Mark key as used
-        await gc_keys_collection.update_one(
-            {"id": gc_key["id"]},
+        # Mark PIN as used and generate new one
+        new_pin = generate_project_pin()
+        
+        # Ensure new PIN is unique
+        while await db.projects.find_one({"gc_pin": new_pin}):
+            new_pin = generate_project_pin()
+        
+        # Update project with new PIN
+        await db.projects.update_one(
+            {"id": project_id},
             {"$set": {
-                "used": True,
-                "usedAt": datetime.now(timezone.utc),
-                "usedByIp": ip
+                "gc_pin": new_pin,
+                "gc_pin_used": False,
+                "gc_last_access": datetime.now(timezone.utc),
+                "gc_last_ip": ip
             }}
         )
         
         # Log successful access
-        access_log = GcAccessLog(
-            gcKeyId=gc_key["id"],
-            projectId=project_id,
-            ip=ip,
-            status="success",
-            userAgent=user_agent
-        )
-        await gc_access_logs_collection.insert_one(access_log.dict())
+        await gc_access_logs_collection.insert_one({
+            "id": str(uuid.uuid4()),
+            "projectId": project_id,
+            "timestamp": datetime.now(timezone.utc),
+            "ip": ip,
+            "status": "success",
+            "userAgent": login_data.get("userAgent", ""),
+            "usedPin": pin,
+            "newPin": new_pin
+        })
+        
+        logger.info(f"GC login successful for project {project_id}. Old PIN: {pin}, New PIN: {new_pin}")
         
         return {
             "success": True,
             "projectId": project_id,
-            "keyId": gc_key["id"],
-            "message": "Login successful"
+            "projectName": project.get("name", "Unknown Project"),
+            "message": "Login successful",
+            "newPin": new_pin  # Admin can see the new PIN
         }
         
     except HTTPException:
