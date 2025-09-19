@@ -459,7 +459,10 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       <div className="flex justify-between text-sm">
                         <span className={themeClasses.text.secondary}>Start Date:</span>
                         <span className={themeClasses.text.primary}>
-                          {format(new Date(project.start_date), 'MM/dd/yyyy')}
+                          {project.start_date && !isNaN(new Date(project.start_date)) 
+                            ? format(new Date(project.start_date), 'MM/dd/yyyy')
+                            : 'Not set'
+                          }
                         </span>
                       </div>
                       
