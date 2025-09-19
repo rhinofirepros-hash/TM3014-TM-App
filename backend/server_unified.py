@@ -791,9 +791,6 @@ async def health_check():
         "timestamp": datetime.utcnow()
     }
 
-# Include router in app
-app.include_router(api_router)
-
 # GC PIN SYSTEM FUNCTIONS
 
 def generate_project_pin():
