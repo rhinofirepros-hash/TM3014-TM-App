@@ -18,7 +18,8 @@ import {
   CheckCircle, 
   XCircle,
   Eye,
-  Calendar
+  Calendar,
+  ExternalLink
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useTheme } from '../contexts/ThemeContext';
