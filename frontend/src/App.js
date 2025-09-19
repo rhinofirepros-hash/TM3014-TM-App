@@ -9,6 +9,7 @@ import Reports from "./components/Reports";
 import ProjectManagement from "./components/ProjectManagement";
 import EmployeeManagement from "./components/EmployeeManagement";
 import GcPortal from "./components/GcPortal";
+import GcOnlyLogin from "./components/GcOnlyLogin";
 import AdminGcManagement from "./components/AdminGcManagement";
 import { Toaster } from "./components/ui/toaster";
 import { ThemeProvider } from "./contexts/ThemeContext";
