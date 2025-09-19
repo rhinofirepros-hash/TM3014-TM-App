@@ -217,8 +217,8 @@ const FinancialTabs = ({ project, onBack }) => {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </AnimatedCardContent>
+      </AnimatedCard>
     </div>
   );
 
