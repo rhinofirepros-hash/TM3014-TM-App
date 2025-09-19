@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Key, Shield, Building } from 'lucide-react';
+import { Key, Shield } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 const GcOnlyLogin = ({ onLoginSuccess }) => {
