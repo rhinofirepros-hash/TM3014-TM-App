@@ -170,3 +170,27 @@ class ProfitabilityUpdate(BaseModel):
     overhead_cost: Optional[float] = None
     profit_margin: Optional[float] = None
     alerts: Optional[List[Alert]] = None
+
+class Inspection(BaseModel):
+    """Inspection model matching exact specification"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    project_id: str
+    inspection_type: InspectionType
+    status: InspectionStatus = InspectionStatus.PENDING
+    date: datetime
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class InspectionCreate(BaseModel):
+    project_id: str
+    inspection_type: InspectionType
+    status: Optional[InspectionStatus] = InspectionStatus.PENDING
+    date: datetime
+    notes: Optional[str] = None
+
+class InspectionUpdate(BaseModel):
+    inspection_type: Optional[InspectionType] = None
+    status: Optional[InspectionStatus] = None
+    date: Optional[datetime] = None
+    notes: Optional[str] = None
