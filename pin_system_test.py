@@ -172,7 +172,7 @@ class PINSystemTester:
                         # Bonus: Test that the new PIN works
                         print(f"\n🎯 Bonus: Test that new PIN '{second_fresh_pin}' works")
                         login_data = {
-                            "project_id": project_id,
+                            "projectId": project_id,
                             "pin": second_fresh_pin
                         }
                         
