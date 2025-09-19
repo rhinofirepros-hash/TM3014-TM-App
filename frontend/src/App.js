@@ -90,8 +90,10 @@ function App() {
   return (
     <ThemeProvider>
       <div className="App min-h-screen">
-        {/* GC Portal Route */}
-        {isGcRoute ? (
+        {/* GC Routes */}
+        {isGcLoginRoute ? (
+          <GcOnlyLogin />
+        ) : isGcRoute ? (
           <GcPortal />
         ) : (
           <>
