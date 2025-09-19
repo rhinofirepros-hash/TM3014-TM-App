@@ -201,7 +201,7 @@ const AdminGcManagement = ({ onBack }) => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>
-                GC Access Keys
+                Project PINs
               </h3>
               <Dialog open={showCreateKeyModal} onOpenChange={setShowCreateKeyModal}>
                 <DialogTrigger asChild>
