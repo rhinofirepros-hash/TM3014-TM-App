@@ -214,7 +214,7 @@ const AdminGcManagement = ({ onBack }) => {
                   <DialogHeader>
                     <DialogTitle className={`flex items-center gap-2 ${themeClasses.text.primary}`}>
                       <Key className="w-5 h-5" />
-                      Generate GC Access Key
+                      Get Project PIN
                     </DialogTitle>
                   </DialogHeader>
                   
@@ -235,62 +235,36 @@ const AdminGcManagement = ({ onBack }) => {
                       </Select>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className={themeClasses.text.primary}>4-Digit Key</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          type="text"
-                          placeholder="0000"
-                          maxLength={4}
-                          value={newKey.key}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            setNewKey(prev => ({ ...prev, key: value }));
-                          }}
-                          className={`${themeClasses.input.primary} text-center text-lg tracking-widest`}
-                        />
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={generateRandomKey}
-                          className="flex-shrink-0"
-                        >
-                          Generate
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className={themeClasses.text.primary}>Expires At</Label>
-                      <Input
-                        type="datetime-local"
-                        value={newKey.expiresAt}
-                        onChange={(e) => setNewKey(prev => ({ ...prev, expiresAt: e.target.value }))}
-                        className={themeClasses.input.primary}
-                      />
-                    </div>
-                    
-                    <div className={`p-3 rounded-lg border ${
+                    <div className={`p-4 rounded-lg border ${
                       isDarkMode 
                         ? 'bg-blue-900/20 border-blue-500/30 text-blue-200' 
                         : 'bg-blue-50 border-blue-200 text-blue-800'
                     }`}>
-                      <p className="text-sm">
-                        <Shield className="w-4 h-4 inline mr-2" />
-                        <strong>Security Note:</strong> Keys are single-use and will be deactivated after first login.
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-4 h-4" />
+                        <span className="font-medium">PIN System</span>
+                      </div>
+                      <p className="text-sm leading-relaxed">
+                        The system uses 4-digit PINs that auto-regenerate after each use for security. 
+                        Select a project to retrieve its current PIN.
                       </p>
                     </div>
                   </div>
-
-                  <div className="flex justify-end gap-2">
+                  
+                  <div className="flex justify-end gap-2 pt-4 border-t">
                     <Button 
                       variant="outline" 
                       onClick={() => setShowCreateKeyModal(false)}
+                      className={themeClasses.button.outline}
                     >
                       Cancel
                     </Button>
-                    <Button onClick={handleCreateKey}>
-                      Create Key
+                    <Button 
+                      onClick={handleCreateKey}
+                      className={themeClasses.button.primary}
+                      disabled={!newKey.projectId}
+                    >
+                      Get PIN
                     </Button>
                   </div>
                 </DialogContent>
