@@ -96,41 +96,57 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div className="App">
-        <BrowserRouter>
-          {currentView === 'dashboard' ? (
-            <Dashboard 
-              onCreateNew={handleCreateNew}
-              onOpenProject={handleOpenProject}
-              onManageCrew={handleManageCrew}
-              onViewReports={handleViewReports}
-              onManageProjects={() => setCurrentView('projects')}
-              onLogout={handleLogout}
-            />
-          ) : currentView === 'crew' ? (
-            <CrewManagement 
-              onBack={handleBackToDashboard}
-            />
-          ) : currentView === 'reports' ? (
-            <Reports 
-              onBack={handleBackToDashboard}
-            />
-          ) : currentView === 'projects' ? (
-            <ProjectManagement 
-              onBack={handleBackToDashboard}
-              onViewReports={handleViewReports}
-            />
-          ) : currentView === 'employees' ? (
-            <EmployeeManagement 
-              onBack={handleBackToDashboard}
-            />
-          ) : (
-            <TimeAndMaterialForm 
-              selectedProject={selectedProject}
-              onBackToDashboard={handleBackToDashboard}
-            />
-          )}
-        </BrowserRouter>
+      <div className="App min-h-screen">
+        {/* GC Portal Route */}
+        {isGcRoute ? (
+          <GcPortal />
+        ) : (
+          <>
+            {!isAuthenticated ? (
+              <PinLogin onLogin={handleLoginSuccess} />
+            ) : (
+              <div className="main-content">
+                <BrowserRouter>
+                  {currentView === 'dashboard' ? (
+                    <Dashboard 
+                      onCreateNew={handleCreateNew}
+                      onOpenProject={handleOpenProject}
+                      onManageCrew={handleManageCrew}
+                      onViewReports={handleViewReports}
+                      onManageProjects={() => setCurrentView('projects')}
+                      onLogout={handleLogout}
+                      onAdminGc={() => setCurrentView('admin-gc')}
+                    />
+                  ) : currentView === 'crew' ? (
+                    <CrewManagement 
+                      onBack={handleBackToDashboard}
+                    />
+                  ) : currentView === 'reports' ? (
+                    <Reports 
+                      onBack={handleBackToDashboard}
+                    />
+                  ) : currentView === 'projects' ? (
+                    <ProjectManagement 
+                      onBack={handleBackToDashboard}
+                      onViewReports={handleViewReports}
+                    />
+                  ) : currentView === 'employees' ? (
+                    <EmployeeManagement 
+                      onBack={handleBackToDashboard}
+                    />
+                  ) : currentView === 'admin-gc' ? (
+                    <AdminGcManagement onBack={() => setCurrentView('dashboard')} />
+                  ) : (
+                    <TimeAndMaterialForm 
+                      selectedProject={selectedProject}
+                      onBackToDashboard={handleBackToDashboard}
+                    />
+                  )}
+                </BrowserRouter>
+              </div>
+            )}
+          </>
+        )}
         <Toaster />
       </div>
     </ThemeProvider>
