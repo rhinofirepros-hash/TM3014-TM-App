@@ -75,7 +75,7 @@ class PINSystemTester:
         print(f"\n🔐 Step 2: Test login with fresh PIN '{fresh_pin}'")
         try:
             login_data = {
-                "project_id": project_id,
+                "projectId": project_id,
                 "pin": fresh_pin
             }
             
