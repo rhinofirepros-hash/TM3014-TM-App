@@ -907,11 +907,20 @@ async def get_project_gc_pin(project_id: str):
 async def gc_login_simple(login_data: dict):
     """GC: Simple login with project ID and PIN"""
     try:
-        project_id = login_data.get("projectId")
-        pin = login_data.get("pin")
-        ip = login_data.get("ip", "unknown")
+        # Handle both dict and request body formats
+        if hasattr(login_data, 'dict'):
+            data = login_data.dict()
+        else:
+            data = login_data
+            
+        project_id = data.get("projectId")
+        pin = data.get("pin")  
+        ip = data.get("ip", "unknown")
+        
+        logger.info(f"GC login attempt: projectId={project_id}, pin={pin}")
         
         if not project_id or not pin:
+            logger.error("Missing projectId or pin in request")
             raise HTTPException(status_code=400, detail="Project ID and PIN required")
         
         # Find project with matching PIN
