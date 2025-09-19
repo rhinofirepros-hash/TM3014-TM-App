@@ -756,50 +756,47 @@ const FinancialTabs = ({ project, onBack }) => {
           </div>
         </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 backdrop-blur-md bg-white/10 border-white/20">
-          <TabsTrigger value="invoices" className="flex items-center gap-2">
-            <Receipt className="w-4 h-4" />
-            Invoices
-          </TabsTrigger>
-          <TabsTrigger value="payables" className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4" />
-            Payables
-          </TabsTrigger>
-          <TabsTrigger value="cashflow" className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
-            Cashflow
-          </TabsTrigger>
-          <TabsTrigger value="profitability" className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Profitability
-          </TabsTrigger>
-          <TabsTrigger value="inspections" className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" />
-            Inspections
-          </TabsTrigger>
-        </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-5 backdrop-blur-md bg-white/10 border-white/20">
+            <TabsTrigger value="invoices" className="flex items-center gap-2">
+              <Receipt className="w-4 h-4" />
+              Invoices
+            </TabsTrigger>
+            <TabsTrigger value="payables" className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              Payables
+            </TabsTrigger>
+            <TabsTrigger value="cashflow" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Cashflow
+            </TabsTrigger>
+            <TabsTrigger value="profitability" className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Profitability
+            </TabsTrigger>
+            <TabsTrigger value="inspections" className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Inspections
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="invoices" className="mt-6">
-          <InvoicesTab />
-        </TabsContent>
-
-        <TabsContent value="payables" className="mt-6">
-          <PayablesTab />
-        </TabsContent>
-
-        <TabsContent value="cashflow" className="mt-6">
-          <CashflowTab />
-        </TabsContent>
-
-        <TabsContent value="profitability" className="mt-6">
-          <ProfitabilityTab />
-        </TabsContent>
-
-        <TabsContent value="inspections" className="mt-6">
-          <InspectionsTab />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="invoices" className="space-y-4">
+            <InvoicesTab />
+          </TabsContent>
+          <TabsContent value="payables" className="space-y-4">
+            <PayablesTab />
+          </TabsContent>
+          <TabsContent value="cashflow" className="space-y-4">
+            <CashflowTab />
+          </TabsContent>
+          <TabsContent value="profitability" className="space-y-4">
+            <ProfitabilityTab />
+          </TabsContent>
+          <TabsContent value="inspections" className="space-y-4">
+            <InspectionsTab />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
