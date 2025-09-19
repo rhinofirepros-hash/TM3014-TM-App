@@ -365,7 +365,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                 : 'bg-white/70 text-gray-900 hover:bg-white/90'
             }`}
           >
-            <AnimatedCardContent className="p-6">
+            <CardContent className="p-6">
               <div className={`flex items-center gap-2 mb-4`}>
                 <Package className="w-5 h-5 text-blue-500" />
                 <h3 className={`text-lg font-semibold ${themeClasses.text.primary}`}>Materials</h3>
@@ -403,7 +403,7 @@ const GcDashboard = ({ projectId, keyId, adminAccess, onLogout }) => {
                   </p>
                 )}
               </div>
-            </AnimatedCardContent>
+            </CardContent>
           </AnimatedCard>
         </div>
 
