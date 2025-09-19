@@ -186,8 +186,8 @@ const GcLogin = ({ onLoginSuccess }) => {
                 <div className="text-sm">
                   <p className="font-medium mb-1">Secure Access</p>
                   <p>
-                    Access keys are single-use and expire after use. 
-                    Contact your project manager if you need a new key.
+                    PINs are single-use and regenerate after access. 
+                    Contact your project manager for the current PIN.
                   </p>
                 </div>
               </div>
