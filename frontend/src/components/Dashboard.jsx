@@ -28,7 +28,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import oauthEmailService from '../services/oauthEmailService';
 import EmailAuthModal from './EmailAuthModal';
 
-const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, onManageProjects, onLogout }) => {
+const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, onManageProjects, onLogout, onAdminGc }) => {
   const [projects, setProjects] = useState([]);
   const [actualProjects, setActualProjects] = useState([]); // Store actual projects from backend
   const [recentTags, setRecentTags] = useState([]);
