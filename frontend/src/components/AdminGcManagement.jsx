@@ -108,8 +108,9 @@ const AdminGcManagement = ({ onBack }) => {
       if (response.ok) {
         const data = await response.json();
         toast({
-          title: "PIN Retrieved",
-          description: `Current PIN for ${data.projectName}: ${data.gcPin}`,
+          title: "PIN Generated Successfully",
+          description: `Project: ${data.projectName}\nProject ID: ${data.projectId}\nPIN: ${data.gcPin}\n\nUse these credentials for GC login.`,
+          duration: 10000 // Show for 10 seconds
         });
         
         setShowCreateKeyModal(false);
