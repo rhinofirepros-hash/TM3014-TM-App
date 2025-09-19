@@ -83,16 +83,7 @@ function App() {
     setCurrentView('reports');
   };
 
-  if (!isAuthenticated) {
-    return (
-      <ThemeProvider>
-        <div className="App">
-          <PinLogin onLoginSuccess={handleLoginSuccess} />
-          <Toaster />
-        </div>
-      </ThemeProvider>
-    );
-  }
+
 
   return (
     <ThemeProvider>
