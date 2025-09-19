@@ -68,9 +68,14 @@ export const ThemeProvider = ({ children }) => {
         : 'bg-white/50 hover:bg-white/70 text-gray-900 backdrop-blur border-gray-300/50',
     },
     
-    input: isDarkMode 
-      ? 'bg-white/10 border-white/20 text-white placeholder-gray-400 backdrop-blur' 
-      : 'bg-white/60 border-gray-300/50 text-gray-900 placeholder-gray-500 backdrop-blur',
+    input: {
+      primary: isDarkMode 
+        ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' 
+        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500',
+      secondary: isDarkMode 
+        ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-400' 
+        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
+    },
     
     modal: isDarkMode 
       ? 'bg-slate-800 backdrop-blur-xl border-slate-600 shadow-2xl' 
