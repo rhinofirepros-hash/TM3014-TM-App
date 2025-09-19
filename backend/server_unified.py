@@ -1012,6 +1012,78 @@ async def gc_login_simple(login_data: dict):
         logger.error(f"Error during GC login: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/gc/validate-pin")
+async def gc_validate_pin_only(pin_data: dict):
+    """GC: Secure PIN validation without exposing project data"""
+    try:
+        pin = pin_data.get("pin")
+        ip = pin_data.get("ip", "unknown")
+        
+        if not pin or len(pin) != 4:
+            raise HTTPException(status_code=400, detail="4-digit PIN required")
+        
+        logger.info(f"GC PIN validation attempt from {ip}")
+        
+        # Find project with matching PIN (without exposing all project data)
+        projects_collection = await get_collection("projects")
+        
+        project = await projects_collection.find_one({
+            "gc_pin": pin,
+            "gc_pin_used": False
+        })
+        
+        if not project:
+            # Log failed attempt
+            await gc_access_logs_collection.insert_one({
+                "id": str(uuid.uuid4()),
+                "projectId": "unknown",
+                "timestamp": datetime.now(),
+                "ip": ip,
+                "status": "failed",
+                "usedPin": pin
+            })
+            raise HTTPException(status_code=401, detail="Invalid PIN or PIN already used")
+        
+        # Generate new PIN for security
+        new_pin = str(random.randint(1000, 9999))
+        
+        # Update project with new PIN and mark old one as used
+        await projects_collection.update_one(
+            {"id": project.get("id") or project.get("_id")},
+            {"$set": {
+                "gc_pin": new_pin,
+                "gc_pin_used": False,
+                "gc_last_access": datetime.now(),
+                "gc_last_ip": ip
+            }}
+        )
+        
+        # Log successful validation
+        await gc_access_logs_collection.insert_one({
+            "id": str(uuid.uuid4()),
+            "projectId": project.get("id") or str(project.get("_id")),
+            "timestamp": datetime.now(),
+            "ip": ip,
+            "status": "success",
+            "usedPin": pin,
+            "newPin": new_pin
+        })
+        
+        logger.info(f"GC PIN validation successful. Old PIN: {pin}, New PIN: {new_pin}")
+        
+        return {
+            "success": True,
+            "projectId": project.get("id") or str(project.get("_id")),
+            "projectName": project.get("name", "Unknown Project"),
+            "message": "PIN validated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error during PIN validation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/gc/dashboard/{project_id}", response_model=GcProjectDashboard)
 async def get_gc_dashboard(project_id: str):
     """GC: Get project dashboard (no financial data)"""
