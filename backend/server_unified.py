@@ -1238,6 +1238,24 @@ async def get_gc_dashboard(project_id: str):
         logger.error(f"Error fetching GC dashboard for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Helper function for admin endpoints
+async def get_project_by_id(project_id: str):
+    """Get project by ID from the appropriate collection"""
+    try:
+        # Try projects_new collection first (unified schema)
+        projects_collection = await get_collection("projects_new")
+        project = await projects_collection.find_one({"id": project_id})
+        
+        if not project:
+            # Fallback to projects collection
+            projects_collection = await get_collection("projects")
+            project = await projects_collection.find_one({"id": project_id})
+        
+        return project
+    except Exception as e:
+        logger.error(f"Error getting project {project_id}: {e}")
+        return None
+
 # GC ADMIN ENDPOINTS
 @api_router.get("/gc/keys/admin", response_model=List[GcKeyAdmin])
 async def get_gc_keys_admin():
