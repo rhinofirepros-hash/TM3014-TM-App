@@ -42,7 +42,7 @@ function App() {
     }
   }, []);
 
-  const handleLoginSuccess = () => {
+  const handleLogin = () => {
     setIsAuthenticated(true);
   };
 
