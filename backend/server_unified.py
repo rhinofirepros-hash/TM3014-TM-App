@@ -880,11 +880,32 @@ async def gc_login_simple(login_data: dict):
         
         # Find project with matching PIN
         projects_collection = await get_collection("projects")
+        
+        # Try to find project by id field first, then by _id field
         project = await projects_collection.find_one({
             "id": project_id,
             "gc_pin": pin,
             "gc_pin_used": False
         })
+        
+        if not project:
+            # Try finding by _id field (for unified schema)
+            try:
+                from bson import ObjectId
+                if ObjectId.is_valid(project_id):
+                    project = await projects_collection.find_one({
+                        "_id": ObjectId(project_id),
+                        "gc_pin": pin,
+                        "gc_pin_used": False
+                    })
+                else:
+                    project = await projects_collection.find_one({
+                        "_id": project_id,
+                        "gc_pin": pin,
+                        "gc_pin_used": False
+                    })
+            except:
+                pass
         
         if not project:
             # Log failed access
