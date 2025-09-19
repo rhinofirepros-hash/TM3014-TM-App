@@ -14,7 +14,7 @@ import {
   MapPin,
   TrendingUp,
   Activity,
-  Tool
+  Wrench
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
