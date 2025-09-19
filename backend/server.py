@@ -1849,6 +1849,346 @@ async def delete_inspection(inspection_id: str):
         logger.error(f"Error deleting inspection {inspection_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# GC DASHBOARD API ROUTES
+
+@api_router.post("/gc/keys", response_model=GcKey)
+async def create_gc_key(gc_key: GcKeyCreate):
+    """Admin: Create new GC key for project"""
+    try:
+        # Ensure key is unique
+        existing_key = await gc_keys_collection.find_one({"key": gc_key.key, "active": True})
+        if existing_key:
+            raise HTTPException(status_code=400, detail="Key already exists")
+        
+        gc_key_dict = gc_key.dict()
+        gc_key_obj = GcKey(**gc_key_dict)
+        
+        result = await gc_keys_collection.insert_one(gc_key_obj.dict())
+        logger.info(f"Created GC key: {gc_key_obj.key} for project {gc_key_obj.projectId}")
+        
+        return gc_key_obj
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating GC key: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc/keys/admin", response_model=List[GcKeyAdmin])
+async def get_gc_keys_admin():
+    """Admin: Get all GC keys with project info"""
+    try:
+        keys = await gc_keys_collection.find({"active": True}).to_list(1000)
+        admin_keys = []
+        
+        for key in keys:
+            # Get project name
+            project = await db.projects.find_one({"id": key["projectId"]})
+            project_name = project.get("name", "Unknown Project") if project else "Unknown Project"
+            
+            admin_key = GcKeyAdmin(
+                id=key["id"],
+                projectName=project_name,
+                keyLastFour=key["key"][-4:],  # Only last 4 digits
+                expiresAt=key["expiresAt"],
+                active=key["active"],
+                used=key.get("used", False),
+                usedAt=key.get("usedAt")
+            )
+            admin_keys.append(admin_key)
+        
+        return admin_keys
+    except Exception as e:
+        logger.error(f"Error fetching admin GC keys: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/gc/login")
+async def gc_login(login_data: dict):
+    """GC: Login with project ID and key"""
+    try:
+        project_id = login_data.get("projectId")
+        key = login_data.get("key")
+        ip = login_data.get("ip", "unknown")
+        user_agent = login_data.get("userAgent", "")
+        
+        if not project_id or not key:
+            raise HTTPException(status_code=400, detail="Project ID and key required")
+        
+        # Find valid key
+        gc_key = await gc_keys_collection.find_one({
+            "projectId": project_id,
+            "key": key,
+            "active": True,
+            "used": False,
+            "expiresAt": {"$gt": datetime.now(timezone.utc)}
+        })
+        
+        if not gc_key:
+            # Log failed access
+            await gc_access_logs_collection.insert_one({
+                "id": str(uuid.uuid4()),
+                "gcKeyId": "unknown",
+                "projectId": project_id,
+                "timestamp": datetime.now(timezone.utc),
+                "ip": ip,
+                "status": "failed",
+                "userAgent": user_agent
+            })
+            raise HTTPException(status_code=401, detail="Invalid or expired key")
+        
+        # Mark key as used
+        await gc_keys_collection.update_one(
+            {"id": gc_key["id"]},
+            {"$set": {
+                "used": True,
+                "usedAt": datetime.now(timezone.utc),
+                "usedByIp": ip
+            }}
+        )
+        
+        # Log successful access
+        access_log = GcAccessLog(
+            gcKeyId=gc_key["id"],
+            projectId=project_id,
+            ip=ip,
+            status="success",
+            userAgent=user_agent
+        )
+        await gc_access_logs_collection.insert_one(access_log.dict())
+        
+        return {
+            "success": True,
+            "projectId": project_id,
+            "keyId": gc_key["id"],
+            "message": "Login successful"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error during GC login: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc/dashboard/{project_id}", response_model=GcProjectDashboard)
+async def get_gc_dashboard(project_id: str):
+    """GC: Get project dashboard (no financial data)"""
+    try:
+        # Get project info
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        # Get project phases
+        phases = await project_phases_collection.find({"projectId": project_id}).to_list(100)
+        phase_models = [ProjectPhaseModel(**serialize_doc(phase)) for phase in phases]
+        
+        # Calculate overall progress
+        total_progress = sum(phase.get("percentComplete", 0) for phase in phases)
+        overall_progress = total_progress / len(phases) if phases else 0
+        
+        # Get crew summary (hours and days only, no costs)
+        crew_logs = await db.crew_logs.find({"project_id": project_id}).to_list(1000)
+        total_hours = sum(log.get("hours_worked", 0) for log in crew_logs)
+        unique_dates = set(log.get("date", "").split("T")[0] for log in crew_logs if log.get("date"))
+        total_days = len(unique_dates)
+        recent_descriptions = [log.get("work_description", "") for log in crew_logs[-5:] if log.get("work_description")]
+        
+        # Get unique crew members
+        all_crew_members = []
+        for log in crew_logs:
+            if log.get("crew_members"):
+                all_crew_members.extend([member.get("name") for member in log["crew_members"] if member.get("name")])
+        active_crew_members = len(set(all_crew_members))
+        
+        crew_summary = GcCrewSummary(
+            totalHours=total_hours,
+            totalDays=total_days,
+            recentDescriptions=recent_descriptions,
+            activeCrewMembers=active_crew_members
+        )
+        
+        # Get materials summary (quantities only, no costs)
+        materials = await db.materials.find({"project_id": project_id}).to_list(1000)
+        material_summaries = [
+            GcMaterialSummary(
+                date=material.get("purchase_date", datetime.now(timezone.utc)),
+                vendor=material.get("vendor", "Unknown"),
+                item=material.get("material_name", "Material"),
+                quantity=material.get("quantity", 0),
+                description=material.get("description")
+            )
+            for material in materials
+        ]
+        
+        # Get T&M tag summary (counts and hours only, no dollars)
+        tm_tags = await db.tm_tags.find({"project_id": project_id}).to_list(1000)
+        total_tags = len(tm_tags)
+        submitted_tags = len([tag for tag in tm_tags if tag.get("status") in ["submitted", "approved"]])
+        approved_tags = len([tag for tag in tm_tags if tag.get("status") == "approved"])
+        
+        # Calculate total hours from T&M tags
+        tm_total_hours = 0
+        for tag in tm_tags:
+            labor_entries = tag.get("labor_entries", [])
+            for entry in labor_entries:
+                tm_total_hours += entry.get("total_hours", 0)
+        
+        recent_tag_titles = [tag.get("tm_tag_title", "") for tag in tm_tags[-5:] if tag.get("tm_tag_title")]
+        
+        tm_tag_summary = GcTmTagSummary(
+            totalTags=total_tags,
+            submittedTags=submitted_tags,
+            approvedTags=approved_tags,
+            totalHours=tm_total_hours,
+            recentTagTitles=recent_tag_titles
+        )
+        
+        # Get inspections
+        inspections = await inspection_status_collection.find({"projectId": project_id}).to_list(100)
+        inspection_models = [InspectionStatusModel(**serialize_doc(inspection)) for inspection in inspections]
+        
+        # Get narrative
+        latest_narrative = await gc_narratives_collection.find_one(
+            {"projectId": project_id},
+            sort=[("generatedAt", -1)]
+        )
+        narrative_text = latest_narrative.get("narrative") if latest_narrative else None
+        
+        dashboard = GcProjectDashboard(
+            projectId=project_id,
+            projectName=project.get("name", "Unknown Project"),
+            projectLocation=project.get("address"),
+            projectStatus=project.get("status", "active"),
+            overallProgress=overall_progress,
+            phases=phase_models,
+            crewSummary=crew_summary,
+            materials=material_summaries,
+            tmTagSummary=tm_tag_summary,
+            inspections=inspection_models,
+            narrative=narrative_text,
+            lastUpdated=datetime.now(timezone.utc)
+        )
+        
+        return dashboard
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching GC dashboard for project {project_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc/access-logs/admin", response_model=List[GcAccessLogAdmin])
+async def get_gc_access_logs_admin():
+    """Admin: Get all GC access logs"""
+    try:
+        logs = await gc_access_logs_collection.find({}).sort("timestamp", -1).to_list(1000)
+        admin_logs = []
+        
+        for log in logs:
+            # Get project and key info
+            project = await db.projects.find_one({"id": log["projectId"]})
+            project_name = project.get("name", "Unknown Project") if project else "Unknown Project"
+            
+            gc_key = await gc_keys_collection.find_one({"id": log["gcKeyId"]})
+            key_last_four = gc_key["key"][-4:] if gc_key else "****"
+            
+            admin_log = GcAccessLogAdmin(
+                id=log["id"],
+                projectName=project_name,
+                keyLastFour=key_last_four,
+                timestamp=log["timestamp"],
+                ip=log["ip"],
+                status=log["status"],
+                userAgent=log.get("userAgent")
+            )
+            admin_logs.append(admin_log)
+        
+        return admin_logs
+    except Exception as e:
+        logger.error(f"Error fetching admin access logs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# PROJECT PHASES API ROUTES
+@api_router.post("/project-phases", response_model=ProjectPhaseModel)
+async def create_project_phase(phase: ProjectPhaseCreate):
+    """Create project phase"""
+    try:
+        phase_dict = phase.dict()
+        phase_obj = ProjectPhaseModel(**phase_dict)
+        
+        result = await project_phases_collection.insert_one(phase_obj.dict())
+        logger.info(f"Created project phase: {phase_obj.phase} for project {phase_obj.projectId}")
+        
+        return phase_obj
+    except Exception as e:
+        logger.error(f"Error creating project phase: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/project-phases/{project_id}", response_model=List[ProjectPhaseModel])
+async def get_project_phases(project_id: str):
+    """Get project phases"""
+    try:
+        phases = await project_phases_collection.find({"projectId": project_id}).to_list(100)
+        return [ProjectPhaseModel(**serialize_doc(phase)) for phase in phases]
+    except Exception as e:
+        logger.error(f"Error fetching project phases: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/project-phases/{phase_id}", response_model=ProjectPhaseModel)
+async def update_project_phase(phase_id: str, phase_update: ProjectPhaseUpdate):
+    """Update project phase"""
+    try:
+        update_dict = {k: v for k, v in phase_update.dict().items() if v is not None}
+        update_dict["updated_at"] = datetime.now(timezone.utc)
+        
+        result = await project_phases_collection.update_one(
+            {"id": phase_id}, 
+            {"$set": update_dict}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Project phase not found")
+        
+        updated_phase = await project_phases_collection.find_one({"id": phase_id})
+        return ProjectPhaseModel(**serialize_doc(updated_phase))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating project phase {phase_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# GC NARRATIVES API ROUTES
+@api_router.post("/gc-narratives", response_model=GcNarrative)
+async def create_gc_narrative(narrative: GcNarrativeCreate):
+    """Create GC narrative"""
+    try:
+        narrative_dict = narrative.dict()
+        narrative_obj = GcNarrative(**narrative_dict)
+        
+        result = await gc_narratives_collection.insert_one(narrative_obj.dict())
+        logger.info(f"Created GC narrative for project {narrative_obj.projectId}")
+        
+        return narrative_obj
+    except Exception as e:
+        logger.error(f"Error creating GC narrative: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gc-narratives/{project_id}")
+async def get_latest_gc_narrative(project_id: str):
+    """Get latest GC narrative for project"""
+    try:
+        narrative = await gc_narratives_collection.find_one(
+            {"projectId": project_id},
+            sort=[("generatedAt", -1)]
+        )
+        
+        if not narrative:
+            return {"projectId": project_id, "narrative": None}
+        
+        return GcNarrative(**serialize_doc(narrative))
+    except Exception as e:
+        logger.error(f"Error fetching GC narrative: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/health")
 async def health_check():
     """Health check endpoint"""
