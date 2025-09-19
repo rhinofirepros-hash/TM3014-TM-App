@@ -3033,6 +3033,186 @@ class TMTagAPITester:
         
         return True
 
+    def test_gc_pin_generation_specific(self):
+        """Test specific PIN generation for requested project IDs"""
+        print("\n=== Testing GC PIN Generation for Specific Projects ===")
+        
+        # Test the specific project IDs mentioned in the review request
+        test_project_ids = [
+            "68cc802f8d44fcd8015b39b8",
+            "68cc802f8d44fcd8015b39b9"
+        ]
+        
+        pin_results = {}
+        
+        for project_id in test_project_ids:
+            print(f"\n--- Testing PIN generation for project {project_id} ---")
+            
+            # Step 1: Test PIN generation endpoint
+            try:
+                response = self.session.get(f"{self.base_url}/projects/{project_id}/gc-pin")
+                
+                if response.status_code == 200:
+                    pin_data = response.json()
+                    
+                    # Verify response structure
+                    required_fields = ["projectId", "projectName", "gcPin", "pinUsed"]
+                    missing_fields = [field for field in required_fields if field not in pin_data]
+                    
+                    if not missing_fields:
+                        pin_results[project_id] = {
+                            "pin": pin_data["gcPin"],
+                            "project_name": pin_data["projectName"],
+                            "pin_used": pin_data["pinUsed"]
+                        }
+                        self.log_result("projects", f"PIN generation - {project_id}", True, 
+                                      f"Generated PIN: {pin_data['gcPin']} for project: {pin_data['projectName']}")
+                        
+                        print(f"✅ PIN Generated: {pin_data['gcPin']}")
+                        print(f"   Project Name: {pin_data['projectName']}")
+                        print(f"   PIN Used: {pin_data['pinUsed']}")
+                        
+                    else:
+                        self.log_result("projects", f"PIN generation - {project_id}", False, 
+                                      f"Missing fields: {missing_fields}", response)
+                        print(f"❌ Missing fields in response: {missing_fields}")
+                        
+                elif response.status_code == 404:
+                    self.log_result("projects", f"PIN generation - {project_id}", False, 
+                                  "Project not found", response)
+                    print(f"❌ Project {project_id} not found")
+                    
+                else:
+                    self.log_result("projects", f"PIN generation - {project_id}", False, 
+                                  f"HTTP {response.status_code}", response)
+                    print(f"❌ HTTP {response.status_code}: {response.text[:200]}")
+                    
+            except Exception as e:
+                self.log_result("projects", f"PIN generation - {project_id}", False, str(e))
+                print(f"❌ Exception: {str(e)}")
+        
+        # Step 2: Check if projects were updated by getting all projects
+        print(f"\n--- Checking if projects were updated with gc_pin field ---")
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                all_projects = response.json()
+                
+                print(f"Total projects in system: {len(all_projects)}")
+                
+                for project_id in test_project_ids:
+                    # Find the specific project
+                    target_project = None
+                    for project in all_projects:
+                        if project.get("id") == project_id:
+                            target_project = project
+                            break
+                    
+                    if target_project:
+                        print(f"\n📋 Project {project_id} data structure:")
+                        print(f"   ID: {target_project.get('id', 'N/A')}")
+                        print(f"   Name: {target_project.get('name', 'N/A')}")
+                        print(f"   GC PIN: {target_project.get('gc_pin', 'NOT SET')}")
+                        print(f"   PIN Used: {target_project.get('gc_pin_used', 'NOT SET')}")
+                        print(f"   Has 'id' field: {'id' in target_project}")
+                        print(f"   Has '_id' field: {'_id' in target_project}")
+                        
+                        # Check if gc_pin field is set
+                        if target_project.get("gc_pin"):
+                            expected_pin = pin_results.get(project_id, {}).get("pin")
+                            actual_pin = target_project.get("gc_pin")
+                            
+                            if expected_pin and expected_pin == actual_pin:
+                                self.log_result("projects", f"PIN update verification - {project_id}", True, 
+                                              f"Project updated with PIN: {actual_pin}")
+                            else:
+                                self.log_result("projects", f"PIN update verification - {project_id}", False, 
+                                              f"PIN mismatch - Expected: {expected_pin}, Got: {actual_pin}")
+                        else:
+                            self.log_result("projects", f"PIN update verification - {project_id}", False, 
+                                          "Project does not have gc_pin field set")
+                    else:
+                        print(f"❌ Project {project_id} not found in projects list")
+                        self.log_result("projects", f"PIN update verification - {project_id}", False, 
+                                      "Project not found in projects list")
+                
+                # Show sample of project data structure
+                if all_projects:
+                    sample_project = all_projects[0]
+                    print(f"\n📋 Sample project data structure:")
+                    for key, value in sample_project.items():
+                        if key not in ['description', 'address']:  # Skip long fields
+                            print(f"   {key}: {value}")
+                
+            else:
+                self.log_result("projects", "PIN update verification", False, 
+                              f"Could not retrieve projects list: HTTP {response.status_code}", response)
+                
+        except Exception as e:
+            self.log_result("projects", "PIN update verification", False, str(e))
+        
+        # Step 3: Test with a different project ID for comparison
+        print(f"\n--- Testing with different project ID for comparison ---")
+        
+        # Get a different project ID from the list
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            if response.status_code == 200:
+                all_projects = response.json()
+                
+                # Find a project that's not in our test list
+                comparison_project = None
+                for project in all_projects:
+                    if project.get("id") not in test_project_ids:
+                        comparison_project = project
+                        break
+                
+                if comparison_project:
+                    comparison_id = comparison_project["id"]
+                    print(f"Testing PIN generation for comparison project: {comparison_id}")
+                    
+                    response = self.session.get(f"{self.base_url}/projects/{comparison_id}/gc-pin")
+                    
+                    if response.status_code == 200:
+                        pin_data = response.json()
+                        self.log_result("projects", f"Comparison PIN generation - {comparison_id}", True, 
+                                      f"Generated PIN: {pin_data.get('gcPin', 'N/A')}")
+                        
+                        print(f"✅ Comparison Project PIN: {pin_data.get('gcPin', 'N/A')}")
+                        print(f"   Project Name: {pin_data.get('projectName', 'N/A')}")
+                        
+                    else:
+                        self.log_result("projects", f"Comparison PIN generation - {comparison_id}", False, 
+                                      f"HTTP {response.status_code}", response)
+                else:
+                    print("No other projects available for comparison")
+                    
+        except Exception as e:
+            print(f"Error during comparison test: {str(e)}")
+        
+        print(f"\n=== GC PIN Generation Test Summary ===")
+        for project_id, result in pin_results.items():
+            print(f"Project {project_id}: PIN {result['pin']} ({'Used' if result['pin_used'] else 'Available'})")
+        
+        return pin_results
+
+    def run_pin_generation_tests(self):
+        """Run specific PIN generation tests as requested in review"""
+        print("🚀 Starting PIN Generation Tests for Specific Projects")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # Test basic connectivity first
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Aborting tests.")
+            return self.generate_report()
+        
+        # Run the specific PIN generation test
+        self.test_gc_pin_generation_specific()
+        
+        return self.generate_report()
+
     def run_pin_investigation_tests(self):
         """Run the specific PIN investigation tests"""
         print("🚀 Starting GC PIN System Investigation")
