@@ -13,7 +13,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
 
-const InspectionManagement = ({ project, onProjectUpdate }) => {
+const InspectionManagement = ({ project, onProjectUpdate, onBack }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   const { toast } = useToast();
