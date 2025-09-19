@@ -376,7 +376,14 @@ const AdminGcManagement = ({ onBack }) => {
               Access GC dashboards directly for testing and troubleshooting without needing PINs.
             </p>
 
-            <Card className={themeClasses.card.primary}>
+            <AnimatedCard 
+              delay={200}
+              className={`hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white' 
+                  : 'bg-white/70 text-gray-900'
+              }`}
+            >
               <CardContent className="p-6">
                 <div className="grid gap-4">
                   {projects.length === 0 ? (
