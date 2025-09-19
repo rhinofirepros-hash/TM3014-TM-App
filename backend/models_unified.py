@@ -77,6 +77,10 @@ class Project(BaseModel):
     # GC PIN fields for dashboard access
     gc_pin: Optional[str] = None
     gc_pin_used: Optional[bool] = False
+    # Plan submittal tracking
+    plan_submittal_status: PlanSubmittalStatus = PlanSubmittalStatus.APPROVED  # T&M projects default to approved
+    plan_submittal_date: Optional[datetime] = None
+    plan_submittal_notes: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
