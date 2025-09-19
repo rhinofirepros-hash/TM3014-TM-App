@@ -1064,6 +1064,9 @@ async def get_gc_dashboard(project_id: str):
         logger.error(f"Error fetching GC dashboard for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Include router in app (after all routes are defined)
+app.include_router(api_router)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
