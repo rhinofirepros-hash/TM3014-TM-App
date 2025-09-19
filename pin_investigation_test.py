@@ -156,7 +156,7 @@ class PINInvestigator:
             try:
                 # Test the simplified GC login endpoint
                 login_data = {
-                    "project_id": project_id,
+                    "projectId": project_id,  # Use camelCase as expected by backend
                     "pin": pin
                 }
                 
