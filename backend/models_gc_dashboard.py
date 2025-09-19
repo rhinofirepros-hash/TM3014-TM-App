@@ -165,7 +165,7 @@ class GcProjectDashboard(BaseModel):
     crewSummary: GcCrewSummary
     materials: List[GcMaterialSummary]
     tmTagSummary: GcTmTagSummary
-    inspections: List[InspectionStatusModel]
+    inspections: dict  # Inspection status data as dictionary
     narrative: Optional[str] = None
     lastUpdated: datetime
 
