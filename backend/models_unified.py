@@ -95,6 +95,10 @@ class ProjectCreate(BaseModel):
     startDate: Optional[datetime] = None
     endDate: Optional[datetime] = None
     notes: Optional[str] = None
+    # Plan submittal tracking
+    plan_submittal_status: Optional[PlanSubmittalStatus] = None  # Will be set based on contract type
+    plan_submittal_date: Optional[datetime] = None
+    plan_submittal_notes: Optional[str] = None
 
 class CrewMember(BaseModel):
     """Enhanced crew member model with separate cost and billing rates"""
