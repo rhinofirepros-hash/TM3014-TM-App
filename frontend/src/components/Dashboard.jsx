@@ -436,6 +436,22 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
               </AnimatedCardContent>
             </AnimatedCard>
 
+            <AnimatedCard 
+              delay={950}
+              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
+                isDarkMode 
+                  ? 'bg-white/10 text-white hover:bg-white/20' 
+                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
+              }`} 
+              onClick={onAdminGc}
+            >
+              <AnimatedCardContent className="p-6 text-center">
+                <Shield className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>GC Management</h3>
+                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Access keys & logs</p>
+              </AnimatedCardContent>
+            </AnimatedCard>
+
             {(() => {
               const currentUser = oauthEmailService.getCurrentUser();
               return (
