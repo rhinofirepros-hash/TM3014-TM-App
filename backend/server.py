@@ -513,13 +513,57 @@ async def delete_worker(worker_id: str):
 # Project Management Endpoints
 @api_router.post("/projects", response_model=Project)
 async def create_project(project: ProjectCreate):
-    project_dict = project.dict()
-    project_obj = Project(**project_dict)
-    
-    # Insert into database
-    result = await db.projects.insert_one(project_obj.dict())
-    
-    return project_obj
+    try:
+        project_dict = project.dict()
+        
+        project_data = {
+            "id": str(uuid.uuid4()),
+            "name": project_dict["name"],
+            "description": project_dict.get("description", ""),
+            "client_company": project_dict.get("client_company", ""),
+            "gc_email": project_dict.get("gc_email", ""),
+            "project_type": project_dict.get("project_type", "full_project"),
+            "contract_amount": project_dict.get("contract_amount", 0),
+            "labor_rate": project_dict.get("labor_rate", 95),
+            "project_manager": project_dict.get("project_manager", ""),
+            "start_date": project_dict.get("start_date"),
+            "estimated_completion": project_dict.get("estimated_completion"),
+            "actual_completion": project_dict.get("actual_completion"),
+            "address": project_dict.get("address", ""),
+            "status": project_dict.get("status", "active"),
+            "forecasted_start_date": project_dict.get("forecasted_start_date"),
+            "forecasted_completion_date": project_dict.get("forecasted_completion_date"),
+            "forecasted_budget_labor": project_dict.get("forecasted_budget_labor", 0),
+            "forecasted_budget_materials": project_dict.get("forecasted_budget_materials", 0),
+            "forecasted_budget_equipment": project_dict.get("forecasted_budget_equipment", 0),
+            "forecasted_budget_other": project_dict.get("forecasted_budget_other", 0),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        
+        # Auto-generate GC PIN for new projects
+        gc_pin = generate_project_pin()
+        # Ensure PIN uniqueness
+        while await db.projects.find_one({"gc_pin": gc_pin}):
+            gc_pin = generate_project_pin()
+        
+        project_data["gc_pin"] = gc_pin
+        project_data["gc_pin_used"] = False
+        
+        result = await db.projects.insert_one(project_data)
+        
+        logger.info(f"Created project: {project_data['name']} with GC PIN: {gc_pin}")
+        
+        return {
+            "id": project_data["id"],
+            "name": project_data["name"],
+            "status": "success",
+            "gc_pin": gc_pin,
+            "message": f"Project created with GC PIN: {gc_pin}"
+        }
+    except Exception as e:
+        logger.error(f"Error creating project: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/projects", response_model=List[Project])
 async def get_projects(status: Optional[str] = None):
