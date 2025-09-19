@@ -90,10 +90,10 @@ const AdminGcManagement = ({ onBack }) => {
   };
 
   const handleCreateKey = async () => {
-    if (!newKey.projectId || !newKey.key || !newKey.expiresAt) {
+    if (!newKey.projectId) {
       toast({
         title: "Missing Information",
-        description: "Please fill all fields",
+        description: "Please select a project",
         variant: "destructive"
       });
       return;
@@ -101,22 +101,15 @@ const AdminGcManagement = ({ onBack }) => {
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/gc/keys`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          projectId: newKey.projectId,
-          key: newKey.key,
-          expiresAt: new Date(newKey.expiresAt).toISOString()
-        })
-      });
-
+      
+      // The system uses project PINs, so we get the current PIN for the project
+      const response = await fetch(`${backendUrl}/api/projects/${newKey.projectId}/gc-pin`);
+      
       if (response.ok) {
+        const data = await response.json();
         toast({
-          title: "GC Key Created",
-          description: `Access key ${newKey.key} created successfully`,
+          title: "PIN Retrieved",
+          description: `Current PIN for ${data.projectName}: ${data.gcPin}`,
         });
         
         setShowCreateKeyModal(false);
@@ -124,10 +117,10 @@ const AdminGcManagement = ({ onBack }) => {
         loadData(); // Reload data
       } else {
         const error = await response.json();
-        throw new Error(error.detail || 'Failed to create key');
+        throw new Error(error.detail || 'Failed to get project PIN');
       }
     } catch (error) {
-      console.error('Error creating GC key:', error);
+      console.error('Error getting project PIN:', error);
       toast({
         title: "Creation Failed",
         description: error.message,
