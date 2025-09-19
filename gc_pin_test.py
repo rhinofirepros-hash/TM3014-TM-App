@@ -48,7 +48,7 @@ class GCPinTester:
         """Test basic API connectivity"""
         print("\n=== Testing Basic Connectivity ===")
         try:
-            response = self.session.get(f"{self.base_url}/")
+            response = self.session.get(f"{self.base_url}/projects")
             if response.status_code == 200:
                 self.log_result("general", "Basic connectivity", True)
                 return True
