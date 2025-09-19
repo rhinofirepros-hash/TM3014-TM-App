@@ -133,7 +133,7 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
               General Contractor Access
             </h2>
             <p className={`mt-2 text-sm ${themeClasses.text.secondary}`}>
-              Enter your project credentials to view the dashboard
+              Enter your 4-digit PIN to access the project dashboard
             </p>
           </div>
         </div>
