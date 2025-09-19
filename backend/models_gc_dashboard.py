@@ -25,7 +25,12 @@ class ProjectPhase(str, Enum):
 
 class InspectionResult(str, Enum):
     PENDING = "pending"
-    PASSED = "passed"
+    ROUGH_REQUESTED = "rough_requested"
+    ROUGH_APPROVED = "rough_approved" 
+    ROUGH_PARTIAL = "rough_partial"
+    FINAL_REQUESTED = "final_requested"
+    FINAL_APPROVED = "final_approved"
+    FINAL_PARTIAL = "final_partial"
     FAILED = "failed"
 
 # Core Models
