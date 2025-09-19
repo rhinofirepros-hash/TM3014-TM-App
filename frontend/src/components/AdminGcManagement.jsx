@@ -362,10 +362,10 @@ const AdminGcManagement = ({ onBack }) => {
                     projects.map((project) => (
                       <div 
                         key={project.id} 
-                        className={`p-4 rounded-lg border transition-colors ${
+                        className={`p-4 rounded-lg border ${
                           isDarkMode 
-                            ? 'border-white/20 bg-white/5 hover:bg-white/10' 
-                            : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                            ? 'border-white/20 bg-white/5' 
+                            : 'border-gray-200 bg-gray-50'
                         }`}
                       >
                         <div className="flex items-center justify-between">
