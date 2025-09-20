@@ -60,11 +60,11 @@ const Dashboard = ({
 
   const loadData = async () => {
     try {
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
       
       if (backendUrl) {
         // Load projects from backend
-        const projectsResponse = await fetch(`${backendUrl}/api/projects`);
+        const projectsResponse = await fetch(`${backendUrl}/projects`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
           setActualProjects(projectsData);
@@ -72,7 +72,7 @@ const Dashboard = ({
           // Calculate analytics for each project
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
-              const tmResponse = await fetch(`${backendUrl}/api/projects/${project.id}/tm-tags`);
+              const tmResponse = await fetch(`${backendUrl}/projects/${project.id}/tm-tags`);
               const tmTags = tmResponse.ok ? await tmResponse.json() : [];
               
               const totalHours = tmTags.reduce((sum, tag) => {
