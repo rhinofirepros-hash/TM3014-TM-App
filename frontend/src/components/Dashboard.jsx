@@ -284,77 +284,70 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
         <div className="mb-8">
           <h2 className={`text-xl font-semibold mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={handleCreateNewTag}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
                 <Plus className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Create New T&M Tag</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>Start a new time & material tag</p>
             </div>
 
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={onViewReports}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
                 <FileText className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>View Reports</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>View T&M tag history and reports</p>
             </div>
             
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={onManageCrew}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.purple}20`, color: themeClasses.colors.purple }}>
                 <Users className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Crew</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>Add and manage crew member profiles</p>
             </div>
 
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={onManageProjects}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-500/10 text-indigo-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.indigo}20`, color: themeClasses.colors.indigo }}>
                 <Building className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Projects</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>Create and track project profitability</p>
             </div>
 
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={() => console.log('AI Insights coming soon')}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-500/10 text-yellow-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.amber}20`, color: themeClasses.colors.amber }}>
                 <Zap className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>AI Insights</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>Smart project analytics (Coming Soon)</p>
             </div>
 
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={onAdminGc}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.cyan}20`, color: themeClasses.colors.cyan }}>
                 <Shield className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>GC Management</h3>
               <p className={`text-sm ${themeClasses.text.secondary}`}>Access keys & logs</p>
             </div>
 
-            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                  onClick={onFinancialManagement}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
-              }`}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
                 <DollarSign className="w-6 h-6" />
               </div>
               <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Financial Management</h3>
@@ -364,13 +357,12 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
             {(() => {
               const currentUser = oauthEmailService.getCurrentUser();
               return (
-                <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
                      onClick={() => setShowEmailAuthModal(true)}>
                   {currentUser ? (
                     <>
-                      <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                        isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
-                      }`}>
+                      <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                           style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
                         <CheckCircle className="w-6 h-6" />
                       </div>
                       <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Email Connected</h3>
@@ -380,9 +372,8 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                     </>
                   ) : (
                     <>
-                      <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
-                        isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
-                      }`}>
+                      <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                           style={{ backgroundColor: `${themeClasses.colors.amber}20`, color: themeClasses.colors.amber }}>
                         <Mail className="w-6 h-6" />
                       </div>
                       <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Connect Email</h3>
