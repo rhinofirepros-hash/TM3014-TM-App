@@ -46,9 +46,16 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
       }
       
       const data = await response.json();
-      setProjectData(data.project);
-      setTmTags(data.tm_tags || []);
-      setCrewLogs(data.crew_logs || []);
+      // The unified backend returns the full dashboard object already
+      setProjectData({
+        id: data.projectId,
+        name: data.projectName,
+        client_company: data.projectLocation || '',
+        status: data.projectStatus || 'active'
+      });
+      // Optional arrays for future expansion
+      setTmTags(data.tmTagSummary ? data.tmTagSummary.recentTagTitles || [] : []);
+      setCrewLogs([]);
     } catch (error) {
       console.error('Error fetching project data:', error);
     } finally {
