@@ -248,105 +248,83 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Overview Cards */}
+        {/* Vision UI Inspired Stats Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Projects */}
-          <AnimatedCard 
-            delay={100} 
-            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`}
-            onClick={onManageProjects}
-          >
-            <AnimatedCardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    Active Projects
-                  </p>
-                  <p className="text-3xl font-bold">{actualProjects.filter(p => p.status === 'active').length}</p>
-                </div>
-                <Building className={`w-8 h-8 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
+               onClick={onManageProjects}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Projects</p>
+                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
+                  {actualProjects.filter(p => p.status === 'active').length}
+                </p>
+                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Current workload</p>
               </div>
-            </AnimatedCardContent>
-          </AnimatedCard>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
+              }`}>
+                <Building className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
 
           {/* Total Hours */}
-          <AnimatedCard 
-            delay={200} 
-            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`}
-            onClick={onManageProjects}
-          >
-            <AnimatedCardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    Total Hours
-                  </p>
-                  <p className="text-3xl font-bold">
-                    {projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
-                  </p>
-                </div>
-                <Clock className={`w-8 h-8 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
+               onClick={onManageProjects}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Hours</p>
+                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
+                  {projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
+                </p>
+                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Logged time</p>
               </div>
-            </AnimatedCardContent>
-          </AnimatedCard>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
+              }`}>
+                <Clock className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
 
           {/* Total Revenue */}
-          <AnimatedCard 
-            delay={300} 
-            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`}
-            onClick={onManageProjects}
-          >
-            <AnimatedCardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    Total Revenue
-                  </p>
-                  <p className="text-3xl font-bold">
-                    ${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}
-                  </p>
-                </div>
-                <DollarSign className={`w-8 h-8 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
+               onClick={onManageProjects}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Revenue</p>
+                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
+                  ${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}
+                </p>
+                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Generated</p>
               </div>
-            </AnimatedCardContent>
-          </AnimatedCard>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
+              }`}>
+                <DollarSign className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
 
           {/* T&M Tags */}
-          <AnimatedCard 
-            delay={400} 
-            className={`cursor-pointer hover:shadow-2xl transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white hover:bg-white/20' 
-                : 'bg-white/70 text-gray-900 hover:bg-white/90'
-            }`}
-            onClick={onViewReports}
-          >
-            <AnimatedCardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    T&M Tags
-                  </p>
-                  <p className="text-3xl font-bold">
-                    {projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
-                  </p>
-                </div>
-                <FileText className={`w-8 h-8 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
+          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
+               onClick={onViewReports}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>T&M Tags</p>
+                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
+                  {projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
+                </p>
+                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Completed</p>
               </div>
-            </AnimatedCardContent>
-          </AnimatedCard>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
+              }`}>
+                <FileText className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Quick Actions */}
