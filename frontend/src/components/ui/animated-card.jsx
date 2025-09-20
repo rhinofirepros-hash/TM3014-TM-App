@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/utils';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...props }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const cardRef = useRef(null);
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,23 +40,35 @@ const AnimatedCard = React.forwardRef(({ className, children, delay = 0, ...prop
     <div
       ref={cardRef}
       className={cn(
-        "rounded-lg border bg-card text-card-foreground shadow-sm transform group cursor-pointer",
+        "rounded-xl transform group cursor-pointer",
         "will-change-transform transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
         isVisible 
           ? "opacity-100 translate-y-0 scale-100" 
           : "opacity-0 translate-y-8 scale-95",
-        "transition-colors hover:bg-white/10",
-        "active:scale-[0.98] active:shadow-lg",
+        // Vision UI inspired card styling
+        themeClasses.card,
+        themeClasses.cardHover,
+        "active:scale-[0.98]",
         className
       )}
       {...props}
     >
-      <div className="relative overflow-hidden rounded-lg">
-        {/* Gradient overlay effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="relative overflow-hidden rounded-xl">
+        {/* Subtle gradient overlay for depth - much more refined */}
+        <div className={cn(
+          "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl",
+          isDarkMode 
+            ? "bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5" 
+            : "bg-gradient-to-br from-purple-500/3 via-transparent to-blue-500/3"
+        )}></div>
         
-        {/* Glass reflection effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
+        {/* Subtle shine effect - much more refined than before */}
+        <div className={cn(
+          "absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out rounded-xl",
+          isDarkMode 
+            ? "bg-gradient-to-r from-transparent via-white/5 to-transparent" 
+            : "bg-gradient-to-r from-transparent via-white/8 to-transparent"
+        )}></div>
         
         {children}
       </div>
@@ -72,25 +87,40 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardHeader.displayName = "CardHeader";
 
-const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-2xl font-semibold leading-none tracking-tight transition-colors duration-300",
-      className
-    )}
-    {...props}
-  />
-));
+const CardTitle = React.forwardRef(({ className, ...props }, ref) => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
+  return (
+    <h3
+      ref={ref}
+      className={cn(
+        "text-2xl font-semibold leading-none tracking-tight transition-colors duration-300",
+        themeClasses.text.primary,
+        className
+      )}
+      {...props}
+    />
+  );
+});
 CardTitle.displayName = "CardTitle";
 
-const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground transition-colors duration-300", className)}
-    {...props}
-  />
-));
+const CardDescription = React.forwardRef(({ className, ...props }, ref) => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
+  return (
+    <p
+      ref={ref}
+      className={cn(
+        "text-sm transition-colors duration-300",
+        themeClasses.text.secondary,
+        className
+      )}
+      {...props}
+    />
+  );
+});
 CardDescription.displayName = "CardDescription";
 
 const CardContent = React.forwardRef(({ className, ...props }, ref) => (
