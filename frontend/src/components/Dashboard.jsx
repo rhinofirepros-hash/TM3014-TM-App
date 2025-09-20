@@ -195,13 +195,9 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
 
   return (
     <>
-    <div className={`min-h-screen transition-all duration-300 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
-        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
-    }`}>
-      {/* Header - Scrollable */}
-      <div className="backdrop-blur-sm bg-white/10 border-b border-white/20">
+    <div className={`min-h-screen ${themeClasses.background}`}>
+      {/* Vision UI Header */}
+      <div className={themeClasses.header}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -211,10 +207,10 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 className="h-10 w-auto"
               />
               <div>
-                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h1 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
                   Rhino Dashboard
                 </h1>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`text-sm ${themeClasses.text.secondary}`}>
                   Welcome
                 </p>
               </div>
@@ -226,7 +222,6 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className={themeClasses.button.ghost}
               >
                 {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </Button>
@@ -236,7 +231,6 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className={`${isDarkMode ? 'text-white hover:bg-white/20' : 'text-gray-700 hover:bg-black/10'}`}
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
@@ -247,83 +241,43 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Vision UI Inspired Stats Overview Cards */}
+        {/* Vision UI Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Total Projects */}
-          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
-               onClick={onManageProjects}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Projects</p>
-                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
-                  {actualProjects.filter(p => p.status === 'active').length}
-                </p>
-                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Current workload</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
-              }`}>
-                <Building className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
+          <StatsCard
+            title="Active Projects"
+            value={actualProjects.filter(p => p.status === 'active').length}
+            subtitle="Current workload"
+            icon={Building}
+            iconColor={`${themeClasses.colors.blue}`}
+            onClick={onManageProjects}
+          />
 
-          {/* Total Hours */}
-          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
-               onClick={onManageProjects}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Hours</p>
-                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
-                  {projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
-                </p>
-                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Logged time</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
-              }`}>
-                <Clock className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
+          <StatsCard
+            title="Total Hours"
+            value={projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
+            subtitle="Logged time"
+            icon={Clock}
+            iconColor={`${themeClasses.colors.green}`}
+            onClick={onManageProjects}
+          />
 
-          {/* Total Revenue */}
-          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
-               onClick={onManageProjects}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Revenue</p>
-                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
-                  ${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}
-                </p>
-                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Generated</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
-              }`}>
-                <DollarSign className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
+          <StatsCard
+            title="Total Revenue"
+            value={`$${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}`}
+            subtitle="Generated"
+            icon={DollarSign}
+            iconColor={`${themeClasses.colors.purple}`}
+            onClick={onManageProjects}
+          />
 
-          {/* T&M Tags */}
-          <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300 cursor-pointer`}
-               onClick={onViewReports}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>T&M Tags</p>
-                <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>
-                  {projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
-                </p>
-                <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Completed</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
-              }`}>
-                <FileText className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
+          <StatsCard
+            title="T&M Tags"
+            value={projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
+            subtitle="Completed"
+            icon={FileText}
+            iconColor={`${themeClasses.colors.amber}`}
+            onClick={onViewReports}
+          />
         </div>
 
         {/* Vision UI Quick Actions */}
