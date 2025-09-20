@@ -432,63 +432,78 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             </div>
           </div>
 
-          {/* Projects Grid */}
+          {/* Vision UI Inspired Projects Grid */}
           {projects.length === 0 ? (
-            <Card className={`${themeClasses.card} shadow-lg`}>
-              <CardContent className="p-12 text-center">
-                <Building className={`w-16 h-16 mx-auto mb-4 ${themeClasses.text.muted}`} />
-                <h3 className={`text-lg font-medium mb-2 ${themeClasses.text.primary}`}>No Projects Yet</h3>
-                <p className={`mb-6 ${themeClasses.text.secondary}`}>Create your first project to get started.</p>
-                <Button 
-                  onClick={() => setShowCreateModal(true)}
-                  className={themeClasses.button.primary}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create First Project
-                </Button>
-              </CardContent>
-            </Card>
+            <div className={`${themeClasses.card} rounded-xl p-12 text-center`}>
+              <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
+                isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100'
+              }`}>
+                <Building className={`w-10 h-10 ${themeClasses.text.muted}`} />
+              </div>
+              <h3 className={`text-xl font-semibold mb-3 ${themeClasses.text.primary}`}>No Projects Yet</h3>
+              <p className={`mb-8 ${themeClasses.text.secondary}`}>Create your first project to get started with project management.</p>
+              <Button 
+                onClick={() => setShowCreateModal(true)}
+                className={`${themeClasses.button.primary} px-8`}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create First Project
+              </Button>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project) => (
-                <Card key={project.id} className={`${themeClasses.card} shadow-lg hover:shadow-xl transition-shadow cursor-pointer`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
+                <div key={project.id} className={`${themeClasses.card} rounded-xl transform hover:scale-105 transition-all duration-300 cursor-pointer`}>
+                  <div className="p-6">
+                    {/* Header Section */}
+                    <div className="flex justify-between items-start mb-6">
                       <div className="flex-1">
-                        <CardTitle className={`text-lg ${themeClasses.text.primary} mb-1`}>
+                        <h3 className={`text-xl font-bold ${themeClasses.text.primary} mb-2 line-clamp-2`}>
                           {project.name}
-                        </CardTitle>
-                        <p className={`text-sm ${themeClasses.text.secondary}`}>
+                        </h3>
+                        <p className={`text-sm ${themeClasses.text.secondary} flex items-center`}>
+                          <Building className="w-4 h-4 mr-2" />
                           {project.client_company}
                         </p>
                       </div>
                       <div className="text-right">
-                        <Badge className={`${statusColors[project.status || 'active']} mb-2`}>
+                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                          project.status === 'active' 
+                            ? isDarkMode ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-green-100 text-green-800'
+                            : project.status === 'planning'
+                            ? isDarkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-blue-100 text-blue-800'
+                            : isDarkMode ? 'bg-gray-500/20 text-gray-400 border border-gray-500/30' : 'bg-gray-100 text-gray-800'
+                        }`}>
                           {project.status || 'Active'}
-                        </Badge>
+                        </div>
                         {project.gc_pin && (
-                          <div className={`text-xs ${themeClasses.text.secondary} font-mono`}>
-                            GC PIN: {project.gc_pin}
+                          <div className={`text-xs ${themeClasses.text.muted} font-mono mt-2 px-2 py-1 rounded ${
+                            isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100'
+                          }`}>
+                            PIN: {project.gc_pin}
                           </div>
                         )}
                       </div>
                     </div>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className={themeClasses.text.secondary}>Type:</span>
-                        <Badge className={project.project_type === 'tm_only' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}>
+
+                    {/* Project Details */}
+                    <div className="space-y-4 mb-6">
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>Type:</span>
+                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                          project.project_type === 'tm_only' 
+                            ? isDarkMode ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-orange-100 text-orange-800'
+                            : isDarkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-blue-100 text-blue-800'
+                        }`}>
                           {project.project_type === 'tm_only' ? 'T&M Only' : 'Full Project'}
-                        </Badge>
+                        </div>
                       </div>
                       
-                      <div className="flex justify-between text-sm">
-                        <span className={themeClasses.text.secondary}>
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>
                           {project.project_type === 'tm_only' ? 'Estimate:' : 'Contract Value:'}
                         </span>
-                        <span className={`font-semibold ${themeClasses.text.primary}`}>
+                        <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
                           {project.project_type === 'tm_only' && !project.contract_amount 
                             ? 'T&M Based' 
                             : `$${project.contract_amount?.toLocaleString() || '0'}`
@@ -496,14 +511,14 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                         </span>
                       </div>
                       
-                      <div className="flex justify-between text-sm">
-                        <span className={themeClasses.text.secondary}>Manager:</span>
-                        <span className={themeClasses.text.primary}>{project.project_manager}</span>
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>Manager:</span>
+                        <span className={`text-sm font-medium ${themeClasses.text.primary}`}>{project.project_manager}</span>
                       </div>
                       
-                      <div className="flex justify-between text-sm">
-                        <span className={themeClasses.text.secondary}>Start Date:</span>
-                        <span className={themeClasses.text.primary}>
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>Start Date:</span>
+                        <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
                           {project.start_date && !isNaN(new Date(project.start_date)) 
                             ? format(new Date(project.start_date), 'MM/dd/yyyy')
                             : 'Not set'
@@ -512,18 +527,21 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       </div>
                       
                       {project.description && (
-                        <p className={`text-sm ${themeClasses.text.secondary} line-clamp-2`}>
-                          {project.description}
-                        </p>
+                        <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'}`}>
+                          <p className={`text-sm ${themeClasses.text.secondary} line-clamp-2`}>
+                            {project.description}
+                          </p>
+                        </div>
                       )}
                     </div>
                     
-                    <div className={`flex gap-2 mt-4 pt-4 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-100'}`}>
+                    {/* Action Buttons */}
+                    <div className={`flex gap-2 pt-4 border-t ${isDarkMode ? 'border-slate-700/50' : 'border-gray-200/50'}`}>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openProjectOverview(project)}
-                        className={`flex-1 ${themeClasses.button.secondary}`}
+                        className={`flex-1 ${themeClasses.button.secondary} text-xs`}
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
@@ -532,7 +550,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                         variant="outline"
                         size="sm"
                         onClick={() => openInspectionManagement(project)}
-                        className={themeClasses.button.secondary}
+                        className={`${themeClasses.button.secondary} text-xs`}
                         title="Manage Inspections"
                       >
                         <Wrench className="w-4 h-4" />
@@ -541,7 +559,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                         variant="outline"
                         size="sm"
                         onClick={() => openEditModal(project)}
-                        className={themeClasses.button.secondary}
+                        className={`${themeClasses.button.secondary} text-xs`}
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
@@ -549,13 +567,13 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteProject(project.id)}
-                        className="text-red-600 hover:bg-red-50"
+                        className={`text-red-400 hover:text-red-300 hover:bg-red-500/10 border-red-500/30 text-xs`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ))}
             </div>
           )}
