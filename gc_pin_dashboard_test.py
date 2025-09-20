@@ -12,7 +12,7 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com/api"
+BACKEND_URL = "https://project-inspect-app.preview.emergentagent.com/api"
 
 class GCPinDashboardTester:
     def __init__(self):

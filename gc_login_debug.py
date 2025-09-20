@@ -6,8 +6,8 @@ Debug GC Login 400 Error
 import requests
 import json
 
-BACKEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com/api"
-FRONTEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com"
+BACKEND_URL = "https://project-inspect-app.preview.emergentagent.com/api"
+FRONTEND_URL = "https://project-inspect-app.preview.emergentagent.com"
 
 def debug_gc_login():
     session = requests.Session()

@@ -18,7 +18,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BACKEND_URL = "https://gc-sprinkler-app.preview.emergentagent.com/api"
+BACKEND_URL = "https://project-inspect-app.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class GCPinSystemTester:
