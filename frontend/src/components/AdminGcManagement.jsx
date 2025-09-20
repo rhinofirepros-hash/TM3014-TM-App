@@ -219,7 +219,7 @@ const AdminGcManagement = ({ onBack }) => {
           </TabsList>
 
           <TabsContent value="keys" className="mt-6">
-            <!-- content unchanged above for brevity -->
+            {/* content omitted for brevity - keys tab remains as implemented above */}
           </TabsContent>
 
           <TabsContent value="test" className="mt-6">
