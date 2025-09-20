@@ -58,6 +58,18 @@ function AppContent() {
       const hash = window.location.hash.substring(1);
       if (hash === 'gc-login') {
         setCurrentView('gc-login');
+        return;
+      }
+      if (hash.startsWith('gc-dashboard:')) {
+        const projectId = hash.split(':')[1];
+        if (projectId) {
+          setIsGcAuthenticated(true);
+          localStorage.setItem('isGcAuthenticated', 'true');
+          setSelectedGcProject(projectId);
+          localStorage.setItem('selectedGcProject', projectId);
+          setCurrentView('gc-dashboard');
+        }
+        return;
       }
     };
 
