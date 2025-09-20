@@ -327,152 +327,116 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Vision UI Quick Actions */}
         <div className="mb-8">
-          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-            <AnimatedCard 
-              delay={200}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={handleCreateNewTag}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <Plus className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create New T&M Tag</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Start a new time & material tag</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+          <h2 className={`text-xl font-semibold mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onCreateNew}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
+              }`}>
+                <Plus className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Create New T&M Tag</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Start a new time & material tag</p>
+            </div>
+
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onViewReports}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
+              }`}>
+                <FileText className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>View Reports</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>View T&M tag history and reports</p>
+            </div>
             
-            <AnimatedCard 
-              delay={350}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={onViewReports}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <FileText className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>View Reports</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>View T&M tag history and reports</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
-            
-            <AnimatedCard 
-              delay={500}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={onManageCrew}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <Users className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Crew</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Add and manage crew member profiles</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onManageCrew}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
+              }`}>
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Crew</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Add and manage crew member profiles</p>
+            </div>
 
-            <AnimatedCard 
-              delay={650}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={onManageProjects}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <Building className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Projects</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Create and track project profitability</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onManageProjects}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-500/10 text-indigo-600'
+              }`}>
+                <Building className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Projects</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Create and track project profitability</p>
+            </div>
 
-            <AnimatedCard 
-              delay={800}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={() => {
-                // Future feature placeholder
-                console.log('AI Insights coming soon');
-              }}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <Zap className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>AI Insights</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Smart project analytics (Coming Soon)</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={() => console.log('AI Insights coming soon')}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-500/10 text-yellow-600'
+              }`}>
+                <Zap className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>AI Insights</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Smart project analytics (Coming Soon)</p>
+            </div>
 
-            <AnimatedCard 
-              delay={950}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={onAdminGc}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <Shield className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>GC Management</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Access keys & logs</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onAdminGc}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
+              }`}>
+                <Shield className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>GC Management</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Access keys & logs</p>
+            </div>
 
-            <AnimatedCard 
-              delay={1000}
-              className={`cursor-pointer hover:shadow-md transition-all duration-300 ease-out backdrop-blur-md border-0 shadow-xl ${
-                isDarkMode 
-                  ? 'bg-white/10 text-white hover:bg-white/20' 
-                  : 'bg-white/70 text-gray-900 hover:bg-white/90'
-              }`} 
-              onClick={onFinancialManagement}
-            >
-              <AnimatedCardContent className="p-6 text-center">
-                <DollarSign className={`w-8 h-8 mx-auto mb-2 transition-all duration-300 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
-                <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Financial Management</h3>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Invoices, payables & cashflow</p>
-              </AnimatedCardContent>
-            </AnimatedCard>
+            <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                 onClick={onFinancialManagement}>
+              <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
+              }`}>
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Financial Management</h3>
+              <p className={`text-sm ${themeClasses.text.secondary}`}>Invoices, payables & cashflow</p>
+            </div>
 
             {(() => {
               const currentUser = oauthEmailService.getCurrentUser();
               return (
-                <Card 
-                  className={`cursor-pointer hover:shadow-md transition-shadow backdrop-blur-md border-0 shadow-xl ${
-                    isDarkMode 
-                      ? 'bg-white/10 text-white hover:bg-white/20' 
-                      : 'bg-white/70 text-gray-900 hover:bg-white/90'
-                  }`}
-                  onClick={() => setShowEmailAuthModal(true)}
-                >
-                  <CardContent className="p-6 text-center">
-                    {currentUser ? (
-                      <>
-                        <CheckCircle className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
-                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Email Connected</h3>
-                        <p className={`text-sm mt-1 capitalize ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>{currentUser.provider} ({currentUser.email.split('@')[0]})</p>
-                      </>
-                    ) : (
-                      <>
-                        <Mail className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`} />
-                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Connect Email</h3>
-                        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Setup Gmail or Outlook for sending</p>
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
+                <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
+                     onClick={() => setShowEmailAuthModal(true)}>
+                  {currentUser ? (
+                    <>
+                      <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                        isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
+                      }`}>
+                        <CheckCircle className="w-6 h-6" />
+                      </div>
+                      <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Email Connected</h3>
+                      <p className={`text-sm ${themeClasses.text.secondary} capitalize`}>
+                        {currentUser.provider} ({currentUser.email.split('@')[0]})
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                        isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
+                      }`}>
+                        <Mail className="w-6 h-6" />
+                      </div>
+                      <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Connect Email</h3>
+                      <p className={`text-sm ${themeClasses.text.secondary}`}>Setup Gmail or Outlook for sending</p>
+                    </>
+                  )}
+                </div>
               );
             })()}
           </div>
