@@ -202,7 +202,11 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-[#1a202c] text-white transition-colors duration-300">
+      <div className={`min-h-screen transition-all duration-300 ${
+        isDarkMode 
+          ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+          : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+      } text-white`}>
         {renderCurrentView()}
         <Toaster />
       </div>
