@@ -19,12 +19,12 @@ import {
   Moon
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { getBackendUrl } from '../lib/api';
 
 const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
   const [projectData, setProjectData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tmTags, setTmTags] = useState([]);
-  const [crewLogs, setCrewLogs] = useState([]);
+  const [tmSummary, setTmSummary] = useState({ totalHours: 0, totalTags: 0, recentTagTitles: [] });
   const { isDarkMode, toggleTheme, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
 
@@ -37,27 +37,27 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
   const fetchProjectData = async () => {
     try {
       setLoading(true);
-      
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/gc/dashboard/${selectedProject}`);
-      
+      const backendUrl = getBackendUrl();
+      const response = await fetch(`${backendUrl}/gc/dashboard/${selectedProject}`);
       if (!response.ok) {
         throw new Error('Failed to fetch project data');
       }
-      
       const data = await response.json();
-      // The unified backend returns the full dashboard object already
+      // Unified backend returns a dashboard object
       setProjectData({
         id: data.projectId,
         name: data.projectName,
         client_company: data.projectLocation || '',
         status: data.projectStatus || 'active'
       });
-      // Optional arrays for future expansion
-      setTmTags(data.tmTagSummary ? data.tmTagSummary.recentTagTitles || [] : []);
-      setCrewLogs([]);
+      setTmSummary({
+        totalHours: data.tmTagSummary?.totalHours || 0,
+        totalTags: data.tmTagSummary?.totalTags || 0,
+        recentTagTitles: data.tmTagSummary?.recentTagTitles || []
+      });
     } catch (error) {
       console.error('Error fetching project data:', error);
+      setProjectData(null);
     } finally {
       setLoading(false);
     }
@@ -92,12 +92,6 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
     );
   }
 
-  const totalHours = tmTags.reduce((sum, tag) => {
-    return sum + (tag.labor_entries || []).reduce((laborSum, entry) => laborSum + (entry.hours || 0), 0);
-  }, 0);
-
-  const totalCost = tmTags.reduce((sum, tag) => sum + (tag.total_cost || 0), 0);
-
   return (
     <div className={`min-h-screen ${themeClasses.background}`}>
       {/* Header */}
@@ -118,7 +112,6 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
                 </p>
               </div>
             </div>
-            
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm" onClick={toggleTheme}>
                 {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -140,7 +133,7 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Hours</p>
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{totalHours.toFixed(1)}</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{tmSummary.totalHours.toFixed(1)}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center`}
                      style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
@@ -154,23 +147,8 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Cost</p>
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${totalCost.toLocaleString()}</p>
-                </div>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center`}
-                     style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
-                  <DollarSign className="w-5 h-5" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className={themeClasses.statsCard}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>T&M Tags</p>
-                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{tmTags.length}</p>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>T&amp;M Tags</p>
+                  <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{tmSummary.totalTags}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center`}
                      style={{ backgroundColor: `${themeClasses.colors.purple}20`, color: themeClasses.colors.purple }}>
@@ -201,36 +179,21 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
         {/* Recent T&M Tags */}
         <Card className={themeClasses.card}>
           <CardHeader>
-            <CardTitle className={themeClasses.text.primary}>Recent T&M Tags</CardTitle>
+            <CardTitle className={themeClasses.text.primary}>Recent T&amp;M Tags</CardTitle>
           </CardHeader>
           <CardContent>
-            {tmTags.length === 0 ? (
+            {tmSummary.recentTagTitles.length === 0 ? (
               <div className="text-center py-8">
                 <FileText className={`w-12 h-12 mx-auto mb-4 ${themeClasses.text.muted}`} />
-                <p className={`text-sm ${themeClasses.text.secondary}`}>No T&M tags found for this project.</p>
+                <p className={`text-sm ${themeClasses.text.secondary}`}>No recent T&amp;M tags for this project.</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {tmTags.slice(0, 5).map((tag, index) => (
-                  <div key={index} className={`p-4 rounded-lg border`} 
+              <div className="space-y-2">
+                {tmSummary.recentTagTitles.map((title, idx) => (
+                  <div key={`${idx}-${title}`} className={`p-3 rounded-lg border`}
                        style={{ borderColor: `${themeClasses.colors.blue}20`, backgroundColor: `${themeClasses.colors.blue}05` }}>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className={`font-medium ${themeClasses.text.primary}`}>
-                          Tag #{index + 1}
-                        </p>
-                        <p className={`text-sm ${themeClasses.text.secondary}`}>
-                          {new Date(tag.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`font-semibold ${themeClasses.text.primary}`}>
-                          ${(tag.total_cost || 0).toLocaleString()}
-                        </p>
-                        <p className={`text-sm ${themeClasses.text.secondary}`}>
-                          {((tag.labor_entries || []).reduce((sum, entry) => sum + (entry.hours || 0), 0)).toFixed(1)}h
-                        </p>
-                      </div>
+                    <div className="flex justify-between items-center">
+                      <span className={themeClasses.text.primary}>{title}</span>
                     </div>
                   </div>
                 ))}

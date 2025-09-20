@@ -5,6 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Key, Shield } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { getBackendUrl } from '../lib/api';
 
 const GcOnlyLogin = ({ onLoginSuccess }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
@@ -36,18 +37,12 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
     setIsLoading(true);
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      
+      const backendUrl = getBackendUrl();
       // Secure PIN validation - only send PIN, no project data exposure
-      const response = await fetch(`${backendUrl}/api/gc/validate-pin`, {
+      const response = await fetch(`${backendUrl}/gc/validate-pin` , {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          pin: formData.pin,
-          ip: window.location.hostname
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: formData.pin, ip: window.location.hostname })
       });
 
       if (response.ok) {
@@ -56,11 +51,11 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
           title: "Login Successful",
           description: `Welcome to ${data.projectName} project dashboard`,
         });
-        
         // Navigate to GC dashboard within SPA using hash route
         localStorage.setItem('isGcAuthenticated', 'true');
         localStorage.setItem('selectedGcProject', data.projectId);
         window.location.hash = `gc-dashboard:${data.projectId}`;
+        if (onLoginSuccess) onLoginSuccess();
       } else {
         const error = await response.json();
         toast({
