@@ -19,7 +19,21 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://tm.rhinofirepro.com/api"
+# Read from .env file
+import os
+from pathlib import Path
+
+def get_backend_url():
+    env_path = Path("/app/frontend/.env")
+    if env_path.exists():
+        with open(env_path, 'r') as f:
+            for line in f:
+                if line.startswith('REACT_APP_BACKEND_URL='):
+                    base_url = line.split('=')[1].strip()
+                    return f"{base_url}/api"
+    return "https://tm.rhinofirepro.com/api"  # fallback
+
+BACKEND_URL = get_backend_url()
 
 class GCPinWorkflowTester:
     def __init__(self):
