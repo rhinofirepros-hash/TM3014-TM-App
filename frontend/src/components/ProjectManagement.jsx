@@ -533,6 +533,16 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       <Button
                         variant="secondary"
                         size="sm"
+                        onClick={() => onViewReports && onViewReports()}
+                        className="flex-1 text-xs"
+                        title="View T&M Reports"
+                      >
+                        <FileText className="w-4 h-4 mr-1" />
+                        View T&M
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => openInspectionManagement(project)}
                         className="text-xs"
                         title="Manage Inspections"
