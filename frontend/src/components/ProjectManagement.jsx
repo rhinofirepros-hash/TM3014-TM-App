@@ -369,55 +369,67 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             </Button>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className={`${themeClasses.card} shadow-lg`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Projects</p>
-                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{totalProjects}</p>
-                  </div>
-                  <Building className="w-8 h-8 text-blue-500" />
+          {/* Vision UI Inspired Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Projects</p>
+                  <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>{totalProjects}</p>
+                  <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Active management</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
+                }`}>
+                  <Building className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
 
-            <Card className={`${themeClasses.card} shadow-lg`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Projects</p>
-                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>{activeProjects}</p>
-                  </div>
-                  <TrendingUp className="w-8 h-8 text-green-500" />
+            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Projects</p>
+                  <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>{activeProjects}</p>
+                  <p className={`text-xs ${themeClasses.text.muted} mt-1`}>In progress</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
+                }`}>
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
 
-            <Card className={`${themeClasses.card} shadow-lg`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Value</p>
-                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${totalValue.toLocaleString()}</p>
-                  </div>
-                  <DollarSign className="w-8 h-8 text-purple-500" />
+            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Value</p>
+                  <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>${totalValue.toLocaleString()}</p>
+                  <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Portfolio value</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
+                }`}>
+                  <DollarSign className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
 
-            <Card className={`${themeClasses.card} shadow-lg`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Avg Project</p>
-                    <p className={`text-2xl font-bold ${themeClasses.text.primary}`}>${avgProjectValue.toLocaleString()}</p>
-                  </div>
-                  <FileText className="w-8 h-8 text-orange-500" />
+            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Avg Project</p>
+                  <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>${avgProjectValue.toLocaleString()}</p>
+                  <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Average value</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
+                }`}>
+                  <FileText className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Projects Grid */}
