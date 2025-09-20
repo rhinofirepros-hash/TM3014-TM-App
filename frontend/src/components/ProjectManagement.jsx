@@ -580,11 +580,18 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
         </div>
       </div>
 
-      {/* Create Project Modal */}
+      {/* Create Project Modal - Vision UI Styled */}
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className={`sm:max-w-[600px] ${themeClasses.modal}`}>
-          <DialogHeader>
-            <DialogTitle className={themeClasses.text.primary}>Create New Project</DialogTitle>
+        <DialogContent className={`sm:max-w-[700px] ${themeClasses.modal} rounded-xl`}>
+          <DialogHeader className="pb-4">
+            <DialogTitle className={`text-2xl font-bold ${themeClasses.text.primary} flex items-center`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-3 ${
+                isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
+              }`}>
+                <Plus className="w-5 h-5" />
+              </div>
+              Create New Project
+            </DialogTitle>
           </DialogHeader>
           
           <div className="grid gap-4 py-4 max-h-96 overflow-y-auto">
