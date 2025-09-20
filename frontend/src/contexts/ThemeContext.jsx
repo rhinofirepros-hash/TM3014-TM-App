@@ -30,105 +30,105 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const getThemeClasses = () => ({
-    // EXACT COLOR SCHEME from user's preferred screenshot - Blue-tinted dark theme
+    // EXACT SAME COLORS AS T&M REPORTS PAGE
     background: isDarkMode 
-      ? 'bg-[#1a202c]' // Blue-tinted dark background (not almost black)
-      : 'bg-gray-50',
+      ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100',
     
-    // Cards that match the screenshot - lighter blue than background
+    // Cards matching T&M Reports styling
     card: isDarkMode 
-      ? 'bg-[#2d3748] border border-[#4a5568]/30 text-white shadow-lg' 
+      ? 'backdrop-blur-xl bg-white/10 border border-white/20 text-white shadow-2xl' 
       : 'bg-white border border-gray-200 text-gray-900 shadow-lg',
     
-    // Consistent hover effects
+    // Hover effects matching T&M Reports
     cardHover: isDarkMode 
-      ? 'hover:bg-[#2d3748]/90 hover:border-[#4a5568]/40 transition-all duration-200' 
+      ? 'hover:bg-white/20 transition-all duration-200' 
       : 'hover:bg-gray-50 hover:border-gray-300 transition-all duration-200',
     
-    // Text colors that match the screenshot
+    // Text colors matching T&M Reports
     text: {
       primary: isDarkMode ? 'text-white font-medium' : 'text-gray-900 font-medium',
-      secondary: isDarkMode ? 'text-[#a0aec0]' : 'text-gray-600', // Light gray for good contrast
-      muted: isDarkMode ? 'text-[#718096]' : 'text-gray-500', // Slightly darker gray for muted
-      accent: isDarkMode ? 'text-[#4299e1]' : 'text-blue-600', // Nice blue accent
-      success: isDarkMode ? 'text-[#48bb78]' : 'text-green-600', 
-      warning: isDarkMode ? 'text-[#ed8936]' : 'text-yellow-600', 
-      error: isDarkMode ? 'text-[#f56565]' : 'text-red-600', 
+      secondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
+      muted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
+      accent: isDarkMode ? 'text-blue-400' : 'text-blue-600',
+      success: isDarkMode ? 'text-green-400' : 'text-green-600', 
+      warning: isDarkMode ? 'text-yellow-400' : 'text-yellow-600', 
+      error: isDarkMode ? 'text-red-400' : 'text-red-600', 
     },
     
-    // Header matching the screenshot style
+    // Header matching T&M Reports exactly
     header: isDarkMode 
-      ? 'bg-[#2d3748] border-b border-[#4a5568]/30 shadow-lg' 
+      ? 'backdrop-blur-xl bg-white/10 border-b border-white/20' 
       : 'bg-white border-b border-gray-200 shadow-sm',
     
-    // Buttons that match the blue theme
+    // Buttons matching T&M Reports
     button: {
       primary: isDarkMode 
-        ? 'bg-[#4299e1] hover:bg-[#3182ce] text-white border-0 shadow-lg' 
-        : 'bg-[#4299e1] hover:bg-[#3182ce] text-white border-0 shadow-lg',
+        ? 'bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg' 
+        : 'bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg',
       secondary: isDarkMode 
-        ? 'bg-[#2d3748] hover:bg-[#4a5568] text-white border border-[#4a5568]/50 shadow-sm' 
+        ? 'backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-sm' 
         : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm',
       ghost: isDarkMode 
-        ? 'text-[#a0aec0] hover:bg-[#2d3748] hover:text-white' 
+        ? 'text-gray-300 hover:bg-white/10 hover:text-white' 
         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
       success: isDarkMode
-        ? 'bg-[#48bb78] hover:bg-[#38a169] text-white shadow-lg'
-        : 'bg-[#48bb78] hover:bg-[#38a169] text-white shadow-lg',
+        ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg'
+        : 'bg-green-600 hover:bg-green-700 text-white shadow-lg',
       danger: isDarkMode
-        ? 'bg-[#f56565] hover:bg-[#e53e3e] text-white shadow-lg'
-        : 'bg-[#f56565] hover:bg-[#e53e3e] text-white shadow-lg',
+        ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg'
+        : 'bg-red-600 hover:bg-red-700 text-white shadow-lg',
     },
     
-    // Inputs with blue theme
+    // Inputs matching T&M Reports
     input: {
       primary: isDarkMode 
-        ? 'bg-[#2d3748] border-[#4a5568]/50 text-white placeholder-[#718096] focus:border-[#4299e1] focus:ring-1 focus:ring-[#4299e1]/20' 
-        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#4299e1] focus:ring-1 focus:ring-[#4299e1]/20',
+        ? 'backdrop-blur-xl bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20' 
+        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-600 focus:ring-1 focus:ring-blue-600/20',
       secondary: isDarkMode 
-        ? 'bg-[#1a202c] border-[#4a5568]/30 text-white placeholder-[#718096]' 
+        ? 'backdrop-blur-xl bg-white/5 border-white/10 text-white placeholder-gray-400' 
         : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
     },
     
-    // Modals with blue theme
+    // Modals matching T&M Reports
     modal: isDarkMode 
-      ? 'bg-[#2d3748] border border-[#4a5568]/30 shadow-2xl shadow-black/20' 
+      ? 'backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl' 
       : 'bg-white border border-gray-200 shadow-2xl shadow-gray-500/10',
       
-    // Tables with blue theme
+    // Tables matching T&M Reports
     table: isDarkMode
-      ? 'bg-[#2d3748] border-[#4a5568]/30 shadow-lg'
+      ? 'backdrop-blur-xl bg-white/10 border-white/20 shadow-lg'
       : 'bg-white border-gray-200 shadow-sm',
       
-    // Dropdowns with blue theme
+    // Dropdowns matching T&M Reports
     dropdown: isDarkMode
-      ? 'bg-[#2d3748] border-[#4a5568]/50 text-white shadow-xl'
+      ? 'backdrop-blur-xl bg-white/10 border-white/20 text-white shadow-xl'
       : 'bg-white border-gray-300 text-gray-900 shadow-lg',
 
-    // Stats cards matching the screenshot exactly
+    // Stats cards matching T&M Reports exactly 
     statsCard: isDarkMode
-      ? 'bg-[#2d3748] border border-[#4a5568]/30 shadow-lg'
+      ? 'backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl'
       : 'bg-white border border-gray-200 shadow-lg',
 
-    // Badges with blue theme
+    // Badges matching T&M Reports
     badge: {
-      primary: isDarkMode ? 'bg-[#4299e1]/10 text-[#4299e1] border border-[#4299e1]/20' : 'bg-blue-100 text-blue-800',
-      secondary: isDarkMode ? 'bg-[#718096]/10 text-[#a0aec0] border border-[#718096]/20' : 'bg-gray-100 text-gray-800',
-      success: isDarkMode ? 'bg-[#48bb78]/10 text-[#48bb78] border border-[#48bb78]/20' : 'bg-green-100 text-green-800',
-      warning: isDarkMode ? 'bg-[#ed8936]/10 text-[#ed8936] border border-[#ed8936]/20' : 'bg-yellow-100 text-yellow-800',
-      error: isDarkMode ? 'bg-[#f56565]/10 text-[#f56565] border border-[#f56565]/20' : 'bg-red-100 text-red-800',
+      primary: isDarkMode ? 'bg-blue-600/80 text-blue-100' : 'bg-blue-100 text-blue-800',
+      secondary: isDarkMode ? 'bg-gray-600/80 text-gray-100' : 'bg-gray-100 text-gray-800',
+      success: isDarkMode ? 'bg-green-600/80 text-green-100' : 'bg-green-100 text-green-800',
+      warning: isDarkMode ? 'bg-yellow-600/80 text-yellow-100' : 'bg-yellow-100 text-yellow-800',
+      error: isDarkMode ? 'bg-red-600/80 text-red-100' : 'bg-red-100 text-red-800',
     },
 
-    // Color palette matching the screenshot
+    // Colors matching T&M Reports
     colors: {
-      blue: isDarkMode ? '#4299e1' : '#4299e1',
-      green: isDarkMode ? '#48bb78' : '#48bb78', 
-      red: isDarkMode ? '#f56565' : '#f56565',
-      amber: isDarkMode ? '#ed8936' : '#ed8936',
-      purple: isDarkMode ? '#9f7aea' : '#9f7aea',
-      pink: isDarkMode ? '#ed64a6' : '#ed64a6',
-      indigo: isDarkMode ? '#667eea' : '#667eea',
-      cyan: isDarkMode ? '#38b2ac' : '#38b2ac',
+      blue: isDarkMode ? '#3B82F6' : '#3B82F6',
+      green: isDarkMode ? '#10B981' : '#10B981', 
+      red: isDarkMode ? '#EF4444' : '#EF4444',
+      amber: isDarkMode ? '#F59E0B' : '#F59E0B',
+      purple: isDarkMode ? '#8B5CF6' : '#8B5CF6',
+      pink: isDarkMode ? '#EC4899' : '#EC4899',
+      indigo: isDarkMode ? '#6366F1' : '#6366F1',
+      cyan: isDarkMode ? '#06B6D4' : '#06B6D4',
     }
   });
 
