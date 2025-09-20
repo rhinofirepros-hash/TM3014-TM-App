@@ -79,6 +79,8 @@ function AppContent() {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+    setCurrentView('dashboard');
   };
 
   const handleGcLogin = () => {
