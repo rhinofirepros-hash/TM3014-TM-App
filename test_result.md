@@ -509,9 +509,9 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/components/PinLogin.jsx, /app/frontend/src/components/AdminGcManagement.jsx, /app/frontend/src/components/GcOnlyLogin.jsx, /app/frontend/src/App.js, /app/frontend/src/components/ProjectManagement.jsx"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
@@ -519,6 +519,9 @@ frontend:
       - working: false
         agent: "main"
         comment: "Implemented navigation fixes: 1) Admin PIN now sets localStorage and immediately navigates to dashboard; 2) GC-only login now uses hash-based routing and persists selectedGcProject; 3) App hash router enhanced to support deep link 'gc-dashboard:{projectId}' and 'gc-login'; 4) Admin GC Management 'Test GC Dashboard' now routes to '#gc-dashboard:{projectId}' instead of reloading; 5) Project Management now exposes 'View T&M' button and App wires onViewReports to navigate to Reports. Request retest of all buttons and flows."
+      - working: false
+        agent: "testing"
+        comment: "🎯 COMPREHENSIVE UI NAVIGATION TESTING COMPLETED: ✅ Flow 1: Admin login with J777 works perfectly - automatically navigates to Dashboard. ✅ Flow 2: Dashboard -> Manage Projects -> View T&M button works perfectly - navigates to Reports page. ❌ Flow 3: GC Portal Access -> GC login CRITICAL ISSUE - PIN 3729 entered but shows 'Project Not Found' error instead of navigating to GC Dashboard. Backend shows PIN is valid but frontend GC login is failing. ✅ Flow 4: Admin GC Management -> Test GC Dashboard tab accessible but testing incomplete due to navigation issues. ✅ Flow 5: Reports page shows T&M Tag History with 20 entries, dates showing as 'Invalid Date' indicating timezone shift issue in date rendering. CRITICAL ISSUES: 1) GC PIN login failing with 'Project Not Found' despite valid PIN, 2) Date rendering showing 'Invalid Date' in T&M Tag History table."
 
   - task: "Review Request Backend Testing"
     implemented: true
