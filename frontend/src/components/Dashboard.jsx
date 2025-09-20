@@ -332,7 +332,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
           <h2 className={`text-xl font-semibold mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <div className={`${themeClasses.card} rounded-xl p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-300`}
-                 onClick={onCreateNew}>
+                 onClick={handleCreateNewTag}>
               <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${
                 isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
               }`}>
