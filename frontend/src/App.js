@@ -53,6 +53,8 @@ function AppContent() {
 
   const handleGcLogin = () => {
     setIsGcAuthenticated(true);
+    localStorage.setItem('isGcAuthenticated', 'true');
+    setCurrentView('gc-portal');
   };
 
   const handleLogout = () => {
