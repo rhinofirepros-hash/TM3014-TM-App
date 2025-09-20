@@ -338,23 +338,23 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
   return (
     <>
       <div className={`min-h-screen transition-all duration-300 ${themeClasses.background}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          {/* Mobile-First Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
               <Button 
                 variant="outline" 
                 onClick={onBack}
-                className={themeClasses.button.secondary}
+                className={`${themeClasses.button.secondary} w-full sm:w-auto`}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Dashboard
               </Button>
-              <div>
-                <h1 className={`text-3xl font-bold ${themeClasses.text.primary}`}>
+              <div className="w-full sm:w-auto">
+                <h1 className={`text-2xl sm:text-3xl font-bold ${themeClasses.text.primary}`}>
                   Project Management
                 </h1>
-                <p className={themeClasses.text.secondary}>
+                <p className={`${themeClasses.text.secondary} text-sm sm:text-base`}>
                   Manage and track your projects
                 </p>
               </div>
@@ -362,7 +362,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             
             <Button 
               onClick={() => setShowCreateModal(true)}
-              className={themeClasses.button.primary}
+              className={`${themeClasses.button.primary} w-full sm:w-auto`}
             >
               <Plus className="w-4 h-4 mr-2" />
               New Project
