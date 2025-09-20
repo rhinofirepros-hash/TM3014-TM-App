@@ -421,9 +421,11 @@ const AdminGcManagement = ({ onBack }) => {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                // Open GC dashboard in new tab
-                                const url = `/gc-portal/${project.id}`;
-                                window.open(url, '_blank');
+                                // Navigate to GC dashboard for this project
+                                localStorage.setItem('isGcAuthenticated', 'true');
+                                localStorage.setItem('selectedGcProject', project.id);
+                                window.location.href = '#gc-dashboard';
+                                window.location.reload();
                               }}
                               className="flex items-center gap-2"
                             >
