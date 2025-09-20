@@ -57,8 +57,10 @@ const GcOnlyLogin = ({ onLoginSuccess }) => {
           description: `Welcome to ${data.projectName} project dashboard`,
         });
         
-        // Navigate to GC dashboard
-        window.location.href = `/gc-portal/${data.projectId}`;
+        // Navigate to GC dashboard within SPA using hash route
+        localStorage.setItem('isGcAuthenticated', 'true');
+        localStorage.setItem('selectedGcProject', data.projectId);
+        window.location.hash = `gc-dashboard:${data.projectId}`;
       } else {
         const error = await response.json();
         toast({
