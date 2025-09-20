@@ -30,93 +30,105 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const getThemeClasses = () => ({
-    // Vision UI inspired backgrounds - sophisticated dark theme
+    // VISION UI EXACT COLOR SCHEME - Dark theme matching the reference
     background: isDarkMode 
-      ? 'bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 min-h-screen' 
-      : 'bg-gradient-to-br from-gray-50 to-white min-h-screen',
+      ? 'bg-[#0F172A]' // Exact Vision UI dark background
+      : 'bg-gray-50',
     
-    // Vision UI card styling - modern with subtle gradients and glass morphism
+    // VISION UI CARD STYLING - Consistent across ALL components
     card: isDarkMode 
-      ? 'bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-xl border border-slate-700/50 text-white shadow-2xl shadow-black/20' 
-      : 'bg-white/80 backdrop-blur-xl border border-gray-200/50 text-gray-900 shadow-xl shadow-gray-500/10',
+      ? 'bg-[#1E293B] border border-[#334155]/20 text-white shadow-xl shadow-black/10' 
+      : 'bg-white border border-gray-200 text-gray-900 shadow-lg',
     
-    // Modern hover states with subtle transitions
+    // Vision UI hover effects - consistent everywhere
     cardHover: isDarkMode 
-      ? 'hover:from-slate-700/95 hover:to-slate-800/95 hover:border-slate-600/60 hover:shadow-3xl hover:shadow-purple-500/10 transition-all duration-300' 
-      : 'hover:bg-white/90 hover:shadow-2xl hover:shadow-gray-500/20 hover:border-gray-300/60 transition-all duration-300',
+      ? 'hover:bg-[#1E293B]/90 hover:border-[#334155]/30 transition-all duration-200' 
+      : 'hover:bg-gray-50 hover:border-gray-300 transition-all duration-200',
     
-    // Enhanced text hierarchy
+    // VISION UI TEXT COLORS - Exact matching
     text: {
       primary: isDarkMode ? 'text-white font-medium' : 'text-gray-900 font-medium',
-      secondary: isDarkMode ? 'text-slate-300' : 'text-gray-600',
-      muted: isDarkMode ? 'text-slate-400' : 'text-gray-500',
-      accent: isDarkMode ? 'text-purple-400' : 'text-purple-600',
-      success: isDarkMode ? 'text-green-400' : 'text-green-600',
-      warning: isDarkMode ? 'text-yellow-400' : 'text-yellow-600',
-      error: isDarkMode ? 'text-red-400' : 'text-red-600',
+      secondary: isDarkMode ? 'text-[#94A3B8]' : 'text-gray-600', // Exact Vision UI secondary text
+      muted: isDarkMode ? 'text-[#64748B]' : 'text-gray-500', // Exact Vision UI muted text
+      accent: isDarkMode ? 'text-[#3B82F6]' : 'text-blue-600', // Vision UI blue accent
+      success: isDarkMode ? 'text-[#10B981]' : 'text-green-600', // Vision UI green
+      warning: isDarkMode ? 'text-[#F59E0B]' : 'text-yellow-600', // Vision UI amber
+      error: isDarkMode ? 'text-[#EF4444]' : 'text-red-600', // Vision UI red
     },
     
-    // Modern header with gradient
+    // VISION UI HEADER - Exact styling
     header: isDarkMode 
-      ? 'bg-gradient-to-r from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 shadow-lg' 
-      : 'bg-white/95 backdrop-blur-xl border-b border-gray-200/50 shadow-sm',
+      ? 'bg-[#1E293B] border-b border-[#334155]/20 shadow-lg' 
+      : 'bg-white border-b border-gray-200 shadow-sm',
     
-    // Vision UI button styles
+    // VISION UI BUTTONS - Consistent styling
     button: {
       primary: isDarkMode 
-        ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30' 
-        : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg shadow-purple-500/25',
+        ? 'bg-[#3B82F6] hover:bg-[#2563EB] text-white border-0 shadow-lg' 
+        : 'bg-[#3B82F6] hover:bg-[#2563EB] text-white border-0 shadow-lg',
       secondary: isDarkMode 
-        ? 'bg-slate-700/80 hover:bg-slate-600/90 text-white border border-slate-600/50 backdrop-blur-sm shadow-lg' 
-        : 'bg-white/80 hover:bg-gray-50 text-gray-900 border border-gray-300 backdrop-blur-sm shadow-sm',
+        ? 'bg-[#1E293B] hover:bg-[#334155] text-white border border-[#334155]/50 shadow-sm' 
+        : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm',
       ghost: isDarkMode 
-        ? 'text-slate-300 hover:bg-slate-700/50 hover:text-white hover:backdrop-blur-sm' 
-        : 'text-gray-600 hover:bg-gray-100/80 hover:text-gray-900',
+        ? 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white' 
+        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
       success: isDarkMode
-        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-500/25'
-        : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-500/25',
+        ? 'bg-[#10B981] hover:bg-[#059669] text-white shadow-lg'
+        : 'bg-[#10B981] hover:bg-[#059669] text-white shadow-lg',
       danger: isDarkMode
-        ? 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-lg shadow-red-500/25'
-        : 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-lg shadow-red-500/25',
+        ? 'bg-[#EF4444] hover:bg-[#DC2626] text-white shadow-lg'
+        : 'bg-[#EF4444] hover:bg-[#DC2626] text-white shadow-lg',
     },
     
-    // Modern input styling with glass morphism
+    // VISION UI INPUTS - Consistent styling
     input: {
       primary: isDarkMode 
-        ? 'bg-slate-800/60 backdrop-blur-sm border-slate-600/50 text-white placeholder-slate-400 focus:border-purple-500/70 focus:ring-2 focus:ring-purple-500/20 shadow-inner' 
-        : 'bg-white/60 backdrop-blur-sm border-gray-300/50 text-gray-900 placeholder-gray-500 focus:border-purple-500/70 focus:ring-2 focus:ring-purple-500/20 shadow-sm',
+        ? 'bg-[#1E293B] border-[#334155]/50 text-white placeholder-[#64748B] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/20' 
+        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/20',
       secondary: isDarkMode 
-        ? 'bg-slate-700/40 backdrop-blur-sm border-slate-600/40 text-white placeholder-slate-400' 
-        : 'bg-gray-50/60 backdrop-blur-sm border-gray-300/40 text-gray-900 placeholder-gray-500'
+        ? 'bg-[#0F172A] border-[#334155]/30 text-white placeholder-[#64748B]' 
+        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
     },
     
-    // Enhanced modal styling
+    // VISION UI MODALS - Consistent styling
     modal: isDarkMode 
-      ? 'bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl shadow-black/30' 
-      : 'bg-white/95 backdrop-blur-xl border border-gray-200/50 shadow-2xl shadow-gray-500/20',
+      ? 'bg-[#1E293B] border border-[#334155]/20 shadow-2xl shadow-black/30' 
+      : 'bg-white border border-gray-200 shadow-2xl shadow-gray-500/10',
       
-    // Modern table styling
+    // VISION UI TABLES - Consistent styling
     table: isDarkMode
-      ? 'bg-slate-800/60 backdrop-blur-sm border-slate-700/50 shadow-lg'
-      : 'bg-white/80 backdrop-blur-sm border-gray-200/50 shadow-sm',
+      ? 'bg-[#1E293B] border-[#334155]/20 shadow-lg'
+      : 'bg-white border-gray-200 shadow-sm',
       
-    // Enhanced dropdown styling
+    // VISION UI DROPDOWNS - Consistent styling
     dropdown: isDarkMode
-      ? 'bg-slate-800/95 backdrop-blur-xl border-slate-600/50 text-white shadow-xl'
-      : 'bg-white/95 backdrop-blur-xl border-gray-300/50 text-gray-900 shadow-lg',
+      ? 'bg-[#1E293B] border-[#334155]/50 text-white shadow-xl'
+      : 'bg-white border-gray-300 text-gray-900 shadow-lg',
 
-    // Stats card styling for dashboards
+    // VISION UI STATS CARDS - Exact styling for consistency
     statsCard: isDarkMode
-      ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/40 shadow-xl shadow-black/10'
-      : 'bg-gradient-to-br from-white/90 to-gray-50/90 backdrop-blur-xl border border-gray-200/40 shadow-lg shadow-gray-500/10',
+      ? 'bg-[#1E293B] border border-[#334155]/20 shadow-xl shadow-black/10'
+      : 'bg-white border border-gray-200 shadow-lg',
 
-    // Badge styling
+    // VISION UI BADGES - Consistent styling
     badge: {
-      primary: isDarkMode ? 'bg-purple-600/80 text-purple-100 backdrop-blur-sm' : 'bg-purple-600 text-white',
-      secondary: isDarkMode ? 'bg-slate-600/80 text-slate-100 backdrop-blur-sm' : 'bg-gray-600 text-white',
-      success: isDarkMode ? 'bg-green-600/80 text-green-100 backdrop-blur-sm' : 'bg-green-600 text-white',
-      warning: isDarkMode ? 'bg-yellow-600/80 text-yellow-100 backdrop-blur-sm' : 'bg-yellow-600 text-white',
-      error: isDarkMode ? 'bg-red-600/80 text-red-100 backdrop-blur-sm' : 'bg-red-600 text-white',
+      primary: isDarkMode ? 'bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20' : 'bg-blue-100 text-blue-800',
+      secondary: isDarkMode ? 'bg-[#64748B]/10 text-[#94A3B8] border border-[#64748B]/20' : 'bg-gray-100 text-gray-800',
+      success: isDarkMode ? 'bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20' : 'bg-green-100 text-green-800',
+      warning: isDarkMode ? 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20' : 'bg-yellow-100 text-yellow-800',
+      error: isDarkMode ? 'bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20' : 'bg-red-100 text-red-800',
+    },
+
+    // VISION UI COLORS - Exact color values for consistency
+    colors: {
+      blue: isDarkMode ? '#3B82F6' : '#3B82F6',
+      green: isDarkMode ? '#10B981' : '#10B981', 
+      red: isDarkMode ? '#EF4444' : '#EF4444',
+      amber: isDarkMode ? '#F59E0B' : '#F59E0B',
+      purple: isDarkMode ? '#8B5CF6' : '#8B5CF6',
+      pink: isDarkMode ? '#EC4899' : '#EC4899',
+      indigo: isDarkMode ? '#6366F1' : '#6366F1',
+      cyan: isDarkMode ? '#06B6D4' : '#06B6D4',
     }
   });
 
