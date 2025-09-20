@@ -48,35 +48,64 @@ const AdminGcManagement = ({ onBack }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
       
-      // Load projects, GC keys, and access logs in parallel
-      const [projectsRes, keysRes, logsRes] = await Promise.all([
-        fetch(`${backendUrl}/api/projects`),
-        fetch(`${backendUrl}/api/gc/keys/admin`),
-        fetch(`${backendUrl}/api/gc/access-logs/admin`)
-      ]);
-
+      // Load projects first - this should always work
+      const projectsRes = await fetch(`${backendUrl}/projects`);
       if (projectsRes.ok) {
         const projectsData = await projectsRes.json();
         setProjects(projectsData);
+        console.log('Loaded projects:', projectsData);
+      } else {
+        console.warn('Failed to load projects');
+        // Load from localStorage as fallback
+        const savedProjects = localStorage.getItem('projects');  
+        if (savedProjects) {
+          const projectsData = JSON.parse(savedProjects);
+          setProjects(projectsData);
+        }
       }
       
-      if (keysRes.ok) {
-        const keysData = await keysRes.json();
-        setGcKeys(keysData);
-      }
-      
-      if (logsRes.ok) {
-        const logsData = await logsRes.json();
-        setAccessLogs(logsData);
+      // Try to load GC keys and access logs (these might be empty for new installations)
+      try {
+        const [keysRes, logsRes] = await Promise.all([
+          fetch(`${backendUrl}/gc/keys/admin`),
+          fetch(`${backendUrl}/gc/access-logs/admin`)
+        ]);
+
+        if (keysRes.ok) {
+          const keysData = await keysRes.json();
+          setGcKeys(keysData);
+        } else {
+          console.warn('GC keys endpoint not available or empty');
+          setGcKeys([]);
+        }
+        
+        if (logsRes.ok) {
+          const logsData = await logsRes.json();
+          setAccessLogs(logsData);
+        } else {
+          console.warn('Access logs endpoint not available or empty');
+          setAccessLogs([]);
+        }
+      } catch (error) {
+        console.warn('GC management endpoints not available:', error);
+        setGcKeys([]);
+        setAccessLogs([]);
       }
       
     } catch (error) {
       console.error('Error loading admin data:', error);
+      // Load projects from localStorage as fallback
+      const savedProjects = localStorage.getItem('projects');  
+      if (savedProjects) {
+        const projectsData = JSON.parse(savedProjects);
+        setProjects(projectsData);
+      }
+      
       toast({
         title: "Loading Error",
-        description: "Failed to load GC management data",
+        description: "Some data failed to load, showing available information",
         variant: "destructive"
       });
     } finally {
