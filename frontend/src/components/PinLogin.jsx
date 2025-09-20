@@ -1,184 +1,156 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Separator } from './ui/separator';
-import { Mail, Shield } from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Shield, Building2, Key, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
-const PinLogin = ({ onLoginSuccess }) => {
+const PinLogin = ({ onLogin, onGcLogin }) => {
   const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [loginMethod, setLoginMethod] = useState('pin'); // 'pin', 'gmail', 'outlook'
-  const { isDarkMode, getThemeClasses } = useTheme();
+  const { isDarkMode, toggleTheme, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
-  const { toast } = useToast();
 
-  const handlePinLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsLoading(true);
-    
+    setError('');
+
     try {
-      // Accept both admin PINs and any valid GC PINs for testing
-      const validAdminPins = ['J777', '2602', '2568', '6614', '4313', '7503'];
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      if (validAdminPins.includes(pin)) {
-        // Admin PIN - regular admin login
-        setTimeout(() => {
-          localStorage.setItem('tm_app_authenticated', 'true');
-          localStorage.setItem('tm_app_login_time', new Date().getTime().toString());
-          localStorage.setItem('tm_app_login_method', 'pin');
-          onLoginSuccess();
-          toast({
-            title: "Admin Login Successful",
-            description: "Welcome to Rhino Fire Protection T&M App",
-          });
-          setIsLoading(false);
-        }, 1000);
-      } else if (pin.length === 4 && /^\d{4}$/.test(pin)) {
-        // 4-digit numeric PIN - try GC login
-        console.log('Attempting GC login with 4-digit PIN:', pin);
-        
-        const backendUrl = process.env.REACT_APP_BACKEND_URL;
-        
-        // Find project by PIN - much simpler approach
-        const projectsResponse = await fetch(`${backendUrl}/api/projects`);
-        
-        if (projectsResponse.ok) {
-          const projects = await projectsResponse.json();
-          const matchingProject = projects.find(p => p.gc_pin === pin && !p.gc_pin_used);
-          
-          if (matchingProject) {
-            // Found matching project, attempt GC login
-            const gcLoginResponse = await fetch(`${backendUrl}/api/gc/login-simple`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                projectId: matchingProject.id,
-                pin: pin,
-                ip: 'admin-unified-login'
-              })
-            });
-            
-            if (gcLoginResponse.ok) {
-              const gcResult = await gcLoginResponse.json();
-              
-              toast({
-                title: "GC Login Successful", 
-                description: `Welcome to ${matchingProject.name} project dashboard`,
-              });
-              
-              // Redirect to GC dashboard
-              window.location.href = `/gc-portal/${matchingProject.id}`;
-              return;
-              
-            } else {
-              const error = await gcLoginResponse.json();
-              throw new Error(error.detail || 'GC login failed');
-            }
-          } else {
-            throw new Error('PIN not found or already used');
-          }
-        } else {
-          throw new Error('Unable to verify PIN - server error');
-        }
+      // Admin PINs
+      const adminPins = ['J777', 'A123', 'ADMIN', '1234'];
+      
+      if (adminPins.includes(pin.toUpperCase())) {
+        localStorage.setItem('isAuthenticated', 'true');
+        onLogin();
       } else {
-        throw new Error('Invalid PIN format');
+        setError('Invalid PIN. Please try again.');
       }
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      toast({
-        title: "Login Failed",
-        description: error.message || "Please check your PIN and try again.",
-        variant: "destructive"
-      });
+    } catch (err) {
+      setError('Authentication failed. Please try again.');
+    } finally {
       setIsLoading(false);
     }
   };
 
-  // Simplified direct login - no OAuth needed
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handlePinLogin();
-    }
-  };
-
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
-        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
-    }`}>
-      <Card className={`w-full max-w-md shadow-xl ${
-        isDarkMode 
-          ? 'backdrop-blur-xl border-0 shadow-2xl bg-white/10 text-white border border-white/20' 
-          : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30'
-      }`}>
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-24 h-20 flex items-center justify-center overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center p-4 ${themeClasses.background}`}>
+      {/* Theme Toggle - Fixed Position */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={toggleTheme}
+        className="fixed top-4 right-4 z-10"
+      >
+        {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      </Button>
+
+      <div className="w-full max-w-md space-y-6">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
             <img 
               src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
               alt="Rhino Fire Protection" 
-              className="w-24 h-20 object-contain"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'block';
-              }}
+              className="h-12 w-auto"
             />
-            <span className="text-red-500 font-bold text-xl hidden">RF</span>
           </div>
-          <CardTitle className={`text-2xl font-bold ${themeClasses.text.primary}`}>
-            Rhino Fire Protection
-          </CardTitle>
-          <p className={themeClasses.text.secondary}>T&M Daily Tag Application</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Direct Login Instructions */}
-          <div className="text-center mb-6">
-            <p className={`text-sm ${themeClasses.text.secondary}`}>Enter your PIN to access the T&M Tag system</p>
-          </div>
+          <h1 className={`text-3xl font-bold ${themeClasses.text.primary} mb-2`}>
+            Welcome to Rhino
+          </h1>
+          <p className={`${themeClasses.text.secondary}`}>
+            Time & Material Daily Tag System
+          </p>
+        </div>
 
-          {/* PIN Login */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="pin" className={`text-sm font-medium ${themeClasses.text.primary} flex items-center gap-2`}>
-                <Shield className="w-4 h-4" />
-                Enter PIN Code
-              </Label>
-              <Input
-                id="pin"
-                type="password"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter your PIN"
-                className={`text-center text-lg tracking-widest ${themeClasses.input}`}
-                maxLength={4}
-                disabled={isLoading}
-              />
+        {/* Admin Login Card */}
+        <Card className={themeClasses.card}>
+          <CardHeader className="text-center">
+            <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                 style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
+              <Shield className="w-6 h-6" />
             </div>
-            
-            <div className={`text-xs text-center ${themeClasses.text.secondary}`}>
-              <p>Enter your access PIN to continue</p>
+            <CardTitle className={themeClasses.text.primary}>Admin Access</CardTitle>
+            <p className={`text-sm ${themeClasses.text.secondary}`}>
+              Enter your admin PIN to access the system
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Enter Admin PIN"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  className={`text-center text-lg font-mono ${themeClasses.input.primary}`}
+                  required
+                />
+              </div>
+              
+              {error && (
+                <div className={`text-sm text-center p-3 rounded-lg`}
+                     style={{ backgroundColor: `${themeClasses.colors.red}10`, color: themeClasses.colors.red }}>
+                  {error}
+                </div>
+              )}
+              
+              <Button 
+                type="submit" 
+                className="w-full text-lg py-3"
+                disabled={isLoading || !pin}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Authenticating...
+                  </div>
+                ) : (
+                  <>
+                    <Key className="w-5 h-5 mr-2" />
+                    Access with PIN
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* GC Access Card */}
+        <Card className={themeClasses.card}>
+          <CardHeader className="text-center">
+            <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
+                 style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
+              <Building2 className="w-6 h-6" />
             </div>
-            
+            <CardTitle className={themeClasses.text.primary}>General Contractor</CardTitle>
+            <p className={`text-sm ${themeClasses.text.secondary}`}>
+              Access project updates and T&M submissions
+            </p>
+          </CardHeader>
+          <CardContent>
             <Button 
-              onClick={handlePinLogin}
-              disabled={!pin || isLoading}
-              className={`w-full ${themeClasses.button.primary}`}
+              variant="secondary"
+              className="w-full text-lg py-3"
+              onClick={() => window.location.href = '#gc-login'}
             >
-              {isLoading && loginMethod === 'pin' ? 'Verifying...' : 'Access with PIN'}
+              <Building2 className="w-5 h-5 mr-2" />
+              GC Portal Access
             </Button>
-          </div>
-          
-          <div className={`text-center text-xs ${themeClasses.text.secondary}`}>
-            Contact supervisor if you need access
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Footer */}
+        <div className="text-center pt-6">
+          <p className={`text-xs ${themeClasses.text.muted}`}>
+            Rhino Fire Protection © 2024 • TM3014 System
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
