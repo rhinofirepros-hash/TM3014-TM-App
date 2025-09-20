@@ -19,14 +19,17 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
 
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Admin PINs
       const adminPins = ['J777', 'A123', 'ADMIN', '1234'];
       
       if (adminPins.includes(pin.toUpperCase())) {
         localStorage.setItem('isAuthenticated', 'true');
-        onLogin();
+        // Force immediate navigation
+        setTimeout(() => {
+          onLogin();
+        }, 100);
       } else {
         setError('Invalid PIN. Please try again.');
       }
@@ -34,6 +37,14 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
       setError('Authentication failed. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGcAccess = () => {
+    // Navigate to GC login page
+    window.location.hash = 'gc-login';
+    if (onGcLogin) {
+      onGcLogin();
     }
   };
 
@@ -46,7 +57,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
         onClick={toggleTheme}
         className="fixed top-4 right-4 z-10"
       >
-        {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        {isDarkMode ? <Sun className="w-5 h-5" style={{ color: '#FEF08A' }} /> : <Moon className="w-5 h-5" style={{ color: '#1E293B' }} />}
       </Button>
 
       <div className="w-full max-w-md space-y-6">
@@ -68,10 +79,10 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
         </div>
 
         {/* Admin Login Card */}
-        <Card className={themeClasses.card}>
+        <Card className={`${themeClasses.card} rounded-lg`}>
           <CardHeader className="text-center">
             <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                 style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
+                 style={{ backgroundColor: `${themeClasses.colors.blue}40`, color: themeClasses.colors.blue }}>
               <Shield className="w-6 h-6" />
             </div>
             <CardTitle className={themeClasses.text.primary}>Admin Access</CardTitle>
@@ -94,7 +105,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
               
               {error && (
                 <div className={`text-sm text-center p-3 rounded-lg`}
-                     style={{ backgroundColor: `${themeClasses.colors.red}10`, color: themeClasses.colors.red }}>
+                     style={{ backgroundColor: `${themeClasses.colors.red}20`, color: themeClasses.colors.red }}>
                   {error}
                 </div>
               )}
@@ -121,10 +132,10 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
         </Card>
 
         {/* GC Access Card */}
-        <Card className={themeClasses.card}>
+        <Card className={`${themeClasses.card} rounded-lg`}>
           <CardHeader className="text-center">
             <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                 style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
+                 style={{ backgroundColor: `${themeClasses.colors.green}40`, color: themeClasses.colors.green }}>
               <Building2 className="w-6 h-6" />
             </div>
             <CardTitle className={themeClasses.text.primary}>General Contractor</CardTitle>
@@ -136,7 +147,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
             <Button 
               variant="secondary"
               className="w-full text-lg py-3"
-              onClick={() => window.location.href = '#gc-login'}
+              onClick={handleGcAccess}
             >
               <Building2 className="w-5 h-5 mr-2" />
               GC Portal Access

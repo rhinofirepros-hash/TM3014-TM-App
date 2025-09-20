@@ -28,154 +28,103 @@ import { useTheme } from '../contexts/ThemeContext';
 import oauthEmailService from '../services/oauthEmailService';
 import EmailAuthModal from './EmailAuthModal';
 
-const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, onManageProjects, onLogout, onAdminGc, onFinancialManagement }) => {
+const Dashboard = ({ 
+  onCreateNew, 
+  onOpenProject, 
+  onManageCrew, 
+  onManageProjects, 
+  onViewReports, 
+  onLogout, 
+  onAdminGc,
+  onFinancialManagement 
+}) => {
   const [projects, setProjects] = useState([]);
-  const [actualProjects, setActualProjects] = useState([]); // Store actual projects from backend
-  const [recentTags, setRecentTags] = useState([]);
+  const [actualProjects, setActualProjects] = useState([]);
   const [projectAnalytics, setProjectAnalytics] = useState([]);
   const [showEmailAuthModal, setShowEmailAuthModal] = useState(false);
   const { isDarkMode, toggleTheme, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   const { toast } = useToast();
 
+  // Animation state
+  const [visibleCards, setVisibleCards] = useState(new Set());
+
   useEffect(() => {
-    // Clear any old mock data from localStorage
-    localStorage.removeItem('tm_tags_history');
-    localStorage.removeItem('recent_tm_tags');
-    loadDashboardData();
+    loadData();
+    // Animate cards on load
+    const timer = setTimeout(() => {
+      setVisibleCards(new Set([0, 1, 2, 3, 4, 5, 6, 7]));
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
-  const loadDashboardData = async () => {
+  const loadData = async () => {
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
       
       if (backendUrl) {
-        // Load both projects and T&M tags data
-        const [projectsResponse, tmTagsResponse] = await Promise.all([
-          fetch(`${backendUrl}/api/projects`),
-          fetch(`${backendUrl}/api/tm-tags?limit=50`)
-        ]);
-
-        // Load projects for accurate active project count
+        // Load projects from backend
+        const projectsResponse = await fetch(`${backendUrl}/api/projects`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
-          setProjects(projectsData);
-          setActualProjects(projectsData); // Store actual projects separately
-          console.log('Loaded projects from backend:', projectsData.length, 'projects');
-          console.log('Active projects:', projectsData.filter(p => p.status === 'active').length);
-        }
-
-        // Load T&M tags for recent tags and analytics
-        if (tmTagsResponse.ok) {
-          const tmTags = await tmTagsResponse.json();
+          setActualProjects(projectsData);
           
-          // Process recent tags
-          const recentTags = tmTags.slice(0, 5).map(tag => ({
-            id: tag.id,
-            project: tag.project_name,
-            title: tag.tm_tag_title,
-            date: new Date(tag.date_of_work).toLocaleDateString(),
-            foreman: tag.foreman_name || 'Jesus Garcia',
-            status: tag.status || 'completed',
-            totalHours: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0), 0) || 0,
-            laborCost: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0) * 95, 0) || 0,
-            materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0
+          // Calculate analytics for each project
+          const analytics = await Promise.all(projectsData.map(async (project) => {
+            try {
+              const tmResponse = await fetch(`${backendUrl}/api/projects/${project.id}/tm-tags`);
+              const tmTags = tmResponse.ok ? await tmResponse.json() : [];
+              
+              const totalHours = tmTags.reduce((sum, tag) => {
+                return sum + (tag.labor_entries || []).reduce((laborSum, entry) => 
+                  laborSum + (entry.total_hours || entry.hours || 0), 0);
+              }, 0);
+              
+              const totalCost = tmTags.reduce((sum, tag) => sum + (tag.total_cost || 0), 0);
+              
+              return {
+                projectId: project.id,
+                projectName: project.name,
+                totalHours: totalHours,
+                totalCost: totalCost,
+                tagCount: tmTags.length
+              };
+            } catch (error) {
+              console.error(`Error calculating analytics for project ${project.id}:`, error);
+              return {
+                projectId: project.id,
+                projectName: project.name,
+                totalHours: 0,
+                totalCost: 0,
+                tagCount: 0
+              };
+            }
           }));
-          setRecentTags(recentTags);
           
-          // Generate project analytics from T&M tags
-          generateProjectAnalytics(tmTags);
+          setProjectAnalytics(analytics);
         } else {
-          console.warn('Failed to load T&M tags from backend');
-        }
-
-        // If no backend data, use localStorage fallback
-        if (!projectsResponse.ok && !tmTagsResponse.ok) {
+          console.warn('Failed to load projects from backend');
           loadLocalStorageData();
         }
       } else {
         loadLocalStorageData();
       }
     } catch (error) {
-      console.warn('Backend connection failed, using localStorage fallback:', error);
+      console.warn('Backend connection failed:', error);
       loadLocalStorageData();
     }
   };
 
-  const generateProjectAnalytics = (tmTags) => {
-    // Group T&M tags by project name
-    const projectGroups = tmTags.reduce((groups, tag) => {
-      const projectName = tag.project_name;
-      if (!groups[projectName]) {
-        groups[projectName] = [];
-      }
-      groups[projectName].push(tag);
-      return groups;
-    }, {});
-
-    // Calculate analytics for each project
-    const analytics = Object.entries(projectGroups).map(([projectName, tags]) => {
-      const totalHours = tags.reduce((sum, tag) => {
-        return sum + (tag.labor_entries?.reduce((entrySum, entry) => entrySum + (entry.total_hours || 0), 0) || 0);
-      }, 0);
-      
-      const totalLaborCost = tags.reduce((sum, tag) => {
-        return sum + (tag.labor_entries?.reduce((entrySum, entry) => entrySum + (entry.total_hours || 0) * 95, 0) || 0);
-      }, 0);
-      
-      const totalMaterialCost = tags.reduce((sum, tag) => {
-        return sum + (tag.material_entries?.reduce((entrySum, entry) => entrySum + (entry.total || 0), 0) || 0);
-      }, 0);
-
-      const totalCost = totalLaborCost + totalMaterialCost;
-      
-      // Get latest date
-      const latestDate = tags.reduce((latest, tag) => {
-        const tagDate = new Date(tag.date_of_work);
-        return tagDate > latest ? tagDate : latest;
-      }, new Date(0));
-
-      return {
-        id: projectName.toLowerCase().replace(/\s+/g, '-'),
-        name: projectName,
-        tagCount: tags.length,
-        totalHours,
-        totalCost,
-        laborCost: totalLaborCost,
-        materialCost: totalMaterialCost,
-        status: 'active',
-        lastActivity: latestDate.toLocaleDateString(),
-        progress: Math.min(100, (tags.length * 10)), // Simple progress calculation
-        tags: tags.slice(0, 3) // Keep first 3 tags for quick reference
-      };
-    });
-
-    // Sort by most recent activity
-    analytics.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
-    
-    setProjectAnalytics(analytics);
-    setProjects(analytics); // Update projects with analytics data
-  };
-
   const loadLocalStorageData = () => {
-    // Load saved projects and recent T&M tags from localStorage (fallback)
-    const savedProjects = localStorage.getItem('saved_projects');
-    const savedTags = localStorage.getItem('tm_tags_history');
-    
-    if (savedProjects) {
-      const projectsData = JSON.parse(savedProjects);
-      setProjects(projectsData);
-      setActualProjects(projectsData); // Also set actual projects for localStorage fallback
-      console.log('Loaded projects from localStorage:', projectsData.length, 'projects');
-    } else {
-      // No default projects - start clean
-      setProjects([]);
-      setActualProjects([]);
-    }
-    
-    if (savedTags) {
-      const tags = JSON.parse(savedTags);
-      setRecentTags(tags.slice(0, 5)); // Show only recent 5 tags
+    try {
+      const savedProjects = localStorage.getItem('projects');
+      if (savedProjects) {
+        const projectsData = JSON.parse(savedProjects);
+        setActualProjects(projectsData);
+      }
+    } catch (error) {
+      console.error('Error loading localStorage data:', error);
+      loadLocalStorageData();
     }
   };
 
@@ -184,22 +133,38 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('tm_app_authenticated');
-    localStorage.removeItem('tm_app_login_time');
     onLogout();
-    toast({
-      title: "Logged Out",
-      description: "You have been logged out successfully.",
-    });
+  };
+
+  // Animated Card component
+  const AnimatedCard = ({ children, index, delay = 0, className = "", ...props }) => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, delay);
+      return () => clearTimeout(timer);
+    }, [delay]);
+
+    return (
+      <div
+        className={`transform transition-all duration-700 ease-out ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        } ${className}`}
+        {...props}
+      >
+        {children}
+      </div>
+    );
   };
 
   return (
-    <>
     <div className={`min-h-screen ${themeClasses.background}`}>
-      {/* Vision UI Header */}
+      {/* Header */}
       <div className={themeClasses.header}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center space-x-4">
               <img 
                 src="https://customer-assets.emergentagent.com/job_4a677f03-9858-4c3f-97bb-9e96952a200d/artifacts/ljd1o3d7_TITLEBLOCKRHINOFIRE.png" 
@@ -207,7 +172,7 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
                 className="h-10 w-auto"
               />
               <div>
-                <h1 className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+                <h1 className={`text-xl sm:text-2xl font-bold ${themeClasses.text.primary}`}>
                   Rhino Dashboard
                 </h1>
                 <p className={`text-sm ${themeClasses.text.secondary}`}>
@@ -216,355 +181,221 @@ const Dashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewReports, on
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
               {/* Theme Toggle */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
+                className="flex-shrink-0"
               >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {isDarkMode ? <Sun className="w-5 h-5" style={{ color: '#FEF08A' }} /> : <Moon className="w-5 h-5" style={{ color: '#1E293B' }} />}
               </Button>
               
               {/* Logout Button */}
               <Button
                 variant="ghost"
-                size="sm"
+                size="sm"  
                 onClick={handleLogout}
+                className="flex-shrink-0"
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                Logout
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Vision UI Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatsCard
-            title="Active Projects"
-            value={actualProjects.filter(p => p.status === 'active').length}
-            subtitle="Current workload"
-            icon={Building}
-            iconColor={`${themeClasses.colors.blue}`}
-            onClick={onManageProjects}
-          />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Stats Cards with Animation */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <AnimatedCard index={0} delay={100}>
+            <StatsCard
+              title="Active Projects"
+              value={actualProjects.filter(p => p.status === 'active').length}
+              subtitle="Current workload"
+              icon={Building}
+              iconColor={themeClasses.colors.blue}
+              onClick={onManageProjects}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200"
+            />
+          </AnimatedCard>
 
-          <StatsCard
-            title="Total Hours"
-            value={projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
-            subtitle="Logged time"
-            icon={Clock}
-            iconColor={`${themeClasses.colors.green}`}
-            onClick={onManageProjects}
-          />
+          <AnimatedCard index={1} delay={200}>
+            <StatsCard
+              title="Total Hours"
+              value={projectAnalytics.reduce((sum, p) => sum + p.totalHours, 0).toFixed(1)}
+              subtitle="Logged time"
+              icon={Clock}
+              iconColor={themeClasses.colors.green}
+              onClick={onManageProjects}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200"
+            />
+          </AnimatedCard>
 
-          <StatsCard
-            title="Total Revenue"
-            value={`$${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}`}
-            subtitle="Generated"
-            icon={DollarSign}
-            iconColor={`${themeClasses.colors.purple}`}
-            onClick={onManageProjects}
-          />
+          <AnimatedCard index={2} delay={300}>
+            <StatsCard
+              title="Total Revenue"
+              value={`$${projectAnalytics.reduce((sum, p) => sum + p.totalCost, 0).toLocaleString()}`}
+              subtitle="Generated"
+              icon={DollarSign}
+              iconColor={themeClasses.colors.purple}
+              onClick={onManageProjects}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200"
+            />
+          </AnimatedCard>
 
-          <StatsCard
-            title="T&M Tags"
-            value={projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
-            subtitle="Completed"
-            icon={FileText}
-            iconColor={`${themeClasses.colors.amber}`}
-            onClick={onViewReports}
-          />
+          <AnimatedCard index={3} delay={400}>
+            <StatsCard
+              title="T&M Tags"
+              value={projectAnalytics.reduce((sum, p) => sum + p.tagCount, 0)}
+              subtitle="Completed"
+              icon={FileText}
+              iconColor={themeClasses.colors.amber}
+              onClick={onViewReports}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200"
+            />
+          </AnimatedCard>
         </div>
 
-        {/* Vision UI Quick Actions */}
-        <div className="mb-8">
-          <h2 className={`text-xl font-semibold mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={handleCreateNewTag}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
-                <Plus className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Create New T&M Tag</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Start a new time & material tag</p>
-            </div>
-
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={onViewReports}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
-                <FileText className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>View Reports</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>View T&M tag history and reports</p>
-            </div>
-            
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={onManageCrew}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.purple}20`, color: themeClasses.colors.purple }}>
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Crew</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Add and manage crew member profiles</p>
-            </div>
-
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={onManageProjects}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.indigo}20`, color: themeClasses.colors.indigo }}>
-                <Building className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Manage Projects</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Create and track project profitability</p>
-            </div>
-
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={() => console.log('AI Insights coming soon')}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.amber}20`, color: themeClasses.colors.amber }}>
-                <Zap className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>AI Insights</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Smart project analytics (Coming Soon)</p>
-            </div>
-
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={onAdminGc}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.cyan}20`, color: themeClasses.colors.cyan }}>
-                <Shield className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>GC Management</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Access keys & logs</p>
-            </div>
-
-            <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                 onClick={onFinancialManagement}>
-              <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                   style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
-                <DollarSign className="w-6 h-6" />
-              </div>
-              <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Financial Management</h3>
-              <p className={`text-sm ${themeClasses.text.secondary}`}>Invoices, payables & cashflow</p>
-            </div>
-
-            {(() => {
-              const currentUser = oauthEmailService.getCurrentUser();
-              return (
-                <div className={`${themeClasses.card} rounded-lg p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                     onClick={() => setShowEmailAuthModal(true)}>
-                  {currentUser ? (
-                    <>
-                      <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                           style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
-                        <CheckCircle className="w-6 h-6" />
-                      </div>
-                      <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Email Connected</h3>
-                      <p className={`text-sm ${themeClasses.text.secondary} capitalize`}>
-                        {currentUser.provider} ({currentUser.email.split('@')[0]})
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center`}
-                           style={{ backgroundColor: `${themeClasses.colors.amber}20`, color: themeClasses.colors.amber }}>
-                        <Mail className="w-6 h-6" />
-                      </div>
-                      <h3 className={`font-semibold ${themeClasses.text.primary} mb-2`}>Connect Email</h3>
-                      <p className={`text-sm ${themeClasses.text.secondary}`}>Setup Gmail or Outlook for sending</p>
-                    </>
-                  )}
+        {/* Quick Actions with Animation */}
+        <div className="mb-6 sm:mb-8">
+          <h2 className={`text-lg sm:text-xl font-semibold mb-4 sm:mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <AnimatedCard index={4} delay={500}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={handleCreateNewTag}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.green}60`, color: themeClasses.colors.green }}>
+                  <Plus className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
                 </div>
-              );
-            })()}
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Create New T&M Tag</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Start a new time & material tag</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={5} delay={600}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={onViewReports}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.blue}60`, color: themeClasses.colors.blue }}>
+                  <FileText className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>View Reports</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>View T&M tag history and reports</p>
+              </div>
+            </AnimatedCard>
+            
+            <AnimatedCard index={6} delay={700}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={onManageCrew}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.purple}60`, color: themeClasses.colors.purple }}>
+                  <Users className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Manage Crew</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Add and manage crew member profiles</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={7} delay={800}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={onManageProjects}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.indigo}60`, color: themeClasses.colors.indigo }}>
+                  <Building className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Manage Projects</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Create and track project profitability</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={8} delay={900}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={() => console.log('AI Insights coming soon')}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.amber}60`, color: themeClasses.colors.amber }}>
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>AI Insights</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Smart project analytics (Coming Soon)</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={9} delay={1000}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={onAdminGc}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.cyan}60`, color: themeClasses.colors.cyan }}>
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>GC Management</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Access keys & logs</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={10} delay={1100}>
+              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                   onClick={onFinancialManagement}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.green}60`, color: themeClasses.colors.green }}>
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Financial Management</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Invoices, payables & cashflow</p>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard index={11} delay={1200}>
+              {(() => {
+                const currentUser = oauthEmailService.getCurrentUser();
+                return (
+                  <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
+                       onClick={() => setShowEmailAuthModal(true)}>
+                    {currentUser ? (
+                      <>
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                             style={{ backgroundColor: `${themeClasses.colors.green}60`, color: themeClasses.colors.green }}>
+                          <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                        </div>
+                        <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Email Connected</h3>
+                        <p className={`text-xs sm:text-sm ${themeClasses.text.secondary} capitalize break-words`}>
+                          {currentUser.provider} ({currentUser.email.split('@')[0]})
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
+                             style={{ backgroundColor: `${themeClasses.colors.amber}60`, color: themeClasses.colors.amber }}>
+                          <Mail className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                        </div>
+                        <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Connect Email</h3>
+                        <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Setup Gmail or Outlook for sending</p>
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
+            </AnimatedCard>
           </div>
         </div>
-
-        {/* Projects Overview with Analytics */}
-        <div className="mb-8">
-          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Active Projects</h2>
-          {projectAnalytics.length === 0 ? (
-            <Card className={`backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white' 
-                : 'bg-white/70 text-gray-900'
-            }`}>
-              <CardContent className="p-8 text-center">
-                <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
-                <p className={isDarkMode ? 'text-gray-300' : 'text-gray-500'}>No project data available</p>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Create your first T&M tag to see project analytics</p>
-                <Button className="mt-4" onClick={handleCreateNewTag}>
-                  Create First T&M Tag
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projectAnalytics.map((project) => (
-                <Card key={project.id} className={`hover:shadow-lg transition-shadow backdrop-blur-md border-0 shadow-xl ${
-                  isDarkMode 
-                    ? 'bg-white/10 text-white' 
-                    : 'bg-white/70 text-gray-900'
-                }`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</CardTitle>
-                      <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
-                        {project.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    {/* Project Statistics */}
-                    <div className="space-y-3 mb-4">
-                      <div className="flex justify-between items-center">
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>T&M Tags:</span>
-                        <span className={`font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{project.tagCount}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Hours:</span>
-                        <span className={`font-semibold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{project.totalHours.toFixed(1)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Cost:</span>
-                        <span className={`font-semibold ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>${project.totalCost.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Last Activity:</span>
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{project.lastActivity}</span>
-                      </div>
-                    </div>
-
-                    {/* Mini Cost Breakdown Chart */}
-                    <div className="mb-4">
-                      <div className={`text-xs mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Cost Breakdown</div>
-                      <div className={`flex h-2 rounded-full overflow-hidden ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                        <div 
-                          className={isDarkMode ? 'bg-green-400' : 'bg-green-500'}
-                          style={{ 
-                            width: `${project.totalCost > 0 ? (project.laborCost / project.totalCost) * 100 : 0}%` 
-                          }}
-                          title={`Labor: $${project.laborCost.toLocaleString()}`}
-                        ></div>
-                        <div 
-                          className={isDarkMode ? 'bg-blue-400' : 'bg-blue-500'}
-                          style={{ 
-                            width: `${project.totalCost > 0 ? (project.materialCost / project.totalCost) * 100 : 0}%` 
-                          }}
-                          title={`Materials: $${project.materialCost.toLocaleString()}`}
-                        ></div>
-                      </div>
-                      <div className={`flex justify-between text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <span>Labor: ${project.laborCost.toLocaleString()}</span>
-                        <span>Materials: ${project.materialCost.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Recent Tags Preview */}
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="mb-4">
-                        <div className={`text-xs mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Recent Tags</div>
-                        <div className="space-y-1">
-                          {project.tags.slice(0, 2).map((tag, index) => (
-                            <div key={index} className={`text-xs p-2 rounded ${isDarkMode ? 'bg-white/10' : 'bg-gray-50'}`}>
-                              <div className={`font-medium truncate ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{tag.tm_tag_title}</div>
-                              <div className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
-                                {new Date(tag.date_of_work).toLocaleDateString()}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <Button 
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => onOpenProject(project)}
-                    >
-                      Create T&M Tag
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Recent Activity */}
-        <div>
-          <h2 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Recent T&M Tags</h2>
-          {recentTags.length === 0 ? (
-            <Card className={`backdrop-blur-md border-0 shadow-xl ${
-              isDarkMode 
-                ? 'bg-white/10 text-white' 
-                : 'bg-white/70 text-gray-900'
-            }`}>
-              <CardContent className="p-8 text-center">
-                <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-300'}`} />
-                <p className={isDarkMode ? 'text-gray-300' : 'text-gray-500'}>No T&M tags created yet</p>
-                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Create your first T&M tag to get started</p>
-                <Button className="mt-4" onClick={handleCreateNewTag}>
-                  Create First T&M Tag
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {recentTags.map((tag, index) => (
-                <Card key={index} className={`backdrop-blur-md border-0 shadow-xl ${
-                  isDarkMode 
-                    ? 'bg-white/10 text-white' 
-                    : 'bg-white/70 text-gray-900'
-                }`}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{tag.title}</h3>
-                        <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{tag.project} • {tag.date}</p>
-                      </div>
-                      <div className={`flex items-center space-x-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        <span className="flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          {tag.crew} crew
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          ${tag.total}
-                        </span>
-                        <Badge variant="outline">
-                          {tag.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
-    </div>
 
-    {/* Email Authentication Modal */}
-    <EmailAuthModal
-      open={showEmailAuthModal}
-      onClose={() => setShowEmailAuthModal(false)}
-      onAuthSuccess={() => {
-        setShowEmailAuthModal(false);
-        toast({
-          title: "Email Connected",
-          description: "You can now send T&M tags directly from your email account",
-        });
-      }}
-    />
-    </>
+      {/* Email Auth Modal */}
+      {showEmailAuthModal && (
+        <EmailAuthModal 
+          onClose={() => setShowEmailAuthModal(false)}
+          onSuccess={() => {
+            setShowEmailAuthModal(false);
+            toast({
+              title: "Email Connected",
+              description: "Email service has been successfully connected.",
+            });
+          }}
+        />
+      )}
+    </div>
   );
 };
 
