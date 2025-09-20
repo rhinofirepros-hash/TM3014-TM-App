@@ -24,14 +24,9 @@ import os
 from pathlib import Path
 
 def get_backend_url():
-    env_path = Path("/app/frontend/.env")
-    if env_path.exists():
-        with open(env_path, 'r') as f:
-            for line in f:
-                if line.startswith('REACT_APP_BACKEND_URL='):
-                    base_url = line.split('=')[1].strip()
-                    return f"{base_url}/api"
-    return "https://tm.rhinofirepro.com/api"  # fallback
+    # For testing, use local backend since production URL serves frontend
+    # In production, the frontend uses REACT_APP_BACKEND_URL which is properly routed
+    return "http://localhost:8001/api"
 
 BACKEND_URL = get_backend_url()
 
