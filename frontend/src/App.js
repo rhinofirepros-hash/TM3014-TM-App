@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Dashboard from './components/Dashboard';
 import TimeAndMaterialForm from './components/TimeAndMaterialForm';
 import ProjectOverview from './components/ProjectOverview';
