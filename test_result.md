@@ -509,7 +509,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/components/PinLogin.jsx, /app/frontend/src/components/AdminGcManagement.jsx, /app/frontend/src/components/GcOnlyLogin.jsx, /app/frontend/src/App.js, /app/frontend/src/components/ProjectManagement.jsx"
-    stuck_count: 3
+    stuck_count: 4
     priority: "high"
     needs_retesting: false
     status_history:
