@@ -369,63 +369,59 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             </Button>
           </div>
 
-          {/* Vision UI Inspired Quick Stats */}
+          {/* Vision UI Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+            <div className={`${themeClasses.statsCard} rounded-lg p-6 transform hover:scale-105 transition-all duration-200`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Projects</p>
                   <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>{totalProjects}</p>
                   <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Active management</p>
                 </div>
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  isDarkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-500/10 text-blue-600'
-                }`}>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.blue}20`, color: themeClasses.colors.blue }}>
                   <Building className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+            <div className={`${themeClasses.statsCard} rounded-lg p-6 transform hover:scale-105 transition-all duration-200`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Active Projects</p>
                   <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>{activeProjects}</p>
                   <p className={`text-xs ${themeClasses.text.muted} mt-1`}>In progress</p>
                 </div>
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  isDarkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-500/10 text-green-600'
-                }`}>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.green}20`, color: themeClasses.colors.green }}>
                   <TrendingUp className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+            <div className={`${themeClasses.statsCard} rounded-lg p-6 transform hover:scale-105 transition-all duration-200`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Total Value</p>
                   <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>${totalValue.toLocaleString()}</p>
                   <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Portfolio value</p>
                 </div>
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  isDarkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-500/10 text-purple-600'
-                }`}>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.purple}20`, color: themeClasses.colors.purple }}>
                   <DollarSign className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className={`${themeClasses.statsCard} rounded-xl p-6 transform hover:scale-105 transition-all duration-300`}>
+            <div className={`${themeClasses.statsCard} rounded-lg p-6 transform hover:scale-105 transition-all duration-200`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className={`text-sm font-medium ${themeClasses.text.secondary}`}>Avg Project</p>
                   <p className={`text-3xl font-bold ${themeClasses.text.primary} mt-2`}>${avgProjectValue.toLocaleString()}</p>
                   <p className={`text-xs ${themeClasses.text.muted} mt-1`}>Average value</p>
                 </div>
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-500/10 text-orange-600'
-                }`}>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center`}
+                     style={{ backgroundColor: `${themeClasses.colors.amber}20`, color: themeClasses.colors.amber }}>
                   <FileText className="w-6 h-6" />
                 </div>
               </div>
