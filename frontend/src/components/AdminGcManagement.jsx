@@ -295,7 +295,7 @@ const AdminGcManagement = ({ onBack }) => {
           </TabsContent>
 
           <TabsContent value="logs" className="mt-6">
-            <!-- content unchanged below for brevity -->
+            {/* content omitted for brevity - logs tab continues below */}
           </TabsContent>
         </Tabs>
       </div>
