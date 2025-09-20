@@ -428,19 +428,18 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             </div>
           </div>
 
-          {/* Vision UI Inspired Projects Grid */}
+          {/* Vision UI Project Cards */}
           {projects.length === 0 ? (
-            <div className={`${themeClasses.card} rounded-xl p-12 text-center`}>
-              <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
-                isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100'
-              }`}>
-                <Building className={`w-10 h-10 ${themeClasses.text.muted}`} />
+            <div className={`${themeClasses.card} rounded-lg p-12 text-center`}>
+              <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center`}
+                   style={{ backgroundColor: `${themeClasses.colors.blue}10` }}>
+                <Building className={`w-10 h-10`} style={{ color: themeClasses.colors.blue }} />
               </div>
               <h3 className={`text-xl font-semibold mb-3 ${themeClasses.text.primary}`}>No Projects Yet</h3>
               <p className={`mb-8 ${themeClasses.text.secondary}`}>Create your first project to get started with project management.</p>
               <Button 
                 onClick={() => setShowCreateModal(true)}
-                className={`${themeClasses.button.primary} px-8`}
+                className="px-8"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create First Project
@@ -449,7 +448,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project) => (
-                <div key={project.id} className={`${themeClasses.card} rounded-xl transform hover:scale-105 transition-all duration-300 cursor-pointer`}>
+                <div key={project.id} className={`${themeClasses.card} rounded-lg transform hover:scale-105 transition-all duration-200 cursor-pointer`}>
                   <div className="p-6">
                     {/* Header Section */}
                     <div className="flex justify-between items-start mb-6">
@@ -463,19 +462,12 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                         </p>
                       </div>
                       <div className="text-right">
-                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          project.status === 'active' 
-                            ? isDarkMode ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-green-100 text-green-800'
-                            : project.status === 'planning'
-                            ? isDarkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-blue-100 text-blue-800'
-                            : isDarkMode ? 'bg-gray-500/20 text-gray-400 border border-gray-500/30' : 'bg-gray-100 text-gray-800'
-                        }`}>
+                        <Badge variant={project.status === 'active' ? 'success' : project.status === 'planning' ? 'primary' : 'secondary'}>
                           {project.status || 'Active'}
-                        </div>
+                        </Badge>
                         {project.gc_pin && (
-                          <div className={`text-xs ${themeClasses.text.muted} font-mono mt-2 px-2 py-1 rounded ${
-                            isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100'
-                          }`}>
+                          <div className={`text-xs ${themeClasses.text.muted} font-mono mt-2 px-2 py-1 rounded`}
+                               style={{ backgroundColor: `${themeClasses.colors.blue}10` }}>
                             PIN: {project.gc_pin}
                           </div>
                         )}
@@ -486,13 +478,9 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                     <div className="space-y-4 mb-6">
                       <div className="flex justify-between items-center">
                         <span className={`text-sm ${themeClasses.text.secondary}`}>Type:</span>
-                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                          project.project_type === 'tm_only' 
-                            ? isDarkMode ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-orange-100 text-orange-800'
-                            : isDarkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-blue-100 text-blue-800'
-                        }`}>
+                        <Badge variant={project.project_type === 'tm_only' ? 'warning' : 'primary'}>
                           {project.project_type === 'tm_only' ? 'T&M Only' : 'Full Project'}
-                        </div>
+                        </Badge>
                       </div>
                       
                       <div className="flex justify-between items-center">
@@ -523,7 +511,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                       </div>
                       
                       {project.description && (
-                        <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'}`}>
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: `${themeClasses.colors.blue}05` }}>
                           <p className={`text-sm ${themeClasses.text.secondary} line-clamp-2`}>
                             {project.description}
                           </p>
@@ -532,38 +520,38 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                     </div>
                     
                     {/* Action Buttons */}
-                    <div className={`flex gap-2 pt-4 border-t ${isDarkMode ? 'border-slate-700/50' : 'border-gray-200/50'}`}>
+                    <div className={`flex gap-2 pt-4 border-t`} style={{ borderColor: `${themeClasses.colors.blue}20` }}>
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => openProjectOverview(project)}
-                        className={`flex-1 ${themeClasses.button.secondary} text-xs`}
+                        className="flex-1 text-xs"
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => openInspectionManagement(project)}
-                        className={`${themeClasses.button.secondary} text-xs`}
+                        className="text-xs"
                         title="Manage Inspections"
                       >
                         <Wrench className="w-4 h-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => openEditModal(project)}
-                        className={`${themeClasses.button.secondary} text-xs`}
+                        className="text-xs"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteProject(project.id)}
-                        className={`text-red-400 hover:text-red-300 hover:bg-red-500/10 border-red-500/30 text-xs`}
+                        className="text-xs"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
