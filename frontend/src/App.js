@@ -147,6 +147,7 @@ function AppContent() {
             onBack={() => navigateToView('dashboard')}
             onCreateTag={(project) => navigateToView('create', project)}
             onEditTag={(tmTag) => navigateToView('edit-tag', null, tmTag)}
+            onViewTMTags={() => navigateToView('reports')}
           />
         );
       case 'edit-tag':
