@@ -178,6 +178,7 @@ function AppContent() {
           <ProjectManagement
             onBack={() => navigateToView('dashboard')}
             onOpenProject={(project) => navigateToView('project-overview', project)}
+            onViewReports={() => navigateToView('reports')}
           />
         );
       case 'crew-logging':
