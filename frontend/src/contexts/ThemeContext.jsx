@@ -12,16 +12,12 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark' || (savedTheme === null && true); // Default to dark
+    const saved = localStorage.getItem('theme');
+    return saved ? saved === 'dark' : false;
   });
 
   useEffect(() => {
-    // Save theme preference to localStorage
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    
-    // Update document class for global styling if needed
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -30,70 +26,78 @@ export const ThemeProvider = ({ children }) => {
   }, [isDarkMode]);
 
   const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
+    setIsDarkMode(!isDarkMode);
   };
 
   const getThemeClasses = () => ({
+    // Modern, clean backgrounds
     background: isDarkMode 
-      ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
-      : 'bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-slate-100/90',
+      ? 'bg-slate-900' 
+      : 'bg-gray-50',
     
+    // Consistent card styling - modern, flat design
     card: isDarkMode 
-      ? 'backdrop-blur-xl border-0 shadow-2xl bg-slate-800 text-white border border-slate-600' 
-      : 'backdrop-blur-xl border-0 shadow-2xl bg-white/40 text-gray-900 border border-white/30',
+      ? 'bg-slate-800 border border-slate-700 text-white' 
+      : 'bg-white border border-gray-200 text-gray-900',
     
+    // Hover states - subtle and modern
     cardHover: isDarkMode 
-      ? 'hover:bg-slate-700 hover:shadow-3xl transition-all duration-300' 
-      : 'hover:bg-white/60 hover:shadow-3xl transition-all duration-300',
+      ? 'hover:bg-slate-750 transition-colors duration-200' 
+      : 'hover:bg-gray-50 transition-colors duration-200',
     
+    // Text colors
     text: {
       primary: isDarkMode ? 'text-white' : 'text-gray-900',
-      secondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
-      muted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
+      secondary: isDarkMode ? 'text-slate-300' : 'text-gray-600',
+      muted: isDarkMode ? 'text-slate-400' : 'text-gray-500',
     },
     
+    // Header styling
     header: isDarkMode 
-      ? 'backdrop-blur-xl bg-white/10 border-b border-white/20' 
-      : 'backdrop-blur-xl bg-white/30 border-b border-white/40',
+      ? 'bg-slate-800 border-b border-slate-700' 
+      : 'bg-white border-b border-gray-200',
     
+    // Button variants
     button: {
-      ghost: isDarkMode 
-        ? 'text-white hover:bg-white/20 backdrop-blur border-white/20' 
-        : 'text-gray-700 hover:bg-white/40 backdrop-blur border-gray-300/50',
       primary: isDarkMode 
-        ? 'bg-blue-600/80 hover:bg-blue-700/90 text-white backdrop-blur border-blue-500/30' 
-        : 'bg-blue-600/80 hover:bg-blue-700/90 text-white backdrop-blur border-blue-500/30',
+        ? 'bg-blue-600 hover:bg-blue-700 text-white border-0' 
+        : 'bg-blue-600 hover:bg-blue-700 text-white border-0',
       secondary: isDarkMode 
-        ? 'bg-white/20 hover:bg-white/30 text-white backdrop-blur border-white/30' 
-        : 'bg-white/50 hover:bg-white/70 text-gray-900 backdrop-blur border-gray-300/50',
+        ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600' 
+        : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300',
+      ghost: isDarkMode 
+        ? 'text-slate-300 hover:bg-slate-700 hover:text-white' 
+        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
     },
     
+    // Input styling
     input: {
       primary: isDarkMode 
-        ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' 
-        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500',
+        ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-blue-500' 
+        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500',
       secondary: isDarkMode 
-        ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-400' 
+        ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-400' 
         : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
     },
     
+    // Modal styling
     modal: isDarkMode 
-      ? 'bg-slate-800 backdrop-blur-xl border-slate-600 shadow-2xl' 
-      : 'bg-white/95 backdrop-blur-xl border-gray-200/50 shadow-2xl',
+      ? 'bg-slate-800 border border-slate-700' 
+      : 'bg-white border border-gray-200',
       
+    // Table styling
     table: isDarkMode
-      ? 'bg-white/5 backdrop-blur border-white/10'
-      : 'bg-white/50 backdrop-blur border-gray-200/30',
+      ? 'bg-slate-800 border-slate-700'
+      : 'bg-white border-gray-200',
+      
+    // Dropdown/Select styling
+    dropdown: isDarkMode
+      ? 'bg-slate-700 border-slate-600 text-white'
+      : 'bg-white border-gray-300 text-gray-900',
   });
 
-  const value = {
-    isDarkMode,
-    toggleTheme,
-    getThemeClasses,
-  };
-
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme, getThemeClasses }}>
       {children}
     </ThemeContext.Provider>
   );
