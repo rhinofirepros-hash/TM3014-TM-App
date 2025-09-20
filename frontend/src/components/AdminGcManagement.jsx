@@ -424,8 +424,7 @@ const AdminGcManagement = ({ onBack }) => {
                                 // Navigate to GC dashboard for this project
                                 localStorage.setItem('isGcAuthenticated', 'true');
                                 localStorage.setItem('selectedGcProject', project.id);
-                                window.location.href = '#gc-dashboard';
-                                window.location.reload();
+                                window.location.hash = `gc-dashboard:${project.id}`;
                               }}
                               className="flex items-center gap-2"
                             >
