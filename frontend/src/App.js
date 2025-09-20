@@ -33,7 +33,12 @@ function AppContent() {
     const gcAuthStatus = localStorage.getItem('isGcAuthenticated');
     const gcProjectId = localStorage.getItem('selectedGcProject');
     
-    if (authStatus === 'true') {
+    // Handle hash-based navigation
+    const hash = window.location.hash.substring(1);
+    
+    if (hash === 'gc-login') {
+      setCurrentView('gc-login');
+    } else if (authStatus === 'true') {
       setIsAuthenticated(true);
       setCurrentView('dashboard');
     } else if (gcAuthStatus === 'true') {
@@ -45,6 +50,19 @@ function AppContent() {
         setCurrentView('gc-portal');
       }
     }
+  }, []);
+
+  useEffect(() => {
+    // Listen for hash changes
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash === 'gc-login') {
+        setCurrentView('gc-login');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const handleLogin = () => {
