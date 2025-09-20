@@ -109,6 +109,21 @@ function AppContent() {
       setSelectedGcProject(gcProject);
       localStorage.setItem('selectedGcProject', gcProject);
     }
+
+    // Maintain hash-based routing for deep links
+    switch (view) {
+      case 'gc-login':
+        window.location.hash = 'gc-login';
+        break;
+      case 'gc-dashboard':
+        if (gcProject) window.location.hash = `gc-dashboard:${gcProject}`;
+        break;
+      case 'dashboard':
+        window.location.hash = '';
+        break;
+      default:
+        break;
+    }
   };
 
   const handleViewFinancialManagement = () => {
