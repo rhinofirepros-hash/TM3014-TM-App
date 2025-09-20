@@ -18,13 +18,14 @@ import AdminGcManagement from './components/AdminGcManagement';
 import InspectionManagement from './components/InspectionManagement';
 import { Toaster } from './components/ui/toaster';
 
-function App() {
+function AppContent() {
   const [currentView, setCurrentView] = useState('login');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGcAuthenticated, setIsGcAuthenticated] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTmTag, setSelectedTmTag] = useState(null);
   const [selectedGcProject, setSelectedGcProject] = useState(null);
+  const { isDarkMode } = useTheme();
 
   // Check authentication status on app load
   useEffect(() => {
@@ -201,15 +202,21 @@ function App() {
   };
 
   return (
+    <div className={`min-h-screen transition-all duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
+    } text-white`}>
+      {renderCurrentView()}
+      <Toaster />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <ThemeProvider>
-      <div className={`min-h-screen transition-all duration-300 ${
-        isDarkMode 
-          ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
-          : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100'
-      } text-white`}>
-        {renderCurrentView()}
-        <Toaster />
-      </div>
+      <AppContent />
     </ThemeProvider>
   );
 }
