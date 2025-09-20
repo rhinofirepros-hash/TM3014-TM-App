@@ -35,15 +35,15 @@ export const ThemeProvider = ({ children }) => {
       ? 'bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900' 
       : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100',
     
-    // Cards matching T&M Reports styling
+    // Cards matching T&M Reports styling - REMOVED BORDER
     card: isDarkMode 
-      ? 'backdrop-blur-xl bg-white/10 border border-white/20 text-white shadow-2xl' 
-      : 'bg-white border border-gray-200 text-gray-900 shadow-lg',
+      ? 'backdrop-blur-xl bg-white/10 text-white shadow-2xl' 
+      : 'bg-white text-gray-900 shadow-lg',
     
     // Hover effects matching T&M Reports
     cardHover: isDarkMode 
       ? 'hover:bg-white/20 transition-all duration-200' 
-      : 'hover:bg-gray-50 hover:border-gray-300 transition-all duration-200',
+      : 'hover:bg-gray-50 transition-all duration-200',
     
     // Text colors matching T&M Reports
     text: {
@@ -56,10 +56,10 @@ export const ThemeProvider = ({ children }) => {
       error: isDarkMode ? 'text-red-400' : 'text-red-600', 
     },
     
-    // Header matching T&M Reports exactly
+    // Header matching T&M Reports exactly - REMOVED BORDER
     header: isDarkMode 
-      ? 'backdrop-blur-xl bg-white/10 border-b border-white/20' 
-      : 'bg-white border-b border-gray-200 shadow-sm',
+      ? 'backdrop-blur-xl bg-white/10' 
+      : 'bg-white shadow-sm',
     
     // Buttons matching T&M Reports
     button: {
@@ -67,7 +67,7 @@ export const ThemeProvider = ({ children }) => {
         ? 'bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg' 
         : 'bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg',
       secondary: isDarkMode 
-        ? 'backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-sm' 
+        ? 'backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white shadow-sm' 
         : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm',
       ghost: isDarkMode 
         ? 'text-gray-300 hover:bg-white/10 hover:text-white' 
@@ -80,35 +80,35 @@ export const ThemeProvider = ({ children }) => {
         : 'bg-red-600 hover:bg-red-700 text-white shadow-lg',
     },
     
-    // Inputs matching T&M Reports
+    // Inputs matching T&M Reports - REMOVED BORDER
     input: {
       primary: isDarkMode 
-        ? 'backdrop-blur-xl bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20' 
+        ? 'backdrop-blur-xl bg-white/10 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20' 
         : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-600 focus:ring-1 focus:ring-blue-600/20',
       secondary: isDarkMode 
-        ? 'backdrop-blur-xl bg-white/5 border-white/10 text-white placeholder-gray-400' 
+        ? 'backdrop-blur-xl bg-white/5 text-white placeholder-gray-400' 
         : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
     },
     
-    // Modals matching T&M Reports
+    // Modals matching T&M Reports - REMOVED BORDER
     modal: isDarkMode 
-      ? 'backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl' 
-      : 'bg-white border border-gray-200 shadow-2xl shadow-gray-500/10',
+      ? 'backdrop-blur-xl bg-white/10 shadow-2xl' 
+      : 'bg-white shadow-2xl shadow-gray-500/10',
       
-    // Tables matching T&M Reports
+    // Tables matching T&M Reports - REMOVED BORDER
     table: isDarkMode
-      ? 'backdrop-blur-xl bg-white/10 border-white/20 shadow-lg'
-      : 'bg-white border-gray-200 shadow-sm',
+      ? 'backdrop-blur-xl bg-white/10 shadow-lg'
+      : 'bg-white shadow-sm',
       
-    // Dropdowns matching T&M Reports
+    // Dropdowns matching T&M Reports - REMOVED BORDER
     dropdown: isDarkMode
-      ? 'backdrop-blur-xl bg-white/10 border-white/20 text-white shadow-xl'
-      : 'bg-white border-gray-300 text-gray-900 shadow-lg',
+      ? 'backdrop-blur-xl bg-white/10 text-white shadow-xl'
+      : 'bg-white text-gray-900 shadow-lg',
 
-    // Stats cards matching T&M Reports exactly 
+    // Stats cards matching T&M Reports exactly - REMOVED BORDER
     statsCard: isDarkMode
-      ? 'backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl'
-      : 'bg-white border border-gray-200 shadow-lg',
+      ? 'backdrop-blur-xl bg-white/10 shadow-2xl'
+      : 'bg-white shadow-lg',
 
     // Badges matching T&M Reports
     badge: {
