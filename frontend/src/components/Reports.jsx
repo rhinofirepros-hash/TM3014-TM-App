@@ -63,30 +63,31 @@ const Reports = ({ onBack }) => {
         if (response.ok) {
           const tmTagsData = await response.json();
           const formattedTags = tmTagsData.map(tag => {
-            const raw = tag.date_of_work;
+            // Support both unified (date) and legacy (date_of_work)
+            const rawDate = tag.date_of_work || tag.date;
             let dateStr;
-            if (typeof raw === 'string') {
-              dateStr = raw.split('T')[0];
-            } else if (raw) {
-              // Keep as YYYY-MM-DD without timezone shift
-              const dt = new Date(raw);
+            if (typeof rawDate === 'string') {
+              dateStr = rawDate.split('T')[0];
+            } else if (rawDate) {
+              // Normalize to YYYY-MM-DD without timezone shift
+              const dt = new Date(rawDate);
               dateStr = `${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,'0')}-${String(dt.getUTCDate()).padStart(2,'0')}`;
             } else {
               dateStr = '';
             }
             return ({
               id: tag.id,
-              project: tag.project_name,
-              title: tag.tm_tag_title,
+              project: tag.project_name || tag.projectId || 'Unknown',
+              title: tag.tm_tag_title || tag.title || 'T&M Tag',
               date: dateStr,
-              foreman: tag.foreman_name || 'Jesus Garcia',
-              totalHours: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0), 0) || 0,
-              laborCost: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0) * 95, 0) || 0,
-              materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0,
+              foreman: tag.foreman_name || tag.foreman || 'Jesus Garcia',
+              totalHours: (tag.labor_entries || tag.entries || []).reduce((sum, entry) => sum + (entry.total_hours || entry.hours || 0), 0) || 0,
+              laborCost: (tag.labor_entries || tag.entries || []).reduce((sum, entry) => sum + ((entry.total_hours || entry.hours || 0) * 95), 0) || 0,
+              materialCost: (tag.material_entries || []).reduce((sum, entry) => sum + (entry.total || 0), 0) || 0,
               status: tag.status || 'completed',
-              gcEmail: tag.gc_email,
-              costCode: tag.cost_code,
-              description: tag.description_of_work,
+              gcEmail: tag.gc_email || tag.gcEmail,
+              costCode: tag.cost_code || tag.costCode,
+              description: tag.description_of_work || tag.tmTagNarrative || '',
               companyName: tag.company_name || '',
               submittedAt: tag.submitted_at || tag.created_at
             });
