@@ -422,6 +422,15 @@ async def create_tm_tag(tm_tag: TmTagCreate):
                     total_expense += expense.get("amount", 0)
         
         tm_tag_dict = tm_tag.dict()
+        
+        # Fix timezone handling for date field
+        if isinstance(tm_tag_dict['date'], str):
+            # Parse the date string and ensure it's in the correct timezone
+            from datetime import datetime, timezone
+            parsed_date = datetime.fromisoformat(tm_tag_dict['date'].replace('Z', '+00:00'))
+            # Convert to local timezone if needed and store as UTC
+            tm_tag_dict['date'] = parsed_date.replace(tzinfo=timezone.utc)
+        
         tm_tag_dict.update({
             "totalLaborCost": total_labor_cost,
             "totalLaborBill": total_labor_bill,
@@ -434,7 +443,7 @@ async def create_tm_tag(tm_tag: TmTagCreate):
         tm_tag_obj = TmTag(**tm_tag_dict)
         result = await collection.insert_one(tm_tag_obj.dict())
         
-        logger.info(f"Created T&M tag for project {tm_tag_obj.projectId}")
+        logger.info(f"Created T&M tag for project {tm_tag_obj.projectId} with date {tm_tag_obj.date}")
         return tm_tag_obj
     except Exception as e:
         logger.error(f"Error creating T&M tag: {e}")
