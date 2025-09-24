@@ -68,11 +68,9 @@ const Dashboard = ({
         const projectsResponse = await fetch(`${apiUrl}/projects`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
-          console.log('Dashboard: Loaded projects:', projectsData.length);
           setActualProjects(projectsData);
           
           // Calculate analytics for each project
-          console.log('Dashboard: Calculating analytics...');
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
               const tmResponse = await fetch(`${apiUrl}/tm-tags`);
