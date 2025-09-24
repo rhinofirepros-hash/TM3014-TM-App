@@ -72,8 +72,9 @@ const Dashboard = ({
           // Calculate analytics for each project
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
-              const tmResponse = await fetch(`${backendUrl}/tm-tags?project_id=${project.id}`);
-              const tmTags = tmResponse.ok ? await tmResponse.json() : [];
+              const tmResponse = await fetch(`${backendUrl}/tm-tags`);
+              const allTmTags = tmResponse.ok ? await tmResponse.json() : [];
+              const tmTags = allTmTags.filter(tag => tag.projectId === project.id || tag.project_id === project.id);
               
               const totalHours = tmTags.reduce((sum, tag) => {
                 return sum + (tag.labor_entries || []).reduce((laborSum, entry) => 
