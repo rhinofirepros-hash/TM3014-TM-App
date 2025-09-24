@@ -60,13 +60,14 @@ const Dashboard = ({
 
   const loadData = async () => {
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
-      console.log('Dashboard: Loading data with backend URL:', backendUrl);
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
+      console.log('Dashboard: Loading data with API URL:', apiUrl);
       
-      if (backendUrl) {
+      if (apiUrl) {
         // Load projects from backend
         console.log('Dashboard: Fetching projects...');
-        const projectsResponse = await fetch(`${backendUrl}/projects`);
+        const projectsResponse = await fetch(`${apiUrl}/projects`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
           console.log('Dashboard: Loaded projects:', projectsData.length);
