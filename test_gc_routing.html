@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GC Dashboard Routing Test</title>
+</head>
+<body>
+    <h1>GC Dashboard Direct Access Test</h1>
+    
+    <div>
+        <h2>Test 1: Direct URL Access</h2>
+        <button onclick="testDirectAccess()">Test Direct #gc-dashboard</button>
+        <div id="result1"></div>
+    </div>
+    
+    <div>
+        <h2>Test 2: Simulate Admin Open Dashboard</h2>
+        <button onclick="simulateAdminFlow()">Simulate Admin Open Dashboard</button>
+        <div id="result2"></div>
+    </div>
+    
+    <div>
+        <h2>Test 3: Check Current State</h2>
+        <button onclick="checkState()">Check Current State</button>
+        <div id="result3"></div>
+    </div>
+
+    <script>
+        function testDirectAccess() {
+            localStorage.setItem('isGcAuthenticated', 'true');
+            localStorage.setItem('selectedGcProject', '68cc802f8d44fcd8015b39b8');
+            window.location.href = 'https://rhino-ui-sync.preview.emergentagent.com/#gc-dashboard';
+        }
+        
+        function simulateAdminFlow() {
+            // Clear all state first
+            localStorage.clear();
+            
+            // Set admin authentication
+            localStorage.setItem('isAuthenticated', 'true');
+            
+            // Simulate the exact Open Dashboard button click
+            localStorage.setItem('isGcAuthenticated', 'true');
+            localStorage.setItem('selectedGcProject', '68cc802f8d44fcd8015b39b8');
+            
+            document.getElementById('result2').innerHTML = 
+                'LocalStorage set. Current URL: ' + window.location.href + 
+                '<br>Going to #gc-dashboard...';
+                
+            setTimeout(() => {
+                window.location.href = 'https://rhino-ui-sync.preview.emergentagent.com/#gc-dashboard';
+            }, 1000);
+        }
+        
+        function checkState() {
+            const state = {
+                isAuthenticated: localStorage.getItem('isAuthenticated'),
+                isGcAuthenticated: localStorage.getItem('isGcAuthenticated'),
+                selectedGcProject: localStorage.getItem('selectedGcProject'),
+                currentHash: window.location.hash,
+                currentURL: window.location.href
+            };
+            
+            document.getElementById('result3').innerHTML = '<pre>' + JSON.stringify(state, null, 2) + '</pre>';
+        }
+    </script>
+</body>
+</html>
