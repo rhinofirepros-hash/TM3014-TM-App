@@ -46,24 +46,35 @@ const AdminGcManagement = ({ onBack }) => {
   }, []);
 
   const loadData = async () => {
+    console.log('AdminGcManagement: Starting loadData...');
     setLoading(true);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
       const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
+      console.log('AdminGcManagement: Using API URL:', apiUrl);
       
       // Load projects first - this should always work
-      const projectsRes = await fetch(`${apiUrl}/projects`);
+      console.log('AdminGcManagement: Fetching projects...');
+      const projectsRes = await fetch(`${apiUrl}/projects`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: AbortSignal.timeout(10000) // 10 second timeout
+      });
+      
       if (projectsRes.ok) {
         const projectsData = await projectsRes.json();
         setProjects(projectsData);
-        console.log('Loaded projects:', projectsData);
+        console.log('AdminGcManagement: Loaded projects successfully:', projectsData.length);
       } else {
-        console.warn('Failed to load projects');
+        console.warn('AdminGcManagement: Failed to load projects, status:', projectsRes.status);
         // Load from localStorage as fallback
         const savedProjects = localStorage.getItem('projects');  
         if (savedProjects) {
           const projectsData = JSON.parse(savedProjects);
           setProjects(projectsData);
+          console.log('AdminGcManagement: Loaded projects from localStorage');
         }
       }
       
