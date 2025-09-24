@@ -72,7 +72,7 @@ const Dashboard = ({
           // Calculate analytics for each project
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
-              const tmResponse = await fetch(`${backendUrl}/projects/${project.id}/tm-tags`);
+              const tmResponse = await fetch(`${backendUrl}/tm-tags?project_id=${project.id}`);
               const tmTags = tmResponse.ok ? await tmResponse.json() : [];
               
               const totalHours = tmTags.reduce((sum, tag) => {
