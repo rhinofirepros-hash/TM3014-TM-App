@@ -59,8 +59,7 @@ const AdminGcManagement = ({ onBack }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        signal: AbortSignal.timeout(10000) // 10 second timeout
+        }
       });
       
       if (projectsRes.ok) {
