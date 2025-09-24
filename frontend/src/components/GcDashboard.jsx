@@ -38,8 +38,9 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
     try {
       setLoading(true);
       
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/gc/dashboard/${selectedProject}`);
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
+      const response = await fetch(`${apiUrl}/gc/dashboard/${selectedProject}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch project data');
