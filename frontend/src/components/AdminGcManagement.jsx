@@ -130,6 +130,7 @@ const AdminGcManagement = ({ onBack }) => {
         variant: "destructive"
       });
     } finally {
+      console.log('AdminGcManagement: Completing loadData, setting loading to false');
       setLoading(false);
     }
   };
