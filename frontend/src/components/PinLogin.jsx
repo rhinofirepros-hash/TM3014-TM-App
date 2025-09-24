@@ -18,9 +18,6 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
     setError('');
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       // Admin PINs
       const adminPins = ['J777', 'A123', 'ADMIN', '1234'];
       
