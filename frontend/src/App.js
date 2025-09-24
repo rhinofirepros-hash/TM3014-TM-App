@@ -67,6 +67,7 @@ function AppContent() {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    setCurrentView('dashboard');
   };
 
   const handleGcLogin = () => {
