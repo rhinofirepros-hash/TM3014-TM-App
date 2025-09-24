@@ -26,6 +26,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
       
       if (adminPins.includes(pin.toUpperCase())) {
         localStorage.setItem('isAuthenticated', 'true');
+        console.log('Admin PIN authenticated, calling onLogin()');
         // Force immediate navigation
         setTimeout(() => {
           onLogin();
