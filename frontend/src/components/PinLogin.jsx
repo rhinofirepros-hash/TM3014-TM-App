@@ -26,10 +26,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
       
       if (adminPins.includes(pin.toUpperCase())) {
         localStorage.setItem('isAuthenticated', 'true');
-        // Force immediate navigation
-        setTimeout(() => {
-          onLogin();
-        }, 100);
+        onLogin();
       } else {
         setError('Invalid PIN. Please try again.');
       }
