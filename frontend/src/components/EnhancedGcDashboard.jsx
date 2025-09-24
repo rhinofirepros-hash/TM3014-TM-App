@@ -162,10 +162,8 @@ const EnhancedGcDashboard = ({ projectId }) => {
 
   if (error) {
     return (
-      <div className={`min-h-screen ${
-        isDarkMode ? 'bg-slate-800' : 'bg-gray-50'
-      } flex items-center justify-center p-4`}>
-        <div className={`text-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+      <div className={`min-h-screen ${themeClasses.background} flex items-center justify-center p-4`}>
+        <div className={`text-center ${themeClasses.text.primary}`}>
           <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
           <p className="text-lg md:text-xl">Error loading dashboard: {error}</p>
         </div>
