@@ -58,6 +58,8 @@ function AppContent() {
       const hash = window.location.hash.substring(1);
       if (hash === 'gc-login') {
         setCurrentView('gc-login');
+      } else if (hash === 'gc-dashboard') {
+        setCurrentView('gc-dashboard');
       }
     };
 
