@@ -130,10 +130,11 @@ const AdminGcManagement = ({ onBack }) => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
       
       // The system uses project PINs, so we get the current PIN for the project
-      const response = await fetch(`${backendUrl}/api/projects/${newKey.projectId}/gc-pin`);
+      const response = await fetch(`${apiUrl}/projects/${newKey.projectId}/gc-pin`);
       
       if (response.ok) {
         const data = await response.json();
