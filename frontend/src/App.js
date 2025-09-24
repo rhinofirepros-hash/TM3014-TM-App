@@ -38,6 +38,16 @@ function AppContent() {
     
     if (hash === 'gc-login') {
       setCurrentView('gc-login');
+    } else if (hash === 'gc-dashboard') {
+      // Handle direct GC dashboard access
+      if (gcAuthStatus === 'true' && gcProjectId) {
+        setIsGcAuthenticated(true);
+        setSelectedGcProject(gcProjectId);
+        setCurrentView('gc-dashboard');
+      } else {
+        // Redirect to GC login if not authenticated
+        setCurrentView('gc-login');
+      }
     } else if (authStatus === 'true') {
       setIsAuthenticated(true);
       setCurrentView('dashboard');
