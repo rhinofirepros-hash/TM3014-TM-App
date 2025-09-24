@@ -47,9 +47,9 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
       }
       
       const data = await response.json();
-      setProjectData(data.project);
-      setTmTags(data.tm_tags || []);
-      setCrewLogs(data.crew_logs || []);
+      setProjectData(data);
+      setTmTags(data.tmTagSummary || []);
+      setCrewLogs(data.crewSummary || []);
     } catch (error) {
       console.error('Error fetching project data:', error);
     } finally {
