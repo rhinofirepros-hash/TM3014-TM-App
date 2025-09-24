@@ -113,7 +113,6 @@ const Dashboard = ({
             }
           }));
           
-          console.log('Dashboard: Analytics calculated:', analytics);
           setProjectAnalytics(analytics);
         } else {
           console.warn('Failed to load projects from backend');
