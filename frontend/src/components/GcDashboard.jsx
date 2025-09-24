@@ -86,11 +86,9 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
     );
   }
 
-  const totalHours = tmTags.reduce((sum, tag) => {
-    return sum + (tag.labor_entries || []).reduce((laborSum, entry) => laborSum + (entry.hours || 0), 0);
-  }, 0);
-
-  const totalCost = tmTags.reduce((sum, tag) => sum + (tag.total_cost || 0), 0);
+  // Use the summary data from the API response instead of calculating from individual tags
+  const totalHours = projectData?.tmTagSummary?.totalHours || 0;
+  const totalCost = 0; // Cost data not available in summary, would need separate calculation
 
   return (
     <div className={`min-h-screen ${themeClasses.background}`}>
