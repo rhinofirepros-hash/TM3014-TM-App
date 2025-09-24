@@ -77,7 +77,7 @@ const Dashboard = ({
           console.log('Dashboard: Calculating analytics...');
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
-              const tmResponse = await fetch(`${backendUrl}/tm-tags`);
+              const tmResponse = await fetch(`${apiUrl}/tm-tags`);
               const allTmTags = tmResponse.ok ? await tmResponse.json() : [];
               const tmTags = allTmTags.filter(tag => tag.projectId === project.id || tag.project_id === project.id);
               
