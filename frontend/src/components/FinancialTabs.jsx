@@ -41,8 +41,10 @@ const FinancialTabs = ({ project, onBack }) => {
   const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
-    fetchFinancialData();
-  }, [project.id]);
+    if (project?.id) {
+      fetchFinancialData();
+    }
+  }, [project?.id]);
 
   const fetchFinancialData = async () => {
     try {
