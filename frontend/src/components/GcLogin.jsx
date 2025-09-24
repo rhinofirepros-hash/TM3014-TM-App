@@ -102,11 +102,7 @@ const GcLogin = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{
-      background: isDarkMode 
-        ? 'linear-gradient(135deg, #1e293b 0%, #334155 100%)'
-        : 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)'
-    }}>
+    <div className={`min-h-screen flex items-center justify-center p-4 ${themeClasses.background}`}>
       <div className="w-full max-w-md">
         <Card className={`${themeClasses.card.primary} shadow-2xl border-0`}>
           <CardHeader className="text-center pb-8">
