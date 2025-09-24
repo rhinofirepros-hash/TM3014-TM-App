@@ -59,6 +59,12 @@ function AppContent() {
       if (hash === 'gc-login') {
         setCurrentView('gc-login');
       } else if (hash === 'gc-dashboard') {
+        // Load the selected GC project from localStorage
+        const gcProjectId = localStorage.getItem('selectedGcProject');
+        if (gcProjectId) {
+          setSelectedGcProject(gcProjectId);
+          setIsGcAuthenticated(true);
+        }
         setCurrentView('gc-dashboard');
       }
     };
