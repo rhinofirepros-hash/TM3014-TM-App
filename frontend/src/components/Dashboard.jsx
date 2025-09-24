@@ -61,9 +61,11 @@ const Dashboard = ({
   const loadData = async () => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
+      console.log('Dashboard: Loading data with backend URL:', backendUrl);
       
       if (backendUrl) {
         // Load projects from backend
+        console.log('Dashboard: Fetching projects...');
         const projectsResponse = await fetch(`${backendUrl}/projects`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
