@@ -68,6 +68,7 @@ function AppContent() {
 
 
   const handleLogin = () => {
+    localStorage.setItem('isAuthenticated', 'true');
     setIsAuthenticated(true);
     setCurrentView('dashboard');
   };
