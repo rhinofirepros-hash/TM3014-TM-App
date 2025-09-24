@@ -70,8 +70,8 @@ const AdminGcManagement = ({ onBack }) => {
       // Try to load GC keys and access logs (these might be empty for new installations)
       try {
         const [keysRes, logsRes] = await Promise.all([
-          fetch(`${backendUrl}/gc/keys/admin`),
-          fetch(`${backendUrl}/gc/access-logs/admin`)
+          fetch(`${apiUrl}/gc/keys/admin`),
+          fetch(`${apiUrl}/gc/access-logs/admin`)
         ]);
 
         if (keysRes.ok) {
