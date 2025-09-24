@@ -241,11 +241,7 @@ const EnhancedGcDashboard = ({ projectId }) => {
       </div>
 
       {/* Design & Plan Status */}
-      <div className={`p-4 md:p-6 rounded-xl mb-6 ${
-        isDarkMode 
-          ? 'bg-slate-700 border border-slate-600' 
-          : 'bg-white border border-gray-200'
-      }`}>
+      <div className={`p-4 md:p-6 rounded-xl mb-6 ${themeClasses.card.primary}`}>
         <div className="flex items-center gap-3 mb-4">
           <PenTool className={`w-6 h-6 ${
             isDarkMode ? 'text-blue-400' : 'text-blue-600'
