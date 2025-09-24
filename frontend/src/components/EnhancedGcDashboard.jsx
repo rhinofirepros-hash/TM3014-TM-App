@@ -151,10 +151,8 @@ const EnhancedGcDashboard = ({ projectId }) => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${
-        isDarkMode ? 'bg-slate-800' : 'bg-gray-50'
-      } flex items-center justify-center p-4`}>
-        <div className={`text-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+      <div className={`min-h-screen ${themeClasses.background} flex items-center justify-center p-4`}>
+        <div className={`text-center ${themeClasses.text.primary}`}>
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-lg md:text-xl">Loading project dashboard...</p>
         </div>
