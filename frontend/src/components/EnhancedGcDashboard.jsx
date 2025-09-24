@@ -193,9 +193,7 @@ const EnhancedGcDashboard = ({ projectId }) => {
   const finalStatus = getInspectionStatusInfo(inspections.final_inspection_status || 'pending');
 
   return (
-    <div className={`min-h-screen ${
-      isDarkMode ? 'bg-slate-800' : 'bg-gray-50'
-    } p-3 md:p-6`}>
+    <div className={`min-h-screen ${themeClasses.background} p-3 md:p-6`}>
       {/* Mobile-First Project Header */}
       <div className={`p-4 md:p-6 rounded-xl mb-6 ${
         isDarkMode 
