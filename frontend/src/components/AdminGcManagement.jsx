@@ -83,13 +83,11 @@ const AdminGcManagement = ({ onBack }) => {
         const [keysRes, logsRes] = await Promise.all([
           fetch(`${apiUrl}/gc/keys/admin`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            signal: AbortSignal.timeout(8000) // 8 second timeout
+            headers: { 'Content-Type': 'application/json' }
           }),
           fetch(`${apiUrl}/gc/access-logs/admin`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            signal: AbortSignal.timeout(8000) // 8 second timeout
+            headers: { 'Content-Type': 'application/json' }
           })
         ]);
 
