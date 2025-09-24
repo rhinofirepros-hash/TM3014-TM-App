@@ -14,7 +14,7 @@ from datetime import datetime
 import sys
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://project-inspect-app.preview.emergentagent.com/api"
+BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
 
 class GCPinDebugTester:
     def __init__(self):
