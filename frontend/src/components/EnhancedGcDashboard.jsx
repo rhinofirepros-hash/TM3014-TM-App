@@ -567,11 +567,7 @@ const EnhancedGcDashboard = ({ projectId }) => {
 
       {/* Inspection Status Cards - Mobile Optimized */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <div className={`p-4 md:p-6 rounded-xl border-l-4 border-l-orange-500 ${
-          isDarkMode 
-            ? 'bg-slate-700 border-t border-r border-b border-slate-600' 
-            : 'bg-white border border-gray-200'
-        }`}>
+        <div className={`p-4 md:p-6 rounded-xl border-l-4 border-l-orange-500 ${themeClasses.card.primary}`}>
           <div className="flex items-center gap-3 mb-4">
             <Wrench className={`w-6 h-6 ${
               isDarkMode ? 'text-orange-400' : 'text-orange-600'
