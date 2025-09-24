@@ -29,7 +29,8 @@ import {
 import { useTheme } from '../contexts/ThemeContext';
 
 const EnhancedGcDashboard = ({ projectId }) => {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
   
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
