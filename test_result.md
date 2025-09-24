@@ -721,7 +721,7 @@ test_plan:
     - "System ready for production - users need fresh PINs immediately after generation"
   stuck_tasks: []
   test_all: true
-  test_priority: "final_pin_verification_completed"
+  test_priority: "comprehensive_e2e_validation"
 
 agent_communication:
   - agent: "main"
