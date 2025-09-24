@@ -68,8 +68,11 @@ function AppContent() {
 
 
   const handleLogin = () => {
+    console.log('handleLogin called! Setting authenticated and navigating to dashboard');
+    alert('handleLogin called! Navigating to dashboard...');
     setIsAuthenticated(true);
     setCurrentView('dashboard');
+    console.log('handleLogin completed - isAuthenticated and currentView set');
   };
 
   const handleGcLogin = () => {
