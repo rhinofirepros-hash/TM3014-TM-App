@@ -24,14 +24,10 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
       // Admin PINs
       const adminPins = ['J777', 'A123', 'ADMIN', '1234'];
       
-      console.log('Checking PIN:', pin.toUpperCase(), 'against admin PINs:', adminPins);
       if (adminPins.includes(pin.toUpperCase())) {
-        console.log('PIN matched! Setting localStorage and calling onLogin');
         localStorage.setItem('isAuthenticated', 'true');
-        alert('PIN authenticated! Calling onLogin...');
         // Force immediate navigation
         setTimeout(() => {
-          console.log('Timeout reached, calling onLogin()');
           onLogin();
         }, 100);
       } else {
