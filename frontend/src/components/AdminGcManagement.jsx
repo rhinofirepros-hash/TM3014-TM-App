@@ -80,9 +80,18 @@ const AdminGcManagement = ({ onBack }) => {
       
       // Try to load GC keys and access logs (these might be empty for new installations)
       try {
+        console.log('AdminGcManagement: Fetching GC keys and access logs...');
         const [keysRes, logsRes] = await Promise.all([
-          fetch(`${apiUrl}/gc/keys/admin`),
-          fetch(`${apiUrl}/gc/access-logs/admin`)
+          fetch(`${apiUrl}/gc/keys/admin`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(8000) // 8 second timeout
+          }),
+          fetch(`${apiUrl}/gc/access-logs/admin`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(8000) // 8 second timeout
+          })
         ]);
 
         if (keysRes.ok) {
