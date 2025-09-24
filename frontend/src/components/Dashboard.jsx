@@ -77,11 +77,21 @@ const Dashboard = ({
               const tmTags = allTmTags.filter(tag => tag.projectId === project.id || tag.project_id === project.id);
               
               const totalHours = tmTags.reduce((sum, tag) => {
-                return sum + (tag.labor_entries || []).reduce((laborSum, entry) => 
-                  laborSum + (entry.total_hours || entry.hours || 0), 0);
+                // Handle both legacy and unified schema
+                if (tag.labor_entries) {
+                  // Legacy schema
+                  return sum + tag.labor_entries.reduce((laborSum, entry) => 
+                    laborSum + (entry.total_hours || entry.hours || 0), 0);
+                } else if (tag.crewLogs) {
+                  // Unified schema
+                  return sum + tag.crewLogs.reduce((crewSum, crew) => 
+                    crewSum + (crew.totalHours || crew.hoursWorked || 0), 0);
+                }
+                return sum;
               }, 0);
               
-              const totalCost = tmTags.reduce((sum, tag) => sum + (tag.total_cost || 0), 0);
+              const totalCost = tmTags.reduce((sum, tag) => 
+                sum + (tag.total_cost || tag.totalBill || tag.totalLaborBill || 0), 0);
               
               return {
                 projectId: project.id,
