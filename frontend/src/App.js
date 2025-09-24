@@ -65,12 +65,7 @@ function AppContent() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Handle authentication state changes
-  useEffect(() => {
-    if (isAuthenticated && currentView === 'login') {
-      setCurrentView('dashboard');
-    }
-  }, [isAuthenticated, currentView]);
+
 
   const handleLogin = () => {
     setIsAuthenticated(true);
