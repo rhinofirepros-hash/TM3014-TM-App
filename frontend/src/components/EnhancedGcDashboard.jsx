@@ -254,9 +254,7 @@ const EnhancedGcDashboard = ({ projectId }) => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className={`p-4 rounded-lg ${
-            isDarkMode ? 'bg-slate-600' : 'bg-blue-50'
-          }`}>
+          <div className={`p-4 rounded-lg ${themeClasses.card.secondary}`}>
             <div className="flex justify-between items-center mb-2">
               <span className={`font-medium ${
                 isDarkMode ? 'text-gray-300' : 'text-gray-700'
