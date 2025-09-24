@@ -47,6 +47,11 @@ const FinancialTabs = ({ project, onBack }) => {
   }, [project?.id]);
 
   const fetchFinancialData = async () => {
+    if (!project?.id) {
+      console.warn('FinancialTabs: No project ID available');
+      return;
+    }
+    
     try {
       setLoading(true);
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
