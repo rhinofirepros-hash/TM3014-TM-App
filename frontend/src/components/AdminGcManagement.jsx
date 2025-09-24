@@ -48,10 +48,11 @@ const AdminGcManagement = ({ onBack }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
       
       // Load projects first - this should always work
-      const projectsRes = await fetch(`${backendUrl}/projects`);
+      const projectsRes = await fetch(`${apiUrl}/projects`);
       if (projectsRes.ok) {
         const projectsData = await projectsRes.json();
         setProjects(projectsData);
