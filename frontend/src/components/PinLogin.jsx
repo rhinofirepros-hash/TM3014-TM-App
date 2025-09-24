@@ -36,7 +36,6 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
 
   const handleGcAccess = () => {
     // Navigate to GC login page
-    window.location.hash = 'gc-login';
     if (onGcLogin) {
       onGcLogin();
     }
