@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { format } from 'date-fns';
-import { CalendarIcon, Plus, Trash2, Info, Download, Eye, PenTool, Mail, FileText, ArrowLeft, Sun, Moon, Users } from 'lucide-react';
+import { CalendarIcon, Plus, Trash2, Info, Download, Eye, PenTool, Mail, FileText, ArrowLeft, Sun, Moon, Users, Package, Truck } from 'lucide-react';
 import { cn } from '../lib/utils';
 import RichTextEditor from './RichTextEditor';
 import LaborTable from './LaborTable';
