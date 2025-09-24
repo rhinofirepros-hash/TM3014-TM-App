@@ -196,11 +196,7 @@ const EnhancedGcDashboard = ({ projectId }) => {
   return (
     <div className={`min-h-screen ${themeClasses.background} p-3 md:p-6`}>
       {/* Mobile-First Project Header */}
-      <div className={`p-4 md:p-6 rounded-xl mb-6 ${
-        isDarkMode 
-          ? 'bg-slate-700 border border-slate-600' 
-          : 'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200'
-      }`}>
+      <div className={`p-4 md:p-6 rounded-xl mb-6 ${themeClasses.card.primary}`}>
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div className="flex-1">
             <h1 className={`text-xl md:text-3xl font-bold mb-2 ${
