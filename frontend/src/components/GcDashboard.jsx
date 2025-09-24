@@ -48,8 +48,9 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
       
       const data = await response.json();
       setProjectData(data);
-      setTmTags(data.tmTagSummary || []);
-      setCrewLogs(data.crewSummary || []);
+      // tmTagSummary is an object with summary stats, not an array of tags
+      setTmTags([]); // Initialize as empty array since we don't have individual tags
+      setCrewLogs([]);
     } catch (error) {
       console.error('Error fetching project data:', error);
     } finally {
