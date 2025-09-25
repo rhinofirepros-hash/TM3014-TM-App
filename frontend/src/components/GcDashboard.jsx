@@ -173,7 +173,7 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
             </CardContent>
           </Card>
 
-          <Card className={themeClasses.statsCard}>
+          <Card className={`${themeClasses.statsCard} pointer-events-none`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
