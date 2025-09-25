@@ -18,17 +18,31 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
     setError('');
 
     try {
-      // Admin PINs
-      const adminPins = ['J777', 'A123', 'ADMIN', '1234'];
+      // Call server-side admin authentication
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
       
-      if (adminPins.includes(pin.toUpperCase())) {
+      const response = await fetch(`${apiUrl}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin: pin.trim() })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Store secure authentication token
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('adminToken', result.token);
         onLogin();
       } else {
-        setError('Invalid PIN. Please try again.');
+        setError(result.message || 'Invalid PIN. Please try again.');
       }
     } catch (err) {
-      setError('Authentication failed. Please try again.');
+      console.error('Admin authentication error:', err);
+      setError('Authentication failed. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
