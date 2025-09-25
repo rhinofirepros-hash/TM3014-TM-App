@@ -17,7 +17,6 @@ from datetime import datetime, timedelta
 import asyncio
 import random
 import secrets
-import bcrypt
 
 # Import both legacy and unified models
 from models_unified import (
