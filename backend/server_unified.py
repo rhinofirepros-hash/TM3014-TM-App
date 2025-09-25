@@ -85,6 +85,33 @@ project_phases_collection = db["project_phases"]
 inspection_status_collection = db["inspection_status"]
 gc_narratives_collection = db["gc_narratives"]
 
+# Admin authentication collection
+admin_users_collection = db["admin_users"]
+
+# Admin authentication models
+class AdminLoginRequest(BaseModel):
+    pin: str
+
+class AdminLoginResponse(BaseModel):
+    success: bool
+    token: Optional[str] = None
+    message: str
+
+# Secure admin credentials - In production, store hashed in database
+ADMIN_CREDENTIALS = {
+    "J777": True,  # Main admin PIN
+}
+
+async def verify_admin_pin(pin: str) -> bool:
+    """Verify admin PIN against secure storage"""
+    # For now, check against hardcoded secure list
+    # In production, this should check against database with hashed PINs
+    return pin.upper() in ADMIN_CREDENTIALS
+
+async def generate_admin_token() -> str:
+    """Generate secure admin token"""
+    return secrets.token_urlsafe(32)
+
 # Helper functions
 async def get_collection(name: str):
     """Get collection with fallback to legacy if unified doesn't exist"""
