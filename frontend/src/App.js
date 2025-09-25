@@ -68,12 +68,23 @@ function AppContent() {
       const hash = window.location.hash.substring(1);
       if (hash === 'gc-login') {
         setCurrentView('gc-login');
-      } else if (hash === 'gc-dashboard') {
-        // Load the selected GC project from localStorage
-        const gcProjectId = localStorage.getItem('selectedGcProject');
-        if (gcProjectId) {
-          setSelectedGcProject(gcProjectId);
+      } else if (hash === 'gc-dashboard' || hash.startsWith('gc-dashboard/')) {
+        // Handle both generic and project-specific GC dashboard URLs
+        let projectId = null;
+        
+        if (hash.startsWith('gc-dashboard/')) {
+          // Extract project ID from URL: #gc-dashboard/{projectId}
+          projectId = hash.split('/')[1];
+        } else {
+          // Fallback to localStorage for generic #gc-dashboard
+          projectId = localStorage.getItem('selectedGcProject');
+        }
+        
+        if (projectId) {
+          setSelectedGcProject(projectId);
           setIsGcAuthenticated(true);
+          localStorage.setItem('selectedGcProject', projectId);
+          localStorage.setItem('isGcAuthenticated', 'true');
         }
         setCurrentView('gc-dashboard');
       }
