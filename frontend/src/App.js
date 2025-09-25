@@ -38,11 +38,19 @@ function AppContent() {
     
     if (hash === 'gc-login') {
       setCurrentView('gc-login');
-    } else if (hash === 'gc-dashboard') {
-      // Handle direct GC dashboard access
-      if (gcAuthStatus === 'true' && gcProjectId) {
+    } else if (hash === 'gc-dashboard' || hash.startsWith('gc-dashboard/')) {
+      // Handle direct GC dashboard access (both generic and project-specific)
+      let projectId = null;
+      
+      if (hash.startsWith('gc-dashboard/')) {
+        projectId = hash.split('/')[1];
+      } else {
+        projectId = gcProjectId;
+      }
+      
+      if (projectId && gcAuthStatus === 'true') {
         setIsGcAuthenticated(true);
-        setSelectedGcProject(gcProjectId);
+        setSelectedGcProject(projectId);
         setCurrentView('gc-dashboard');
       } else {
         // Redirect to GC login if not authenticated
