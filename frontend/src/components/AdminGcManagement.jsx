@@ -413,10 +413,13 @@ const AdminGcManagement = ({ onBack }) => {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                // Navigate to GC dashboard for this project with project-specific URL
+                                // Direct navigation to GC dashboard - bypass hash routing
                                 localStorage.setItem('isGcAuthenticated', 'true');
                                 localStorage.setItem('selectedGcProject', project.id);
-                                window.location.href = `#gc-dashboard/${project.id}`;
+                                
+                                // Force direct navigation to GC dashboard
+                                window.location.href = `https://rhino-ui-sync.preview.emergentagent.com/#gc-dashboard`;
+                                window.location.reload();
                               }}
                               className="flex items-center gap-2"
                             >
