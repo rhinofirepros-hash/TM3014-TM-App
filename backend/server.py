@@ -8,6 +8,9 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
+import hashlib
+import secrets
+import bcrypt
 from datetime import datetime, timezone
 import asyncio
 import random
