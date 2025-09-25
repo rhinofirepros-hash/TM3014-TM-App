@@ -829,6 +829,42 @@ async def health_check():
         "timestamp": datetime.utcnow()
     }
 
+# Admin Authentication Endpoints
+@api_router.post("/admin/login", response_model=AdminLoginResponse)
+async def admin_login(login_request: AdminLoginRequest):
+    """Secure admin authentication endpoint"""
+    try:
+        # Verify PIN against secure storage
+        is_valid = await verify_admin_pin(login_request.pin)
+        
+        if is_valid:
+            # Generate secure session token
+            token = await generate_admin_token()
+            
+            # Log successful admin login
+            logger.info(f"Admin login successful from PIN: {login_request.pin[:2]}**")
+            
+            return AdminLoginResponse(
+                success=True,
+                token=token,
+                message="Admin authentication successful"
+            )
+        else:
+            # Log failed login attempt
+            logger.warning(f"Failed admin login attempt with PIN: {login_request.pin[:2]}**")
+            
+            return AdminLoginResponse(
+                success=False,
+                message="Invalid admin PIN"
+            )
+            
+    except Exception as e:
+        logger.error(f"Admin login error: {str(e)}")
+        return AdminLoginResponse(
+            success=False,
+            message="Authentication system error"
+        )
+
 # GC PIN SYSTEM FUNCTIONS
 
 def generate_project_pin():
