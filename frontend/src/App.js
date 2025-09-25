@@ -89,11 +89,13 @@ function AppContent() {
         }
         
         if (projectId) {
+          console.log('Setting GC project:', projectId);
           setSelectedGcProject(projectId);
           setIsGcAuthenticated(true);
           localStorage.setItem('selectedGcProject', projectId);
           localStorage.setItem('isGcAuthenticated', 'true');
         }
+        console.log('Setting currentView to gc-dashboard');
         setCurrentView('gc-dashboard');
       }
     };
