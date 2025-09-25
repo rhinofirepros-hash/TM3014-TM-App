@@ -157,7 +157,7 @@ function AppContent() {
       case 'gc-dashboard':
         return <GcDashboard 
           selectedProject={selectedGcProject}
-          onBack={() => navigateToView('gc-portal')}
+          onBack={() => navigateToView('admin-gc')}
           onLogout={handleLogout}
         />;
       case 'dashboard':
