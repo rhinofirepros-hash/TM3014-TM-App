@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "cd backend && uvicorn server_unified:app --host 0.0.0.0 --port $PORT"
+startCommand = "uvicorn server_unified:app --host 0.0.0.0 --port $PORT"
 restartPolicyType = "on_failure"
 
 [variables]
