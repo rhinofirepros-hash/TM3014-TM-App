@@ -91,24 +91,23 @@ const CrewManagement = ({ onBack }) => {
         return;
       }
 
-      const crewMemberData = {
+      const installerData = {
         name: newCrewMember.name,
-        hourly_rate: parseFloat(newCrewMember.hourly_rate) || 0,
-        gc_billing_rate: parseFloat(newCrewMember.gc_billing_rate) || 95.0,
-        position: newCrewMember.position,
-        hire_date: newCrewMember.hire_date.toISOString(),
+        cost_rate: parseFloat(newCrewMember.cost_rate) || 0,
+        position: newCrewMember.position || 'Installer',
+        hire_date: newCrewMember.hire_date.toISOString().split('T')[0], // Date only
         phone: newCrewMember.phone,
         email: newCrewMember.email,
-        emergency_contact: newCrewMember.emergency_contact
+        active: newCrewMember.active !== false
       };
 
-      // Create in employees endpoint
-      const response = await fetch(`${backendUrl}/api/employees`, {
+      // Create using new installers endpoint
+      const response = await fetch(`${backendUrl}/api/installers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(crewMemberData)
+        body: JSON.stringify(installerData)
       });
 
       if (response.ok) {
@@ -118,11 +117,14 @@ const CrewManagement = ({ onBack }) => {
         resetNewCrewMember();
         
         toast({
-          title: "Crew Member Added",
+          title: "Installer Added",
           description: `${createdMember.name} has been added to the crew.`,
         });
+        
+        loadCrewMembers(); // Refresh the list
       } else {
-        throw new Error('Failed to create crew member');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to create installer');
       }
     } catch (error) {
       toast({
