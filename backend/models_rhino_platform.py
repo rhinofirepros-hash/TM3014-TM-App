@@ -103,7 +103,7 @@ class TimeLog(BaseModel):
     created_at: DateTime = Field(default_factory=DateTime.now)
 
 class TimeLogCreate(BaseModel):
-    date: date
+    date: Date
     installer_id: str
     project_id: str
     hours: float = Field(..., ge=0, le=16)
@@ -111,7 +111,7 @@ class TimeLogCreate(BaseModel):
     notes: Optional[str] = None
 
 class TimeLogUpdate(BaseModel):
-    date: Optional[date] = None
+    date: Optional[Date] = None
     installer_id: Optional[str] = None
     project_id: Optional[str] = None
     hours: Optional[float] = None
