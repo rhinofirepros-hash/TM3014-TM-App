@@ -68,10 +68,12 @@ const CrewManagement = ({ onBack }) => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       if (backendUrl) {
-        const employeesResponse = await fetch(`${backendUrl}/api/employees`);
-        if (employeesResponse.ok) {
-          const employeesData = await employeesResponse.json();
-          setCrewMembers(employeesData);
+        const installersResponse = await fetch(`${backendUrl}/api/installers`);
+        if (installersResponse.ok) {
+          const installersData = await installersResponse.json();
+          setCrewMembers(installersData);
+        } else {
+          console.warn('Failed to fetch installers from API');
         }
       }
     } catch (error) {
