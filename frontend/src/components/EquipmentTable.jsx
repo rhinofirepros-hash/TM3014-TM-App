@@ -9,6 +9,19 @@ const EquipmentTable = ({ entries, onChange }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
 
+  const addEmptyRow = () => {
+    const newEntry = {
+      id: Date.now(),
+      equipmentName: '',
+      typeOfEquipment: '',
+      quantity: 0,
+      piecesOfEquipment: 0,
+      total: 0,
+      dateOfWork: new Date().toLocaleDateString()
+    };
+    onChange([...entries, newEntry]);
+  };
+
   const updateEntry = (id, field, value) => {
     const updatedEntries = entries.map(entry => {
       if (entry.id === id) {
