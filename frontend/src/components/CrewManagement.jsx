@@ -479,9 +479,7 @@ const CrewManagement = ({ onBack }) => {
                       <TableRow className={isDarkMode ? 'border-white/20' : 'border-gray-200'}>
                         <TableHead className={themeClasses.text.primary}>Name</TableHead>
                         <TableHead className={themeClasses.text.primary}>Position</TableHead>
-                        <TableHead className={themeClasses.text.primary}>Hourly Rate</TableHead>
-                        <TableHead className={themeClasses.text.primary}>GC Bill Rate</TableHead>
-                        <TableHead className={themeClasses.text.primary}>Profit/Hour</TableHead>
+                        <TableHead className={themeClasses.text.primary}>Cost Rate</TableHead>
                         <TableHead className={themeClasses.text.primary}>Hire Date</TableHead>
                         <TableHead className={themeClasses.text.primary}>Status</TableHead>
                         <TableHead className={themeClasses.text.primary}>Contact</TableHead>
