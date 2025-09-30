@@ -1024,6 +1024,20 @@ async def get_project_intelligence(project_id: str, user_role: str = Depends(get
     return project_intelligence
 
 # =============================================================================
+# HEALTH CHECK
+# =============================================================================
+
+@app.get("/api/health", tags=["System"])
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "service": "Rhino Platform API with Project Intelligence",
+        "version": "2.0.0",
+        "timestamp": datetime.now().isoformat()
+    }
+
+# =============================================================================
 # MAIN
 # =============================================================================
 
