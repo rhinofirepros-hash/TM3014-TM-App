@@ -417,8 +417,8 @@ const AdminGcManagement = ({ onBack }) => {
                                 localStorage.setItem('isGcAuthenticated', 'true');
                                 localStorage.setItem('selectedGcProject', project.id);
                                 
-                                // Force direct navigation to GC dashboard
-                                window.location.href = `https://firepro-auth-hub.preview.emergentagent.com/#gc-dashboard`;
+                                // Force direct navigation to GC dashboard  
+                                window.location.href = `${window.location.origin}/#gc-dashboard`;
                                 window.location.reload();
                               }}
                               className="flex items-center gap-2"
