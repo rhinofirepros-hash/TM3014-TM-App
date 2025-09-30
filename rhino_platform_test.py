@@ -211,7 +211,7 @@ class RhinoPlatformTester:
                 
                 # Test CREATE Fixed project (should NOT have tm_bill_rate)
                 fixed_project_data = {
-                    "name": "Oregon St Fixed Contract",
+                    "name": f"Oregon St Fixed Contract {timestamp}",
                     "billing_type": "Fixed",
                     "description": "Fixed price fire sprinkler installation",
                     "client_company": "Camelot Development Group Inc",
