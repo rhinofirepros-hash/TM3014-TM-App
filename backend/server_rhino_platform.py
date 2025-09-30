@@ -54,8 +54,8 @@ logger = logging.getLogger(__name__)
 # FastAPI app
 app = FastAPI(
     title="Rhino Platform API",
-    description="Single-domain auth/routing + project-based T&M rates + cashflow system",
-    version="1.0.0"
+    description="Single-domain auth/routing + project-based T&M rates + cashflow system + Project Intelligence",
+    version="2.0.0"
 )
 
 # CORS middleware
