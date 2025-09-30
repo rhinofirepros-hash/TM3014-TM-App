@@ -614,6 +614,8 @@ const CrewManagement = ({ onBack }) => {
                   Internal cost including benefits, taxes, insurance (GC rates are set per project)
                 </p>
               </div>
+            </div>
+
             {/* Hire Date */}
             <div className="space-y-2">
               <Label className={themeClasses.text.primary}>Hire Date*</Label>
