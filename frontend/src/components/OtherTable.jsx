@@ -183,6 +183,25 @@ const OtherTable = ({ entries, onChange }) => {
           )}
         </TableBody>
       </Table>
+      
+      {/* Add Other Entry Button */}
+      <div className={`p-4 border-t ${
+        isDarkMode 
+          ? 'border-white/20 bg-white/5' 
+          : 'border-gray-200 bg-gray-50/50'
+      }`}>
+        <Button
+          onClick={addEmptyRow}
+          className={`w-full ${
+            isDarkMode
+              ? 'bg-purple-600 hover:bg-purple-700 text-white'
+              : 'bg-purple-600 hover:bg-purple-700 text-white'
+          }`}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Other Entry
+        </Button>
+      </div>
     </div>
   );
 };
