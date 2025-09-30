@@ -155,7 +155,7 @@ class RhinoPlatformTester:
                 
                 # Create second installer for testing
                 installer2_data = {
-                    "name": "Sarah Johnson",
+                    "name": f"Sarah Johnson {timestamp}",
                     "cost_rate": 60.0,
                     "position": "Fire Protection Installer",
                     "active": True
