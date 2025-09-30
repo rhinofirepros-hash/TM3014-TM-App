@@ -153,10 +153,10 @@ Return JSON with label, confidence, and reasoning."""
         from_addr: str = ""
     ) -> EmailExtractionResult:
         """Extract structured data from email"""
-        if self.api_key == "disabled":
+        if self.api_key == "disabled" or not LLM_INTEGRATION_AVAILABLE:
             return EmailExtractionResult(
                 classification=classification,
-                action_items=["LLM service disabled - no API key available"]
+                action_items=["LLM service disabled - no API key or integration not available"]
             )
             
         try:
