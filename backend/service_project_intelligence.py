@@ -10,7 +10,14 @@ from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 from dotenv import load_dotenv
 
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+# Import LLM dependencies (optional)
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    LLM_INTEGRATION_AVAILABLE = True
+except ImportError:
+    LlmChat = None
+    UserMessage = None
+    LLM_INTEGRATION_AVAILABLE = False
 
 from models_project_intelligence import (
     EmailClassification, ProjectExtraction, ContactInfo,
