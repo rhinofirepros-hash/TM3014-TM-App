@@ -2685,6 +2685,462 @@ class TMTagAPITester:
         
         return self.generate_report()
 
+    # =============================================================================
+    # PROJECT INTELLIGENCE TESTING METHODS
+    # =============================================================================
+    
+    def test_admin_authentication(self):
+        """Test admin authentication with PIN J777"""
+        print("\n=== Testing Admin Authentication ===")
+        try:
+            # Test valid admin PIN
+            response = self.session.post(f"{self.base_url}/auth/admin", 
+                json={"pin": "J777"})
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success") and data.get("role") == "admin":
+                    self.log_result("general", "Admin authentication", True, 
+                                  f"Admin login successful with token: {data.get('token')}")
+                    return True
+            
+            self.log_result("general", "Admin authentication", False, 
+                          f"Authentication failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Admin authentication", False, str(e))
+            return False
+            
+    def test_llm_email_processing(self):
+        """Test LLM Email Processing endpoint"""
+        print("\n=== Testing LLM Email Processing ===")
+        try:
+            # Test RFP email sample
+            rfp_email = {
+                "subject": "RFP: Fire Sprinkler System - Downtown Office Building",
+                "body": "We are seeking bids for a complete fire sprinkler system installation for our new downtown office building project. Project Name: Downtown Office Complex, Address: 1200 Broadway, San Diego, CA 92101, Client: Downtown Development LLC, Billing: Time & Material preferred at $95/hour, Due Date: October 15, 2025",
+                "sender_email": "procurement@downtowndev.com",
+                "received_at": datetime.now().isoformat()
+            }
+            
+            response = self.session.post(f"{self.base_url}/intelligence/process-email", 
+                json=rfp_email)
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_result("general", "RFP Email processing", True, 
+                              f"Classification: {data.get('classification', 'N/A')}, Confidence: {data.get('confidence', 'N/A')}")
+                
+                # Test Invoice email sample
+                invoice_email = {
+                    "subject": "Invoice #INV-2025-0123 - $15,500",
+                    "body": "Invoice Number: INV-2025-0123, Date: September 30, 2025, Amount: $15,500.00, Project: 3rd Ave Fire Protection, Payment Terms: Net 30",
+                    "sender_email": "billing@contractor.com",
+                    "received_at": datetime.now().isoformat()
+                }
+                
+                response2 = self.session.post(f"{self.base_url}/intelligence/process-email", 
+                    json=invoice_email)
+                
+                if response2.status_code == 200:
+                    data2 = response2.json()
+                    self.log_result("general", "Invoice Email processing", True, 
+                                  f"Classification: {data2.get('classification', 'N/A')}")
+                    
+                    # Test Progress Update email sample
+                    progress_email = {
+                        "subject": "Project Update - Oregon St Sprinkler Installation 75% Complete",
+                        "body": "Project: Oregon St Fire Sprinkler System, Status: 75% Complete, Milestone: Main line installation completed, Next Phase: Head installation and testing",
+                        "sender_email": "foreman@contractor.com",
+                        "received_at": datetime.now().isoformat()
+                    }
+                    
+                    response3 = self.session.post(f"{self.base_url}/intelligence/process-email", 
+                        json=progress_email)
+                    
+                    if response3.status_code == 200:
+                        data3 = response3.json()
+                        self.log_result("general", "Progress Update Email processing", True, 
+                                      f"Classification: {data3.get('classification', 'N/A')}")
+                        return True
+                        
+            self.log_result("general", "Email processing", False, 
+                          f"Failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Email processing", False, str(e))
+            return False
+            
+    def test_project_intelligence_dashboard(self):
+        """Test Project Intelligence Dashboard endpoints"""
+        print("\n=== Testing Project Intelligence Dashboard ===")
+        try:
+            # Test system-wide intelligence dashboard
+            response = self.session.get(f"{self.base_url}/intelligence/dashboard")
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_result("general", "System intelligence dashboard", True, 
+                              f"Emails processed: {data.get('total_emails_processed', 0)}, Candidates: {data.get('project_candidates_count', 0)}")
+                
+                # Test project-specific intelligence (using existing project)
+                projects_response = self.session.get(f"{self.base_url}/projects")
+                if projects_response.status_code == 200:
+                    projects = projects_response.json()
+                    if projects:
+                        project_id = projects[0]["id"]
+                        project_intel_response = self.session.get(f"{self.base_url}/intelligence/project/{project_id}")
+                        
+                        if project_intel_response.status_code == 200:
+                            project_data = project_intel_response.json()
+                            self.log_result("general", "Project intelligence", True, 
+                                          f"Tasks: {project_data.get('tasks_count', 0)}, Invoices: {project_data.get('invoices_count', 0)}")
+                            return True
+                
+            self.log_result("general", "Intelligence dashboard", False, 
+                          f"Failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Intelligence dashboard", False, str(e))
+            return False
+            
+    def test_review_queue_system(self):
+        """Test Review Queue System"""
+        print("\n=== Testing Review Queue System ===")
+        try:
+            # Get review queue items
+            response = self.session.get(f"{self.base_url}/review-queue")
+            
+            if response.status_code == 200:
+                items = response.json()
+                self.log_result("general", "Review queue retrieval", True, 
+                              f"Loaded {len(items)} items")
+                
+                # If there are items, test resolving one
+                if items:
+                    item_id = items[0]["id"]
+                    resolve_response = self.session.post(f"{self.base_url}/review-queue/{item_id}/resolve",
+                        json={"action": "approve", "notes": "Test approval"})
+                    
+                    if resolve_response.status_code == 200:
+                        self.log_result("general", "Review queue resolution", True, 
+                                      "Item resolved successfully")
+                        return True
+                else:
+                    self.log_result("general", "Review queue empty", True, 
+                                  "Queue is empty (expected for new system)")
+                    return True
+                    
+            self.log_result("general", "Review queue", False, 
+                          f"Failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Review queue", False, str(e))
+            return False
+            
+    def test_project_candidate_management(self):
+        """Test Project Candidate Management"""
+        print("\n=== Testing Project Candidate Management ===")
+        try:
+            # Get project candidates
+            response = self.session.get(f"{self.base_url}/intelligence/project-candidates")
+            
+            if response.status_code == 200:
+                candidates = response.json()
+                self.log_result("general", "Project candidates retrieval", True, 
+                              f"Loaded {len(candidates)} candidates")
+                
+                # If there are candidates, test approval workflow
+                if candidates:
+                    candidate_id = candidates[0]["id"]
+                    approve_response = self.session.post(f"{self.base_url}/intelligence/approve-candidate/{candidate_id}",
+                        json={"tm_rate": 95.0, "notes": "Test approval"})
+                    
+                    if approve_response.status_code == 200:
+                        self.log_result("general", "Project candidate approval", True, 
+                                      "Candidate approved successfully")
+                        return True
+                else:
+                    self.log_result("general", "Project candidates empty", True, 
+                                  "No candidates found (expected for new system)")
+                    return True
+                    
+            self.log_result("general", "Project candidates", False, 
+                          f"Failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Project candidates", False, str(e))
+            return False
+            
+    def test_enhanced_task_management(self):
+        """Test Enhanced Task Management System"""
+        print("\n=== Testing Enhanced Task Management ===")
+        try:
+            # Get existing projects first
+            projects_response = self.session.get(f"{self.base_url}/projects")
+            if projects_response.status_code != 200:
+                self.log_result("general", "Task management setup", False, 
+                              "Could not get projects for task testing")
+                return False
+                
+            projects = projects_response.json()
+            if not projects:
+                self.log_result("general", "Task management setup", False, 
+                              "No projects available for task testing")
+                return False
+                
+            project_id = projects[0]["id"]
+            
+            # Test task creation
+            task_data = {
+                "project_id": project_id,
+                "title": "Test Fire System Installation Task",
+                "description": "Install main fire sprinkler lines",
+                "priority": "high",
+                "status": "open",
+                "estimated_hours": 8.0,
+                "assigned_to": "Mike Rodriguez"
+            }
+            
+            create_response = self.session.post(f"{self.base_url}/tasks", json=task_data)
+            
+            if create_response.status_code == 200:
+                task = create_response.json()
+                task_id = task["id"]
+                self.log_result("general", "Task creation", True, 
+                              f"Created task: {task_id}")
+                
+                # Test task retrieval
+                get_response = self.session.get(f"{self.base_url}/tasks")
+                if get_response.status_code == 200:
+                    tasks = get_response.json()
+                    self.log_result("general", "Task retrieval", True, 
+                                  f"Retrieved {len(tasks)} tasks")
+                    
+                    # Test task update
+                    update_data = {
+                        "status": "in_progress",
+                        "actual_hours": 4.0,
+                        "notes": "Started installation work"
+                    }
+                    
+                    update_response = self.session.put(f"{self.base_url}/tasks/{task_id}", json=update_data)
+                    if update_response.status_code == 200:
+                        self.log_result("general", "Task update", True, 
+                                      "Task updated successfully")
+                        return True
+                        
+            self.log_result("general", "Task management", False, 
+                          f"Failed: {create_response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Task management", False, str(e))
+            return False
+            
+    def test_invoice_management_system(self):
+        """Test Invoice Management System"""
+        print("\n=== Testing Invoice Management System ===")
+        try:
+            # Get existing projects first
+            projects_response = self.session.get(f"{self.base_url}/projects")
+            if projects_response.status_code != 200:
+                self.log_result("general", "Invoice management setup", False, 
+                              "Could not get projects for invoice testing")
+                return False
+                
+            projects = projects_response.json()
+            if not projects:
+                self.log_result("general", "Invoice management setup", False, 
+                              "No projects available for invoice testing")
+                return False
+                
+            project_id = projects[0]["id"]
+            
+            # Test invoice creation
+            invoice_data = {
+                "project_id": project_id,
+                "invoice_number": "INV-2025-TEST-001",
+                "amount": 15500.00,
+                "status": "draft",
+                "issue_date": date.today().isoformat(),
+                "due_date": "2025-11-15",
+                "description": "Fire sprinkler system installation - Phase 1",
+                "line_items": [
+                    {
+                        "description": "Labor - 40 hours @ $95/hr",
+                        "quantity": 40,
+                        "rate": 95.0,
+                        "amount": 3800.0
+                    },
+                    {
+                        "description": "Materials - Sprinkler heads and pipes",
+                        "quantity": 1,
+                        "rate": 11700.0,
+                        "amount": 11700.0
+                    }
+                ]
+            }
+            
+            create_response = self.session.post(f"{self.base_url}/invoices", json=invoice_data)
+            
+            if create_response.status_code == 200:
+                invoice = create_response.json()
+                invoice_id = invoice["id"]
+                self.log_result("general", "Invoice creation", True, 
+                              f"Created invoice: {invoice_id}")
+                
+                # Test invoice retrieval
+                get_response = self.session.get(f"{self.base_url}/invoices")
+                if get_response.status_code == 200:
+                    invoices = get_response.json()
+                    self.log_result("general", "Invoice retrieval", True, 
+                                  f"Retrieved {len(invoices)} invoices")
+                    
+                    # Test invoice status update
+                    update_data = {
+                        "status": "sent",
+                        "sent_date": date.today().isoformat(),
+                        "notes": "Invoice sent to client via email"
+                    }
+                    
+                    update_response = self.session.put(f"{self.base_url}/invoices/{invoice_id}", json=update_data)
+                    if update_response.status_code == 200:
+                        self.log_result("general", "Invoice status update", True, 
+                                      "Invoice status updated successfully")
+                        return True
+                        
+            self.log_result("general", "Invoice management", False, 
+                          f"Failed: {create_response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "Invoice management", False, str(e))
+            return False
+            
+    def test_llm_integration_health(self):
+        """Test LLM Integration Health and Error Handling"""
+        print("\n=== Testing LLM Integration Health ===")
+        try:
+            # Test email processing with malformed data to check error handling
+            malformed_email = {
+                "subject": "",  # Empty subject
+                "body": "",     # Empty body
+                "sender_email": "invalid-email"  # Invalid email format
+            }
+            
+            response = self.session.post(f"{self.base_url}/intelligence/process-email", 
+                json=malformed_email)
+            
+            # Should handle gracefully (either 400 for validation or 200 with low confidence)
+            if response.status_code in [200, 400, 422]:
+                self.log_result("general", "LLM malformed request handling", True, 
+                              f"Handles malformed requests gracefully: {response.status_code}")
+                
+                # Test with missing LLM key scenario (should fallback gracefully)
+                test_email = {
+                    "subject": "Test Email Without LLM",
+                    "body": "This should be handled even if LLM is disabled",
+                    "sender_email": "test@example.com",
+                    "received_at": datetime.now().isoformat()
+                }
+                
+                response2 = self.session.post(f"{self.base_url}/intelligence/process-email", 
+                    json=test_email)
+                
+                if response2.status_code in [200, 503]:  # 200 for success, 503 for service unavailable
+                    self.log_result("general", "LLM fallback behavior", True, 
+                                  f"Fallback behavior working: {response2.status_code}")
+                    return True
+                    
+            self.log_result("general", "LLM integration health", False, 
+                          f"Health check failed: {response.status_code}")
+            return False
+            
+        except Exception as e:
+            self.log_result("general", "LLM integration health", False, str(e))
+            return False
+            
+    def test_existing_rhino_platform_core(self):
+        """Test existing Rhino Platform core functionality"""
+        print("\n=== Testing Existing Rhino Platform Core ===")
+        try:
+            # Test projects endpoint
+            projects_response = self.session.get(f"{self.base_url}/projects")
+            if projects_response.status_code != 200:
+                self.log_result("general", "Core projects endpoint", False, 
+                              f"Projects endpoint failed: {projects_response.status_code}")
+                return False
+                
+            projects = projects_response.json()
+            self.log_result("general", "Core projects endpoint", True, 
+                          f"Loaded {len(projects)} projects")
+            
+            # Test installers endpoint
+            installers_response = self.session.get(f"{self.base_url}/installers")
+            if installers_response.status_code != 200:
+                self.log_result("general", "Core installers endpoint", False, 
+                              f"Installers endpoint failed: {installers_response.status_code}")
+                return False
+                
+            installers = installers_response.json()
+            self.log_result("general", "Core installers endpoint", True, 
+                          f"Loaded {len(installers)} installers")
+            
+            # Test time logs endpoint
+            time_logs_response = self.session.get(f"{self.base_url}/time-logs")
+            if time_logs_response.status_code != 200:
+                self.log_result("general", "Core time logs endpoint", False, 
+                              f"Time logs endpoint failed: {time_logs_response.status_code}")
+                return False
+                
+            time_logs = time_logs_response.json()
+            self.log_result("general", "Core time logs endpoint", True, 
+                          f"Loaded {len(time_logs)} time logs")
+            
+            return True
+            
+        except Exception as e:
+            self.log_result("general", "Core platform", False, str(e))
+            return False
+
+    def run_project_intelligence_tests(self):
+        """Run all Project Intelligence tests"""
+        print("🚀 Starting Enhanced Rhino Platform with Project Intelligence Testing")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # Test basic connectivity first
+        if not self.test_basic_connectivity():
+            print("❌ Basic connectivity failed. Aborting tests.")
+            return self.generate_report()
+        
+        # Test authentication first
+        self.test_admin_authentication()
+        
+        # Test existing core functionality
+        self.test_existing_rhino_platform_core()
+        
+        # Test new Project Intelligence features
+        print("\n" + "=" * 60)
+        print("🧠 TESTING PROJECT INTELLIGENCE FEATURES")
+        print("=" * 60)
+        
+        self.test_llm_email_processing()
+        self.test_project_intelligence_dashboard()
+        self.test_review_queue_system()
+        self.test_project_candidate_management()
+        self.test_enhanced_task_management()
+        self.test_invoice_management_system()
+        self.test_llm_integration_health()
+        
+        return self.generate_report()
+
     def run_all_tests(self):
         """Run all backend API tests"""
         print("🚀 Starting Backend API Tests for TM3014 T&M Daily Tag App + Project Management System")
