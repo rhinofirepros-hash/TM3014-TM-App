@@ -22,7 +22,7 @@ const PinLogin = ({ onLogin, onGcLogin }) => {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
       
-      const response = await fetch(`${apiUrl}/admin/login`, {
+      const response = await fetch(`${apiUrl}/auth/admin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
