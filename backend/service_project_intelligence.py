@@ -97,6 +97,13 @@ Return valid JSON matching the expected schema. Be conservative and accurate."""
     
     async def classify_email(self, subject: str, body: str, from_addr: str = "") -> EmailClassification:
         """Classify an email using LLM"""
+        if self.api_key == "disabled":
+            return EmailClassification(
+                label="general_correspondence",
+                confidence=0.1,
+                reasoning="LLM service disabled - no API key"
+            )
+            
         try:
             prompt = f"""Classify this email:
 
