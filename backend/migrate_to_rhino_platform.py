@@ -236,7 +236,7 @@ async def generate_sample_cashflow(new_db):
     sample_entries = [
         {
             "id": "cf-1",
-            "date": date(2025, 9, 1),
+            "date": "2025-09-01",  # Use ISO string format
             "type": "inflow",
             "category": "Deposit",
             "amount": 50000.0,
@@ -245,7 +245,7 @@ async def generate_sample_cashflow(new_db):
         },
         {
             "id": "cf-2", 
-            "date": date(2025, 9, 15),
+            "date": "2025-09-15",  # Use ISO string format
             "type": "outflow",
             "category": "Labor",
             "amount": 8500.0,
@@ -254,7 +254,7 @@ async def generate_sample_cashflow(new_db):
         },
         {
             "id": "cf-3",
-            "date": date(2025, 9, 20),
+            "date": "2025-09-20",  # Use ISO string format
             "type": "outflow",
             "category": "Material",
             "amount": 12000.0,
