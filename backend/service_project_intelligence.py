@@ -142,6 +142,12 @@ Return JSON with label, confidence, and reasoning."""
         from_addr: str = ""
     ) -> EmailExtractionResult:
         """Extract structured data from email"""
+        if self.api_key == "disabled":
+            return EmailExtractionResult(
+                classification=classification,
+                action_items=["LLM service disabled - no API key available"]
+            )
+            
         try:
             schema = {
                 "classification": {
