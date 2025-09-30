@@ -93,14 +93,14 @@ class ProjectUpdate(BaseModel):
 class TimeLog(BaseModel):
     """Time log entry - uses project's T&M rate for billing calculations"""
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    date: date = Field(..., description="Work date")
+    date: Date = Field(..., description="Work date")
     installer_id: str = Field(..., description="Installer UUID")
     project_id: str = Field(..., description="Project UUID")
     hours: float = Field(..., ge=0, le=16, description="Hours worked (0-16)")
     bill_rate_override: Optional[float] = Field(None, description="Optional override for billing rate")
     notes: Optional[str] = None
     created_by: Optional[str] = None  # User who created the entry
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: DateTime = Field(default_factory=DateTime.now)
 
 class TimeLogCreate(BaseModel):
     date: date
