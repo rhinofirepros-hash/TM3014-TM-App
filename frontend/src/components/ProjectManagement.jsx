@@ -454,21 +454,26 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
                     {/* Project Details */}
                     <div className="space-y-4 mb-6">
                       <div className="flex justify-between items-center">
-                        <span className={`text-sm ${themeClasses.text.secondary}`}>Type:</span>
-                        <Badge variant={project.project_type === 'tm_only' ? 'warning' : 'primary'}>
-                          {project.project_type === 'tm_only' ? 'T&M Only' : 'Full Project'}
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>Billing Type:</span>
+                        <Badge variant={project.billing_type === 'TM' ? 'warning' : 'primary'}>
+                          {project.billing_type || 'TM'}
                         </Badge>
                       </div>
                       
                       <div className="flex justify-between items-center">
-                        <span className={`text-sm ${themeClasses.text.secondary}`}>
-                          {project.project_type === 'tm_only' ? 'Estimate:' : 'Contract Value:'}
-                        </span>
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>Contract Value:</span>
                         <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
-                          {project.project_type === 'tm_only' && !project.contract_amount 
-                            ? 'T&M Based' 
-                            : `$${project.contract_amount?.toLocaleString() || '0'}`
+                          {project.contract_amount 
+                            ? `$${project.contract_amount?.toLocaleString()}` 
+                            : 'Not Set'
                           }
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${themeClasses.text.secondary}`}>T&M Rate:</span>
+                        <span className={`font-bold text-lg ${themeClasses.text.primary}`}>
+                          ${project.tm_bill_rate || '95.00'}/hr
                         </span>
                       </div>
                       
