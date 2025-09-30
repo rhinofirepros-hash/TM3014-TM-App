@@ -945,41 +945,41 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
             </div>
 
-            {/* Project Type */}
+            {/* Billing Type */}
             <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Project Type*</Label>
-              <Select value={editProject.project_type || 'full_project'} onValueChange={(value) => handleEditInputChange('project_type', value)}>
+              <Label className={themeClasses.text.primary}>Billing Type*</Label>
+              <Select value={editProject.billing_type || 'TM'} onValueChange={(value) => handleEditInputChange('billing_type', value)}>
                 <SelectTrigger className={themeClasses.input}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className={themeClasses.modal}>
-                  <SelectItem value="full_project">Full Project (Fixed Contract)</SelectItem>
-                  <SelectItem value="tm_only">Time & Material Only</SelectItem>
+                  <SelectItem value="TM">Time & Material</SelectItem>
+                  <SelectItem value="SOV">Schedule of Values</SelectItem>
+                  <SelectItem value="Fixed">Fixed Price</SelectItem>
+                  <SelectItem value="Bid">Bid Project</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Contract Amount and Labor Rate */}
+            {/* Contract Amount and T&M Bill Rate */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>
-                  Contract Amount ($){(editProject.project_type || 'full_project') === 'full_project' ? '*' : ''}
-                </Label>
+                <Label className={themeClasses.text.primary}>Contract Amount ($)</Label>
                 <Input
                   type="number"
                   value={editProject.contract_amount || ''}
                   onChange={(e) => handleEditInputChange('contract_amount', e.target.value)}
                   className={themeClasses.input}
-                  disabled={(editProject.project_type || 'full_project') === 'tm_only'}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Labor Rate ($/hr)*</Label>
+                <Label className={themeClasses.text.primary}>T&M Bill Rate ($/hr)*</Label>
                 <Input
                   type="number"
-                  value={editProject.labor_rate || '95'}
-                  onChange={(e) => handleEditInputChange('labor_rate', e.target.value)}
+                  step="0.01"
+                  value={editProject.tm_bill_rate || '95.00'}
+                  onChange={(e) => handleEditInputChange('tm_bill_rate', e.target.value)}
                   className={themeClasses.input}
                 />
               </div>
