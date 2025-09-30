@@ -71,8 +71,8 @@ const TimeAndMaterialForm = ({ selectedProject, onBack, onSave, project, tmTag }
 
   const loadProjects = async () => {
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
-      const response = await fetch(`${backendUrl}/projects`);
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const response = await fetch(`${backendUrl}/api/projects`);
       
       if (response.ok) {
         const projects = await response.json();
@@ -84,6 +84,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBack, onSave, project, tmTag }
           setSelectedProjectData(projectData);
         }
       } else {
+        console.error('Failed to fetch projects:', response.status);
         // Fallback to localStorage
         const savedProjects = localStorage.getItem('projects');
         if (savedProjects) {
