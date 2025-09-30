@@ -52,21 +52,18 @@ const ResponsiveDashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewR
         const data = await response.json();
         setActualProjects(data);
         
-        // Calculate analytics for each project
+        // Calculate analytics for each project using new Rhino Platform timelogs endpoint
         const analytics = await Promise.all(data.map(async (project) => {
-          const tagsResponse = await fetch(`${backendUrl}/api/tm-tags?projectId=${project.id}`);
-          const tags = tagsResponse.ok ? await tagsResponse.json() : [];
+          const timelogsResponse = await fetch(`${backendUrl}/api/timelogs?projectId=${project.id}`);
+          const timelogs = timelogsResponse.ok ? await timelogsResponse.json() : [];
           
-          const totalHours = tags.reduce((sum, tag) => {
-            return sum + tag.entries.reduce((entrySum, entry) => {
-              return entry.category === 'Labor' ? entrySum + (entry.hours || 0) : entrySum;
-            }, 0);
+          // Calculate totals from timelogs (replaces old tm-tags data structure)
+          const totalHours = timelogs.reduce((sum, log) => {
+            return sum + (log.hours || 0);
           }, 0);
 
-          const totalCost = tags.reduce((sum, tag) => {
-            return sum + tag.entries.reduce((entrySum, entry) => {
-              return entrySum + (entry.total || 0);
-            }, 0);
+          const totalCost = timelogs.reduce((sum, log) => {
+            return sum + (log.labor_cost || 0);
           }, 0);
 
           return {
@@ -75,7 +72,7 @@ const ResponsiveDashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewR
             status: project.status,
             totalHours,
             totalCost,
-            tagCount: tags.length,
+            tagCount: timelogs.length,
             contractAmount: project.contract_amount || 0
           };
         }));
