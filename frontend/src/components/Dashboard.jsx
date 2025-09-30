@@ -72,12 +72,12 @@ const Dashboard = ({
           const projectsData = await projectsResponse.json();
           setActualProjects(projectsData);
           
-          // Calculate analytics for each project
+          // Calculate analytics for each project using new Rhino Platform timelogs
           const analytics = await Promise.all(projectsData.map(async (project) => {
             try {
-              const tmResponse = await fetch(`${apiUrl}/tm-tags`);
-              const allTmTags = tmResponse.ok ? await tmResponse.json() : [];
-              const tmTags = allTmTags.filter(tag => tag.projectId === project.id || tag.project_id === project.id);
+              const timelogsResponse = await fetch(`${apiUrl}/timelogs`);
+              const allTimelogs = timelogsResponse.ok ? await timelogsResponse.json() : [];
+              const projectTimelogs = allTimelogs.filter(log => log.project_id === project.id);
               
               const totalHours = tmTags.reduce((sum, tag) => {
                 // Handle both legacy and unified schema
