@@ -30,7 +30,7 @@ class InstallerCreate(BaseModel):
     cost_rate: float
     position: Optional[str] = None
     active: bool = True
-    hire_date: Optional[date] = None
+    hire_date: Optional[Date] = None
     phone: Optional[str] = None
     email: Optional[str] = None
 
