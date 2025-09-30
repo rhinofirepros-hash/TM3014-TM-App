@@ -418,7 +418,7 @@ const AdminGcManagement = ({ onBack }) => {
                                 localStorage.setItem('selectedGcProject', project.id);
                                 
                                 // Force direct navigation to GC dashboard
-                                window.location.href = `https://rhino-ui-sync.preview.emergentagent.com/#gc-dashboard`;
+                                window.location.href = `https://firepro-auth-hub.preview.emergentagent.com/#gc-dashboard`;
                                 window.location.reload();
                               }}
                               className="flex items-center gap-2"

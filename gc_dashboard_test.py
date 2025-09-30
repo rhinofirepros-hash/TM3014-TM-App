@@ -13,7 +13,7 @@ import os
 import time
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
 
 class GCDashboardTester:
     def __init__(self):

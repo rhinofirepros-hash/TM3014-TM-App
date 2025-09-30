@@ -18,7 +18,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 class GCPinSystemTester:

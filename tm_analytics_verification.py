@@ -11,7 +11,7 @@ from datetime import datetime
 import uuid
 
 # Backend URL
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
 
 def test_tm_profit_calculation_fix():
     """Test the specific T&M profit calculation fix mentioned in the review request"""

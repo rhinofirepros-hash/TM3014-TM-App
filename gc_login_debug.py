@@ -6,8 +6,8 @@ Debug GC Login 400 Error
 import requests
 import json
 
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
-FRONTEND_URL = "https://rhino-ui-sync.preview.emergentagent.com"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
+FRONTEND_URL = "https://firepro-auth-hub.preview.emergentagent.com"
 
 def debug_gc_login():
     session = requests.Session()

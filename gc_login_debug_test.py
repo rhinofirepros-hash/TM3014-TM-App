@@ -12,7 +12,7 @@ import sys
 import time
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
 
 class GCLoginDebugTester:
     def __init__(self):
@@ -54,8 +54,8 @@ class GCLoginDebugTester:
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (compatible; GC-Dashboard-Test)',
-                'Origin': 'https://rhino-ui-sync.preview.emergentagent.com',
-                'Referer': 'https://rhino-ui-sync.preview.emergentagent.com/'
+                'Origin': 'https://firepro-auth-hub.preview.emergentagent.com',
+                'Referer': 'https://firepro-auth-hub.preview.emergentagent.com/'
             }
             
             response = self.session.get(f"{self.base_url}/projects", headers=headers, timeout=30)
@@ -114,7 +114,7 @@ class GCLoginDebugTester:
         try:
             # Test preflight OPTIONS request
             headers = {
-                'Origin': 'https://rhino-ui-sync.preview.emergentagent.com',
+                'Origin': 'https://firepro-auth-hub.preview.emergentagent.com',
                 'Access-Control-Request-Method': 'GET',
                 'Access-Control-Request-Headers': 'Content-Type'
             }
@@ -138,7 +138,7 @@ class GCLoginDebugTester:
             # Test actual GET request with CORS headers
             print("Testing actual GET request with CORS headers...")
             get_headers = {
-                'Origin': 'https://rhino-ui-sync.preview.emergentagent.com',
+                'Origin': 'https://firepro-auth-hub.preview.emergentagent.com',
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
@@ -150,10 +150,10 @@ class GCLoginDebugTester:
             print(f"GET Response CORS Origin: {cors_origin}")
             
             if get_response.status_code == 200:
-                if cors_origin == '*' or cors_origin == 'https://rhino-ui-sync.preview.emergentagent.com':
+                if cors_origin == '*' or cors_origin == 'https://firepro-auth-hub.preview.emergentagent.com':
                     self.log_result("cors_check", "CORS Configuration", True, f"CORS properly configured - Origin: {cors_origin}")
                 else:
-                    self.log_result("cors_check", "CORS Configuration", False, f"CORS origin mismatch - Expected: https://rhino-ui-sync.preview.emergentagent.com, Got: {cors_origin}")
+                    self.log_result("cors_check", "CORS Configuration", False, f"CORS origin mismatch - Expected: https://firepro-auth-hub.preview.emergentagent.com, Got: {cors_origin}")
             else:
                 self.log_result("cors_check", "CORS Configuration", False, f"GET request failed with status: {get_response.status_code}")
                 
@@ -256,7 +256,7 @@ class GCLoginDebugTester:
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Origin': 'https://rhino-ui-sync.preview.emergentagent.com'
+                'Origin': 'https://firepro-auth-hub.preview.emergentagent.com'
             }
             
             login_response = self.session.post(

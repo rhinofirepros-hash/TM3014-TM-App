@@ -8,7 +8,7 @@ import json
 import time
 from datetime import datetime
 
-BACKEND_URL = "https://rhino-ui-sync.preview.emergentagent.com/api"
+BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
 
 def test_complete_workflow():
     """Test the complete workflow as specified in the review request"""
