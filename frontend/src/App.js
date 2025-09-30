@@ -16,6 +16,7 @@ import GcOnlyLogin from './components/GcOnlyLogin';
 import GcPortal from './components/GcPortal';
 import AdminGcManagement from './components/AdminGcManagement';
 import InspectionManagement from './components/InspectionManagement';
+import ProjectIntelligence from './components/ProjectIntelligence';
 import { Toaster } from './components/ui/toaster';
 
 function AppContent() {
