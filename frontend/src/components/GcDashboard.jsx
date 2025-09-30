@@ -7,7 +7,6 @@ import {
   LogOut, 
   Calendar, 
   Clock,
-  DollarSign,
   FileText,
   Users,
   Building,
@@ -16,15 +15,21 @@ import {
   TrendingUp,
   BarChart3,
   Sun,
-  Moon
+  Moon,
+  ClipboardCheck,
+  Timer,
+  Activity,
+  MapPin
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
   const [projectData, setProjectData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tmTags, setTmTags] = useState([]);
-  const [crewLogs, setCrewLogs] = useState([]);
+  const [timeLogs, setTimeLogs] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [progress, setProgress] = useState([]);
+  const [error, setError] = useState(null);
   const { isDarkMode, toggleTheme, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
 
