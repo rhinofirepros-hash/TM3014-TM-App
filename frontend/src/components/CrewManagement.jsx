@@ -213,13 +213,12 @@ const CrewManagement = ({ onBack }) => {
   const resetNewCrewMember = () => {
     setNewCrewMember({
       name: '',
-      hourly_rate: '',
-      gc_billing_rate: '95.0',
+      cost_rate: '',
       position: '',
       hire_date: new Date(),
       phone: '',
       email: '',
-      emergency_contact: ''
+      active: true
     });
   };
 
