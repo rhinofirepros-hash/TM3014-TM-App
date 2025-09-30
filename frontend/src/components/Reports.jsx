@@ -58,21 +58,21 @@ const Reports = ({ onBack }) => {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       
       if (backendUrl) {
-        // Try to load T&M tags from backend
-        const response = await fetch(`${backendUrl}/api/tm-tags?limit=100`);
+        // Try to load time logs from Rhino Platform backend
+        const response = await fetch(`${backendUrl}/api/timelogs`);
         if (response.ok) {
-          const tmTagsData = await response.json();
-          const formattedTags = tmTagsData.map(tag => ({
-            id: tag.id,
-            project: tag.project_name,
-            title: tag.tm_tag_title,
-            date: new Date(tag.date_of_work).toISOString().split('T')[0],
-            foreman: tag.foreman_name || 'Jesus Garcia',
-            totalHours: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0), 0) || 0,
-            laborCost: tag.labor_entries?.reduce((sum, entry) => sum + (entry.total_hours || 0) * 95, 0) || 0,
-            materialCost: tag.material_entries?.reduce((sum, entry) => sum + (entry.total || 0), 0) || 0,
-            status: tag.status || 'completed',
-            gcEmail: tag.gc_email,
+          const timelogsData = await response.json();
+          const formattedTags = timelogsData.map(log => ({
+            id: log.id,
+            project: log.project_name,
+            title: `${log.installer_name} - ${log.project_name}`,
+            date: new Date(log.date).toISOString().split('T')[0],
+            foreman: log.installer_name || 'Installer',
+            totalHours: log.hours || 0,
+            laborCost: log.labor_cost || 0,
+            materialCost: 0, // Materials are tracked separately in Rhino Platform
+            status: 'completed',
+            gcEmail: '',
             costCode: tag.cost_code,
             description: tag.description_of_work,
             companyName: tag.company_name || '',
