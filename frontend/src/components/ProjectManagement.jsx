@@ -43,23 +43,14 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
     name: '',
     description: '',
     client_company: '',
-    gc_email: '',
-    project_type: 'full_project',
-    contract_amount: '',
-    labor_rate: '95',  // Default to $95/hr but customizable
     project_manager: 'Jesus Garcia',
+    address: '',
+    billing_type: 'TM',  // TM, SOV, Fixed, Bid
+    tm_bill_rate: '95.00',  // GC billing rate for T&M projects
+    contract_amount: '',
     start_date: new Date(),
     estimated_completion: null,
-    address: '',
-    // Forecasted schedule fields
-    estimated_hours: '',
-    // Plan submittal fields
-    plan_submittal_status: '',
-    plan_submittal_date: null,
-    plan_submittal_notes: '',
-    estimated_labor_cost: '',
-    estimated_material_cost: '',
-    estimated_profit: ''
+    status: 'active'
   });
   
   const { isDarkMode, getThemeClasses } = useTheme();
