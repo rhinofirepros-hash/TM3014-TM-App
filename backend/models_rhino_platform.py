@@ -150,16 +150,16 @@ class PerDiemHotelCreate(BaseModel):
 class Cashflow(BaseModel):
     """Cashflow entry for running balance tracking"""
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    date: date = Field(..., description="Transaction date")
+    date: Date = Field(..., description="Transaction date")
     type: Literal["inflow", "outflow"] = Field(..., description="Transaction type")
     category: Literal["Deposit", "Labor", "Per Diem", "Hotels", "Material", "Other"] = Field(..., description="Transaction category")
     project_id: Optional[str] = Field(None, description="Optional project association")
     amount: float = Field(..., description="Transaction amount (positive value)")
     reference: Optional[str] = Field(None, description="Reference number or description")
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: DateTime = Field(default_factory=DateTime.now)
 
 class CashflowCreate(BaseModel):
-    date: date
+    date: Date
     type: Literal["inflow", "outflow"]
     category: Literal["Deposit", "Labor", "Per Diem", "Hotels", "Material", "Other"]
     project_id: Optional[str] = None
