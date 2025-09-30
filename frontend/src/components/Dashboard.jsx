@@ -79,29 +79,20 @@ const Dashboard = ({
               const allTimelogs = timelogsResponse.ok ? await timelogsResponse.json() : [];
               const projectTimelogs = allTimelogs.filter(log => log.project_id === project.id);
               
-              const totalHours = tmTags.reduce((sum, tag) => {
-                // Handle both legacy and unified schema
-                if (tag.labor_entries) {
-                  // Legacy schema
-                  return sum + tag.labor_entries.reduce((laborSum, entry) => 
-                    laborSum + (entry.total_hours || entry.hours || 0), 0);
-                } else if (tag.crewLogs) {
-                  // Unified schema
-                  return sum + tag.crewLogs.reduce((crewSum, crew) => 
-                    crewSum + (crew.totalHours || crew.hoursWorked || 0), 0);
-                }
-                return sum;
+              // Calculate totals from Rhino Platform timelogs structure
+              const totalHours = projectTimelogs.reduce((sum, log) => {
+                return sum + (log.hours || 0);
               }, 0);
               
-              const totalCost = tmTags.reduce((sum, tag) => 
-                sum + (tag.total_cost || tag.totalBill || tag.totalLaborBill || 0), 0);
+              const totalCost = projectTimelogs.reduce((sum, log) => 
+                sum + (log.billable || log.labor_cost || 0), 0);
               
               return {
                 projectId: project.id,
                 projectName: project.name,
                 totalHours: totalHours,
                 totalCost: totalCost,
-                tagCount: tmTags.length
+                tagCount: projectTimelogs.length
               };
             } catch (error) {
               console.error(`Error calculating analytics for project ${project.id}:`, error);
