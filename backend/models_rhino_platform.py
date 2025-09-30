@@ -123,7 +123,7 @@ class TimeLogUpdate(BaseModel):
 class PerDiemHotel(BaseModel):
     """Per diem and hotel expense tracking"""
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    date: date = Field(..., description="Expense date")
+    date: Date = Field(..., description="Expense date")
     project_id: str = Field(..., description="Project UUID")
     workers: int = Field(..., ge=1, description="Number of workers")
     per_diem_per_worker: float = Field(40.0, description="Per diem amount per worker")
@@ -132,10 +132,10 @@ class PerDiemHotel(BaseModel):
     rooms: int = Field(..., ge=1, description="Number of hotel rooms")
     hotel_rate: float = Field(125.0, description="Hotel rate per room per night")
     notes: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: DateTime = Field(default_factory=DateTime.now)
 
 class PerDiemHotelCreate(BaseModel):
-    date: date
+    date: Date
     project_id: str
     workers: int = Field(..., ge=1)
     per_diem_per_worker: float = 40.0
