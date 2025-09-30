@@ -261,6 +261,12 @@ function AppContent() {
             onBack={() => navigateToView('project-management')}
           />
         );
+      case 'project-intelligence':
+        return (
+          <ProjectIntelligence
+            onBack={() => navigateToView('dashboard')}
+          />
+        );
       default:
         return <PinLogin onLogin={handleLogin} onGcLogin={handleGcLogin} />;
     }
