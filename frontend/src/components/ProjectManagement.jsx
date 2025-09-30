@@ -579,55 +579,47 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
             </div>
 
-            {/* Project Type */}
+            {/* Billing Type */}
             <div className="space-y-2">
-              <Label className={themeClasses.text.primary}>Project Type*</Label>
-              <Select value={newProject.project_type} onValueChange={(value) => handleInputChange('project_type', value)}>
+              <Label className={themeClasses.text.primary}>Billing Type*</Label>
+              <Select value={newProject.billing_type} onValueChange={(value) => handleInputChange('billing_type', value)}>
                 <SelectTrigger className={themeClasses.input}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className={themeClasses.modal}>
-                  <SelectItem value="full_project">Full Project (Fixed Contract)</SelectItem>
-                  <SelectItem value="tm_only">Time & Material Only</SelectItem>
+                  <SelectItem value="TM">Time & Material</SelectItem>
+                  <SelectItem value="SOV">Schedule of Values</SelectItem>
+                  <SelectItem value="Fixed">Fixed Price</SelectItem>
+                  <SelectItem value="Bid">Bid Project</SelectItem>
                 </SelectContent>
               </Select>
               <p className={`text-xs ${themeClasses.text.secondary}`}>
-                {newProject.project_type === 'full_project' 
-                  ? 'Fixed contract with defined scope and budget'
-                  : 'Open-ended T&M work - profit calculated from labor and material markup'
-                }
+                Select the billing method for this project
               </p>
             </div>
 
-            {/* Contract Amount and Labor Rate */}
+            {/* Contract Amount and T&M Bill Rate */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>
-                  Contract Amount ($){newProject.project_type === 'full_project' ? '*' : ''}
-                </Label>
+                <Label className={themeClasses.text.primary}>Contract Amount ($)</Label>
                 <Input
                   type="number"
                   value={newProject.contract_amount}
                   onChange={(e) => handleInputChange('contract_amount', e.target.value)}
                   className={themeClasses.input}
-                  placeholder={newProject.project_type === 'full_project' ? '150000' : 'Optional - for reference only'}
-                  disabled={newProject.project_type === 'tm_only'}
+                  placeholder="150000"
                 />
-                {newProject.project_type === 'tm_only' && (
-                  <p className={`text-xs ${themeClasses.text.secondary}`}>
-                    Not required for T&M projects - profit calculated from hourly rates
-                  </p>
-                )}
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Labor Rate ($/hr)*</Label>
+                <Label className={themeClasses.text.primary}>T&M Bill Rate ($/hr)*</Label>
                 <Input
                   type="number"
-                  value={newProject.labor_rate}
-                  onChange={(e) => handleInputChange('labor_rate', e.target.value)}
+                  step="0.01"
+                  value={newProject.tm_bill_rate}
+                  onChange={(e) => handleInputChange('tm_bill_rate', e.target.value)}
                   className={themeClasses.input}
-                  placeholder="95"
+                  placeholder="95.00"
                 />
               </div>
             </div>
