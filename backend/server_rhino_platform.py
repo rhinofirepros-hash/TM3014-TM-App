@@ -598,18 +598,430 @@ async def create_cashflow(cashflow_data: CashflowCreate, user_role: str = Depend
     return cashflow
 
 # =============================================================================
-# HEALTH CHECK
+# PROJECT INTELLIGENCE ENDPOINTS
 # =============================================================================
 
-@app.get("/api/health", tags=["System"])
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "service": "Rhino Platform API",
-        "version": "1.0.0",
-        "timestamp": datetime.now().isoformat()
-    }
+@app.post("/api/intelligence/process-email", response_model=EmailExtractionResult, tags=["Project Intelligence"])
+async def process_email(email_data: InboundEmailCreate, user_role: str = Depends(get_user_role)):
+    """Process email with LLM intelligence"""
+    try:
+        # Create email record
+        email = InboundEmail(**email_data.dict())
+        await db.inbound_emails.insert_one(email.dict())
+        
+        # Process with LLM
+        extraction_result, auto_commit = await intelligence_llm.process_email_complete(
+            subject=email.subject,
+            body=email.body,
+            from_addr=email.from_addr
+        )
+        
+        # Update email with classification
+        await db.inbound_emails.update_one(
+            {"id": email.id},
+            {"$set": {
+                "classified_as": extraction_result.classification.label,
+                "confidence": extraction_result.classification.confidence,
+                "processed": auto_commit
+            }}
+        )
+        
+        # Auto-process if high confidence
+        if auto_commit:
+            await auto_process_extraction(email.id, extraction_result)
+        else:
+            # Add to review queue
+            review_item = ReviewQueueCreate(
+                entity="classification",
+                payload=extraction_result.dict(),
+                reason=f"Low/medium confidence: {extraction_result.classification.confidence:.2f}",
+                confidence=extraction_result.classification.confidence,
+                source_email_id=email.id
+            )
+            await create_review_item(review_item)
+        
+        logger.info(f"Processed email: {email.subject} -> {extraction_result.classification.label}")
+        return extraction_result
+        
+    except Exception as e:
+        logger.error(f"Error processing email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing email: {str(e)}")
+
+async def auto_process_extraction(email_id: str, extraction: EmailExtractionResult):
+    """Auto-process high-confidence extractions"""
+    try:
+        # Create project if extracted
+        if extraction.project and extraction.project.name:
+            project_candidate = ProjectCandidate(
+                email_id=email_id,
+                name=extraction.project.name,
+                billing_type=extraction.project.billing_type or "Fixed",
+                tm_bill_rate=extraction.project.tm_bill_rate,
+                description=extraction.project.description,
+                client_company=extraction.project.client_company,
+                project_manager=extraction.project.project_manager,
+                address=extraction.project.address,
+                city=extraction.project.city,
+                state=extraction.project.state,
+                zip_code=extraction.project.zip_code,
+                ahj=extraction.project.ahj,
+                confidence=extraction.classification.confidence,
+                status="auto_approved" if extraction.classification.confidence >= 0.9 else "pending_review"
+            )
+            await db.project_candidates.insert_one(project_candidate.dict())
+        
+        # Create tasks if suggested
+        if extraction.tasks:
+            for task_title in extraction.tasks:
+                task = TaskCreate(
+                    project_id="pending",  # Will be linked when project is confirmed
+                    type="extracted",
+                    title=task_title,
+                    source_email_id=email_id
+                )
+                await db.tasks.insert_one(Task(**task.dict()).dict())
+        
+        # Create invoice if financial data extracted
+        if extraction.financial and extraction.financial.amount:
+            invoice = InvoiceCreate(
+                project_id="pending",
+                invoice_number=extraction.financial.invoice_number or f"AUTO-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                invoice_date=datetime.now().date(),
+                amount=extraction.financial.amount,
+                description="Auto-extracted from email",
+                source_email_id=email_id
+            )
+            await db.invoices.insert_one(Invoice(**invoice.dict()).dict())
+        
+    except Exception as e:
+        logger.error(f"Error in auto-processing: {str(e)}")
+
+async def create_review_item(review_data: ReviewQueueCreate):
+    """Create review queue item"""
+    review_item = ReviewQueue(**review_data.dict())
+    await db.review_queue.insert_one(review_item.dict())
+
+@app.get("/api/intelligence/emails", response_model=List[InboundEmail], tags=["Project Intelligence"])
+async def get_emails(
+    processed: Optional[bool] = None,
+    classification: Optional[str] = None,
+    limit: int = 50,
+    user_role: str = Depends(get_user_role)
+):
+    """Get processed emails"""
+    query = {}
+    if processed is not None:
+        query["processed"] = processed
+    if classification:
+        query["classified_as"] = classification
+    
+    emails = await db.inbound_emails.find(query).sort("received_at", -1).limit(limit).to_list(length=None)
+    return [InboundEmail(**email) for email in emails]
+
+@app.get("/api/intelligence/project-candidates", response_model=List[ProjectCandidate], tags=["Project Intelligence"])
+async def get_project_candidates(
+    status: Optional[str] = None,
+    user_role: str = Depends(get_user_role)
+):
+    """Get project candidates"""
+    query = {}
+    if status:
+        query["status"] = status
+    
+    candidates = await db.project_candidates.find(query).sort("created_at", -1).to_list(length=None)
+    return [ProjectCandidate(**candidate) for candidate in candidates]
+
+@app.post("/api/intelligence/approve-candidate/{candidate_id}", tags=["Project Intelligence"])
+async def approve_project_candidate(candidate_id: str, user_role: str = Depends(get_user_role)):
+    """Approve project candidate and create actual project"""
+    candidate = await db.project_candidates.find_one({"id": candidate_id})
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Project candidate not found")
+    
+    # Create actual project
+    project_data = ProjectCreate(
+        name=candidate["name"],
+        billing_type=candidate["billing_type"],
+        tm_bill_rate=candidate.get("tm_bill_rate"),
+        description=candidate.get("description"),
+        client_company=candidate.get("client_company"),
+        project_manager=candidate.get("project_manager"),
+        address=candidate.get("address"),
+        status="active"
+    )
+    
+    # Validate T&M requirements
+    if not validate_project_tm_rate(project_data):
+        raise HTTPException(status_code=422, detail="T&M projects must have tm_bill_rate specified")
+    
+    project = Project(**project_data.dict())
+    await db.projects.insert_one(project.dict())
+    
+    # Update candidate status
+    await db.project_candidates.update_one(
+        {"id": candidate_id},
+        {"$set": {"status": "approved", "created_project_id": project.id}}
+    )
+    
+    # Update any pending tasks
+    await db.tasks.update_many(
+        {"source_email_id": candidate["email_id"], "project_id": "pending"},
+        {"$set": {"project_id": project.id}}
+    )
+    
+    logger.info(f"Approved project candidate: {candidate['name']} -> {project.id}")
+    return {"success": True, "project_id": project.id}
+
+# =============================================================================
+# TASK MANAGEMENT ENDPOINTS
+# =============================================================================
+
+@app.get("/api/tasks", response_model=List[Task], tags=["Task Management"])
+async def get_tasks(
+    project_id: Optional[str] = None,
+    status: Optional[str] = None,
+    type: Optional[str] = None,
+    user_role: str = Depends(get_user_role)
+):
+    """Get tasks with optional filtering"""
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    if status:
+        query["status"] = status
+    if type:
+        query["type"] = type
+    
+    tasks = await db.tasks.find(query).sort("created_at", -1).to_list(length=None)
+    return [Task(**task) for task in tasks]
+
+@app.post("/api/tasks", response_model=Task, tags=["Task Management"])
+async def create_task(task_data: TaskCreate, user_role: str = Depends(get_user_role)):
+    """Create new task"""
+    task = Task(**task_data.dict())
+    await db.tasks.insert_one(task.dict())
+    logger.info(f"Created task: {task.title} for project {task.project_id}")
+    return task
+
+@app.put("/api/tasks/{task_id}", response_model=Task, tags=["Task Management"])
+async def update_task(
+    task_id: str,
+    task_data: dict,
+    user_role: str = Depends(get_user_role)
+):
+    """Update task"""
+    task = await db.tasks.find_one({"id": task_id})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    update_data = {k: v for k, v in task_data.items() if v is not None}
+    if update_data:
+        if "status" in update_data and update_data["status"] == "completed":
+            update_data["completed_at"] = datetime.now()
+        
+        await db.tasks.update_one({"id": task_id}, {"$set": update_data})
+    
+    updated_task = await db.tasks.find_one({"id": task_id})
+    return Task(**updated_task)
+
+# =============================================================================
+# INVOICE MANAGEMENT ENDPOINTS
+# =============================================================================
+
+@app.get("/api/invoices", response_model=List[Invoice], tags=["Invoice Management"])
+async def get_invoices(
+    project_id: Optional[str] = None,
+    status: Optional[str] = None,
+    user_role: str = Depends(get_user_role)
+):
+    """Get invoices with optional filtering"""
+    query = {}
+    if project_id:
+        query["project_id"] = project_id
+    if status:
+        query["status"] = status
+    
+    invoices = await db.invoices.find(query).sort("invoice_date", -1).to_list(length=None)
+    return [Invoice(**invoice) for invoice in invoices]
+
+@app.post("/api/invoices", response_model=Invoice, tags=["Invoice Management"])
+async def create_invoice(invoice_data: InvoiceCreate, user_role: str = Depends(get_user_role)):
+    """Create new invoice"""
+    invoice = Invoice(**invoice_data.dict())
+    await db.invoices.insert_one(invoice.dict())
+    logger.info(f"Created invoice: {invoice.invoice_number} for ${invoice.amount}")
+    return invoice
+
+@app.put("/api/invoices/{invoice_id}", response_model=Invoice, tags=["Invoice Management"])
+async def update_invoice(
+    invoice_id: str,
+    invoice_data: dict,
+    user_role: str = Depends(get_user_role)
+):
+    """Update invoice"""
+    invoice = await db.invoices.find_one({"id": invoice_id})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    update_data = {k: v for k, v in invoice_data.items() if v is not None}
+    if update_data:
+        if "status" in update_data and update_data["status"] == "paid":
+            update_data["paid_date"] = datetime.now().date()
+        
+        await db.invoices.update_one({"id": invoice_id}, {"$set": update_data})
+    
+    updated_invoice = await db.invoices.find_one({"id": invoice_id})
+    return Invoice(**updated_invoice)
+
+# =============================================================================
+# REVIEW QUEUE ENDPOINTS
+# =============================================================================
+
+@app.get("/api/review-queue", response_model=List[ReviewQueue], tags=["Review Queue"])
+async def get_review_queue(
+    resolved: Optional[bool] = False,
+    priority: Optional[str] = None,
+    user_role: str = Depends(get_user_role)
+):
+    """Get review queue items"""
+    query = {"resolved": resolved}
+    if priority:
+        query["priority"] = priority
+    
+    items = await db.review_queue.find(query).sort("created_at", -1).to_list(length=None)
+    return [ReviewQueue(**item) for item in items]
+
+@app.post("/api/review-queue/{item_id}/resolve", tags=["Review Queue"])
+async def resolve_review_item(
+    item_id: str,
+    resolution_data: dict,
+    user_role: str = Depends(get_user_role)
+):
+    """Resolve review queue item"""
+    item = await db.review_queue.find_one({"id": item_id})
+    if not item:
+        raise HTTPException(status_code=404, detail="Review item not found")
+    
+    # Update item as resolved
+    await db.review_queue.update_one(
+        {"id": item_id},
+        {"$set": {
+            "resolved": True,
+            "resolved_by": "current_user",  # TODO: Get actual user ID
+            "resolved_at": datetime.now(),
+            "resolution_notes": resolution_data.get("notes", "")
+        }}
+    )
+    
+    # Process the resolution action
+    action = resolution_data.get("action", "approve")
+    if action == "approve" and item["entity"] == "project_candidate":
+        # Auto-approve the project candidate
+        candidate_id = item["payload"].get("project", {}).get("id")
+        if candidate_id:
+            await approve_project_candidate(candidate_id)
+    
+    return {"success": True, "action": action}
+
+# =============================================================================
+# PROJECT INTELLIGENCE DASHBOARD
+# =============================================================================
+
+@app.get("/api/intelligence/dashboard", tags=["Intelligence Dashboard"])
+async def get_intelligence_dashboard(user_role: str = Depends(get_user_role)):
+    """Get comprehensive intelligence dashboard"""
+    
+    # Get counts and summaries
+    total_projects = await db.projects.count_documents({})
+    active_projects = await db.projects.count_documents({"status": "active"})
+    pending_reviews = await db.review_queue.count_documents({"resolved": False})
+    overdue_tasks = await db.tasks.count_documents({
+        "due_date": {"$lt": datetime.now().date()},
+        "status": {"$ne": "completed"}
+    })
+    recent_emails = await db.inbound_emails.count_documents({
+        "received_at": {"$gte": datetime.now().replace(hour=0, minute=0, second=0)}
+    })
+    
+    # Get financial summary
+    total_outstanding = 0
+    outstanding_invoices = await db.invoices.find({"status": {"$ne": "paid"}}).to_list(length=None)
+    for invoice in outstanding_invoices:
+        total_outstanding += invoice.get("amount", 0)
+    
+    high_priority_items = await db.tasks.count_documents({"priority": "urgent", "status": {"$ne": "completed"}})
+    
+    system_intelligence = SystemIntelligence(
+        total_projects=total_projects,
+        active_projects=active_projects,
+        pending_reviews=pending_reviews,
+        overdue_tasks=overdue_tasks,
+        recent_emails=recent_emails,
+        total_outstanding=total_outstanding,
+        high_priority_items=high_priority_items,
+        last_updated=datetime.now()
+    )
+    
+    return system_intelligence
+
+@app.get("/api/intelligence/project/{project_id}", response_model=ProjectIntelligence, tags=["Intelligence Dashboard"])
+async def get_project_intelligence(project_id: str, user_role: str = Depends(get_user_role)):
+    """Get comprehensive project intelligence"""
+    
+    project = await db.projects.find_one({"id": project_id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Get project tasks
+    tasks = await db.tasks.find({"project_id": project_id}).to_list(length=None)
+    pending_tasks = len([t for t in tasks if t.get("status") != "completed"])
+    overdue_tasks = len([t for t in tasks if t.get("due_date") and t.get("due_date") < datetime.now().date() and t.get("status") != "completed"])
+    
+    # Get recent emails
+    recent_emails = await db.inbound_emails.count_documents({
+        "received_at": {"$gte": datetime.now().replace(day=datetime.now().day-7)}
+    })
+    
+    # Get invoices
+    invoices = await db.invoices.find({"project_id": project_id}).to_list(length=None)
+    outstanding_amount = sum(inv.get("amount", 0) for inv in invoices if inv.get("status") != "paid")
+    
+    # Get progress
+    progress_entries = await db.project_progress.find({"project_id": project_id}).to_list(length=None)
+    avg_progress = sum(p.get("progress_percentage", 0) for p in progress_entries) / max(len(progress_entries), 1)
+    
+    # Recent activities (simplified)
+    recent_activities = [
+        f"{len(tasks)} total tasks",
+        f"{len(invoices)} invoices",
+        f"{recent_emails} recent emails"
+    ]
+    
+    # Next milestone
+    next_task = None
+    for task in tasks:
+        if task.get("status") != "completed" and task.get("due_date"):
+            if not next_task or task["due_date"] < next_task["due_date"]:
+                next_task = task
+    
+    project_intelligence = ProjectIntelligence(
+        project_id=project_id,
+        project_name=project["name"],
+        current_status=project.get("status", "unknown"),
+        progress_percentage=avg_progress,
+        recent_activities=recent_activities,
+        pending_tasks=pending_tasks,
+        overdue_tasks=overdue_tasks,
+        recent_emails=recent_emails,
+        total_invoices=len(invoices),
+        outstanding_amount=outstanding_amount,
+        next_milestone=next_task["title"] if next_task else None,
+        next_due_date=next_task["due_date"] if next_task else None,
+        risk_factors=["Overdue tasks" if overdue_tasks > 0 else None],
+        last_updated=datetime.now()
+    )
+    
+    return project_intelligence
 
 # =============================================================================
 # MAIN
