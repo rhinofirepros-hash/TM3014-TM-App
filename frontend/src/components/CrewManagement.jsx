@@ -676,7 +676,6 @@ const CrewManagement = ({ onBack }) => {
                 placeholder="Jane Smith - (555) 987-6543"
               />
             </div>
-
           </div>
 
           <DialogFooter>
