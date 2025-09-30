@@ -21,7 +21,8 @@ import {
   Sun,
   Moon,
   Zap,
-  Shield
+  Shield,
+  Brain
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useTheme } from '../contexts/ThemeContext';
