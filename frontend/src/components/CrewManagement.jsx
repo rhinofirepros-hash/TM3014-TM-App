@@ -685,29 +685,6 @@ const CrewManagement = ({ onBack }) => {
               />
             </div>
 
-            {/* Cost Summary */}
-            {newCrewMember.hourly_rate && newCrewMember.gc_billing_rate && (
-              <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-white/10' : 'bg-blue-50'} border`}>
-                <div className="flex justify-between items-center mb-2">
-                  <span className={`text-sm ${themeClasses.text.secondary}`}>Employee Cost:</span>
-                  <span className={`font-semibold ${themeClasses.text.primary}`}>
-                    ${(parseFloat(newCrewMember.hourly_rate || 0)).toFixed(2)}/hr
-                  </span>
-                </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className={`text-sm ${themeClasses.text.secondary}`}>GC Billing Rate:</span>
-                  <span className={`font-semibold ${themeClasses.text.primary}`}>
-                    ${(parseFloat(newCrewMember.gc_billing_rate || 0)).toFixed(2)}/hr
-                  </span>
-                </div>
-                <div className="flex justify-between items-center border-t pt-2">
-                  <span className={`text-sm font-semibold ${themeClasses.text.secondary}`}>Profit per Hour:</span>
-                  <span className={`font-bold text-lg text-green-600`}>
-                    ${(parseFloat(newCrewMember.gc_billing_rate || 0) - parseFloat(newCrewMember.hourly_rate || 0)).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
 
           <DialogFooter>
@@ -723,10 +700,10 @@ const CrewManagement = ({ onBack }) => {
             </Button>
             <Button 
               onClick={handleCreateCrewMember}
-              disabled={!newCrewMember.name || !newCrewMember.position || !newCrewMember.hourly_rate || !newCrewMember.gc_billing_rate}
+              disabled={!newCrewMember.name || !newCrewMember.position || !newCrewMember.cost_rate}
               className={themeClasses.button.primary}
             >
-              Add Crew Member
+              Add Installer
             </Button>
           </DialogFooter>
         </DialogContent>
