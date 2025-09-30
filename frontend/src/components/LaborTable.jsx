@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -9,8 +9,41 @@ import { useTheme } from '../contexts/ThemeContext';
 const LaborTable = ({ entries, onChange, onSaveWorker }) => {
   const { isDarkMode, getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
-  // Get saved workers from localStorage
-  const savedWorkers = JSON.parse(localStorage.getItem('saved_workers') || '[]');
+  
+  // State for installers/workers from API
+  const [availableWorkers, setAvailableWorkers] = useState([]);
+  const [isLoadingWorkers, setIsLoadingWorkers] = useState(false);
+  
+  // Load workers from the new Rhino Platform installers endpoint
+  useEffect(() => {
+    const loadWorkers = async () => {
+      try {
+        setIsLoadingWorkers(true);
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        if (backendUrl) {
+          const response = await fetch(`${backendUrl}/api/installers`);
+          if (response.ok) {
+            const workersData = await response.json();
+            setAvailableWorkers(workersData);
+          } else {
+            console.warn('Failed to load workers from API, falling back to localStorage');
+            // Fallback to localStorage for backward compatibility
+            const savedWorkers = JSON.parse(localStorage.getItem('saved_workers') || '[]');
+            setAvailableWorkers(savedWorkers);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading workers:', error);
+        // Fallback to localStorage
+        const savedWorkers = JSON.parse(localStorage.getItem('saved_workers') || '[]');
+        setAvailableWorkers(savedWorkers);
+      } finally {
+        setIsLoadingWorkers(false);
+      }
+    };
+    
+    loadWorkers();
+  }, []);
   const addEmptyRow = () => {
     const newEntry = {
       id: Date.now(),
