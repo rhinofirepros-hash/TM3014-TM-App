@@ -568,7 +568,14 @@ async def create_cashflow(cashflow_data: CashflowCreate, user_role: str = Depend
             raise HTTPException(status_code=422, detail="Project not found")
     
     cashflow = Cashflow(**cashflow_data.dict())
-    await db.cashflows.insert_one(cashflow.dict())
+    
+    # Convert date to datetime for MongoDB compatibility
+    cashflow_dict = cashflow.dict()
+    if isinstance(cashflow_dict['date'], date):
+        from datetime import datetime, timezone
+        cashflow_dict['date'] = datetime.combine(cashflow_dict['date'], datetime.min.time()).replace(tzinfo=timezone.utc)
+    
+    await db.cashflows.insert_one(cashflow_dict)
     
     logger.info(f"Created cashflow: {cashflow.type} ${cashflow.amount} ({cashflow.category})")
     return cashflow
