@@ -945,7 +945,7 @@ async def get_intelligence_dashboard(user_role: str = Depends(get_user_role)):
     active_projects = await db.projects.count_documents({"status": "active"})
     pending_reviews = await db.review_queue.count_documents({"resolved": False}) if LLM_AVAILABLE else 0
     overdue_tasks = await db.tasks.count_documents({
-        "due_date": {"$lt": datetime.now().date()},
+        "due_date": {"$lt": datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)},
         "status": {"$ne": "completed"}
     }) if LLM_AVAILABLE else 0
     recent_emails = await db.inbound_emails.count_documents({
