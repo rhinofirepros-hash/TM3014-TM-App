@@ -610,6 +610,9 @@ async def create_cashflow(cashflow_data: CashflowCreate, user_role: str = Depend
 @app.post("/api/intelligence/process-email", response_model=EmailExtractionResult, tags=["Project Intelligence"])
 async def process_email(email_data: InboundEmailCreate, user_role: str = Depends(get_user_role)):
     """Process email with LLM intelligence"""
+    if not LLM_AVAILABLE:
+        raise HTTPException(status_code=503, detail="LLM service not available")
+        
     try:
         # Create email record
         email = InboundEmail(**email_data.dict())
