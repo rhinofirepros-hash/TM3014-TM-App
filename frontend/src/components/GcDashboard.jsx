@@ -85,24 +85,66 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
     } finally {
       setLoading(false);
     }
+  // Calculate project metrics (non-financial)
+  const calculateMetrics = () => {
+    const totalHours = timeLogs.reduce((sum, log) => sum + (log.hours || 0), 0);
+    const uniqueInstallers = [...new Set(timeLogs.map(log => log.installer_id))].length;
+    const completedTasks = tasks.filter(task => task.status === 'completed').length;
+    const totalTasks = tasks.length;
+    const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+    
+    // Group time logs by date for recent activity
+    const recentActivity = timeLogs
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5);
+
+    return {
+      totalHours,
+      uniqueInstallers,
+      completedTasks,
+      totalTasks,
+      completionPercentage,
+      recentActivity
+    };
   };
-      setProjectData(data);
-      // tmTagSummary is an object with summary stats, not an array of tags
-      setTmTags([]); // Initialize as empty array since we don't have individual tags
-      setCrewLogs([]);
-    } catch (error) {
-      console.error('Error fetching project data:', error);
-    } finally {
-      setLoading(false);
+
+  const getInspectionStatus = (tasks) => {
+    const inspectionTasks = tasks.filter(task => 
+      task.type === 'inspection' || task.title.toLowerCase().includes('inspection')
+    );
+    
+    if (inspectionTasks.length === 0) return { status: 'none', message: 'No inspections scheduled' };
+    
+    const completed = inspectionTasks.filter(t => t.status === 'completed');
+    const inProgress = inspectionTasks.filter(t => t.status === 'in_progress');
+    const pending = inspectionTasks.filter(t => t.status === 'open');
+    
+    if (completed.length > 0) {
+      return { status: 'passed', message: `${completed.length} inspection(s) completed` };
+    } else if (inProgress.length > 0) {
+      return { status: 'scheduled', message: `${inProgress.length} inspection(s) in progress` };
+    } else if (pending.length > 0) {
+      return { status: 'pending', message: `${pending.length} inspection(s) pending` };
     }
+    
+    return { status: 'none', message: 'No active inspections' };
   };
 
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${themeClasses.background}`}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className={themeClasses.text.secondary}>Loading project data...</p>
+      <div className={`min-h-screen p-4 ${themeClasses.background}`}>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-white">Loading project data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`min-h-screen p-4 ${themeClasses.background}`}>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-red-400">Error: {error}</div>
         </div>
       </div>
     );
@@ -110,14 +152,16 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
 
   if (!projectData) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${themeClasses.background}`}>
-        <Card className={themeClasses.card}>
-          <CardContent className="text-center p-8">
-            <AlertCircle className={`w-12 h-12 mx-auto mb-4`} style={{ color: themeClasses.colors.red }} />
-            <h3 className={`text-lg font-semibold mb-2 ${themeClasses.text.primary}`}>Project Not Found</h3>
-            <p className={`mb-4 ${themeClasses.text.secondary}`}>Unable to load project data.</p>
-            <Button onClick={onBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
+      <div className={`min-h-screen p-4 ${themeClasses.background}`}>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-white">No project data available</div>
+        </div>
+      </div>
+    );
+  }
+
+  const metrics = calculateMetrics();
+  const inspectionStatus = getInspectionStatus(tasks);
               Back to Projects
             </Button>
           </CardContent>
