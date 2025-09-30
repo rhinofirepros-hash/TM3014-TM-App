@@ -240,19 +240,14 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       name: '',
       description: '',
       client_company: '',
-      gc_email: '',
-      project_type: 'full_project',
-      contract_amount: '',
-      labor_rate: '95',  // Reset to default
       project_manager: 'Jesus Garcia',
+      address: '',
+      billing_type: 'TM',  // TM, SOV, Fixed, Bid
+      tm_bill_rate: '95.00',  // GC billing rate for T&M projects
+      contract_amount: '',
       start_date: new Date(),
       estimated_completion: null,
-      address: '',
-      // Reset forecasted schedule fields
-      estimated_hours: '',
-      estimated_labor_cost: '',
-      estimated_material_cost: '',
-      estimated_profit: ''
+      status: 'active'
     });
   };
 
