@@ -16,7 +16,7 @@ from typing import Dict, Any, List
 import uuid
 
 # Configuration
-BACKEND_URL = "http://localhost:8002"
+BACKEND_URL = "https://project-autopilot.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 class RhinoPlatformTester:
