@@ -420,5 +420,3 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
 };
 
 export default GcDashboard;
-
-export default GcDashboard;
