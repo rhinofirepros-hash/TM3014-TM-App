@@ -3696,7 +3696,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         test_type = sys.argv[1].lower()
         
-        if test_type == "pin_generation":
+        if test_type == "intelligence" or test_type == "project_intelligence":
+            print("Running Enhanced Rhino Platform with Project Intelligence Tests...")
+            results = tester.run_project_intelligence_tests()
+        elif test_type == "pin_generation":
             print("Running PIN Generation Tests for Specific Projects...")
             results = tester.run_pin_generation_tests()
         elif test_type == "pin_investigation":
@@ -3705,12 +3708,15 @@ if __name__ == "__main__":
         elif test_type == "gc_pin":
             print("Running GC PIN System Tests...")
             results = tester.run_gc_pin_tests()
+        elif test_type == "all":
+            print("Running All Backend Tests...")
+            results = tester.run_all_tests()
         else:
-            print("Running PIN Generation Tests (default)...")
-            results = tester.run_pin_generation_tests()
+            print("Running Enhanced Rhino Platform with Project Intelligence Tests (default)...")
+            results = tester.run_project_intelligence_tests()
     else:
-        print("Running PIN Generation Tests...")
-        results = tester.run_pin_generation_tests()
+        print("Running Enhanced Rhino Platform with Project Intelligence Tests...")
+        results = tester.run_project_intelligence_tests()
     
     # Exit with error code if tests failed
     if results["failed"] > 0:
