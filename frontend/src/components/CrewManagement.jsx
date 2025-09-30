@@ -622,17 +622,6 @@ const CrewManagement = ({ onBack }) => {
                   Internal cost including benefits, taxes, insurance (GC rates are set per project)
                 </p>
               </div>
-                  value={newCrewMember.gc_billing_rate}
-                  onChange={(e) => handleInputChange('gc_billing_rate', e.target.value)}
-                  className={themeClasses.input}
-                  placeholder="95.00"
-                />
-                <p className={`text-xs ${themeClasses.text.secondary}`}>
-                  Rate billed to General Contractor
-                </p>
-              </div>
-            </div>
-
             {/* Hire Date */}
             <div className="space-y-2">
               <Label className={themeClasses.text.primary}>Hire Date*</Label>
