@@ -414,7 +414,14 @@ async def create_timelog(timelog_data: TimeLogCreate, user_role: str = Depends(g
         )
     
     timelog = TimeLog(**timelog_data.dict())
-    await db.time_logs.insert_one(timelog.dict())
+    
+    # Convert date to datetime for MongoDB compatibility
+    timelog_dict = timelog.dict()
+    if isinstance(timelog_dict['date'], date):
+        from datetime import datetime, timezone
+        timelog_dict['date'] = datetime.combine(timelog_dict['date'], datetime.min.time()).replace(tzinfo=timezone.utc)
+    
+    await db.time_logs.insert_one(timelog_dict)
     
     logger.info(f"Created time log: {timelog.hours}h for {installer['name']} on {project['name']}")
     return timelog
