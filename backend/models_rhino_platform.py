@@ -84,8 +84,8 @@ class ProjectUpdate(BaseModel):
     project_manager: Optional[str] = None
     address: Optional[str] = None
     status: Optional[str] = None
-    start_date: Optional[date] = None
-    estimated_completion: Optional[date] = None
+    start_date: Optional[Date] = None
+    estimated_completion: Optional[Date] = None
     contract_amount: Optional[float] = None
 
 # =============================================================================
