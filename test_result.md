@@ -680,10 +680,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "T&M Form Worker Addition Functionality testing completed successfully - all 8 requirements verified working"
+    - "T&M Form Add Button Functionality"
   stuck_tasks: []
-  test_all: true
-  test_priority: "comprehensive_testing_completed"
+  test_all: false
+  test_priority: "high_first"
 
 frontend:
   - task: "Vision UI Theme Integration"
