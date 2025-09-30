@@ -20,10 +20,10 @@ class Installer(BaseModel):
     cost_rate: float = Field(..., description="Hourly cost rate (company cost, not billing rate)")
     position: Optional[str] = Field(None, description="Job position/title")
     active: bool = Field(True, description="Whether installer is active")
-    hire_date: Optional[date] = None
+    hire_date: Optional[Date] = None
     phone: Optional[str] = None
     email: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: DateTime = Field(default_factory=DateTime.now)
 
 class InstallerCreate(BaseModel):
     name: str
