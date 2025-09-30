@@ -758,7 +758,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
             </Button>
             <Button 
               onClick={handleCreateProject}
-              disabled={!newProject.name || !newProject.client_company || (newProject.project_type === 'full_project' && !newProject.contract_amount)}
+              disabled={!newProject.name || !newProject.client_company}
               className={themeClasses.button.primary}
             >
               Create Project
