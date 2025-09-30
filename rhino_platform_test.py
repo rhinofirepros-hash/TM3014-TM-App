@@ -236,7 +236,7 @@ class RhinoPlatformTester:
                 
                 # Test validation: T&M project without tm_bill_rate should fail
                 invalid_tm_project = {
-                    "name": "Invalid T&M Project",
+                    "name": f"Invalid T&M Project {timestamp}",
                     "billing_type": "TM",
                     "description": "This should fail validation"
                 }
