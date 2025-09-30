@@ -108,8 +108,10 @@ class RhinoPlatformTester:
                 return False
             
             # Test CREATE installer
+            import time
+            timestamp = int(time.time())
             installer_data = {
-                "name": "Mike Rodriguez",
+                "name": f"Mike Rodriguez {timestamp}",
                 "cost_rate": 65.0,
                 "position": "Senior Fire Protection Installer",
                 "active": True,
