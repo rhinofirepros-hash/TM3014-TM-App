@@ -105,18 +105,9 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       const projectData = {
         ...newProject,
         contract_amount: parseFloat(newProject.contract_amount) || 0,
-        labor_rate: parseFloat(newProject.labor_rate) || 95,
+        tm_bill_rate: parseFloat(newProject.tm_bill_rate) || 95.00,
         start_date: newProject.start_date.toISOString(),
-        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null,
-        // Include forecasted schedule fields
-        estimated_hours: parseFloat(newProject.estimated_hours) || 0,
-        estimated_labor_cost: parseFloat(newProject.estimated_labor_cost) || 0,
-        estimated_material_cost: parseFloat(newProject.estimated_material_cost) || 0,
-        estimated_profit: parseFloat(newProject.estimated_profit) || 0,
-        // Include plan submittal fields
-        plan_submittal_status: newProject.plan_submittal_status || (newProject.project_type === 'tm_only' ? 'approved' : 'in_design'),
-        plan_submittal_date: newProject.plan_submittal_date ? newProject.plan_submittal_date.toISOString() : null,
-        plan_submittal_notes: newProject.plan_submittal_notes || ''
+        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null
       };
 
       const response = await fetch(`${backendUrl}/api/projects`, {
