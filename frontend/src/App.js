@@ -174,6 +174,7 @@ function AppContent() {
             onLogout={handleLogout}
             onAdminGc={() => navigateToView('admin-gc')}
             onFinancialManagement={handleViewFinancialManagement}
+            onProjectIntelligence={() => navigateToView('project-intelligence')}
           />
         );
       case 'create':
