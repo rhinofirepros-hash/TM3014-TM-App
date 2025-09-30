@@ -87,13 +87,21 @@ const ResponsiveDashboard = ({ onCreateNew, onOpenProject, onManageCrew, onViewR
   const fetchRecentTags = async () => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/tm-tags`);
+      const response = await fetch(`${backendUrl}/api/timelogs`);
       if (response.ok) {
         const data = await response.json();
-        setRecentTags(data.slice(0, 5));
+        // Format timelogs to match expected tag structure for display
+        const formattedTags = data.slice(0, 5).map(log => ({
+          id: log.id,
+          title: `${log.installer_name} - ${log.project_name}`,
+          date_of_work: log.date,
+          hours: log.hours,
+          total: log.billable || log.labor_cost || 0
+        }));
+        setRecentTags(formattedTags);
       }
     } catch (error) {
-      console.error('Error fetching recent tags:', error);
+      console.error('Error fetching recent time logs:', error);
     }
   };
 
