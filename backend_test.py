@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Unified Backend API Testing for Enhanced T&M Management System
-Tests the new unified schema with forecasting capabilities
+Comprehensive Backend Testing for Enhanced Rhino Platform with Project Intelligence System
+Tests all new LLM-powered features and enhanced backend functionality
 """
 
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import uuid
 import base64
 import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
+BACKEND_URL = "https://tm3014-tm-app-production.up.railway.app/api"
 
 class TMTagAPITester:
     def __init__(self):
