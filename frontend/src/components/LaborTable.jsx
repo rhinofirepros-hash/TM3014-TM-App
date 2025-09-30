@@ -179,7 +179,7 @@ const LaborTable = ({ entries, onChange, onSaveWorker }) => {
                   list={`workers-${entry.id}`}
                 />
                 <datalist id={`workers-${entry.id}`}>
-                  {savedWorkers.map((worker) => (
+                  {availableWorkers.map((worker) => (
                     <option key={worker.id} value={worker.name} />
                   ))}
                 </datalist>
