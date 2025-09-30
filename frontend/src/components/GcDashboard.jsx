@@ -42,16 +42,50 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
   const fetchProjectData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const apiUrl = backendUrl ? `${backendUrl}/api` : '/api';
-      const response = await fetch(`${apiUrl}/gc/dashboard/${selectedProject}`);
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
       
-      if (!response.ok) {
+      // Fetch project details
+      const projectResponse = await fetch(`${backendUrl}/api/projects/${selectedProject}`);
+      if (!projectResponse.ok) {
         throw new Error('Failed to fetch project data');
       }
+      const project = await projectResponse.json();
+      setProjectData(project);
+
+      // Fetch time logs for this project (without financial data)
+      const timeLogsResponse = await fetch(`${backendUrl}/api/timelogs?project_id=${selectedProject}`);
+      if (timeLogsResponse.ok) {
+        const logs = await timeLogsResponse.json();
+        setTimeLogs(logs);
+      }
+
+      // Fetch tasks for this project
+      const tasksResponse = await fetch(`${backendUrl}/api/tasks?project_id=${selectedProject}`);
+      if (tasksResponse.ok) {
+        const projectTasks = await tasksResponse.json();
+        setTasks(projectTasks);
+      }
+
+      // Try to fetch project progress
+      try {
+        const progressResponse = await fetch(`${backendUrl}/api/intelligence/project/${selectedProject}`);
+        if (progressResponse.ok) {
+          const progressData = await progressResponse.json();
+          setProgress(progressData);
+        }
+      } catch (progressError) {
+        console.log('Progress data not available:', progressError);
+      }
       
-      const data = await response.json();
+    } catch (error) {
+      console.error('Error fetching project data:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
       setProjectData(data);
       // tmTagSummary is an object with summary stats, not an array of tags
       setTmTags([]); // Initialize as empty array since we don't have individual tags
