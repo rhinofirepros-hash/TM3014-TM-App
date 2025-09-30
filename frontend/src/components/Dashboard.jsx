@@ -36,7 +36,8 @@ const Dashboard = ({
   onViewReports, 
   onLogout, 
   onAdminGc,
-  onFinancialManagement 
+  onFinancialManagement,
+  onProjectIntelligence 
 }) => {
   const [projects, setProjects] = useState([]);
   const [actualProjects, setActualProjects] = useState([]);
