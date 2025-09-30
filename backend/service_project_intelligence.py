@@ -26,9 +26,13 @@ class ProjectIntelligenceLLM:
     """LLM service for project intelligence processing"""
     
     def __init__(self):
+        # Load environment variables
+        load_dotenv()
+        
         self.api_key = os.environ.get('EMERGENT_LLM_KEY')
         if not self.api_key:
-            raise ValueError("EMERGENT_LLM_KEY environment variable is required")
+            logger.warning("EMERGENT_LLM_KEY not found, LLM features will be disabled")
+            self.api_key = "disabled"
         
         # Classification thresholds
         self.AUTO_COMMIT_THRESHOLD = 0.85
