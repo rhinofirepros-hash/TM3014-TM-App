@@ -11,8 +11,8 @@ import sys
 import os
 
 # Get backend URL from frontend .env file
-BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
-FRONTEND_URL = "https://firepro-auth-hub.preview.emergentagent.com"
+BACKEND_URL = "https://project-autopilot.preview.emergentagent.com/api"
+FRONTEND_URL = "https://project-autopilot.preview.emergentagent.com"
 
 class GCConnectivityTester:
     def __init__(self):

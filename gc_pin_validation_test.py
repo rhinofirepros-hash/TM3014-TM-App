@@ -11,7 +11,7 @@ from datetime import datetime
 import sys
 
 # Configuration
-BACKEND_URL = "https://firepro-auth-hub.preview.emergentagent.com/api"
+BACKEND_URL = "https://project-autopilot.preview.emergentagent.com/api"
 
 class GCPinValidationTester:
     def __init__(self):

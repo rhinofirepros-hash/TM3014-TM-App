@@ -2595,7 +2595,7 @@ class TMTagAPITester:
             response = self.session.options(
                 f"{self.base_url}/tm-tags",
                 headers={
-                    "Origin": "https://firepro-auth-hub.preview.emergentagent.com",
+                    "Origin": "https://project-autopilot.preview.emergentagent.com",
                     "Access-Control-Request-Method": "POST",
                     "Access-Control-Request-Headers": "Content-Type"
                 }
