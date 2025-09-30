@@ -1,0 +1,87 @@
+/app/backend/server_rhino_platform.py:96: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+/app/backend/server_rhino_platform.py:141: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("shutdown")
+INFO:     Started server process [5693]
+INFO:     Waiting for application startup.
+2025-09-30 03:39:24,796 - __main__ - INFO - Starting Rhino Platform API...
+2025-09-30 03:39:24,805 - __main__ - INFO - Rhino Platform API started successfully
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52770 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/health HTTP/1.1" 200 OK
+2025-09-30 03:39:40,760 - __main__ - INFO - Admin login successful
+INFO:     127.0.0.1:46444 - "POST /api/auth/admin HTTP/1.1" 200 OK
+2025-09-30 03:39:40,762 - __main__ - WARNING - Failed admin login attempt
+INFO:     127.0.0.1:46444 - "POST /api/auth/admin HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:46444 - "GET /api/installers HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:286: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  installer = Installer(**installer_data.dict())
+/app/backend/server_rhino_platform.py:287: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  await db.installers.insert_one(installer.dict())
+2025-09-30 03:39:40,768 - __main__ - INFO - Created installer: Mike Rodriguez 1759203580 ($65.0/hr)
+INFO:     127.0.0.1:46444 - "POST /api/installers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/installers/76da1907-8fe8-41ab-887d-eb88fa5fa8f6 HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:303: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  update_data = installer_data.dict(exclude_unset=True)
+INFO:     127.0.0.1:46444 - "PUT /api/installers/76da1907-8fe8-41ab-887d-eb88fa5fa8f6 HTTP/1.1" 200 OK
+2025-09-30 03:39:40,778 - __main__ - INFO - Created installer: Sarah Johnson 1759203580 ($60.0/hr)
+INFO:     127.0.0.1:46444 - "POST /api/installers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/projects HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:222: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  project = Project(**project_data.dict())
+/app/backend/server_rhino_platform.py:223: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  await db.projects.insert_one(project.dict())
+2025-09-30 03:39:40,785 - __main__ - INFO - Created project: 3rd Ave Fire Protection 1759203580 (TM)
+INFO:     127.0.0.1:46444 - "POST /api/projects HTTP/1.1" 200 OK
+2025-09-30 03:39:40,788 - __main__ - INFO - Created project: Oregon St Fixed Contract 1759203580 (Fixed)
+INFO:     127.0.0.1:46444 - "POST /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "POST /api/projects HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:46444 - "GET /api/projects/a6b89d7d-0e34-4c9b-a78a-093a9504b3bb HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:239: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  update_data = project_data.dict(exclude_unset=True)
+INFO:     127.0.0.1:46444 - "PUT /api/projects/a6b89d7d-0e34-4c9b-a78a-093a9504b3bb HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:416: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  timelog = TimeLog(**timelog_data.dict())
+/app/backend/server_rhino_platform.py:419: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  timelog_dict = timelog.dict()
+2025-09-30 03:39:40,802 - __main__ - INFO - Created time log: 8.0h for Mike Rodriguez 1759203580 on 3rd Ave Fire Protection 1759203580
+INFO:     127.0.0.1:46444 - "POST /api/timelogs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/timelogs HTTP/1.1" 200 OK
+2025-09-30 03:39:40,811 - __main__ - INFO - Created time log: 4.0h for Mike Rodriguez 1759203580 on 3rd Ave Fire Protection 1759203580
+INFO:     127.0.0.1:46444 - "POST /api/timelogs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/timelogs HTTP/1.1" 200 OK
+2025-09-30 03:39:40,819 - __main__ - INFO - Created time log: 6.0h for Mike Rodriguez 1759203580 on Oregon St Fixed Contract 1759203580
+INFO:     127.0.0.1:46444 - "POST /api/timelogs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/timelogs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/summary/tm HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/cashflows HTTP/1.1" 200 OK
+/app/backend/server_rhino_platform.py:570: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  cashflow = Cashflow(**cashflow_data.dict())
+/app/backend/server_rhino_platform.py:573: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+  cashflow_dict = cashflow.dict()
+2025-09-30 03:39:40,837 - __main__ - INFO - Created cashflow: inflow $25000.0 (Deposit)
+INFO:     127.0.0.1:46444 - "POST /api/cashflows HTTP/1.1" 200 OK
+2025-09-30 03:39:40,839 - __main__ - INFO - Created cashflow: outflow $5600.0 (Labor)
+INFO:     127.0.0.1:46444 - "POST /api/cashflows HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "GET /api/summary/tm HTTP/1.1" 200 OK
+2025-09-30 03:39:40,849 - __main__ - INFO - Created project: Oregon St T&M Project 1759203580 (TM)
+INFO:     127.0.0.1:46444 - "POST /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46444 - "POST /api/projects HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:46444 - "POST /api/timelogs HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:46444 - "GET /api/installers HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2025-09-30 04:37:05,965 - __main__ - INFO - Rhino Platform API shutdown complete
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5693]
