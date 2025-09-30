@@ -190,8 +190,10 @@ class RhinoPlatformTester:
                 return False
             
             # Test CREATE T&M project (should require tm_bill_rate)
+            import time
+            timestamp = int(time.time())
             tm_project_data = {
-                "name": "3rd Ave Fire Protection",
+                "name": f"3rd Ave Fire Protection {timestamp}",
                 "billing_type": "TM",
                 "tm_bill_rate": 95.0,
                 "description": "Fire Protection system completion",
