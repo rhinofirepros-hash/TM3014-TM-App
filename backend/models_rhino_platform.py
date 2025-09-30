@@ -180,7 +180,7 @@ class Settings(BaseModel):
 class TimeLogEffective(BaseModel):
     """Time log with calculated effective rates and totals"""
     id: str
-    date: date
+    date: Date
     hours: float
     installer_id: str
     project_id: str
