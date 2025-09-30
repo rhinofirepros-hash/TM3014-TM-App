@@ -214,14 +214,14 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       name: project.name,
       description: project.description || '',
       client_company: project.client_company,
-      gc_email: project.gc_email || '',
-      project_type: project.project_type || 'full_project',
-      contract_amount: (project.contract_amount || 0).toString(),
-      labor_rate: (project.labor_rate || 95).toString(),
       project_manager: project.project_manager,
+      address: project.address || '',
+      billing_type: project.billing_type || 'TM',
+      tm_bill_rate: (project.tm_bill_rate || 95.00).toString(),
+      contract_amount: (project.contract_amount || 0).toString(),
       start_date: project.start_date,
       estimated_completion: project.estimated_completion,
-      address: project.address || ''
+      status: project.status || 'active'
     });
     setShowEditModal(true);
   };
