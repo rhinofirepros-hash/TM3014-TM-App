@@ -607,27 +607,21 @@ const CrewManagement = ({ onBack }) => {
             </div>
 
             {/* Pay Information */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>Hourly Rate ($/hour)*</Label>
+                <Label className={themeClasses.text.primary}>Labor Cost Rate ($/hour)*</Label>
                 <Input
                   type="number"
                   step="0.01"
-                  value={newCrewMember.hourly_rate}
-                  onChange={(e) => handleInputChange('hourly_rate', e.target.value)}
+                  value={newCrewMember.cost_rate}
+                  onChange={(e) => handleInputChange('cost_rate', e.target.value)}
                   className={themeClasses.input}
-                  placeholder="40.00"
+                  placeholder="65.00"
                 />
                 <p className={`text-xs ${themeClasses.text.secondary}`}>
-                  True cost including benefits, taxes, insurance
+                  Internal cost including benefits, taxes, insurance (GC rates are set per project)
                 </p>
               </div>
-              
-              <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>GC Billing Rate ($/hour)*</Label>
-                <Input
-                  type="number"
-                  step="0.01"
                   value={newCrewMember.gc_billing_rate}
                   onChange={(e) => handleInputChange('gc_billing_rate', e.target.value)}
                   className={themeClasses.input}
