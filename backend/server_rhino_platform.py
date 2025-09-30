@@ -37,8 +37,14 @@ from models_project_intelligence import (
     EmailExtractionResult, ProjectIntelligence, SystemIntelligence
 )
 
-# Import LLM service
-from service_project_intelligence import intelligence_llm
+# Import LLM service (optional)
+try:
+    from service_project_intelligence import intelligence_llm
+    LLM_AVAILABLE = True
+except ImportError:
+    intelligence_llm = None
+    LLM_AVAILABLE = False
+    logger.warning("LLM service not available - Project Intelligence features disabled")
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
