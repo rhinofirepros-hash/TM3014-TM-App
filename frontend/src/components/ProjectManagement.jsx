@@ -1013,7 +1013,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               />
             </div>
 
-            {/* Address and GC Email */}
+            {/* Address and Status */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className={themeClasses.text.primary}>Project Address</Label>
@@ -1025,13 +1025,18 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
               </div>
               
               <div className="space-y-2">
-                <Label className={themeClasses.text.primary}>GC Email</Label>
-                <Input
-                  type="email"
-                  value={editProject.gc_email || ''}
-                  onChange={(e) => handleEditInputChange('gc_email', e.target.value)}
-                  className={themeClasses.input}
-                />
+                <Label className={themeClasses.text.primary}>Status*</Label>
+                <Select value={editProject.status || 'active'} onValueChange={(value) => handleEditInputChange('status', value)}>
+                  <SelectTrigger className={themeClasses.input}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className={themeClasses.modal}>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="planning">Planning</SelectItem>
+                    <SelectItem value="on_hold">On Hold</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
