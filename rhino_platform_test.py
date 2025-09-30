@@ -582,8 +582,10 @@ class RhinoPlatformTester:
         """Test business logic and data model compliance"""
         try:
             # Test project-specific T&M rates (3rd Ave = $95/hr, Oregon St = $90/hr)
+            import time
+            timestamp = int(time.time())
             oregon_project_data = {
-                "name": "Oregon St T&M Project",
+                "name": f"Oregon St T&M Project {timestamp}",
                 "billing_type": "TM",
                 "tm_bill_rate": 90.0,
                 "description": "Fire Sprinkler system installation",
