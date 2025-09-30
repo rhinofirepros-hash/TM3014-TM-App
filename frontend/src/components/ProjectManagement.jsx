@@ -103,11 +103,17 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       }
 
       const projectData = {
-        ...newProject,
-        contract_amount: parseFloat(newProject.contract_amount) || 0,
-        tm_bill_rate: parseFloat(newProject.tm_bill_rate) || 95.00,
-        start_date: newProject.start_date.toISOString(),
-        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString() : null
+        name: newProject.name,
+        description: newProject.description,
+        client_company: newProject.client_company,
+        project_manager: newProject.project_manager,
+        address: newProject.address,
+        billing_type: newProject.billing_type,
+        tm_bill_rate: newProject.billing_type === 'TM' ? parseFloat(newProject.tm_bill_rate) || 95.00 : null,
+        contract_amount: parseFloat(newProject.contract_amount) || null,
+        start_date: newProject.start_date.toISOString().split('T')[0], // Date only
+        estimated_completion: newProject.estimated_completion ? newProject.estimated_completion.toISOString().split('T')[0] : null,
+        status: newProject.status
       };
 
       const response = await fetch(`${backendUrl}/api/projects`, {
