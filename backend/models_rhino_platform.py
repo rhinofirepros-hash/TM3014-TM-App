@@ -5,7 +5,7 @@ Based on specification for single-domain auth/routing + project-based T&M rates 
 
 from pydantic import BaseModel, Field
 from typing import Optional, List, Literal
-from datetime import date, datetime
+from datetime import date as Date, datetime as DateTime
 import uuid
 from decimal import Decimal
 
