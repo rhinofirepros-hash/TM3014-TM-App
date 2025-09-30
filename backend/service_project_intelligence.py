@@ -36,10 +36,14 @@ class ProjectIntelligenceLLM:
         # Load environment variables
         load_dotenv()
         
-        self.api_key = os.environ.get('EMERGENT_LLM_KEY')
-        if not self.api_key:
-            logger.warning("EMERGENT_LLM_KEY not found, LLM features will be disabled")
+        if not LLM_INTEGRATION_AVAILABLE:
+            logger.warning("LLM integration not available - using mock responses")
             self.api_key = "disabled"
+        else:
+            self.api_key = os.environ.get('EMERGENT_LLM_KEY')
+            if not self.api_key:
+                logger.warning("EMERGENT_LLM_KEY not found, LLM features will be disabled")
+                self.api_key = "disabled"
         
         # Classification thresholds
         self.AUTO_COMMIT_THRESHOLD = 0.85
