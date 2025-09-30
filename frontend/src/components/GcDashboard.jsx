@@ -162,42 +162,262 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
 
   const metrics = calculateMetrics();
   const inspectionStatus = getInspectionStatus(tasks);
-              Back to Projects
+
+  return (
+    <div className={`min-h-screen p-4 ${themeClasses.background}`}>
+      {/* Header */}
+      <div className={`${themeClasses.card} rounded-lg p-6 mb-6`}>
+        <div className="flex justify-between items-center mb-4">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            className="flex items-center gap-2 text-slate-300 hover:text-white"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={toggleTheme}
+              variant="ghost"
+              size="sm"
+              className="text-slate-300 hover:text-white"
+            >
+              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
+            
+            <Button
+              onClick={onLogout}
+              variant="ghost"
+              className="flex items-center gap-2 text-slate-300 hover:text-white"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
+        </div>
+        
+        {/* Project Header */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">{projectData.name}</h1>
+          <div className="flex justify-center items-center gap-4 text-slate-300">
+            <div className="flex items-center gap-2">
+              <Building className="w-4 h-4" />
+              <span>{projectData.client_company || 'Client Name'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span>{projectData.address || 'Project Location'}</span>
+            </div>
+            <Badge variant={projectData.status === 'active' ? 'default' : 'secondary'}>
+              {projectData.status || 'Active'}
+            </Badge>
+          </div>
+        </div>
+      </div>
+
+      {/* Project Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-slate-300 text-sm flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Total Hours
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-blue-400">{metrics.totalHours.toFixed(1)}</p>
+            <p className="text-xs text-slate-500">logged to date</p>
+          </CardContent>
+        </Card>
+        
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-slate-300 text-sm flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Active Crew
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-green-400">{metrics.uniqueInstallers}</p>
+            <p className="text-xs text-slate-500">installers working</p>
+          </CardContent>
+        </Card>
+        
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-slate-300 text-sm flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Task Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-purple-400">{metrics.completionPercentage}%</p>
+            <p className="text-xs text-slate-500">{metrics.completedTasks}/{metrics.totalTasks} completed</p>
+          </CardContent>
+        </Card>
+        
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-slate-300 text-sm flex items-center gap-2">
+              <ClipboardCheck className="w-4 h-4" />
+              Inspection Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2 mb-2">
+              {inspectionStatus.status === 'passed' && <CheckCircle className="w-5 h-5 text-green-400" />}
+              {inspectionStatus.status === 'scheduled' && <Timer className="w-5 h-5 text-yellow-400" />}
+              {inspectionStatus.status === 'pending' && <AlertCircle className="w-5 h-5 text-orange-400" />}
+              {inspectionStatus.status === 'none' && <Activity className="w-5 h-5 text-gray-400" />}
+              <span className={`font-semibold ${
+                inspectionStatus.status === 'passed' ? 'text-green-400' :
+                inspectionStatus.status === 'scheduled' ? 'text-yellow-400' :
+                inspectionStatus.status === 'pending' ? 'text-orange-400' : 'text-gray-400'
+              }`}>
+                {inspectionStatus.status === 'passed' ? 'Passed' :
+                 inspectionStatus.status === 'scheduled' ? 'Scheduled' :
+                 inspectionStatus.status === 'pending' ? 'Pending' : 'None'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">{inspectionStatus.message}</p>
           </CardContent>
         </Card>
       </div>
-    );
-  }
 
-  // Use the summary data from the API response instead of calculating from individual tags
-  const totalHours = projectData?.tmTagSummary?.totalHours || 0;
-  const totalCost = 0; // Cost data not available in summary, would need separate calculation
+      {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Activity className="w-5 h-5" />
+              Recent Work Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {metrics.recentActivity.length > 0 ? (
+              <div className="space-y-4">
+                {metrics.recentActivity.map((log, index) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-slate-800 rounded-lg">
+                    <div>
+                      <p className="text-white font-medium">{log.installer_name}</p>
+                      <p className="text-slate-400 text-sm">{log.date}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-blue-400 font-semibold">{log.hours}h</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-400">
+                <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No recent work activity</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-  return (
-    <div className={`min-h-screen ${themeClasses.background}`}>
-      {/* Header */}
-      <div className={themeClasses.header}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" onClick={onBack} className="shrink-0">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              <div className="min-w-0">
-                <h1 className={`text-xl sm:text-2xl font-bold ${themeClasses.text.primary} truncate`}>
-                  {projectData.name}
-                </h1>
-                <p className={`text-sm ${themeClasses.text.secondary}`}>
-                  {projectData.client_company}
+        {/* Task Progress */}
+        <Card className={`${themeClasses.card} border-slate-700`}>
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Project Tasks
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {tasks.length > 0 ? (
+              <div className="space-y-3">
+                {tasks.slice(0, 6).map((task, index) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-slate-800 rounded-lg">
+                    <div className="flex-1">
+                      <p className="text-white font-medium">{task.title}</p>
+                      <p className="text-slate-400 text-sm">{task.type}</p>
+                    </div>
+                    <Badge 
+                      variant={task.status === 'completed' ? 'default' : 
+                              task.status === 'in_progress' ? 'secondary' : 'outline'}
+                      className={`${
+                        task.status === 'completed' ? 'bg-green-600 text-white' :
+                        task.status === 'in_progress' ? 'bg-yellow-600 text-white' :
+                        'border-slate-600 text-slate-300'
+                      }`}
+                    >
+                      {task.status}
+                    </Badge>
+                  </div>
+                ))}
+                {tasks.length > 6 && (
+                  <p className="text-slate-400 text-sm text-center">
+                    +{tasks.length - 6} more tasks
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-400">
+                <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No tasks assigned yet</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Project Information */}
+      <Card className={`${themeClasses.card} border-slate-700`}>
+        <CardHeader>
+          <CardTitle className="text-white">Project Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <h4 className="text-slate-300 font-medium mb-2">Project Details</h4>
+              <div className="space-y-2">
+                <p className="text-slate-400 text-sm">
+                  <span className="font-medium">Type:</span> {projectData.billing_type}
+                </p>
+                <p className="text-slate-400 text-sm">
+                  <span className="font-medium">Manager:</span> {projectData.project_manager || 'Not assigned'}
+                </p>
+                <p className="text-slate-400 text-sm">
+                  <span className="font-medium">Start Date:</span> {projectData.start_date || 'Not set'}
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" onClick={toggleTheme}>
-                {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <div>
+              <h4 className="text-slate-300 font-medium mb-2">Description</h4>
+              <p className="text-slate-400 text-sm">
+                {projectData.description || 'No description available'}
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-slate-300 font-medium mb-2">Progress Summary</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400">Completion</span>
+                  <span className="text-white">{metrics.completionPercentage}%</span>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${metrics.completionPercentage}%` }}
+                  ></div>
+                </div>
+                <p className="text-slate-400 text-xs">
+                  Based on completed tasks and milestones
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
               </Button>
               <Button variant="ghost" size="sm" onClick={onLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
