@@ -327,13 +327,13 @@ const Dashboard = ({
 
             <AnimatedCard index={8} delay={900}>
               <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                   onClick={() => console.log('AI Insights coming soon')}>
+                   onClick={onProjectIntelligence}>
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
                      style={{ backgroundColor: `${themeClasses.colors.amber}60`, color: themeClasses.colors.amber }}>
-                  <Zap className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
+                  <Brain className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
                 </div>
-                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>AI Insights</h3>
-                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Smart project analytics (Coming Soon)</p>
+                <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Project Intelligence</h3>
+                <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>AI-powered email & project automation</p>
               </div>
             </AnimatedCard>
 
