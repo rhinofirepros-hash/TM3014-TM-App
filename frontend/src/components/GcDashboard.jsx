@@ -85,6 +85,8 @@ const GcDashboard = ({ selectedProject, onBack, onLogout }) => {
     } finally {
       setLoading(false);
     }
+  };
+
   // Calculate project metrics (non-financial)
   const calculateMetrics = () => {
     const totalHours = timeLogs.reduce((sum, log) => sum + (log.hours || 0), 0);
