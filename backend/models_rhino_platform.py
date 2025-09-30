@@ -56,11 +56,11 @@ class Project(BaseModel):
     project_manager: Optional[str] = None
     address: Optional[str] = None
     status: str = Field("active", description="Project status")
-    start_date: Optional[date] = None
-    estimated_completion: Optional[date] = None
+    start_date: Optional[Date] = None
+    estimated_completion: Optional[Date] = None
     contract_amount: Optional[float] = None
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now)
+    created_at: DateTime = Field(default_factory=DateTime.now)
+    updated_at: DateTime = Field(default_factory=DateTime.now)
 
 class ProjectCreate(BaseModel):
     name: str
