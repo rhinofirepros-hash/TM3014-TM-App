@@ -173,7 +173,7 @@ const ProjectManagement = ({ onBack, onViewReports }) => {
       const projectData = {
         ...editProject,
         contract_amount: parseFloat(editProject.contract_amount) || 0,
-        labor_rate: parseFloat(editProject.labor_rate) || 95,
+        tm_bill_rate: parseFloat(editProject.tm_bill_rate) || 95.00,
         start_date: editProject.start_date,
         estimated_completion: editProject.estimated_completion
       };
