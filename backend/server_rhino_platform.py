@@ -1,9 +1,9 @@
 """
 Rhino Platform Backend Server
-Implements single-domain auth/routing + project-based T&M rates + cashflow system
+Implements single-domain auth/routing + project-based T&M rates + cashflow system + Project Intelligence
 """
 
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -15,7 +15,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime, date
 import asyncio
 
-# Import new Rhino Platform models
+# Import Rhino Platform models
 from models_rhino_platform import (
     Installer, InstallerCreate, InstallerUpdate,
     Project, ProjectCreate, ProjectUpdate,
@@ -26,6 +26,19 @@ from models_rhino_platform import (
     TimeLogEffective, ProjectTMTotals, CashBalance,
     validate_project_tm_rate, validate_timelog_project_compatibility
 )
+
+# Import Project Intelligence models
+from models_project_intelligence import (
+    InboundEmail, InboundEmailCreate, EmailAttachment,
+    ProjectCandidate, Task, TaskCreate,
+    Invoice, InvoiceCreate,
+    ProjectProgress, ProjectProgressCreate,
+    ReviewQueue, ReviewQueueCreate,
+    EmailExtractionResult, ProjectIntelligence, SystemIntelligence
+)
+
+# Import LLM service
+from service_project_intelligence import intelligence_llm
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
