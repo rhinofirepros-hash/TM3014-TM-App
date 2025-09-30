@@ -496,7 +496,7 @@ const CrewManagement = ({ onBack }) => {
                             {member.position}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
-                            ${(member.hourly_rate || 0).toFixed(2)}
+                            ${(member.cost_rate || 0).toFixed(2)}
                           </TableCell>
                           <TableCell className={themeClasses.text.primary}>
                             {format(new Date(member.hire_date), 'MM/dd/yyyy')}
