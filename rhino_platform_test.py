@@ -609,7 +609,7 @@ class RhinoPlatformTester:
             
             # Test enum validations
             invalid_billing_type = {
-                "name": "Invalid Billing Type Project",
+                "name": f"Invalid Billing Type Project {timestamp}",
                 "billing_type": "INVALID",
                 "description": "This should fail"
             }
