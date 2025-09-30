@@ -39,7 +39,7 @@ class InstallerUpdate(BaseModel):
     cost_rate: Optional[float] = None
     position: Optional[str] = None
     active: Optional[bool] = None
-    hire_date: Optional[date] = None
+    hire_date: Optional[Date] = None
     phone: Optional[str] = None
     email: Optional[str] = None
 
