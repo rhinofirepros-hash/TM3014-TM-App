@@ -109,10 +109,14 @@ async def get_user_role(credentials: HTTPAuthorizationCredentials = Depends(secu
 @app.on_event("startup")
 async def startup_event():
     """Initialize database collections and seed data"""
-    logger.info("Starting Rhino Platform API...")
+    logger.info("Starting Rhino Platform API with Project Intelligence...")
     
     # Initialize collections
-    collections = ["installers", "projects", "time_logs", "per_diem_hotels", "cashflows", "settings"]
+    collections = [
+        "installers", "projects", "time_logs", "per_diem_hotels", "cashflows", "settings",
+        "inbound_emails", "email_attachments", "project_candidates", "tasks",
+        "invoices", "project_progress", "review_queue"
+    ]
     for collection in collections:
         await db[collection].create_index("id")
     
@@ -149,7 +153,7 @@ async def startup_event():
         
         logger.info("Seeded example T&M projects")
     
-    logger.info("Rhino Platform API started successfully")
+    logger.info("Rhino Platform API with Project Intelligence started successfully")
 
 @app.on_event("shutdown")
 async def shutdown_event():
