@@ -438,13 +438,8 @@ async def create_timelog(timelog_data: TimeLogCreate, user_role: str = Depends(g
     
     timelog = TimeLog(**timelog_data.dict())
     
-    # Convert date to datetime for MongoDB compatibility
-    timelog_dict = timelog.dict()
-    if isinstance(timelog_dict['date'], date):
-        from datetime import datetime, timezone
-        timelog_dict['date'] = datetime.combine(timelog_dict['date'], datetime.min.time()).replace(tzinfo=timezone.utc)
-    
-    await db.time_logs.insert_one(timelog_dict)
+    # Use model_dump with JSON mode for proper date serialization
+    await db.time_logs.insert_one(timelog.model_dump(mode="json"))
     
     logger.info(f"Created time log: {timelog.hours}h for {installer['name']} on {project['name']}")
     return timelog
