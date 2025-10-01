@@ -155,7 +155,7 @@ async def startup_event():
         
         for project_data in example_projects:
             project = Project(**project_data.dict())
-            await db.projects.insert_one(project.dict())
+            await db.projects.insert_one(project.model_dump(mode="json"))
         
         logger.info("Seeded example T&M projects")
     
