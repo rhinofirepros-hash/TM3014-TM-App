@@ -461,7 +461,16 @@ async def create_tm_tag(timelog_data: TimeLogCreate, user_role: str = Depends(ge
 @app.get("/api/tm-tags/{tm_tag_id}", response_model=TimeLog, tags=["T&M Tags"])
 async def get_tm_tag(tm_tag_id: str, user_role: str = Depends(get_user_role)):
     """Get specific T&M tag (alias for get_timelog)"""
-    return await get_timelog(tm_tag_id, user_role)
+    # Get the timelog data
+    timelog = await db.time_logs.find_one({"id": tm_tag_id})
+    if not timelog:
+        raise HTTPException(status_code=404, detail="T&M tag not found")
+    
+    # Remove MongoDB _id field if present
+    if "_id" in timelog:
+        del timelog["_id"]
+    
+    return TimeLog(**timelog)
 
 # =============================================================================
 # PDF GENERATION ENDPOINTS
