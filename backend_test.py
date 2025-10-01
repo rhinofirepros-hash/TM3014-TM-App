@@ -131,12 +131,10 @@ if installers_response and installers_response.status_code == 200:
 test_timelog = {
     "project_id": project_id or str(uuid.uuid4()),
     "installer_id": installer_id or str(uuid.uuid4()),
-    "date": datetime.now(timezone.utc).isoformat(),
+    "date": datetime.now().strftime('%Y-%m-%d'),  # Date format, not datetime
     "hours": 8.5,
-    "rate": 95.0,
-    "description": "T&M Tags Compatibility Test - Backend endpoint verification",
-    "labor_cost": 807.5,
-    "billable": 807.5
+    "notes": "T&M Tags Compatibility Test - Backend endpoint verification",
+    "bill_rate_override": 95.0
 }
 
 response, error = make_request("POST", "/tm-tags", test_timelog)
