@@ -307,7 +307,7 @@ async def get_installer(installer_id: str, user_role: str = Depends(get_user_rol
 async def create_installer(installer_data: InstallerCreate, user_role: str = Depends(get_user_role)):
     """Create new installer"""
     installer = Installer(**installer_data.dict())
-    await db.installers.insert_one(installer.dict())
+    await db.installers.insert_one(installer.model_dump(mode="json"))
     
     logger.info(f"Created installer: {installer.name} (${installer.cost_rate}/hr)")
     return installer
