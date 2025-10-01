@@ -287,7 +287,7 @@ regression_installer = {
     "position": "Regression Tester",
     "phone": "555-REGRESS",
     "email": "regression@example.com",
-    "hire_date": datetime.now().isoformat()
+    "hire_date": datetime.now().date().isoformat()
 }
 
 response, error = make_request("POST", "/installers", regression_installer)
