@@ -747,8 +747,8 @@ const CrewManagement = ({ onBack }) => {
                 <Input
                   type="number"
                   step="0.01"
-                  value={editCrewMember.hourly_rate || ''}
-                  onChange={(e) => handleEditInputChange('hourly_rate', e.target.value)}
+                  value={editCrewMember.cost_rate || ''}
+                  onChange={(e) => handleEditInputChange('cost_rate', e.target.value)}
                   className={themeClasses.input}
                 />
                 <p className={`text-xs ${themeClasses.text.secondary}`}>
