@@ -746,10 +746,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "T&M Form Add Button Functionality testing completed successfully - all 4 Add buttons verified working"
-  stuck_tasks: []
+    - "Production Backend API Structure Mismatch"
+    - "Production PDF Functionality"
+  stuck_tasks:
+    - "Production Backend API Structure Mismatch"
+    - "Production PDF Functionality"
   test_all: false
-  test_priority: "comprehensive_testing_completed"
+  test_priority: "critical_production_issues"
 
 frontend:
   - task: "Vision UI Theme Integration"
