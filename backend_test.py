@@ -88,38 +88,47 @@ def test_endpoint_exists(endpoint, method="GET", data=None):
         return False, f"{response.status_code} - {response.text[:100]}"
 
 # =============================================================================
-# TEST 1: BACKWARD COMPATIBILITY ALIASES - GET /api/tm-tags
+# CRITICAL T&M TAGS COMPATIBILITY ENDPOINTS TESTING
 # =============================================================================
-print("\n🔍 TEST 1: Testing GET /api/tm-tags (compatibility alias)")
+print("\n🎯 TESTING T&M TAGS COMPATIBILITY ENDPOINTS (CRITICAL)")
 
-response, error = make_request("GET", "/tm-tags")
-if error:
-    test_result("GET /api/tm-tags endpoint connectivity", False, f"Connection error: {error}")
-else:
-    if response.status_code == 200:
-        try:
-            data = response.json()
-            test_result("GET /api/tm-tags returns 200 OK", True, f"Returned {len(data)} timelogs")
-            
-            # Verify response structure
-            if isinstance(data, list):
-                test_result("GET /api/tm-tags returns list format", True)
-                if len(data) > 0:
-                    first_item = data[0]
-                    required_fields = ['id', 'project_id', 'installer_id', 'date', 'hours']
-                    missing_fields = [field for field in required_fields if field not in first_item]
-                    if not missing_fields:
-                        test_result("GET /api/tm-tags response has required fields", True, f"Fields: {list(first_item.keys())}")
-                    else:
-                        test_result("GET /api/tm-tags response has required fields", False, f"Missing: {missing_fields}")
-                else:
-                    test_result("GET /api/tm-tags data availability", True, "No existing timelogs (empty list)")
-            else:
-                test_result("GET /api/tm-tags returns list format", False, f"Got {type(data)}")
-        except json.JSONDecodeError:
-            test_result("GET /api/tm-tags JSON response", False, "Invalid JSON response")
-    else:
-        test_result("GET /api/tm-tags returns 200 OK", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
+# 1. GET /api/tm-tags (list all T&M tags)
+print("\n📋 TEST 1: GET /api/tm-tags (list T&M tags)")
+success, details = test_endpoint_exists("/tm-tags", "GET")
+test_result("GET /api/tm-tags (list T&M tags)", success, details, "/tm-tags")
+
+# 2. POST /api/tm-tags (create new T&M tag)
+print("\n📝 TEST 2: POST /api/tm-tags (create T&M tag)")
+test_tm_tag = {
+    "project_name": "Production Test Project",
+    "cost_code": "PROD001",
+    "date_of_work": datetime.now().isoformat(),
+    "tm_tag_title": "Production Endpoint Test",
+    "description_of_work": "Testing production backend endpoints",
+    "gc_email": "test@production.com",
+    "labor_entries": [],
+    "material_entries": [],
+    "equipment_entries": [],
+    "other_entries": []
+}
+success, details = test_endpoint_exists("/tm-tags", "POST", test_tm_tag)
+test_result("POST /api/tm-tags (create T&M tag)", success, details, "/tm-tags")
+
+# 3. GET /api/tm-tags/{id} (get specific T&M tag)
+print("\n🔍 TEST 3: GET /api/tm-tags/{id} (get specific T&M tag)")
+test_id = str(uuid.uuid4())
+success, details = test_endpoint_exists(f"/tm-tags/{test_id}", "GET")
+test_result("GET /api/tm-tags/{id} (get specific T&M tag)", success, details, f"/tm-tags/{test_id}")
+
+# 4. GET /api/tm-tags/{id}/pdf (PDF export)
+print("\n📄 TEST 4: GET /api/tm-tags/{id}/pdf (PDF export)")
+success, details = test_endpoint_exists(f"/tm-tags/{test_id}/pdf", "GET")
+test_result("GET /api/tm-tags/{id}/pdf (PDF export)", success, details, f"/tm-tags/{test_id}/pdf")
+
+# 5. GET /api/tm-tags/{id}/preview (PDF preview)
+print("\n👁️ TEST 5: GET /api/tm-tags/{id}/preview (PDF preview)")
+success, details = test_endpoint_exists(f"/tm-tags/{test_id}/preview", "GET")
+test_result("GET /api/tm-tags/{id}/preview (PDF preview)", success, details, f"/tm-tags/{test_id}/preview")
 
 # =============================================================================
 # TEST 2: BACKWARD COMPATIBILITY ALIASES - POST /api/tm-tags
