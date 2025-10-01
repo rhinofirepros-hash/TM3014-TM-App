@@ -330,8 +330,31 @@ async def update_installer(
     updated_installer = await db.installers.find_one({"id": installer_id})
     return Installer(**updated_installer)
 
+@app.delete("/api/installers/{installer_id}", tags=["Installers"])
+async def delete_installer(installer_id: str, user_role: str = Depends(get_user_role)):
+    """Delete installer"""
+    installer = await db.installers.find_one({"id": installer_id})
+    if not installer:
+        raise HTTPException(status_code=404, detail="Installer not found")
+    
+    # Check if installer has any associated time logs
+    timelog_count = await db.time_logs.count_documents({"installer_id": installer_id})
+    if timelog_count > 0:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Cannot delete installer with {timelog_count} associated time logs. Remove time logs first."
+        )
+    
+    # Delete the installer
+    result = await db.installers.delete_one({"id": installer_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Installer not found")
+    
+    logger.info(f"Deleted installer: {installer['name']} ({installer_id})")
+    return {"message": "Installer deleted successfully", "installer_id": installer_id}
+
 # =============================================================================
-# TIME LOG ENDPOINTS
+# TIME LOG ENDPOINTS  
 # =============================================================================
 
 @app.get("/api/timelogs", response_model=List[TimeLogEffective], tags=["Time Logs"])
