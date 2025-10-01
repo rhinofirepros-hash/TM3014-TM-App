@@ -112,7 +112,7 @@ test_installer = {
     "position": "Test Electrician",
     "phone": "555-DELETE",
     "email": "delete.test@example.com",
-    "hire_date": datetime.now().isoformat()
+    "hire_date": datetime.now().date().isoformat()
 }
 
 response, error = make_request("POST", "/installers", test_installer)
