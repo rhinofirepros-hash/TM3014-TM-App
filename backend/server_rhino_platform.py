@@ -243,7 +243,7 @@ async def create_project(project_data: ProjectCreate, user_role: str = Depends(g
         raise HTTPException(status_code=422, detail="Project name must be unique")
     
     project = Project(**project_data.dict())
-    await db.projects.insert_one(project.dict())
+    await db.projects.insert_one(project.model_dump(mode="json"))
     
     logger.info(f"Created project: {project.name} ({project.billing_type})")
     return project
@@ -764,7 +764,7 @@ async def approve_project_candidate(candidate_id: str, user_role: str = Depends(
         raise HTTPException(status_code=422, detail="T&M projects must have tm_bill_rate specified")
     
     project = Project(**project_data.dict())
-    await db.projects.insert_one(project.dict())
+    await db.projects.insert_one(project.model_dump(mode="json"))
     
     # Update candidate status
     await db.project_candidates.update_one(
