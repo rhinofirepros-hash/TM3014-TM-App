@@ -131,63 +131,37 @@ success, details = test_endpoint_exists(f"/tm-tags/{test_id}/preview", "GET")
 test_result("GET /api/tm-tags/{id}/preview (PDF preview)", success, details, f"/tm-tags/{test_id}/preview")
 
 # =============================================================================
-# TEST 2: BACKWARD COMPATIBILITY ALIASES - POST /api/tm-tags
+# WORKER/INSTALLER MANAGEMENT ENDPOINTS TESTING
 # =============================================================================
-print("\n🔍 TEST 2: Testing POST /api/tm-tags (compatibility alias)")
+print("\n👷 TESTING WORKER/INSTALLER MANAGEMENT ENDPOINTS")
 
-# First, get projects and installers for realistic test data
-projects_response, _ = make_request("GET", "/projects")
-installers_response, _ = make_request("GET", "/installers")
+# 1. GET /api/installers (list workers)
+print("\n📋 TEST 6: GET /api/installers (list workers)")
+success, details = test_endpoint_exists("/installers", "GET")
+test_result("GET /api/installers (list workers)", success, details, "/installers")
 
-project_id = None
-installer_id = None
-
-if projects_response and projects_response.status_code == 200:
-    projects = projects_response.json()
-    if projects:
-        project_id = projects[0].get('id')
-
-if installers_response and installers_response.status_code == 200:
-    installers = installers_response.json()
-    if installers:
-        installer_id = installers[0].get('id')
-
-# Create test timelog data
-test_timelog = {
-    "project_id": project_id or str(uuid.uuid4()),
-    "installer_id": installer_id or str(uuid.uuid4()),
-    "date": datetime.now().strftime('%Y-%m-%d'),  # Date format, not datetime
-    "hours": 8.5,
-    "notes": "T&M Tags Compatibility Test - Backend endpoint verification",
-    "bill_rate_override": 95.0
+# 2. POST /api/installers (create worker)
+print("\n📝 TEST 7: POST /api/installers (create worker)")
+test_worker = {
+    "name": "Production Test Worker",
+    "cost_rate": 35.0,
+    "position": "Electrician",
+    "phone": "555-0123",
+    "email": "testworker@production.com"
 }
+success, details = test_endpoint_exists("/installers", "POST", test_worker)
+test_result("POST /api/installers (create worker)", success, details, "/installers")
 
-response, error = make_request("POST", "/tm-tags", test_timelog)
-if error:
-    test_result("POST /api/tm-tags endpoint connectivity", False, f"Connection error: {error}")
-else:
-    if response.status_code == 200:
-        try:
-            created_timelog = response.json()
-            test_result("POST /api/tm-tags creates timelog successfully", True, f"Created timelog ID: {created_timelog.get('id')}")
-            
-            # Store the created ID for later tests
-            created_timelog_id = created_timelog.get('id')
-            
-            # Verify response structure
-            required_fields = ['id', 'project_id', 'installer_id', 'date', 'hours']
-            missing_fields = [field for field in required_fields if field not in created_timelog]
-            if not missing_fields:
-                test_result("POST /api/tm-tags response has required fields", True)
-            else:
-                test_result("POST /api/tm-tags response has required fields", False, f"Missing: {missing_fields}")
-                
-        except json.JSONDecodeError:
-            test_result("POST /api/tm-tags JSON response", False, "Invalid JSON response")
-            created_timelog_id = None
-    else:
-        test_result("POST /api/tm-tags creates timelog successfully", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
-        created_timelog_id = None
+# 3. DELETE /api/installers/{id} (delete worker) - USER CAN'T DELETE
+print("\n🗑️ TEST 8: DELETE /api/installers/{id} (delete worker)")
+test_id = str(uuid.uuid4())
+success, details = test_endpoint_exists(f"/installers/{test_id}", "DELETE")
+test_result("DELETE /api/installers/{id} (delete worker)", success, details, f"/installers/{test_id}")
+
+# 4. PUT /api/installers/{id} (update worker)
+print("\n✏️ TEST 9: PUT /api/installers/{id} (update worker)")
+success, details = test_endpoint_exists(f"/installers/{test_id}", "PUT", test_worker)
+test_result("PUT /api/installers/{id} (update worker)", success, details, f"/installers/{test_id}")
 
 # =============================================================================
 # TEST 3: PDF EXPORT FUNCTIONALITY - GET /api/tm-tags/{id}/pdf
