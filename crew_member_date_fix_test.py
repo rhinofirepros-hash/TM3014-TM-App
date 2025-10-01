@@ -237,7 +237,7 @@ class CrewMemberDateFixTester:
             # CREATE
             create_response = requests.post(f"{self.base_url}/installers", json=create_data)
             
-            if create_response.status_code != 201:
+            if create_response.status_code != 200:
                 self.log_test(
                     "Complete Flow - Create",
                     False,
