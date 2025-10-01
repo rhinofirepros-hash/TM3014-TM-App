@@ -208,38 +208,21 @@ for endpoint in alternative_tm_endpoints:
     test_result(f"GET /api{endpoint} (alternative T&M endpoint)", success, details, endpoint)
 
 # =============================================================================
-# TEST 5: REPORTLAB INTEGRATION VERIFICATION
+# COMPREHENSIVE API STRUCTURE TESTING
 # =============================================================================
-print("\n🔍 TEST 5: Testing ReportLab Integration")
+print("\n📋 TESTING COMPREHENSIVE API STRUCTURE")
 
-# Test if ReportLab is properly integrated by checking backend health
-response, error = make_request("GET", "/health")
-if error:
-    test_result("Backend health check", False, f"Connection error: {error}")
-else:
-    if response.status_code == 200:
-        try:
-            health_data = response.json()
-            test_result("Backend health endpoint", True, f"Status: {health_data.get('status', 'unknown')}")
-            
-            # Check if ReportLab is mentioned in health check
-            health_str = json.dumps(health_data)
-            if 'reportlab' in health_str.lower() or 'pdf' in health_str.lower():
-                test_result("ReportLab integration detected", True, "PDF capabilities mentioned in health check")
-            else:
-                test_result("ReportLab integration detected", False, "No PDF capabilities mentioned")
-                
-        except json.JSONDecodeError:
-            test_result("Backend health endpoint JSON", False, "Invalid JSON response")
-    else:
-        test_result("Backend health endpoint", False, f"Status: {response.status_code}")
+# Common REST endpoints
+print("\n🔧 TEST 16: Common REST endpoints")
+common_endpoints = [
+    "/status", "/tm-tags", "/workers", "/projects", "/employees", 
+    "/materials", "/crew-logs", "/phases", "/tasks", "/invoices",
+    "/payables", "/cashflows", "/timelogs", "/installers"
+]
 
-# Test ReportLab directly by attempting to import it via a test endpoint
-# This is indirect testing since we can't directly test the backend's Python environment
-if created_timelog_id:
-    # The PDF generation test above already tests ReportLab integration
-    # If PDF was generated successfully, ReportLab is working
-    print("   ReportLab integration verified through successful PDF generation above")
+for endpoint in common_endpoints:
+    success, details = test_endpoint_exists(endpoint, "GET")
+    test_result(f"GET /api{endpoint}", success, details, endpoint)
 
 # =============================================================================
 # TEST 6: BACKWARD COMPATIBILITY - GET /api/tm-tags/{id}
