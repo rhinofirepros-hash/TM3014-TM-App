@@ -24,29 +24,38 @@ print(f"📍 Production Backend URL: {PRODUCTION_BASE_URL}")
 print(f"📍 Production API URL: {PRODUCTION_API_URL}")
 print("=" * 80)
 
-# Test counters
+# Test tracking
 total_tests = 0
 passed_tests = 0
 failed_tests = 0
+missing_endpoints = []
+working_endpoints = []
+failed_endpoints = []
 
-def test_result(test_name, success, details=""):
+def test_result(test_name, success, details="", endpoint=None):
     global total_tests, passed_tests, failed_tests
     total_tests += 1
     if success:
         passed_tests += 1
         print(f"✅ {test_name}")
-        if details:
-            print(f"   {details}")
+        if endpoint:
+            working_endpoints.append(endpoint)
     else:
         failed_tests += 1
         print(f"❌ {test_name}")
-        if details:
-            print(f"   {details}")
+        if endpoint:
+            if "404" in str(details) or "Not Found" in str(details):
+                missing_endpoints.append(endpoint)
+            else:
+                failed_endpoints.append(endpoint)
+    
+    if details:
+        print(f"   {details}")
 
 def make_request(method, endpoint, data=None, headers=None):
     """Make HTTP request with error handling"""
     try:
-        url = f"{API_URL}{endpoint}"
+        url = f"{PRODUCTION_API_URL}{endpoint}"
         if headers is None:
             headers = {"Content-Type": "application/json"}
         
@@ -64,6 +73,19 @@ def make_request(method, endpoint, data=None, headers=None):
         return response, None
     except requests.exceptions.RequestException as e:
         return None, str(e)
+
+def test_endpoint_exists(endpoint, method="GET", data=None):
+    """Test if endpoint exists and is accessible"""
+    response, error = make_request(method, endpoint, data)
+    if error:
+        return False, f"Connection error: {error}"
+    
+    if response.status_code == 404:
+        return False, f"404 Not Found - Endpoint missing"
+    elif response.status_code in [200, 201, 422, 400]:  # 422/400 means endpoint exists but validation failed
+        return True, f"{response.status_code} - Endpoint exists"
+    else:
+        return False, f"{response.status_code} - {response.text[:100]}"
 
 # =============================================================================
 # TEST 1: BACKWARD COMPATIBILITY ALIASES - GET /api/tm-tags
