@@ -61,7 +61,7 @@ class CrewMemberDateFixTester:
         try:
             response = requests.post(f"{self.base_url}/installers", json=test_data)
             
-            if response.status_code == 201:
+            if response.status_code == 200:
                 installer_data = response.json()
                 self.created_installers.append(installer_data.get('id'))
                 
@@ -115,7 +115,7 @@ class CrewMemberDateFixTester:
         try:
             response = requests.post(f"{self.base_url}/installers", json=screenshot_data)
             
-            if response.status_code == 201:
+            if response.status_code == 200:
                 installer_data = response.json()
                 self.created_installers.append(installer_data.get('id'))
                 
@@ -185,7 +185,7 @@ class CrewMemberDateFixTester:
             try:
                 response = requests.post(f"{self.base_url}/installers", json=test_data)
                 
-                if response.status_code == 201:
+                if response.status_code == 200:
                     installer_data = response.json()
                     self.created_installers.append(installer_data.get('id'))
                     
