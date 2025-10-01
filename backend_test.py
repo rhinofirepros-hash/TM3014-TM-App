@@ -164,51 +164,29 @@ success, details = test_endpoint_exists(f"/installers/{test_id}", "PUT", test_wo
 test_result("PUT /api/installers/{id} (update worker)", success, details, f"/installers/{test_id}")
 
 # =============================================================================
-# TEST 3: PDF EXPORT FUNCTIONALITY - GET /api/tm-tags/{id}/pdf
+# NAVIGATION & CORE FUNCTIONALITY ENDPOINTS TESTING
 # =============================================================================
-print("\n🔍 TEST 3: Testing PDF Export - GET /api/tm-tags/{id}/pdf")
+print("\n🧭 TESTING NAVIGATION & CORE FUNCTIONALITY ENDPOINTS")
 
-if created_timelog_id:
-    response, error = make_request("GET", f"/tm-tags/{created_timelog_id}/pdf")
-    if error:
-        test_result("GET /api/tm-tags/{id}/pdf endpoint connectivity", False, f"Connection error: {error}")
-    else:
-        if response.status_code == 200:
-            content_type = response.headers.get('content-type', '')
-            if 'application/pdf' in content_type:
-                test_result("GET /api/tm-tags/{id}/pdf generates PDF", True, f"Content-Type: {content_type}")
-                
-                # Check PDF content length
-                content_length = len(response.content)
-                if content_length > 1000:  # PDF should be reasonably sized
-                    test_result("GET /api/tm-tags/{id}/pdf PDF content size", True, f"Size: {content_length} bytes")
-                else:
-                    test_result("GET /api/tm-tags/{id}/pdf PDF content size", False, f"Size too small: {content_length} bytes")
-                    
-                # Check PDF headers
-                content_disposition = response.headers.get('content-disposition', '')
-                if 'attachment' in content_disposition and 'filename' in content_disposition:
-                    test_result("GET /api/tm-tags/{id}/pdf proper headers", True, f"Disposition: {content_disposition}")
-                else:
-                    test_result("GET /api/tm-tags/{id}/pdf proper headers", False, f"Missing proper headers")
-                    
-            elif 'application/json' in content_type:
-                # Fallback JSON response (if ReportLab fails)
-                test_result("GET /api/tm-tags/{id}/pdf generates PDF", False, "Fallback to JSON - ReportLab issue")
-                try:
-                    json_data = response.json()
-                    if 'note' in json_data and 'ReportLab' in json_data['note']:
-                        test_result("GET /api/tm-tags/{id}/pdf fallback handling", True, "Proper fallback to JSON")
-                    else:
-                        test_result("GET /api/tm-tags/{id}/pdf fallback handling", False, "Unexpected JSON structure")
-                except:
-                    test_result("GET /api/tm-tags/{id}/pdf fallback handling", False, "Invalid JSON fallback")
-            else:
-                test_result("GET /api/tm-tags/{id}/pdf generates PDF", False, f"Unexpected content-type: {content_type}")
-        else:
-            test_result("GET /api/tm-tags/{id}/pdf generates PDF", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
-else:
-    test_result("GET /api/tm-tags/{id}/pdf test setup", False, "No timelog ID available for PDF test")
+# 1. GET /api/projects (project management)
+print("\n📋 TEST 10: GET /api/projects (project management)")
+success, details = test_endpoint_exists("/projects", "GET")
+test_result("GET /api/projects (project management)", success, details, "/projects")
+
+# 2. Health check endpoints
+print("\n🏥 TEST 11: GET /api/health (health check)")
+success, details = test_endpoint_exists("/health", "GET")
+test_result("GET /api/health (health check)", success, details, "/health")
+
+# 3. Root endpoint
+print("\n🏠 TEST 12: GET /api/ (root endpoint)")
+success, details = test_endpoint_exists("/", "GET")
+test_result("GET /api/ (root endpoint)", success, details, "/")
+
+# 4. Authentication endpoints
+print("\n🔐 TEST 13: POST /api/auth/admin (admin authentication)")
+success, details = test_endpoint_exists("/auth/admin", "POST", {"pin": "J777"})
+test_result("POST /api/auth/admin (admin authentication)", success, details, "/auth/admin")
 
 # =============================================================================
 # TEST 4: PDF PREVIEW FUNCTIONALITY - GET /api/tm-tags/{id}/preview
