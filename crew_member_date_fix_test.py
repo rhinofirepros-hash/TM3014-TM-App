@@ -348,12 +348,21 @@ class CrewMemberDateFixTester:
                     installer_data = no_date_response.json()
                     self.created_installers.append(installer_data.get('id'))
                     
-                    self.log_test(
-                        "Regression - No Date Field",
-                        True,
-                        "Successfully created installer without hire_date",
-                        {"installer_data": installer_data}
-                    )
+                    # Check that hire_date is null when not provided
+                    if installer_data.get('hire_date') is None:
+                        self.log_test(
+                            "Regression - No Date Field",
+                            True,
+                            "Successfully created installer without hire_date (hire_date=null)",
+                            {"installer_data": installer_data}
+                        )
+                    else:
+                        self.log_test(
+                            "Regression - No Date Field",
+                            False,
+                            f"Expected hire_date=null, got: {installer_data.get('hire_date')}",
+                            {"installer_data": installer_data}
+                        )
                 else:
                     self.log_test(
                         "Regression - No Date Field",
