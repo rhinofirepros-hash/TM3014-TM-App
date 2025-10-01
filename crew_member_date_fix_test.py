@@ -344,7 +344,7 @@ class CrewMemberDateFixTester:
                 
                 no_date_response = requests.post(f"{self.base_url}/installers", json=no_date_data)
                 
-                if no_date_response.status_code == 201:
+                if no_date_response.status_code == 200:
                     installer_data = no_date_response.json()
                     self.created_installers.append(installer_data.get('id'))
                     
