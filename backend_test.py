@@ -225,38 +225,69 @@ for endpoint in common_endpoints:
     test_result(f"GET /api{endpoint}", success, details, endpoint)
 
 # =============================================================================
-# TEST 6: BACKWARD COMPATIBILITY - GET /api/tm-tags/{id}
+# GENERATE COMPREHENSIVE SUMMARY REPORT
 # =============================================================================
-print("\n🔍 TEST 6: Testing GET /api/tm-tags/{id} (compatibility alias)")
-
-if created_timelog_id:
-    response, error = make_request("GET", f"/tm-tags/{created_timelog_id}")
-    if error:
-        test_result("GET /api/tm-tags/{id} endpoint connectivity", False, f"Connection error: {error}")
+def generate_summary_report():
+    """Generate comprehensive summary report"""
+    print("\n" + "=" * 80)
+    print("📊 PRODUCTION BACKEND ENDPOINT VERIFICATION SUMMARY")
+    print("=" * 80)
+    
+    success_rate = (passed_tests / total_tests * 100) if total_tests > 0 else 0
+    
+    print(f"📈 OVERALL SUCCESS RATE: {passed_tests}/{total_tests} ({success_rate:.1f}%)")
+    
+    print(f"\n✅ WORKING ENDPOINTS ({len(working_endpoints)}):")
+    for endpoint in sorted(set(working_endpoints)):
+        print(f"   • {endpoint}")
+    
+    print(f"\n❌ MISSING ENDPOINTS ({len(missing_endpoints)}):")
+    for endpoint in sorted(set(missing_endpoints)):
+        print(f"   • {endpoint} (404 Not Found)")
+    
+    print(f"\n⚠️  FAILED ENDPOINTS ({len(failed_endpoints)}):")
+    for endpoint in sorted(set(failed_endpoints)):
+        print(f"   • {endpoint}")
+    
+    # Critical analysis
+    print(f"\n🎯 CRITICAL ISSUES IDENTIFIED:")
+    
+    critical_missing = []
+    if "/tm-tags" in missing_endpoints:
+        critical_missing.append("T&M Tags endpoints missing - causes 'offline mode'")
+    if "/installers" in missing_endpoints:
+        critical_missing.append("Installer endpoints missing - can't manage crew")
+    if any("pdf" in ep for ep in missing_endpoints):
+        critical_missing.append("PDF endpoints missing - causes 'black screen' on preview")
+    
+    if critical_missing:
+        for issue in critical_missing:
+            print(f"   🚨 {issue}")
     else:
-        if response.status_code == 200:
-            try:
-                timelog_data = response.json()
-                test_result("GET /api/tm-tags/{id} retrieves timelog", True, f"Retrieved timelog ID: {timelog_data.get('id')}")
-                
-                # Verify it's the same timelog we created
-                if timelog_data.get('id') == created_timelog_id:
-                    test_result("GET /api/tm-tags/{id} returns correct timelog", True)
-                else:
-                    test_result("GET /api/tm-tags/{id} returns correct timelog", False, f"ID mismatch: expected {created_timelog_id}, got {timelog_data.get('id')}")
-                    
-                # Verify data integrity
-                if timelog_data.get('hours') == test_timelog['hours']:
-                    test_result("GET /api/tm-tags/{id} data integrity", True, "Hours match original data")
-                else:
-                    test_result("GET /api/tm-tags/{id} data integrity", False, f"Hours mismatch: expected {test_timelog['hours']}, got {timelog_data.get('hours')}")
-                    
-            except json.JSONDecodeError:
-                test_result("GET /api/tm-tags/{id} JSON response", False, "Invalid JSON response")
-        else:
-            test_result("GET /api/tm-tags/{id} retrieves timelog", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
-else:
-    test_result("GET /api/tm-tags/{id} test setup", False, "No timelog ID available for retrieval test")
+        print("   ✅ No critical missing endpoints identified")
+    
+    # Root cause analysis
+    print(f"\n🔍 ROOT CAUSE ANALYSIS:")
+    if len(missing_endpoints) > len(working_endpoints):
+        print("   🚨 MAJOR ISSUE: More endpoints missing than working")
+        print("   💡 LIKELY CAUSE: Wrong server deployment or API structure mismatch")
+    elif "/tm-tags" in missing_endpoints and "/timelogs" in working_endpoints:
+        print("   🚨 API STRUCTURE MISMATCH: Frontend expects /tm-tags but backend has /timelogs")
+        print("   💡 SOLUTION: Add compatibility aliases or update frontend")
+    elif len(missing_endpoints) == 0:
+        print("   ✅ All tested endpoints exist - issue may be in request/response format")
+    else:
+        print(f"   ⚠️  Partial implementation: {len(missing_endpoints)} endpoints missing")
+    
+    print(f"\n📋 PRODUCTION READINESS: {success_rate:.1f}%")
+    if success_rate >= 90:
+        print("   ✅ READY FOR PRODUCTION")
+    elif success_rate >= 70:
+        print("   ⚠️  MOSTLY READY - Minor fixes needed")
+    else:
+        print("   🚨 NOT READY - Major functionality gaps")
+
+generate_summary_report()
 
 # =============================================================================
 # TEST 7: VERIFY TIMELOGS ENDPOINT STILL WORKS
