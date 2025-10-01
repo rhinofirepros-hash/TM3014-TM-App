@@ -490,6 +490,30 @@ backend:
         agent: "testing"
         comment: "🎉 CRITICAL END-TO-END PIN SYSTEM PRODUCTION READINESS TEST COMPLETED - PERFECT SUCCESS: Comprehensive testing of the complete GC PIN workflow completed with 26/26 tests passed (100.0% success rate). ✅ STEP 1 - FRESH PIN GENERATION: Successfully generated fresh 4-digit PINs for 3 projects: '3rd Ave' → PIN 4660, 'Full Contract Project Test' → PIN 2804, 'Time & Material Only Project Test' → PIN 5815. All PINs are valid 4-digit format (1000-9999 range) and properly stored with gc_pin_used: false ✅. ✅ STEP 2 - PIN STORAGE VERIFICATION: All PINs correctly stored in database with proper structure (projectId, projectName, gcPin, pinUsed) and gc_pin_used: false status confirmed ✅. ✅ STEP 3 - PIN VALIDATION ENDPOINT: POST /api/gc/validate-pin endpoint working perfectly - all fresh PINs successfully validated, proper response structure (success, projectId, projectName), and correct project identification ✅. ✅ STEP 4 - PIN REGENERATION VERIFICATION: PIN regeneration working flawlessly - old PINs become invalid after successful login (4660→9511, 2804→7402, 5815→6320), old PINs correctly rejected with 401 status, new PINs work for subsequent validation ✅. ✅ STEP 5 - GC DASHBOARD ACCESS: GET /api/gc/dashboard/{project_id} endpoint fully operational - complete dashboard data returned including crew summary, T&M tag summary, project phases, inspection status, and narrative. All dashboard components properly structured for mobile-responsive display ✅. ✅ PRODUCTION READINESS CONFIRMED: System is 100% ready for production deployment on tm.rhinofirepro.com. All core PIN workflow functionality operational, backend endpoints fully functional, single-use PIN security working correctly, and complete end-to-end workflow verified. ✅ FRESH PINS FOR MANUAL TESTING: Generated new fresh PINs ready for frontend testing: '3rd Ave' → PIN 4683, 'Full Contract Project Test' → PIN 2668. The GC PIN system is fully operational and production-ready."
 
+  - task: "Production Backend API Structure Mismatch"
+    implemented: false
+    working: false
+    file: "https://tm3014-tm-app-production.up.railway.app/api"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "🚨 CRITICAL PRODUCTION ISSUE IDENTIFIED: Production backend (https://tm3014-tm-app-production.up.railway.app/api) uses completely different API structure than preview backend. T&M functionality implemented as 'timelogs' endpoint instead of 'tm-tags' endpoint. This explains why user reports T&M tag creation 'only saves locally' - frontend is calling /api/tm-tags but production has /api/timelogs. Frontend needs to be updated to use production API structure or production backend needs to match preview API structure."
+
+  - task: "Production PDF Functionality"
+    implemented: false
+    working: false
+    file: "https://tm3014-tm-app-production.up.railway.app/api"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL PRODUCTION ISSUE: PDF export and preview functionality completely missing from production backend. Tested 23 possible PDF endpoints, all return 404. No PDF generation libraries detected in backend health check. This explains user reports of non-functional PDF export and preview features. Production backend needs PDF generation endpoints implemented."
+
   - task: "Rhino Platform Backend System"
     implemented: true
     working: true
