@@ -445,6 +445,201 @@ async def create_timelog(timelog_data: TimeLogCreate, user_role: str = Depends(g
     return timelog
 
 # =============================================================================
+# T&M TAGS ENDPOINTS (Backward Compatibility Aliases)
+# =============================================================================
+
+@app.get("/api/tm-tags", response_model=List[TimeLog], tags=["T&M Tags"])
+async def get_tm_tags(user_role: str = Depends(get_user_role)):
+    """Get all T&M tags (alias for timelogs for frontend compatibility)"""
+    return await get_timelogs(user_role)
+
+@app.post("/api/tm-tags", response_model=TimeLog, tags=["T&M Tags"])
+async def create_tm_tag(timelog_data: TimeLogCreate, user_role: str = Depends(get_user_role)):
+    """Create new T&M tag (alias for create_timelog for frontend compatibility)"""
+    return await create_timelog(timelog_data, user_role)
+
+@app.get("/api/tm-tags/{tm_tag_id}", response_model=TimeLog, tags=["T&M Tags"])
+async def get_tm_tag(tm_tag_id: str, user_role: str = Depends(get_user_role)):
+    """Get specific T&M tag (alias for get_timelog)"""
+    return await get_timelog(tm_tag_id, user_role)
+
+# =============================================================================
+# PDF GENERATION ENDPOINTS
+# =============================================================================
+
+@app.get("/api/tm-tags/{tm_tag_id}/pdf", tags=["PDF Export"])
+async def export_tm_tag_pdf(tm_tag_id: str, user_role: str = Depends(get_user_role)):
+    """Export T&M tag as PDF"""
+    from fastapi.responses import StreamingResponse
+    from io import BytesIO
+    import json
+    
+    # Get the timelog data
+    timelog = await db.time_logs.find_one({"id": tm_tag_id})
+    if not timelog:
+        raise HTTPException(status_code=404, detail="T&M tag not found")
+    
+    # Get related project and installer data
+    project = await db.projects.find_one({"id": timelog["project_id"]})
+    installer = await db.installers.find_one({"id": timelog["installer_id"]})
+    
+    # Try to generate PDF with ReportLab (if available)
+    try:
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter, A4
+        from reportlab.lib.units import inch
+        from datetime import datetime
+        
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+        
+        # Header
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(50, height - 50, "TIME & MATERIAL REPORT")
+        
+        # Project Info
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, height - 100, "Project Information:")
+        p.setFont("Helvetica", 10)
+        p.drawString(70, height - 120, f"Project: {project.get('name', 'N/A') if project else 'N/A'}")
+        p.drawString(70, height - 140, f"Date: {timelog.get('date', 'N/A')}")
+        
+        # Installer Info
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, height - 180, "Installer Information:")
+        p.setFont("Helvetica", 10)
+        p.drawString(70, height - 200, f"Name: {installer.get('name', 'N/A') if installer else 'N/A'}")
+        p.drawString(70, height - 220, f"Hours Worked: {timelog.get('hours', 0)}")
+        
+        # Time & Billing
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, height - 260, "Time & Billing:")
+        p.setFont("Helvetica", 10)
+        p.drawString(70, height - 280, f"Hours: {timelog.get('hours', 0)}")
+        p.drawString(70, height - 300, f"Rate: ${timelog.get('rate', 0)}/hr")
+        p.drawString(70, height - 320, f"Labor Cost: ${timelog.get('labor_cost', 0)}")
+        p.drawString(70, height - 340, f"Billable: ${timelog.get('billable', 0)}")
+        
+        # Description
+        if timelog.get('description'):
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, height - 380, "Description:")
+            p.setFont("Helvetica", 10)
+            # Handle long descriptions with text wrapping
+            description = str(timelog.get('description', ''))
+            y_pos = height - 400
+            for i in range(0, len(description), 80):  # Wrap at 80 characters
+                line = description[i:i+80]
+                p.drawString(70, y_pos, line)
+                y_pos -= 20
+        
+        # Footer
+        p.setFont("Helvetica", 8)
+        p.drawString(50, 50, f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        p.showPage()
+        p.save()
+        
+        buffer.seek(0)
+        return StreamingResponse(
+            buffer,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=tm_tag_{tm_tag_id}.pdf"}
+        )
+        
+    except ImportError:
+        # Fallback to JSON if ReportLab is not installed
+        logger.warning("ReportLab not installed, falling back to JSON export")
+        
+        export_data = {
+            "tm_tag": timelog,
+            "project": project,
+            "installer": installer,
+            "generated_at": datetime.now().isoformat(),
+            "note": "PDF generation requires ReportLab library installation"
+        }
+        
+        json_content = json.dumps(export_data, indent=2, default=str)
+        buffer = BytesIO(json_content.encode())
+        buffer.seek(0)
+        
+        return StreamingResponse(
+            buffer,
+            media_type="application/json",
+            headers={"Content-Disposition": f"attachment; filename=tm_tag_{tm_tag_id}.json"}
+        )
+
+@app.get("/api/tm-tags/{tm_tag_id}/preview", tags=["PDF Export"])
+async def preview_tm_tag_pdf(tm_tag_id: str, user_role: str = Depends(get_user_role)):
+    """Preview T&M tag as HTML (for PDF preview)"""
+    from fastapi.responses import HTMLResponse
+    
+    # Get the timelog data
+    timelog = await db.time_logs.find_one({"id": tm_tag_id})
+    if not timelog:
+        raise HTTPException(status_code=404, detail="T&M tag not found")
+    
+    # Get related project and installer data  
+    project = await db.projects.find_one({"id": timelog["project_id"]})
+    installer = await db.installers.find_one({"id": timelog["installer_id"]})
+    
+    # Generate HTML preview
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>T&M Tag Preview</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 40px; }}
+            .header {{ text-align: center; margin-bottom: 30px; }}
+            .section {{ margin: 20px 0; }}
+            .label {{ font-weight: bold; }}
+            table {{ border-collapse: collapse; width: 100%; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+            th {{ background-color: #f2f2f2; }}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>TIME & MATERIAL REPORT</h1>
+        </div>
+        
+        <div class="section">
+            <h2>Project Information</h2>
+            <p><span class="label">Project:</span> {project.get('name', 'N/A') if project else 'N/A'}</p>
+            <p><span class="label">Date:</span> {timelog.get('date', 'N/A')}</p>
+        </div>
+        
+        <div class="section">
+            <h2>Installer Information</h2>
+            <p><span class="label">Name:</span> {installer.get('name', 'N/A') if installer else 'N/A'}</p>
+            <p><span class="label">Position:</span> {installer.get('position', 'N/A') if installer else 'N/A'}</p>
+        </div>
+        
+        <div class="section">
+            <h2>Time & Billing Summary</h2>
+            <table>
+                <tr><th>Item</th><th>Value</th></tr>
+                <tr><td>Hours Worked</td><td>{timelog.get('hours', 0)}</td></tr>
+                <tr><td>Hourly Rate</td><td>${timelog.get('rate', 0)}/hr</td></tr>
+                <tr><td>Labor Cost</td><td>${timelog.get('labor_cost', 0)}</td></tr>
+                <tr><td>Billable Amount</td><td>${timelog.get('billable', 0)}</td></tr>
+            </table>
+        </div>
+        
+        {f'<div class="section"><h2>Description</h2><p>{timelog.get("description", "N/A")}</p></div>' if timelog.get('description') else ''}
+        
+        <div class="section">
+            <p style="font-size: 12px; color: #666;">Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        </div>
+    </body>
+    </html>
+    """
+    
+    return HTMLResponse(content=html_content)
+
+# =============================================================================
 # SUMMARY/ANALYTICS ENDPOINTS
 # =============================================================================
 
