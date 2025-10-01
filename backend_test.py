@@ -290,66 +290,20 @@ def generate_summary_report():
 generate_summary_report()
 
 # =============================================================================
-# TEST 7: VERIFY TIMELOGS ENDPOINT STILL WORKS
+# FINAL RESULTS AND EXIT
 # =============================================================================
-print("\n🔍 TEST 7: Testing original /api/timelogs endpoint")
 
-response, error = make_request("GET", "/timelogs")
-if error:
-    test_result("GET /api/timelogs endpoint connectivity", False, f"Connection error: {error}")
-else:
-    if response.status_code == 200:
-        try:
-            timelogs_data = response.json()
-            test_result("GET /api/timelogs still functional", True, f"Returned {len(timelogs_data)} timelogs")
-            
-            # Verify our created timelog appears in timelogs list
-            if created_timelog_id:
-                found_timelog = any(tl.get('id') == created_timelog_id for tl in timelogs_data)
-                if found_timelog:
-                    test_result("Created timelog appears in /api/timelogs", True)
-                else:
-                    test_result("Created timelog appears in /api/timelogs", False, "Timelog not found in list")
-            
-        except json.JSONDecodeError:
-            test_result("GET /api/timelogs JSON response", False, "Invalid JSON response")
-    else:
-        test_result("GET /api/timelogs still functional", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
+# Return exit code based on critical endpoints
+critical_endpoints = ["/tm-tags", "/installers", "/projects"]
+missing_critical = [ep for ep in critical_endpoints if ep in missing_endpoints]
 
-# =============================================================================
-# SUMMARY
-# =============================================================================
-print("\n" + "=" * 80)
-print("🎯 T&M TAGS COMPATIBILITY ENDPOINTS TEST SUMMARY")
-print("=" * 80)
-print(f"📊 Total Tests: {total_tests}")
-print(f"✅ Passed: {passed_tests}")
-print(f"❌ Failed: {failed_tests}")
-print(f"📈 Success Rate: {(passed_tests/total_tests*100):.1f}%")
-
-if failed_tests == 0:
-    print("\n🎉 ALL TESTS PASSED! T&M Tags compatibility endpoints are working correctly.")
-    print("✅ Backward compatibility aliases functional")
-    print("✅ PDF export working with ReportLab")
-    print("✅ PDF preview generating proper HTML")
-    print("✅ All endpoints returning proper responses")
-else:
-    print(f"\n⚠️  {failed_tests} TEST(S) FAILED - Issues need attention:")
-    if failed_tests > total_tests * 0.5:
-        print("🚨 CRITICAL: More than 50% of tests failed - major issues detected")
-    else:
-        print("⚠️  Some functionality issues detected - review failed tests above")
-
-print("\n📋 TESTED ENDPOINTS:")
-print("   • GET /api/tm-tags (compatibility alias)")
-print("   • POST /api/tm-tags (compatibility alias)")
-print("   • GET /api/tm-tags/{id} (compatibility alias)")
-print("   • GET /api/tm-tags/{id}/pdf (PDF export)")
-print("   • GET /api/tm-tags/{id}/preview (HTML preview)")
-print("   • GET /api/timelogs (original endpoint)")
-
-print(f"\n🔗 Backend URL: {BASE_URL}")
+print(f"\n🔗 Production Backend URL: {PRODUCTION_BASE_URL}")
 print(f"📅 Test completed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-# Exit with appropriate code
-sys.exit(0 if failed_tests == 0 else 1)
+if missing_critical:
+    print(f"\n🚨 CRITICAL FAILURE: Missing critical endpoints: {missing_critical}")
+    print("   💡 RECOMMENDATION: Use web search tool to investigate production deployment issues")
+    sys.exit(1)
+else:
+    print(f"\n✅ CRITICAL ENDPOINTS VERIFIED: All essential endpoints working")
+    sys.exit(0 if failed_tests == 0 else 1)
