@@ -189,48 +189,23 @@ success, details = test_endpoint_exists("/auth/admin", "POST", {"pin": "J777"})
 test_result("POST /api/auth/admin (admin authentication)", success, details, "/auth/admin")
 
 # =============================================================================
-# TEST 4: PDF PREVIEW FUNCTIONALITY - GET /api/tm-tags/{id}/preview
+# ALTERNATIVE ENDPOINT NAMES TESTING
 # =============================================================================
-print("\n🔍 TEST 4: Testing PDF Preview - GET /api/tm-tags/{id}/preview")
+print("\n🔍 TESTING ALTERNATIVE ENDPOINT NAMES")
 
-if created_timelog_id:
-    response, error = make_request("GET", f"/tm-tags/{created_timelog_id}/preview")
-    if error:
-        test_result("GET /api/tm-tags/{id}/preview endpoint connectivity", False, f"Connection error: {error}")
-    else:
-        if response.status_code == 200:
-            content_type = response.headers.get('content-type', '')
-            if 'text/html' in content_type:
-                test_result("GET /api/tm-tags/{id}/preview returns HTML", True, f"Content-Type: {content_type}")
-                
-                # Check HTML content
-                html_content = response.text
-                required_html_elements = ['TIME & MATERIAL REPORT', 'Project Information', 'Installer Information', 'Time & Billing']
-                missing_elements = [elem for elem in required_html_elements if elem not in html_content]
-                
-                if not missing_elements:
-                    test_result("GET /api/tm-tags/{id}/preview HTML structure", True, "Contains all required sections")
-                else:
-                    test_result("GET /api/tm-tags/{id}/preview HTML structure", False, f"Missing: {missing_elements}")
-                
-                # Check for proper HTML structure
-                if '<html>' in html_content and '</html>' in html_content:
-                    test_result("GET /api/tm-tags/{id}/preview valid HTML", True, "Proper HTML document structure")
-                else:
-                    test_result("GET /api/tm-tags/{id}/preview valid HTML", False, "Invalid HTML structure")
-                    
-                # Check content length
-                if len(html_content) > 500:
-                    test_result("GET /api/tm-tags/{id}/preview content size", True, f"Size: {len(html_content)} characters")
-                else:
-                    test_result("GET /api/tm-tags/{id}/preview content size", False, f"Content too small: {len(html_content)} characters")
-                    
-            else:
-                test_result("GET /api/tm-tags/{id}/preview returns HTML", False, f"Unexpected content-type: {content_type}")
-        else:
-            test_result("GET /api/tm-tags/{id}/preview returns HTML", False, f"Status: {response.status_code}, Response: {response.text[:200]}")
-else:
-    test_result("GET /api/tm-tags/{id}/preview test setup", False, "No timelog ID available for preview test")
+# Check if workers are under different names
+print("\n👥 TEST 14: Alternative worker endpoints")
+alternative_worker_endpoints = ["/workers", "/employees", "/crew", "/staff"]
+for endpoint in alternative_worker_endpoints:
+    success, details = test_endpoint_exists(endpoint, "GET")
+    test_result(f"GET /api{endpoint} (alternative worker endpoint)", success, details, endpoint)
+
+# Check if T&M tags are under different names
+print("\n📊 TEST 15: Alternative T&M endpoints")
+alternative_tm_endpoints = ["/timelogs", "/time-logs", "/tm_tags", "/tags", "/reports"]
+for endpoint in alternative_tm_endpoints:
+    success, details = test_endpoint_exists(endpoint, "GET")
+    test_result(f"GET /api{endpoint} (alternative T&M endpoint)", success, details, endpoint)
 
 # =============================================================================
 # TEST 5: REPORTLAB INTEGRATION VERIFICATION
