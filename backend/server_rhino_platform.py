@@ -323,7 +323,7 @@ async def update_installer(
     if not installer:
         raise HTTPException(status_code=404, detail="Installer not found")
     
-    update_data = installer_data.dict(exclude_unset=True)
+    update_data = installer_data.model_dump(exclude_unset=True, mode="json")
     if update_data:
         await db.installers.update_one({"id": installer_id}, {"$set": update_data})
     
