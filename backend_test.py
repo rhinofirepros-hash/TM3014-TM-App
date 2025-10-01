@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
-T&M Tags Compatibility Endpoints Testing
-Testing the newly added backward compatibility aliases and PDF functionality
+PRODUCTION BACKEND ENDPOINT VERIFICATION - CRITICAL MISSING FUNCTIONALITY
+
+This test verifies production backend at https://tm3014-tm-app-production.up.railway.app
+for ALL required endpoints that frontend expects.
+
+Focus: Identify exactly which endpoints are missing on production causing system breakdown.
 """
 
 import requests
@@ -11,23 +15,13 @@ import os
 from datetime import datetime, timezone
 import uuid
 
-# Get backend URL from frontend .env
-def get_backend_url():
-    try:
-        with open('/app/frontend/.env', 'r') as f:
-            for line in f:
-                if line.startswith('REACT_APP_BACKEND_URL='):
-                    return line.split('=', 1)[1].strip()
-    except:
-        pass
-    return "https://project-autopilot.preview.emergentagent.com"
+# Production backend URL - CRITICAL TESTING
+PRODUCTION_BASE_URL = "https://tm3014-tm-app-production.up.railway.app"
+PRODUCTION_API_URL = f"{PRODUCTION_BASE_URL}/api"
 
-BASE_URL = get_backend_url()
-API_URL = f"{BASE_URL}/api"
-
-print(f"🔧 Testing T&M Tags Compatibility Endpoints")
-print(f"📍 Backend URL: {BASE_URL}")
-print(f"📍 API URL: {API_URL}")
+print(f"🚨 PRODUCTION BACKEND ENDPOINT VERIFICATION - CRITICAL MISSING FUNCTIONALITY")
+print(f"📍 Production Backend URL: {PRODUCTION_BASE_URL}")
+print(f"📍 Production API URL: {PRODUCTION_API_URL}")
 print("=" * 80)
 
 # Test counters
