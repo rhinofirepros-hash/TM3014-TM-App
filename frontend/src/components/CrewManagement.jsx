@@ -261,8 +261,8 @@ const CrewManagement = ({ onBack }) => {
   };
 
   const getTotalCostPerHour = (member) => {
-    // New schema uses hourly_rate directly
-    return member.hourly_rate || 0;
+    // New Rhino Platform schema uses cost_rate
+    return member.cost_rate || 0;
   };
 
   const getUniquePositions = () => {
