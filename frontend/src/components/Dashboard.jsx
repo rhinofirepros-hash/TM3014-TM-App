@@ -390,6 +390,19 @@ const Dashboard = ({
               })()}
             </AnimatedCard>
           </div>
+          
+          {/* DEBUG: Direct navigation test button */}
+          <div className="mt-4">
+            <button 
+              onClick={() => {
+                console.log('DEBUG: Direct navigation button clicked');
+                onCreateNew();
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              DEBUG: Force T&M Navigation
+            </button>
+          </div>
         </div>
       </div>
 
