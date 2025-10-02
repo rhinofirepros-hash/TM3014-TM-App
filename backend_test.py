@@ -132,71 +132,172 @@ def test_tm_tag_creation_exact_form_data():
     except Exception as e:
         test_result("T&M Tag Creation", False, f"UNEXPECTED ERROR: {e}")
         return False
-    
-    if details:
-        print(f"   {details}")
 
-def make_request(method, endpoint, data=None, headers=None):
-    """Make HTTP request with error handling"""
-    try:
-        url = f"{PRODUCTION_API_URL}{endpoint}"
-        if headers is None:
-            headers = {"Content-Type": "application/json"}
-        
-        if method.upper() == "GET":
-            response = requests.get(url, headers=headers, timeout=30)
-        elif method.upper() == "POST":
-            response = requests.post(url, json=data, headers=headers, timeout=30)
-        elif method.upper() == "PUT":
-            response = requests.put(url, json=data, headers=headers, timeout=30)
-        elif method.upper() == "DELETE":
-            response = requests.delete(url, headers=headers, timeout=30)
-        else:
-            return None, f"Unsupported method: {method}"
-        
-        return response, None
-    except requests.exceptions.RequestException as e:
-        return None, str(e)
-
-def test_endpoint_exists(endpoint, method="GET", data=None):
-    """Test if endpoint exists and is accessible"""
-    response, error = make_request(method, endpoint, data)
-    if error:
-        return False, f"Connection error: {error}"
+def test_backend_connectivity():
+    """Test basic backend connectivity"""
+    print("\n🌐 TESTING BACKEND CONNECTIVITY")
+    print("=" * 50)
     
-    if response.status_code == 404:
-        return False, f"404 Not Found - Endpoint missing"
-    elif response.status_code in [200, 201, 422, 400]:  # 422/400 means endpoint exists but validation failed
-        return True, f"{response.status_code} - Endpoint exists"
+    endpoints_to_test = [
+        "/api/health",
+        "/api/projects", 
+        "/api/tm-tags",
+        "/api/workers"
+    ]
+    
+    connectivity_results = {}
+    
+    for endpoint in endpoints_to_test:
+        url = f"{BACKEND_URL}{endpoint}"
+        print(f"📡 Testing GET {url}")
+        
+        try:
+            response = requests.get(url, timeout=10)
+            connectivity_results[endpoint] = {
+                "status_code": response.status_code,
+                "success": response.status_code < 400,
+                "response_time": response.elapsed.total_seconds()
+            }
+            
+            if response.status_code < 400:
+                test_result(f"GET {endpoint}", True, f"{response.status_code} ({response.elapsed.total_seconds():.2f}s)")
+            else:
+                test_result(f"GET {endpoint}", False, f"{response.status_code} ({response.elapsed.total_seconds():.2f}s)")
+                
+        except requests.exceptions.ConnectionError:
+            test_result(f"GET {endpoint}", False, "CONNECTION ERROR")
+            connectivity_results[endpoint] = {"success": False, "error": "connection_error"}
+        except requests.exceptions.Timeout:
+            test_result(f"GET {endpoint}", False, "TIMEOUT")
+            connectivity_results[endpoint] = {"success": False, "error": "timeout"}
+        except Exception as e:
+            test_result(f"GET {endpoint}", False, f"ERROR - {e}")
+            connectivity_results[endpoint] = {"success": False, "error": str(e)}
+    
+    return connectivity_results
+
+def test_working_endpoints_comparison():
+    """Test other endpoints to see if they work vs tm-tags"""
+    print("\n🔄 COMPARING WITH WORKING ENDPOINTS")
+    print("=" * 50)
+    
+    # Test GET endpoints first
+    get_endpoints = [
+        "/api/projects",
+        "/api/tm-tags", 
+        "/api/workers",
+        "/api/employees"
+    ]
+    
+    working_gets = []
+    failing_gets = []
+    
+    for endpoint in get_endpoints:
+        try:
+            response = requests.get(f"{BACKEND_URL}{endpoint}", timeout=10)
+            if response.status_code < 400:
+                working_gets.append(endpoint)
+                test_result(f"GET {endpoint}", True, f"{response.status_code}")
+            else:
+                failing_gets.append(endpoint)
+                test_result(f"GET {endpoint}", False, f"{response.status_code}")
+        except Exception as e:
+            failing_gets.append(endpoint)
+            test_result(f"GET {endpoint}", False, f"ERROR - {e}")
+    
+    print(f"\n📊 Working GET endpoints: {len(working_gets)}")
+    print(f"📊 Failing GET endpoints: {len(failing_gets)}")
+    
+    # Now test POST endpoints with minimal data
+    post_tests = [
+        {
+            "endpoint": "/api/projects",
+            "data": {
+                "name": "Test Project",
+                "client_company": "Test Company",
+                "gc_email": "test@test.com",
+                "start_date": "2025-01-01T00:00:00.000Z"
+            }
+        },
+        {
+            "endpoint": "/api/workers",
+            "data": {
+                "name": "Test Worker",
+                "rate": 95.0
+            }
+        }
+    ]
+    
+    print(f"\n🧪 Testing POST endpoints for comparison:")
+    
+    for test in post_tests:
+        try:
+            response = requests.post(
+                f"{BACKEND_URL}{test['endpoint']}",
+                json=test["data"],
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+            test_result(f"POST {test['endpoint']}", response.status_code < 400, f"{response.status_code}")
+            if response.status_code >= 400:
+                try:
+                    error_data = response.json()
+                    print(f"   Error: {error_data}")
+                except:
+                    print(f"   Error: {response.text}")
+        except Exception as e:
+            test_result(f"POST {test['endpoint']}", False, f"ERROR - {e}")
+
+def main():
+    """Main test execution"""
+    print("🚨 T&M TAG CREATION ENDPOINT - EXACT FORM FAILURE ANALYSIS")
+    print("🎯 CRITICAL ISSUE: 'SAVED OFFLINE' MESSAGE IN T&M FORM")
+    print("=" * 80)
+    
+    # Test 1: Exact T&M tag creation that's failing
+    tm_creation_success = test_tm_tag_creation_exact_form_data()
+    
+    # Test 2: Backend connectivity
+    connectivity_results = test_backend_connectivity()
+    
+    # Test 3: Compare with working endpoints
+    test_working_endpoints_comparison()
+    
+    # Summary
+    print("\n" + "=" * 80)
+    print("📋 ANALYSIS SUMMARY")
+    print("=" * 80)
+    
+    if tm_creation_success:
+        test_result("OVERALL T&M Tag Creation", True, "Issue may be frontend-related")
     else:
-        return False, f"{response.status_code} - {response.text[:100]}"
+        test_result("OVERALL T&M Tag Creation", False, "This explains 'offline mode'")
+    
+    working_endpoints = sum(1 for result in connectivity_results.values() if result.get("success", False))
+    total_endpoints = len(connectivity_results)
+    
+    print(f"📊 Backend Connectivity: {working_endpoints}/{total_endpoints} endpoints working")
+    print(f"📊 Test Results: {passed_tests}/{total_tests} tests passed ({(passed_tests/total_tests*100):.1f}%)")
+    
+    if working_endpoints == 0:
+        print("🔍 ROOT CAUSE: Complete backend connectivity failure")
+    elif not tm_creation_success and working_endpoints > 0:
+        print("🔍 ROOT CAUSE: Specific issue with T&M tag creation endpoint")
+    elif tm_creation_success:
+        print("🔍 ROOT CAUSE: Issue likely in frontend T&M form or data format")
+    
+    print("\n🎯 NEXT STEPS:")
+    if not tm_creation_success:
+        print("1. Fix T&M tag creation endpoint issues identified above")
+        print("2. Verify data model compatibility between frontend and backend")
+        print("3. Check for missing required fields or validation errors")
+    else:
+        print("1. Check frontend T&M form data formatting")
+        print("2. Verify frontend is using correct backend URL")
+        print("3. Check for JavaScript errors in browser console")
 
-# =============================================================================
-# CRITICAL T&M TAGS COMPATIBILITY ENDPOINTS TESTING
-# =============================================================================
-print("\n🎯 TESTING T&M TAGS COMPATIBILITY ENDPOINTS (CRITICAL)")
-
-# 1. GET /api/tm-tags (list all T&M tags)
-print("\n📋 TEST 1: GET /api/tm-tags (list T&M tags)")
-success, details = test_endpoint_exists("/tm-tags", "GET")
-test_result("GET /api/tm-tags (list T&M tags)", success, details, "/tm-tags")
-
-# 2. POST /api/tm-tags (create new T&M tag)
-print("\n📝 TEST 2: POST /api/tm-tags (create T&M tag)")
-test_tm_tag = {
-    "project_name": "Production Test Project",
-    "cost_code": "PROD001",
-    "date_of_work": datetime.now().isoformat(),
-    "tm_tag_title": "Production Endpoint Test",
-    "description_of_work": "Testing production backend endpoints",
-    "gc_email": "test@production.com",
-    "labor_entries": [],
-    "material_entries": [],
-    "equipment_entries": [],
-    "other_entries": []
-}
-success, details = test_endpoint_exists("/tm-tags", "POST", test_tm_tag)
-test_result("POST /api/tm-tags (create T&M tag)", success, details, "/tm-tags")
+if __name__ == "__main__":
+    main()
 
 # 3. GET /api/tm-tags/{id} (get specific T&M tag)
 print("\n🔍 TEST 3: GET /api/tm-tags/{id} (get specific T&M tag)")
