@@ -95,13 +95,14 @@ def test_tm_tag_creation_exact_form_data():
     }
     
     print(f"📡 Testing POST {API_BASE}/tm-tags")
-    print(f"📋 Data Structure: T&M tag with 1 labor entry (8 hours)")
+    print(f"📋 Testing both frontend data structure and correct backend structure")
     
+    # Test 1: Frontend data structure (will show the validation error)
+    print(f"\n🔍 TEST 1: Frontend Data Structure (Expected to Fail)")
     try:
-        # Test the exact POST request that the frontend makes
         response = requests.post(
             f"{API_BASE}/tm-tags",
-            json=tm_tag_data,
+            json=frontend_tm_tag_data,
             headers={
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -110,10 +111,46 @@ def test_tm_tag_creation_exact_form_data():
         )
         
         print(f"📊 Response Status: {response.status_code}")
-        print(f"📊 Response Headers: {dict(response.headers)}")
+        
+        if response.status_code == 422:
+            test_result("Frontend Data Structure", False, f"422 Validation Error - Shows data model mismatch")
+            try:
+                error_data = response.json()
+                print(f"📄 Validation Errors: {json.dumps(error_data, indent=2)}")
+                
+                # Extract missing fields
+                missing_fields = []
+                for detail in error_data.get("detail", []):
+                    if detail.get("type") == "missing":
+                        missing_fields.append(detail.get("loc", [])[-1])
+                
+                print(f"🔍 MISSING REQUIRED FIELDS: {missing_fields}")
+                
+            except json.JSONDecodeError:
+                print(f"📄 Error Text: {response.text}")
+        else:
+            print(f"📊 Unexpected status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Error testing frontend structure: {e}")
+    
+    # Test 2: Correct backend data structure
+    print(f"\n🔍 TEST 2: Correct Backend Data Structure (TimeLogCreate)")
+    try:
+        response = requests.post(
+            f"{API_BASE}/tm-tags",
+            json=backend_tm_tag_data,
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            timeout=30
+        )
+        
+        print(f"📊 Response Status: {response.status_code}")
         
         if response.status_code == 200 or response.status_code == 201:
-            test_result("T&M Tag Creation", True, "Successfully created T&M tag")
+            test_result("Correct Backend Structure", True, "Successfully created T&M tag with correct structure")
             try:
                 response_data = response.json()
                 print(f"📄 Response Data: {json.dumps(response_data, indent=2)}")
@@ -121,14 +158,12 @@ def test_tm_tag_creation_exact_form_data():
                 print(f"📄 Response Text: {response.text}")
             return True
         else:
-            test_result("T&M Tag Creation", False, f"Status {response.status_code} - This explains 'offline mode' fallback!")
-            
+            test_result("Correct Backend Structure", False, f"Status {response.status_code}")
             try:
                 error_data = response.json()
                 print(f"📄 Error Response: {json.dumps(error_data, indent=2)}")
             except json.JSONDecodeError:
                 print(f"📄 Error Text: {response.text}")
-            
             return False
             
     except requests.exceptions.ConnectionError as e:
