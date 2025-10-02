@@ -274,7 +274,6 @@ const Dashboard = ({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('T&M Card clicked - calling handleCreateNewTag');
                   handleCreateNewTag();
                 }}
               >
