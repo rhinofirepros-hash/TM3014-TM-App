@@ -21,6 +21,11 @@ import { Toaster } from './components/ui/toaster';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState('login');
+  
+  // Debug: Log when currentView changes
+  useEffect(() => {
+    console.log('currentView state changed to:', currentView);
+  }, [currentView]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGcAuthenticated, setIsGcAuthenticated] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
