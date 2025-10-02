@@ -185,41 +185,43 @@ const TimeAndMaterialForm = ({ selectedProject, onBack, onSave, project, tmTag }
     
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '/api';
-      const tagData = {
-        id: tmTag?.id || `tm_${Date.now()}`,
+      
+      // Get the first installer for now (in real implementation, this would come from worker selection)
+      const installersResponse = await fetch(`${backendUrl}/api/installers`);
+      const installers = installersResponse.ok ? await installersResponse.json() : [];
+      const firstInstaller = installers.length > 0 ? installers[0] : null;
+      
+      if (!firstInstaller) {
+        throw new Error('No installers found. Please add crew members first.');
+      }
+
+      // Convert T&M form data to TimeLogCreate structure expected by production backend
+      const timelogData = {
+        date: formData.dateOfWork.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
+        installer_id: firstInstaller.id, // Use first installer for now
         project_id: formData.projectId,
-        project_name: formData.projectName,  
-        cost_code: formData.costCode,
-        date_of_work: formData.dateOfWork.toISOString(),
-        company_name: formData.companyName,
-        tm_tag_title: formData.tmTagTitle,
-        description_of_work: formData.descriptionOfWork,
-        labor_entries: formData.laborEntries,
-        material_entries: formData.materialEntries,
-        equipment_entries: formData.equipmentEntries,
-        other_entries: formData.otherEntries,
-        gc_email: formData.gcEmail,
-        signature: formData.signature,
-        foreman_name: formData.signerName,
-        status: "completed",
-        created_at: tmTag?.created_at || new Date().toISOString(),
-        total_cost: calculatedTotals.total
+        hours: formData.laborEntries.reduce((total, entry) => {
+          return total + (parseFloat(entry.st_hours || 0) + parseFloat(entry.ot_hours || 0) + 
+                         parseFloat(entry.dt_hours || 0) + parseFloat(entry.pot_hours || 0));
+        }, 0) || 8.0, // Default to 8 hours if no labor entries
+        description: `T&M Tag: ${formData.tmTagTitle}\n${formData.descriptionOfWork}`,
+        rate: firstInstaller.cost_rate || 50.0 // Use installer's cost rate
       };
 
       let response;
       if (tmTag) {
-        // Update existing T&M tag
-        response = await fetch(`${backendUrl}/tm-tags/${tmTag.id}`, {
+        // Update existing timelog (T&M tag)
+        response = await fetch(`${backendUrl}/api/timelogs/${tmTag.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(tagData)
+          body: JSON.stringify(timelogData)
         });
       } else {
-        // Create new T&M tag
-        response = await fetch(`${backendUrl}/tm-tags`, {
+        // Create new timelog (T&M tag) 
+        response = await fetch(`${backendUrl}/api/timelogs`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(tagData)
+          body: JSON.stringify(timelogData)
         });
       }
       
