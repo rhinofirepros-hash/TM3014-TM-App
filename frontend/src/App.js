@@ -132,7 +132,9 @@ function AppContent() {
   };
 
   const navigateToView = (view, project = null, tmTag = null, gcProject = null) => {
+    console.log('navigateToView called with:', view, project, tmTag, gcProject);
     setCurrentView(view);
+    console.log('setCurrentView called with:', view);
     if (project) setSelectedProject(project);
     if (tmTag) setSelectedTmTag(tmTag);
     if (gcProject) {
