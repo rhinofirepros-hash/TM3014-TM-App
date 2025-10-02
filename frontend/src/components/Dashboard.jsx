@@ -134,6 +134,7 @@ const Dashboard = ({
   };
 
   const handleCreateNewTag = () => {
+    console.log('Create New T&M Tag button clicked - attempting navigation');
     onCreateNew();
   };
 
