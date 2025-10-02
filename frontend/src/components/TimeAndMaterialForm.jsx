@@ -226,6 +226,28 @@ const TimeAndMaterialForm = ({ selectedProject, onBack, onSave, project, tmTag }
       }
       
       if (response.ok) {
+        // Create tagData for localStorage backup
+        const tagData = {
+          id: tmTag?.id || `tm_${Date.now()}`,
+          project_id: formData.projectId,
+          project_name: formData.projectName,
+          cost_code: formData.costCode,
+          date_of_work: formData.dateOfWork.toISOString(),
+          company_name: formData.companyName,
+          tm_tag_title: formData.tmTagTitle,
+          description_of_work: formData.descriptionOfWork,
+          labor_entries: formData.laborEntries,
+          material_entries: formData.materialEntries,
+          equipment_entries: formData.equipmentEntries,
+          other_entries: formData.otherEntries,
+          gc_email: formData.gcEmail,
+          signature: formData.signature,
+          foreman_name: formData.signerName,
+          status: "completed",
+          created_at: tmTag?.created_at || new Date().toISOString(),
+          total_cost: calculatedTotals.total
+        };
+        
         // Also save to localStorage as backup
         const existingTags = JSON.parse(localStorage.getItem('tmTags') || '[]');
         if (tmTag) {
