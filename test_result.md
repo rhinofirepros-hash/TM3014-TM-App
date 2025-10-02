@@ -897,18 +897,14 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Full backend API endpoint validation"
-    - "Admin access workflow testing (PIN J777)"
-    - "GC portal access and PIN authentication system"
-    - "Button interaction and navigation verification"
-    - "T&M workflow end-to-end functionality"
-    - "Financial management system validation"
-    - "Mobile responsiveness across all components"
-    - "Vision UI theme consistency verification"
-    - "Performance optimization assessment"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "comprehensive_e2e_validation"
+    - "T&M Tag Creation Navigation Fix"
+    - "Dashboard to T&M Form navigation debugging"
+    - "React state management investigation"
+    - "Add Worker functionality testing (after navigation fix)"
+  stuck_tasks:
+    - "T&M Tag Creation Navigation Fix"
+  test_all: false
+  test_priority: "critical_navigation_fix"
 
 agent_communication:
   - agent: "main"
