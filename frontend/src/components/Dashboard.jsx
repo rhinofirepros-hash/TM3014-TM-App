@@ -270,20 +270,22 @@ const Dashboard = ({
           <h2 className={`text-lg sm:text-xl font-semibold mb-4 sm:mb-6 ${themeClasses.text.primary}`}>Quick Actions</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             <AnimatedCard index={4} delay={500}>
-              <div className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200`}
-                   onClick={(e) => {
-                     e.preventDefault();
-                     e.stopPropagation();
-                     console.log('T&M Card clicked - calling handleCreateNewTag');
-                     handleCreateNewTag();
-                   }}>
+              <button 
+                className={`${themeClasses.card} rounded-lg p-4 sm:p-6 text-center cursor-pointer transform hover:scale-105 transition-all duration-200 border-0 w-full`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('T&M Card clicked - calling handleCreateNewTag');
+                  handleCreateNewTag();
+                }}
+              >
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 rounded-lg flex items-center justify-center`}
                      style={{ backgroundColor: `${themeClasses.colors.green}60`, color: themeClasses.colors.green }}>
                   <Plus className="w-5 h-5 sm:w-6 sm:h-6" style={{ filter: 'saturate(2)' }} />
                 </div>
                 <h3 className={`text-sm sm:text-base font-semibold ${themeClasses.text.primary} mb-1 sm:mb-2`}>Create New T&M Tag</h3>
                 <p className={`text-xs sm:text-sm ${themeClasses.text.secondary}`}>Start a new time & material tag</p>
-              </div>
+              </button>
             </AnimatedCard>
 
             <AnimatedCard index={5} delay={600}>
