@@ -250,7 +250,7 @@ const TimeAndMaterialForm = ({ selectedProject, onBack, onSave, project, tmTag }
     } catch (error) {
       console.error('Error saving T&M tag:', error);
       
-      // Save to localStorage as fallback
+      // Save to localStorage as fallback (preserve T&M structure for local storage)
       const tagData = {
         id: tmTag?.id || `tm_${Date.now()}`,
         project_id: formData.projectId,
