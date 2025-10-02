@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
-PRODUCTION BACKEND ENDPOINT VERIFICATION - CRITICAL MISSING FUNCTIONALITY
+T&M TAG CREATION ENDPOINT - EXACT FORM FAILURE ANALYSIS
 
-This test verifies production backend at https://tm3014-tm-app-production.up.railway.app
-for ALL required endpoints that frontend expects.
+CRITICAL ISSUE: "SAVED OFFLINE" MESSAGE IN T&M FORM
+User reports that when adding a worker in T&M form, it shows "saved offline" and redirects to dashboard.
 
-Focus: Identify exactly which endpoints are missing on production causing system breakdown.
+ROOT CAUSE INVESTIGATION:
+The TimeAndMaterialForm.jsx makes a POST request to `${backendUrl}/tm-tags` (line 219), 
+but if the response is not OK, it falls back to "offline mode" (line 286).
+
+EXACT API CALL TO TEST: POST /api/tm-tags with T&M tag data structure
 """
 
 import requests
@@ -15,13 +19,14 @@ import os
 from datetime import datetime, timezone
 import uuid
 
-# Production backend URL - CRITICAL TESTING
-PRODUCTION_BASE_URL = "https://tm3014-tm-app-production.up.railway.app"
-PRODUCTION_API_URL = f"{PRODUCTION_BASE_URL}/api"
+# Backend URL from frontend/.env
+BACKEND_URL = "https://tm3014-tm-app-production.up.railway.app"
+API_BASE = f"{BACKEND_URL}/api"
 
-print(f"🚨 PRODUCTION BACKEND ENDPOINT VERIFICATION - CRITICAL MISSING FUNCTIONALITY")
-print(f"📍 Production Backend URL: {PRODUCTION_BASE_URL}")
-print(f"📍 Production API URL: {PRODUCTION_API_URL}")
+print(f"🚨 T&M TAG CREATION ENDPOINT - EXACT FORM FAILURE ANALYSIS")
+print(f"🎯 CRITICAL ISSUE: 'SAVED OFFLINE' MESSAGE IN T&M FORM")
+print(f"📍 Backend URL: {BACKEND_URL}")
+print(f"📍 API Base: {API_BASE}")
 print("=" * 80)
 
 # Test tracking
