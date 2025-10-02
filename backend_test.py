@@ -33,26 +33,105 @@ print("=" * 80)
 total_tests = 0
 passed_tests = 0
 failed_tests = 0
-missing_endpoints = []
-working_endpoints = []
-failed_endpoints = []
 
-def test_result(test_name, success, details="", endpoint=None):
+def test_result(test_name, success, details=""):
     global total_tests, passed_tests, failed_tests
     total_tests += 1
     if success:
         passed_tests += 1
         print(f"✅ {test_name}")
-        if endpoint:
-            working_endpoints.append(endpoint)
     else:
         failed_tests += 1
         print(f"❌ {test_name}")
-        if endpoint:
-            if "404" in str(details) or "Not Found" in str(details):
-                missing_endpoints.append(endpoint)
-            else:
-                failed_endpoints.append(endpoint)
+    if details:
+        print(f"   {details}")
+
+def test_tm_tag_creation_exact_form_data():
+    """Test POST /api/tm-tags with exact T&M tag data structure from form"""
+    print("\n🎯 TESTING T&M TAG CREATION - EXACT FORM FAILURE ANALYSIS")
+    print("=" * 70)
+    
+    # Exact T&M tag data structure as provided in the review request
+    tm_tag_data = {
+        "id": "tm_1727901234567",
+        "project_id": "test_project_id", 
+        "project_name": "Test Project",
+        "cost_code": "001",
+        "date_of_work": "2025-10-02T17:30:00.000Z",
+        "company_name": "Rhino Fire Pro", 
+        "tm_tag_title": "Test T&M Tag",
+        "description_of_work": "Test work description",
+        "labor_entries": [
+            {
+                "id": 1727901234567,
+                "workerName": "Test Worker",
+                "quantity": 1,
+                "st_hours": 8,
+                "ot_hours": 0,
+                "dt_hours": 0,
+                "pot_hours": 0,
+                "total": 8,
+                "dateOfWork": "10/2/2025"
+            }
+        ],
+        "material_entries": [],
+        "equipment_entries": [], 
+        "other_entries": [],
+        "gc_email": "",
+        "signature": "",
+        "foreman_name": "Test Foreman",
+        "status": "completed",
+        "created_at": "2025-10-02T17:30:00.000Z",
+        "total_cost": 800
+    }
+    
+    print(f"📡 Testing POST {API_BASE}/tm-tags")
+    print(f"📋 Data Structure: T&M tag with 1 labor entry (8 hours)")
+    
+    try:
+        # Test the exact POST request that the frontend makes
+        response = requests.post(
+            f"{API_BASE}/tm-tags",
+            json=tm_tag_data,
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            timeout=30
+        )
+        
+        print(f"📊 Response Status: {response.status_code}")
+        print(f"📊 Response Headers: {dict(response.headers)}")
+        
+        if response.status_code == 200 or response.status_code == 201:
+            test_result("T&M Tag Creation", True, "Successfully created T&M tag")
+            try:
+                response_data = response.json()
+                print(f"📄 Response Data: {json.dumps(response_data, indent=2)}")
+            except json.JSONDecodeError:
+                print(f"📄 Response Text: {response.text}")
+            return True
+        else:
+            test_result("T&M Tag Creation", False, f"Status {response.status_code} - This explains 'offline mode' fallback!")
+            
+            try:
+                error_data = response.json()
+                print(f"📄 Error Response: {json.dumps(error_data, indent=2)}")
+            except json.JSONDecodeError:
+                print(f"📄 Error Text: {response.text}")
+            
+            return False
+            
+    except requests.exceptions.ConnectionError as e:
+        test_result("T&M Tag Creation", False, f"CONNECTION ERROR: Cannot reach backend - {e}")
+        print("🔍 This explains the 'offline mode' fallback!")
+        return False
+    except requests.exceptions.Timeout as e:
+        test_result("T&M Tag Creation", False, f"TIMEOUT ERROR: Backend not responding - {e}")
+        return False
+    except Exception as e:
+        test_result("T&M Tag Creation", False, f"UNEXPECTED ERROR: {e}")
+        return False
     
     if details:
         print(f"   {details}")
