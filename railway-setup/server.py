@@ -1,35 +1,21 @@
-from fastapi import FastAPI, APIRouter
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+# RAILWAY PRODUCTION SERVER - RHINO PLATFORM
+# This file redirects to the main Rhino Platform server with all functionality
+# Including: T&M tags, crew management, PDF generation, delete operations
+
+import sys
 import os
-import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List, Optional
-import uuid
-from datetime import datetime
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
-import base64
 
+# Add the backend directory to the path so we can import the main server
+backend_dir = Path(__file__).parent.parent / 'backend'
+sys.path.insert(0, str(backend_dir))
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+# Import the complete Rhino Platform server with all fixes
+from server_rhino_platform import app
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
-# Create the main app without a prefix
-app = FastAPI()
-
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
+# This exports the FastAPI app instance for Railway to use
+# Railway will start this with: uvicorn server:app
+# But it will actually run the complete Rhino Platform server
 
 
 # Define Models
