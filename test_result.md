@@ -148,6 +148,21 @@ backend:
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: All T&M Tag APIs working perfectly. Tested POST /api/tm-tags with realistic data (Downtown Office Complex project with labor, materials, equipment, other entries), GET /api/tm-tags retrieval, and GET /api/tm-tags/{id} by ID. Data persistence verified in MongoDB - 2 tags stored with complete entry details. All endpoints return proper JSON responses with correct structure including UUIDs, timestamps, and all required fields."
 
+  - task: "T&M Tag Creation Frontend-Backend Data Model Mismatch"
+    implemented: true
+    working: false
+    file: "/app/backend/server_rhino_platform.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED CRITICAL ISSUE: When adding a worker in T&M form, it shows 'saved offline' and redirects to dashboard. T&M tag creation doesn't save to backend database."
+      - working: false
+        agent: "testing"
+        comment: "🚨 CRITICAL ROOT CAUSE IDENTIFIED - DATA MODEL MISMATCH: Comprehensive testing of production backend (https://tm3014-tm-app-production.up.railway.app/api/tm-tags) reveals the exact cause of 'offline mode' fallback. ❌ FRONTEND-BACKEND INCOMPATIBILITY: Frontend sends complex T&M tag structure with fields like 'date_of_work', 'labor_entries', 'tm_tag_title', etc., but production backend expects simple TimeLogCreate model with only 3 required fields: 'date' (not 'date_of_work'), 'installer_id' (missing from frontend), 'hours' (missing from frontend). ❌ VALIDATION ERROR 422: Backend returns 422 status with missing field errors: ['date', 'installer_id', 'hours']. This non-OK response triggers frontend's 'offline mode' fallback (line 286 in TimeAndMaterialForm.jsx). ✅ BACKEND FUNCTIONALITY CONFIRMED: When correct data structure is used (date: '2025-10-02', installer_id: '2a2d5448-4fb1-495b-b334-459872e1ef78', project_id: '030d7d04-cf77-4e49-a4a7-7b6bc41ed8ab', hours: 8.0), T&M tag creation works perfectly (returns 200 OK with created tag data). ✅ SOLUTION REQUIRED: Either update frontend to send correct TimeLogCreate structure OR update production backend to accept frontend's T&M tag structure. The production backend is using server_rhino_platform.py with TimeLogCreate model, not the server.py with TMTagCreate model that frontend expects."
+
   - task: "DELETE T&M Tag API endpoint"
     implemented: true
     working: true
