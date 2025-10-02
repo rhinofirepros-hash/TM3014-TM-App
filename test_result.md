@@ -816,13 +816,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Production Backend API Structure Mismatch"
-    - "Production PDF Functionality"
+    - "T&M Tag Creation Frontend-Backend Data Model Mismatch"
   stuck_tasks:
-    - "Production Backend API Structure Mismatch"
-    - "Production PDF Functionality"
+    - "T&M Tag Creation Frontend-Backend Data Model Mismatch"
   test_all: false
-  test_priority: "critical_production_issues"
+  test_priority: "critical_data_model_fix"
 
 frontend:
   - task: "Vision UI Theme Integration"
