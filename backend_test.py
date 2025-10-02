@@ -51,8 +51,8 @@ def test_tm_tag_creation_exact_form_data():
     print("\n🎯 TESTING T&M TAG CREATION - EXACT FORM FAILURE ANALYSIS")
     print("=" * 70)
     
-    # Exact T&M tag data structure as provided in the review request
-    tm_tag_data = {
+    # First test with the exact frontend data structure (will fail)
+    frontend_tm_tag_data = {
         "id": "tm_1727901234567",
         "project_id": "test_project_id", 
         "project_name": "Test Project",
@@ -83,6 +83,15 @@ def test_tm_tag_creation_exact_form_data():
         "status": "completed",
         "created_at": "2025-10-02T17:30:00.000Z",
         "total_cost": 800
+    }
+    
+    # Now test with the correct backend data structure (TimeLogCreate)
+    backend_tm_tag_data = {
+        "date": "2025-10-02",  # Date format, not datetime
+        "installer_id": "test_installer_id",  # Required field
+        "project_id": "test_project_id",
+        "hours": 8.0,  # Required field
+        "notes": "Test work description"
     }
     
     print(f"📡 Testing POST {API_BASE}/tm-tags")
